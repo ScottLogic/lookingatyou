@@ -7,7 +7,7 @@ var webcamCount;
 window.onload = function () {
 
     makeEyes();
-    // access webcam
+    // Access webcams then set them up
     navigator.mediaDevices.enumerateDevices()
         .then((devices) => {
             return devices
@@ -18,16 +18,37 @@ window.onload = function () {
 
             webcamCount = webcamIds.length;
 
+            if (webcamCount < 2) {
+                document.getElementById("debug-bottom").style.display = "none";
+                document.getElementById("toplabel").innerHTML = "Camera";
+            }
+
             if (webcamCount == 0) {
                 window.alert("No webcams detected. Please connect a webcam and refresh.");
                 return;
             }
+
             canvases = [document.getElementById('frame-canvas0'), document.getElementById('frame-canvas1')]
-            getVideos(webcamIds);
+            setupWebcams(webcamIds);
 
         });
 }
 
+// Sets interval function for each webcam, based on FPS
+function setupWebcams(webcamIds) {
+    videos = [];
+    for (i = 0; i < 2 && i < webcamCount; i++) {
+        const video = document.createElement('video');
+        video.autoplay = true;
+        navigator.mediaDevices.getUserMedia({ video: { deviceId: webcamIds[i] } }).then((stream) => {
+            video.srcObject = stream;
+            videos.push(video);
+            setInterval(processFrame, 1000 / FPS);
+        });
+    }
+}
+
+// Takes frame from webcam, receives bounding box, determines corresponding eye position, sets eye position
 function processFrame() {
     for (i = 0; i < webcamCount && i < 2; i++) {
         frame = getFrame(i);
@@ -41,19 +62,7 @@ function processFrame() {
     }
 }
 
-function getVideos(webcamIds) {
-    videos = [];
-    for (i = 0; i < 2 && i < webcamCount; i++) {
-        const video = document.createElement('video');
-        video.autoplay = true;
-        navigator.mediaDevices.getUserMedia({ video: { deviceId: webcamIds[i] } }).then((stream) => {
-            video.srcObject = stream;
-            videos.push(video);
-            setInterval(processFrame, 1000 / FPS);
-        });
-    }
-}
-
+// Returns single frame from the ith webcam
 function getFrame(i) {
     const canvas = canvases[i];
     canvas.width = videos[i].videoWidth;
@@ -64,7 +73,10 @@ function getFrame(i) {
     return data;
 }
 
+// Calculates the corresponding eye position for boundingBox from webcam i
 function calculateEyePos(boundingBox, i) {
+
+    // Draws bounding box on corresponding canvas
     var ctx = canvases[i].getContext('2d');
     ctx.beginPath();
     ctx.lineWidth = "10";
