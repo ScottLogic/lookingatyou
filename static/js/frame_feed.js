@@ -50,7 +50,6 @@ function setupWebcams(webcamIds) {
         navigator.mediaDevices.getUserMedia({ video: { deviceId: webcam } }).then((stream) => {
             video.height = videoHeight;
             video.width = videoWidth;
-            // video.hidden = true;
             video.srcObject = stream;
             videos.push(video);
             webcamsProcessed++;
