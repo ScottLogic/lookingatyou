@@ -43,12 +43,11 @@ window.onload = function () {
 function setupWebcams(webcamIds) {
     videos = [];
     for (i = 0; i < 2 && i < webcamCount; i++) {
-        const video = document.createElement('video');
+        let video = document.createElement('video');
         video.autoplay = true;
         navigator.mediaDevices.getUserMedia({ video: { deviceId: webcamIds[i] } }).then((stream) => {
             video.height = videoHeight;
             video.width = videoWidth;
-            // video.hidden = true;
             video.srcObject = stream;
             videos.push(video);
             setInterval(processFrame, 1000 / FPS);
