@@ -1,5 +1,5 @@
 
-const FPS = 5;
+const FPS = 10;
 var max_pupil_displacement;
 
 function makeEyes() {
@@ -61,11 +61,13 @@ const eyes = {
 }
 
 function setEyesPosition(coords, eye) {
+    x = coords[0];
+    y = coords[1];
     console.log("setEyesPosition(" + x + ", " + y + ", " + (eye ? "LEFT" : "RIGHT") + ")");
     var x_fov_bound = parseFloat(document.getElementById("x_fov_bound").value) || 1; // defaults to 1 if NaN
     var y_fov_bound = parseFloat(document.getElementById("y_fov_bound").value) || 1;
-    x = coords[0] / x_fov_bound; // scales coordinate by sensitivity
-    y = coords[1] / y_fov_bound;
+    x = x / x_fov_bound; // scales coordinate by sensitivity
+    y = y / y_fov_bound;
     var d_ = Math.hypot(x, y); // Polar coordinate distance
     var theta = Math.atan2(y, x); // Polar coordinate angle
     var pupil_displacement_distance = max_pupil_displacement * Math.min(1, d_)
