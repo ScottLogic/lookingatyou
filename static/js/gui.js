@@ -1,5 +1,5 @@
 
-const FPS = 1;
+const FPS = 5;
 var max_pupil_displacement;
 
 function makeEyes() {
