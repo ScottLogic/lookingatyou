@@ -1,15 +1,16 @@
 
-const FPS = 10;
+const FPS = 1;
 var max_pupil_displacement;
 
 function makeEyes() {
-    const width = screen.width, height = screen.height;
-    const min_dimension = Math.min(width, height);
+    const screenwidth = screen.width, screenheight = screen.height;
+    console.log("screenwidth : " + screenwidth + ", screenheight: " + screenheight);
+    const min_dimension = Math.min(screenwidth, screenheight);
     const sizes = {
         "sclera": min_dimension / 4,
         "iris": min_dimension / 8,
         "pupil": min_dimension / 16,
-        "distance_from_centre": width / 4
+        "distance_from_centre": screenwidth / 4
     };
     const colors = {
         "sclera": "white",
@@ -18,10 +19,10 @@ function makeEyes() {
     }
     max_pupil_displacement = (sizes.sclera - sizes.iris);
     var svg = d3.select("body").append("svg")
-        .attr("width", width)
-        .attr("height", height)
+        .attr("width", screenwidth)
+        .attr("height", screenheight)
         .append("g")
-        .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
+        .attr("transform", "translate(" + (screenwidth / 2) + "," + (screenheight / 2) + ")")
     // Make left eye
     svg.append("circle")
         .attr("class", "left_outer")
@@ -74,9 +75,9 @@ function setEyesPosition(coords, eye) {
     var pupil_x_displacement = -pupil_displacement_distance * Math.cos(theta);
     var pupil_y_displacement = pupil_displacement_distance * Math.sin(theta);
     var doSwapEyes = document.getElementById('doSwapEyes').checked;
-    if (xor(doSwapEyes, eye) == eyes.LEFT)
+    if (xor(doSwapEyes, eye) === eyes.LEFT)
         d3.select(".left_inner").transition().duration(1000 / FPS).attr("transform", "translate(" + pupil_x_displacement + "," + pupil_y_displacement + ")");
-    else if (xor(doSwapEyes, eye) == eyes.RIGHT)
+    else if (xor(doSwapEyes, eye) === eyes.RIGHT)
         d3.select(".right_inner").transition().duration(1000 / FPS).attr("transform", "translate(" + pupil_x_displacement + "," + pupil_y_displacement + ")");
 }
 
