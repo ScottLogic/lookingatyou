@@ -59,10 +59,15 @@ function setupWebcams(webcamIds) {
 function processFrame() {
     for (i = 0; i < webcamCount && i < 2; i++) {
         // Detecting objects
-        var boundingBox = [0, 0, 0, 0];
-        model.detect(videos[i]).then(predictions => {
-            return predictions[0].bbox;
-        }).then((boundingBox) => {
+        model.detect(videos[i])
+        .then((detections) => {
+            for (i = 0; i < detections.length; i ++){
+                if (detections[i].class === "person")
+                    return detections[i].bbox
+            }
+            return [0, 0, 0, 0]
+        })
+        .then((boundingBox) => {
             var coords = calculateEyePos(boundingBox, i);
             if (i == 0 || webcamCount == 1)
                 setEyesPosition(coords, eyes.LEFT);
@@ -92,7 +97,6 @@ function calculateEyePos(boundingBox, i) {
     ctx.beginPath();
     ctx.lineWidth = "10";
     ctx.strokeStyle = "red";
-    console.log(boundingBox)
     ctx.rect(boundingBox[0], boundingBox[1], boundingBox[2], boundingBox[3]);
     ctx.stroke();
 
