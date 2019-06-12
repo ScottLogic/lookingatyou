@@ -5,11 +5,10 @@
   "main": "index.html",
   "dependencies": {},
   "devDependencies": {
-    "jest": "^24.8.0",
-    "jest-junit": "^6.4.0"
+    "jest": "^24.8.0"
   },
   "scripts": {
-    "test": "jest --ci --runInBand --reporters=default --reporters=jest-junit"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
