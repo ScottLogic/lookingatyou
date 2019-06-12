@@ -2,11 +2,8 @@
 // webcam capture and sending to the server 
 ///////////////////////////////////////////// 
 var canvases;
-var videos;
 var webcamCount;
 var model;
-const videoWidth = 640;
-const videoHeight = 480;
 
 window.onload = function () {
 
@@ -41,15 +38,15 @@ window.onload = function () {
 
 // Sets interval function for each webcam, based on FPS
 function setupWebcams(webcamIds) {
-    videos = [];
+    var videos = [];
 
     webcamIds.forEach((webcam, webcamIndex, a) => {
         navigator.mediaDevices.getUserMedia({ video: { deviceId: webcam } }).then((stream) => {
             let video = document.createElement('video');
             video.autoplay = true;
-            video.height = videoHeight;
-            video.width = videoWidth;
             video.srcObject = stream;
+            video.height = stream.getVideoTracks()[0].getSettings().height;
+            video.width = stream.getVideoTracks()[0].getSettings().width;
             videos.push(video);
             var eye = (webcamIndex == 0 || webcamCount == 1) ? eyes.LEFT : eyes.RIGHT;
             setInterval(function () { processFrame(video, canvases[webcamIndex], eye) }, 1000 / FPS);
@@ -62,9 +59,9 @@ function processFrame(video, canvas, eye) {
     model.detect(video).then(detections => {
         var boundingBox = getBoundingBoxOf(detections);
         if (boundingBox) {
-            setEyesPosition(getEyePosOf(boundingBox), eye);
+            setEyesPosition(getEyePosFor(boundingBox, video), eye);
             if (webcamCount == 1)
-                setEyesPosition(getEyePosOf(boundingBox), !eye);
+                setEyesPosition(getEyePosFor(boundingBox, video), !eye);
             if (debugModeOn)
                 updateCanvas(video, canvas, boundingBox);
         }
@@ -74,7 +71,7 @@ function processFrame(video, canvas, eye) {
 function updateCanvas(video, canvas, boundingBox) {
     var ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    var ratio = { width: canvas.width / videoWidth, height: canvas.height / videoHeight };
+    var ratio = { width: canvas.width / video.width, height: canvas.height / video.height };
     drawBoundingBox(ctx, boundingBox, ratio);
 }
 
@@ -95,15 +92,15 @@ function drawBoundingBox(ctx, boundingBox, ratio) {
 }
 
 // Calculates the corresponding eye position for boundingBox from webcam index
-function getEyePosOf(boundingBox) {
+function getEyePosFor(boundingBox, video) {
 
     var x = boundingBox[0] + boundingBox[2] / 2; // Coordinates for centre of bounding box
-    x = x - videoWidth / 2; // Converts to coordinates centred around 0,0
-    x = x / (videoWidth / 2); // Converts coordinate to a coefficient between -1 and 1
+    x = x - video.width / 2; // Converts to coordinates centred around 0,0
+    x = x / (video.width / 2); // Converts coordinate to a coefficient between -1 and 1
 
     var y = boundingBox[1] + boundingBox[3] / 2;
-    y = y - videoHeight / 2;
-    y = y / videoHeight / 2;
+    y = y - video.height / 2;
+    y = y / video.height / 2;
 
     return [x, y];
 }
