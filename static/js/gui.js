@@ -4,25 +4,29 @@ var max_pupil_displacement;
 
 function makeEyes() {
     const screenwidth = screen.width, screenheight = screen.height;
-    console.log("screenwidth : " + screenwidth + ", screenheight: " + screenheight);
     const min_dimension = Math.min(screenwidth, screenheight);
+    console.log("screenwidth : " + screenwidth + ", screenheight: " + screenheight);
+    
     const sizes = {
         "sclera": min_dimension / 4,
         "iris": min_dimension / 8,
         "pupil": min_dimension / 16,
         "distance_from_centre": screenwidth / 4
     };
+    max_pupil_displacement = (sizes.sclera - sizes.iris);
+
     const colors = {
         "sclera": "white",
         "iris": "red",
         "pupil": "black"
     }
-    max_pupil_displacement = (sizes.sclera - sizes.iris);
+    
     var svg = d3.select("body").append("svg")
         .attr("width", screenwidth)
         .attr("height", screenheight)
         .append("g")
         .attr("transform", "translate(" + (screenwidth / 2) + "," + (screenheight / 2) + ")")
+
     // Make left eye
     svg.append("circle")
         .attr("class", "left_outer")
@@ -38,6 +42,7 @@ function makeEyes() {
         .attr("r", sizes.pupil)
         .style("fill", colors.pupil)
         .attr("transform", "translate(" + -sizes.distance_from_centre + ",0)")
+
     // Make right eye
     svg.append("circle")
         .attr("class", "right_outer")
