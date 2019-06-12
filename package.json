@@ -9,7 +9,7 @@
     "jest-junit": "^6.4.0"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest --ci --runInBand --reporters=default --reporters=jest-junit"
   },
   "repository": {
     "type": "git",
