@@ -1,5 +1,5 @@
 <!-- PROJECT SHIELDS -->
-[![CircleCI](https://circleci.com/gh/ScottLogic/lookingatyou/tree/master.svg?style=svg)](https://circleci.com/gh/ScottLogic/lookingatyou/tree/master)
+[![CircleCI](https://circleci.com/gh/ScottLogic/lookingatyou.svg?style=svg)](https://circleci.com/gh/ScottLogic/lookingatyou)
 
 
 <!-- PROJECT LOGO -->
