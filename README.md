@@ -1,5 +1,5 @@
 <!-- PROJECT SHIELDS -->
-[![CircleCI](https://circleci.com/gh/ScottLogic/lookingatyou.svg?style=svg)](https://circleci.com/gh/ScottLogic/lookingatyou)
+[![CircleCI](https://img.shields.io/circleci/build/github/ScottLogic/lookingatyou/master.svg?label=master&style=badge&token=ab5d53d5a9479d50259a1d2febaa710964b4bd8c)](https://circleci.com/gh/ScottLogic/lookingatyou)
 
 
 <!-- PROJECT LOGO -->
@@ -38,7 +38,9 @@ Looking At You is a single page application that tracks the object/motion with a
 
 The only requirement for the project to run is the access to the webcam. 
 
-Tests have a single requirement - jest. You can install it using
+### Tests
+
+Tests have a single requirement - [JEST](https://jestjs.io/). You can install it using following command from the project root directory:
 
 ```
 npm install
@@ -48,11 +50,22 @@ which will install any dependencies of the project based off of the package.json
 
 ## Usage
 
-Looking At You is a client side web application and does not require a server side to be run. In order to view the project open the following file:
+Looking At You is a client side web application and does not require a server side to be run. In order to view the project, open the following file in the web browser:
 
 ```
 src/index.html
 ```
+
+You will be asked for the permission to access the webcam - click 'Allow'.
+
+When mouse movement is detected on the screen, the configuration menu will open where certain settings can be adjusted. Following options are currently available:
+
+| Option       | Description                                                                  |
+|--------------|------------------------------------------------------------------------------|
+| X FOV Bound  | X axis eyes sensitivity                                                      |
+| Y FOV Bound  | Y axis eyes sensitivity                                                      |
+| Swap Eyes    | Available when two webcams are detected. Swaps the webcam input for the eyes |
+| Toggle Debug | Displays the camera feed with bounding boxes                                 |
 
 ## Testing
 
