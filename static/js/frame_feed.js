@@ -99,12 +99,14 @@ function drawBoundingBox(ctx, boundingBox, ratio) {
 // Calculates the corresponding eye position for boundingBox from webcam index
 function getNormalisedCentrePointOf(boundingBox, video) {
     var x = boundingBox[0] + boundingBox[2] / 2; // Coordinates for centre of bounding box
-    x = x - video.width / 2; // Converts to coordinates centred around 0,0
+    x = x - (video.width / 2); // Converts to coordinates centred around 0,0
     x = x / (video.width / 2); // Converts coordinate to a coefficient between -1 and 1
 
     var y = boundingBox[1] + boundingBox[3] / 2;
-    y = y - video.height / 2;
-    y = y / video.height / 2;
+    y = y - (video.height / 2);
+    y = y / (video.height / 2);
 
     return [x, y];
 }
+
+module.exports =  {getNormalisedCentrePointOf, getTrackingTarget};

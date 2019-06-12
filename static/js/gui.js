@@ -1,7 +1,6 @@
 const FPS = 30; // ToDo: Add FPS to config menu
 
 var mouseIsOnOptionsMenu;
-var max_pupil_displacement;
 var debugEnabled = false;
 
 // For selecting which eye to move
@@ -13,7 +12,7 @@ const eyes = {
 function makeEyes() {
     const min_dimension = Math.min(screen.width, screen.height);
     // console.log("screen.width : " + screen.width + ", screen.height: " + screen.height);
-    
+
     const sizes = {
         "sclera": min_dimension / 4,
         "iris": min_dimension / 8,
@@ -21,13 +20,12 @@ function makeEyes() {
         "distance_from_centre": screen.width / 4
     };
     max_pupil_displacement = (sizes.sclera - sizes.iris);
-
     const colors = {
         "sclera": "white",
         "iris": "red",
         "pupil": "black"
     }
-    
+
     var svg = d3.select("body").append("svg")
         .attr("width", screen.width)
         .attr("height", screen.height)
@@ -70,27 +68,27 @@ function makeEyes() {
 }
 
 function setEyesPosition(coords, eye) {
-    x = coords[0];
-    y = coords[1];
-    // console.log("setEyesPosition(" + x + ", " + y + ", " + (eye ? "LEFT" : "RIGHT") + ")");
+    var pupilDisplacements = getPupilDisplacement(coords);
+    var translationString = "translate(" + pupilDisplacements[0] + "," + pupilDisplacements[1] + ")";
+    // Allows user swap camera inputs (left/right)
+    var doSwapEyes = document.getElementById('doSwapEyes').checked;
+    if (xor(doSwapEyes, eye) === eyes.LEFT)
+        d3.select(".left_inner").transition().duration(1000 / FPS).attr("transform", translationString);
+    else if (xor(doSwapEyes, eye) === eyes.RIGHT)
+        d3.select(".right_inner").transition().duration(1000 / FPS).attr("transform", translationString);
+}
 
-    // Scale eye movemen by sensitivity
+function getPupilDisplacement(coords) {
     var x_fov_bound = parseFloat(document.getElementById("x_fov_bound").value) || 1; // defaults to 1 if NaN
     var y_fov_bound = parseFloat(document.getElementById("y_fov_bound").value) || 1;
-    x = x / x_fov_bound;
-    y = y / y_fov_bound;
+    var x = coords[0] / x_fov_bound;
+    var y = coords[1] / y_fov_bound;
     var d_ = Math.hypot(x, y); // Polar coordinate distance
     var theta = Math.atan2(y, x); // Polar coordinate angle
     var pupil_displacement_distance = max_pupil_displacement * Math.min(1, d_)
     var pupil_x_displacement = -pupil_displacement_distance * Math.cos(theta);
     var pupil_y_displacement = pupil_displacement_distance * Math.sin(theta);
-
-    // Allows user swap camera inputs (left/right)
-    var doSwapEyes = document.getElementById('doSwapEyes').checked;
-    if (xor(doSwapEyes, eye) === eyes.LEFT)
-        d3.select(".left_inner").transition().duration(1000 / FPS).attr("transform", "translate(" + pupil_x_displacement + "," + pupil_y_displacement + ")");
-    else if (xor(doSwapEyes, eye) === eyes.RIGHT)
-        d3.select(".right_inner").transition().duration(1000 / FPS).attr("transform", "translate(" + pupil_x_displacement + "," + pupil_y_displacement + ")");
+    return [pupil_x_displacement, pupil_y_displacement];
 }
 
 function setMouseIsInOptionsMenu(value) {
@@ -122,3 +120,5 @@ function swapEyeDebugLabels() {
 function xor(a, b) {
     return (a && !b) || (!a && b)
 }
+
+module.exports = { makeEyes, setEyesPosition, sizes, colors };
