@@ -62,9 +62,9 @@ function processFrame(video, canvas, eye) {
     model.detect(video).then(detections => {
         var boundingBox = getBoundingBoxOf(detections);
         if (boundingBox) {
-            setEyesPosition(getEyePosOf(boundingBox), eye);
+            setEyesPosition(getNormalisedCentrePointOf(boundingBox), eye);
             if (webcamCount == 1)
-                setEyesPosition(getEyePosOf(boundingBox), !eye);
+                setEyesPosition(getNormalisedCentrePointOf(boundingBox), !eye);
             if (debugModeOn)
                 updateCanvas(video, canvas, boundingBox);
         }
@@ -95,7 +95,7 @@ function drawBoundingBox(ctx, boundingBox, ratio) {
 }
 
 // Calculates the corresponding eye position for boundingBox from webcam index
-function getEyePosOf(boundingBox) {
+function getNormalisedCentrePointOf(boundingBox) {
 
     var x = boundingBox[0] + boundingBox[2] / 2; // Coordinates for centre of bounding box
     x = x - videoWidth / 2; // Converts to coordinates centred around 0,0
