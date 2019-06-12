@@ -40,7 +40,6 @@ jobs:
       - image: 'circleci/python:2.7'
     steps:
       - checkout
-      - run: mkdir bucket && echo "lorum ipsum" > bucket/build_asset.txt
       - aws-s3/sync:
         from: ./
         to: 's3://looking-at-you/'
