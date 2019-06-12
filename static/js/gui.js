@@ -75,8 +75,8 @@ function setEyesPosition(coords, eye) {
     // console.log("setEyesPosition(" + x + ", " + y + ", " + (eye ? "LEFT" : "RIGHT") + ")");
 
     // Scale eye movemen by sensitivity
-    var x_fov_bound = parseFloat(document.getElementById("x_fov_bound").value) || 1; // defaults to 1 if NaN
-    var y_fov_bound = parseFloat(document.getElementById("y_fov_bound").value) || 1;
+    var x_fov_bound = parseFloat(document.getElementById("optionsMenu_xFovBound").value) || 1; // defaults to 1 if NaN
+    var y_fov_bound = parseFloat(document.getElementById("optionsMenu_yFovBound").value) || 1;
     x = x / x_fov_bound;
     y = y / y_fov_bound;
     var d_ = Math.hypot(x, y); // Polar coordinate distance
@@ -86,7 +86,7 @@ function setEyesPosition(coords, eye) {
     var pupil_y_displacement = pupil_displacement_distance * Math.sin(theta);
 
     // Allows user swap camera inputs (left/right)
-    var doSwapEyes = document.getElementById('doSwapEyes').checked;
+    var doSwapEyes = document.getElementById('optionsMenu_doSwapEyes').checked;
     if (xor(doSwapEyes, eye) === eyes.LEFT)
         d3.select(".left_inner").transition().duration(1000 / FPS).attr("transform", "translate(" + pupil_x_displacement + "," + pupil_y_displacement + ")");
     else if (xor(doSwapEyes, eye) === eyes.RIGHT)
@@ -99,21 +99,21 @@ function setMouseIsInOptionsMenu(value) {
 
 var hideOptionsMenuTimer;
 function showOptionsMenu() {
-    document.getElementById("optionsmenu").style.width = "350px";
+    document.getElementById("optionsMenu").style.width = "17em";
     clearInterval(hideOptionsMenuTimer);
     if (!mouseIsOnOptionsMenu && !debugEnabled)
-        hideOptionsMenuTimer = setTimeout(function () { document.getElementById("optionsmenu").style.width = "0px"; }, 1250)
+        hideOptionsMenuTimer = setTimeout(function () { document.getElementById("optionsMenu").style.width = "0px"; }, 1250)
 }
 
 function toggleDebug(value) {
     debugEnabled = value;
     var display = debugEnabled ? "inline-block" : "none";
-    document.getElementById("debug").style.display = display;
+    document.getElementById("optionsMenu_debug").style.display = display;
 }
 
 function swapEyeDebugLabels() {
-    var topLabel = document.getElementById("toplabel");
-    var bottomLabel = document.getElementById("bottomlabel");
+    var topLabel = document.getElementById("optionsMenu_topLabel");
+    var bottomLabel = document.getElementById("optionsMenu_bottomLabel");
     var temp = topLabel.innerHTML;
     topLabel.innerHTML = bottomLabel.innerHTML;
     bottomLabel.innerHTML = temp;

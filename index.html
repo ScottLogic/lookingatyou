@@ -4,14 +4,14 @@
 <head lang="en">
     <meta charset="utf-8">
 
-    <!-- Style --> 
+    <!-- Style -->
     <link rel="stylesheet" href="static/css/styles.css">
 
     <!-- Libraries -->
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-    
+
     <!-- Local Scripts -->
     <script type="text/javascript" src="static\js\gui.js"></script>
     <script type="text/javascript" src="static\js\frame_feed.js"></script>
@@ -19,22 +19,52 @@
 
 <body onmousemove="showOptionsMenu()">
     <!-- Config Menu -->
-    <div id="optionsmenu" class="sidenav" onmouseover="setMouseIsInOptionsMenu(true)"
-        onmouseout="setMouseIsInOptionsMenu(false)">
-        <label>X FOV Bound</label> <input type="text" id="x_fov_bound" value="1"> <br>
-        <label>Y FOV Bound</label> <input type="text" id="y_fov_bound" value="1"> <br>
-        <label>Swap Eyes</label> <input type="checkbox" id=doSwapEyes onclick="swapEyeDebugLabels()"> <br>
-        <label>Toggle Debug</label> <input type="checkbox" onclick="toggleDebug(this.checked)"> <br>
-        <div style="display:none" id="debug">
+    <div 
+        id="optionsMenu"
+        class="sidenav"
+        onmouseover="setMouseIsInOptionsMenu(true)"
+        onmouseout="setMouseIsInOptionsMenu(false)"
+    >
+        <label>X FOV Bound</label>
+        <input 
+            type="text"
+            id="optionsMenu_xFovBound" value="1"
+        >
+        <br>
+
+        <label>Y FOV Bound</label>
+        <input
+            type="text"
+            id="optionsMenu_yFovBound"
+            value="1"
+        >
+        <br>
+
+        <label>Swap Eyes</label>
+        <input
+            type="checkbox"
+            id=optionsMenu_doSwapEyes
+            onclick="swapEyeDebugLabels()"
+        >
+        <br>
+
+        <label>Toggle Debug</label>
+        <input
+            type="checkbox"
+            onclick="toggleDebug(this.checked)"
+        >
+        <br>
+        <div style="display:none" id="optionsMenu_debug">
             <br>
-            <div id="debug-top">
-                <label id="toplabel">Left Camera</label>
-                <canvas id="frame-canvas0"></canvas> <br>
+            <div id="optionsMenu_debugTop">
+                <label id="optionsMenu_topLabel">Left Camera</label>
+                <canvas id="optionsMenu_frameCanvas0"></canvas> <br>
             </div>
             <br>
-            <div id="debug-bottom">
-                <label id="bottomlabel">Right Camera</label>
-                <canvas id="frame-canvas1"></canvas> <br>
+
+            <div id="optionsMenu_debugBottom">
+                <label id="optionsMenu_bottomLabel">Right Camera</label>
+                <canvas id="optionsMenu_frameCanvas1"></canvas> <br>
             </div>
         </div>
     </div>

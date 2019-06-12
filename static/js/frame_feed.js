@@ -24,15 +24,15 @@ window.onload = function () {
             }
 
             if (webcamCount < 2) {
-                document.getElementById("debug-bottom").style.display = "none";
-                document.getElementById("toplabel").innerHTML = "Camera";
+                document.getElementById("optionsMenu_debugBottom").style.display = "none";
+                document.getElementById("optionsMenu_topLabel").innerHTML = "Camera";
             }
 
             // ToDo: Extract into abstracted class
             // Load Model for object detection
             cocoSsd.load().then(loadModel => { model = loadModel; })
 
-            canvases = [document.getElementById('frame-canvas0'), document.getElementById('frame-canvas1')]
+            canvases = [document.getElementById('optionsMenu_frameCanvas0'), document.getElementById('optionsMenu_frameCanvas1')]
             setupWebcams(webcamIds);
         });
 }
