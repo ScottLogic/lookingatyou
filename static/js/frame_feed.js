@@ -1,6 +1,6 @@
-/////////////////////////////////////////////
-// webcam capture and sending to the server 
-///////////////////////////////////////////// 
+///////////////////////////////////////////////
+// Webcam capture and coordinate translations 
+///////////////////////////////////////////////
 var canvases;
 var webcamCount;
 var model;
@@ -16,19 +16,20 @@ window.onload = function () {
                 .map((device) => { return device.deviceId; });
         })
         .then((webcamIds) => {
-
             webcamCount = webcamIds.length;
-
-            if (webcamCount < 2) {
-                document.getElementById("debug-bottom").style.display = "none";
-                document.getElementById("toplabel").innerHTML = "Camera";
-            }
 
             if (webcamCount == 0) {
                 window.alert("No webcams detected. Please connect a webcam and refresh.");
                 return;
             }
 
+            if (webcamCount < 2) {
+                document.getElementById("debug-bottom").style.display = "none";
+                document.getElementById("toplabel").innerHTML = "Camera";
+            }
+
+            // ToDo: Extract into abstracted class
+            // Load Model for object detection
             cocoSsd.load().then(loadModel => { model = loadModel; })
 
             canvases = [document.getElementById('frame-canvas0'), document.getElementById('frame-canvas1')]
@@ -57,30 +58,34 @@ function setupWebcams(webcamIds) {
 // Takes frame from webcam, receives bounding box, determines corresponding eye position, sets eye position
 function processFrame(video, canvas, eye) {
     model.detect(video).then(detections => {
-        var boundingBox = getBoundingBoxOf(detections);
-        if (boundingBox) {
+        var boundingBox = getTrackingTarget(detections);
+        if (boundingBox !== null) {
             setEyesPosition(getEyePosFor(boundingBox, video), eye);
             if (webcamCount == 1)
                 setEyesPosition(getEyePosFor(boundingBox, video), !eye);
-            if (debugModeOn)
-                updateCanvas(video, canvas, boundingBox);
         }
+        if (debugEnabled)
+            updateCanvas(video, canvas, boundingBox);
     })
+}
+
+function getTrackingTarget(detections) {
+    for (index = 0; index < detections.length; index++) {
+        if (detections[index].class === "person")
+            return detections[index].bbox;
+    }
+    return null;
 }
 
 function updateCanvas(video, canvas, boundingBox) {
     var ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    var ratio = { width: canvas.width / video.width, height: canvas.height / video.height };
-    drawBoundingBox(ctx, boundingBox, ratio);
-}
-
-function getBoundingBoxOf(detections) {
-    for (index = 0; index < detections.length; index++) {
-        if (detections[index].class === "person")
-            return detections[index].bbox;
+    if (boundingBox !== null)
+    {
+        var ratio = { width: canvas.width / video.width, height: canvas.height / video.height };
+        drawBoundingBox(ctx, boundingBox, ratio);
     }
-    return false;
+        
 }
 
 function drawBoundingBox(ctx, boundingBox, ratio) {
