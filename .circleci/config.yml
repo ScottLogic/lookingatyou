@@ -26,10 +26,9 @@ jobs:
       - checkout      
       - run: sudo pip install awscli --upgrade
       - run: aws --version
-      - run: aws s3 ls
       - run:
           name: "Deploy to S3"
-          command: aws s3 sync ./ s3://looking-at-you/ --delete
+          command: aws s3 sync ./src/ s3://looking-at-you/ --delete
 
 workflows:
   version: 2
