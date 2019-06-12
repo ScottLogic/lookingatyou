@@ -60,32 +60,42 @@ function setupWebcams(webcamIds) {
 // Takes frame from webcam, receives bounding box, determines corresponding eye position, sets eye position
 function processFrame(video, canvas, eye) {
     model.detect(video).then(detections => {
-        for (webcamIndex = 0; webcamIndex < detections.length; webcamIndex++) {
-            if (detections[webcamIndex].class === "person")
-                return detections[webcamIndex].bbox;
+        var boundingBox = getBoundingBoxOf(detections);
+        if (boundingBox) {
+            setEyesPosition(getEyePosOf(boundingBox), eye);
+            if (webcamCount == 1)
+                setEyesPosition(getEyePosOf(boundingBox), !eye);
+            if (debugModeOn)
+                updateCanvas(video, canvas, boundingBox);
         }
-        return [0, 0, 0, 0];
-    }).then((boundingBox) => {
-        var coords = calculateEyePos(boundingBox);
-        setEyesPosition(coords, eye);
-        var ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        var ratio = { width: canvas.width / videoWidth, height: canvas.height / videoHeight };
-        drawBoundingBox(ctx, boundingBox, ratio);
-    });
+    })
+}
+
+function updateCanvas(video, canvas, boundingBox) {
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    var ratio = { width: canvas.width / videoWidth, height: canvas.height / videoHeight };
+    drawBoundingBox(ctx, boundingBox, ratio);
+}
+
+function getBoundingBoxOf(detections) {
+    for (index = 0; index < detections.length; index++) {
+        if (detections[index].class === "person")
+            return detections[index].bbox;
+    }
+    return false;
 }
 
 function drawBoundingBox(ctx, boundingBox, ratio) {
     ctx.beginPath();
     ctx.lineWidth = "10";
     ctx.strokeStyle = "red";
-    console.log(boundingBox)
     ctx.rect(boundingBox[0] * ratio.width, boundingBox[1] * ratio.height, boundingBox[2] * ratio.width, boundingBox[3] * ratio.height);
     ctx.stroke();
 }
 
-// Calculates the corresponding eye position for boundingBox from webcam webcamIndex
-function calculateEyePos(boundingBox) {
+// Calculates the corresponding eye position for boundingBox from webcam index
+function getEyePosOf(boundingBox) {
 
     var x = boundingBox[0] + boundingBox[2] / 2; // Coordinates for centre of bounding box
     x = x - videoWidth / 2; // Converts to coordinates centred around 0,0

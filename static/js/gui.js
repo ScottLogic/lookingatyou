@@ -1,5 +1,5 @@
 
-const FPS = 5;
+const FPS = 30;
 var max_pupil_displacement;
 
 function makeEyes() {
@@ -64,7 +64,7 @@ const eyes = {
 function setEyesPosition(coords, eye) {
     x = coords[0];
     y = coords[1];
-    console.log("setEyesPosition(" + x + ", " + y + ", " + (eye ? "LEFT" : "RIGHT") + ")");
+    // console.log("setEyesPosition(" + x + ", " + y + ", " + (eye ? "LEFT" : "RIGHT") + ")");
     var x_fov_bound = parseFloat(document.getElementById("x_fov_bound").value) || 1; // defaults to 1 if NaN
     var y_fov_bound = parseFloat(document.getElementById("y_fov_bound").value) || 1;
     x = x / x_fov_bound; // scales coordinate by sensitivity
@@ -94,8 +94,10 @@ function showOptionsMenu() {
         hideOptionsMenuTimer = setTimeout(function () { document.getElementById("optionsmenu").style.width = "0px"; }, 1250)
 }
 
+var debugModeOn = false;
 function toggleDebug(val) {
-    var display = val ? "inline-block" : "none";
+    debugModeOn = val;
+    var display = debugModeOn ? "inline-block" : "none";
     document.getElementById("debug").style.display = display;
 }
 
