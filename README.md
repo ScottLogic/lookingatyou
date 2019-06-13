@@ -11,7 +11,7 @@
   <p align="center">
     <a href="https://github.com/ScottLogic/lookingatyou/blob/master/README.md"><strong>Explore the docs »</strong></a>
     <br />
-    <a href="http://looking-at-you.s3-website.eu-west-2.amazonaws.com/">View Demo</a>
+    <a href="https://looking-at-you.s3.amazonaws.com/index.html">View Demo</a>
     ·
     <a href="https://github.com/ScottLogic/lookingatyou/issues">Report Bug</a>
     ·
@@ -83,7 +83,7 @@ npm run test
 
 ## Deployment
 
-The project is automatically deployed to AWS S3 bucket on merges to Master branch through CircleCI. The project can be accessed [here](http://looking-at-you.s3-website.eu-west-2.amazonaws.com) (Note: currently it only works on Firefox. Chrome does not allow access to webcams from insecure websites).
+The project is automatically deployed to AWS S3 bucket on merges to Master branch through CircleCI. The project can be accessed [here](https://looking-at-you.s3.amazonaws.com/index.html).
 
 In order to manually deploy the project to AWS S3 bucket first install aws cli:
 
