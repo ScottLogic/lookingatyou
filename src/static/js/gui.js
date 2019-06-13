@@ -21,7 +21,6 @@ function makeEyes() {
         "distanceFromCentre": screen.width / 4
     };
     maxPupilDisplacement = (sizes.sclera - sizes.iris);
-
     const colors = {
         "sclera": "white",
         "iris": "red",
@@ -70,23 +69,30 @@ function makeEyes() {
 }
 
 function setEyesPosition(coords, eye) {
-    // Scale eye movemen by sensitivity
-    var xFovBound = parseFloat(document.getElementById("optionsMenu_xFovBound").value) || 1; // defaults to 1 if NaN
-    var yFovBound = parseFloat(document.getElementById("optionsMenu_yFovBound").value) || 1;
-    var x = coords[0] / xFovBound;
-    var y = coords[1] / yFovBound;
-    var polarDistance= Math.hypot(x, y); // Polar coordinate distance
-    var theta = Math.atan2(y, x); // Polar coordinate angle
-    var pupilDisplacementDistance = maxPupilDisplacement * Math.min(1, polarDistance)
-    var pupilXDisplacement = -pupilDisplacementDistance * Math.cos(theta);
-    var pupilYDisplacement = pupilDisplacementDistance * Math.sin(theta);
+    // Scale eye movement by sensitivity
+    var xSensitivity = parseFloat(document.getElementById("optionsMenu_xSensitivity").value) || 1; // defaults to 1 if NaN
+    var ySensitivity = parseFloat(document.getElementById("optionsMenu_ySensitivity").value) || 1;
+
+    var coords = getPupilDisplacement(coords, maxPupilDisplacement, xSensitivity, ySensitivity);
+    var transformString = "translate(" + coords[0] + "," + coords[1] + ")";
 
     // Allows user swap camera inputs (left/right)
     var doSwapEyes = document.getElementById('optionsMenu_doSwapEyes').checked;
     if (xor(doSwapEyes, eye) === eyes.LEFT)
-        d3.select(".leftInner").transition().duration(1000 / FPS).attr("transform", "translate(" + pupilXDisplacement + "," + pupilYDisplacement + ")");
+        d3.select(".leftInner").transition().duration(1000 / FPS).attr("transform", transformString);
     else if (xor(doSwapEyes, eye) === eyes.RIGHT)
-        d3.select(".rightInner").transition().duration(1000 / FPS).attr("transform", "translate(" + pupilXDisplacement + "," + pupilYDisplacement + ")");
+        d3.select(".rightInner").transition().duration(1000 / FPS).attr("transform", transformString);
+}
+
+function getPupilDisplacement(coords, maxDisplacement, xSensitivity, ySensitivity) {
+    var x = coords[0] * xSensitivity;
+    var y = coords[1] * ySensitivity;
+    var polarDistance = Math.hypot(x, y); // Polar coordinate distance
+    var theta = Math.atan2(y, x); // Polar coordinate angle
+    var pupilDisplacementDistance = maxDisplacement * Math.min(1, polarDistance)
+    var pupilXDisplacement = -pupilDisplacementDistance * Math.cos(theta);
+    var pupilYDisplacement = pupilDisplacementDistance * Math.sin(theta);
+    return [pupilXDisplacement, pupilYDisplacement];
 }
 
 function setMouseIsInOptionsMenu(value) {
@@ -118,3 +124,5 @@ function swapEyeDebugLabels() {
 function xor(a, b) {
     return (a && !b) || (!a && b)
 }
+
+module.exports = {getPupilDisplacement};

@@ -66,12 +66,12 @@ You will be asked for the permission to access the webcam - click 'Allow'.
 
 When mouse movement is detected on the screen, the configuration menu will open where certain settings can be adjusted. Following options are currently available:
 
-| Option       | Description                                                                  |
-|--------------|------------------------------------------------------------------------------|
-| X FOV Bound  | X axis eyes sensitivity                                                      |
-| Y FOV Bound  | Y axis eyes sensitivity                                                      |
-| Swap Eyes    | Available when two webcams are detected. Swaps the webcam input for the eyes |
-| Toggle Debug | Displays the camera feed with bounding boxes                                 |
+| Option         | Description                                                                  |
+|----------------|------------------------------------------------------------------------------|
+| X Sensitivity  | X axis eyes sensitivity                                                      |
+| Y Sensitivity  | Y axis eyes sensitivity                                                      |
+| Swap Eyes      | Available when two webcams are detected. Swaps the webcam input for the eyes |
+| Toggle Debug   | Displays the camera feed with bounding boxes                                 |
 
 ## Testing
 
