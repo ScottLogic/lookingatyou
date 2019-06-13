@@ -77,7 +77,7 @@ function setEyesPosition(coords, eye) {
     var xSensitivity = parseFloat(document.getElementById("optionsMenu_xSensitivity").value) || 1; // defaults to 1 if NaN
     var ySensitivity = parseFloat(document.getElementById("optionsMenu_ySensitivity").value) || 1;
 
-    var coords = getPupilDisplacement(coords, maxPupilDisplacement, 1 / xSensitivity, 1 / ySensitivity);
+    var coords = getPupilDisplacement(coords, maxPupilDisplacement, xSensitivity, ySensitivity);
     var transformString = "translate(" + coords[0] + "," + coords[1] + ")";
 
     // Allows user swap camera inputs (left/right)
@@ -88,9 +88,9 @@ function setEyesPosition(coords, eye) {
         d3.select(".rightInner").transition().duration(1000 / FPS).attr("transform", transformString);
 }
 
-function getPupilDisplacement(coords, maxDisplacement, xFovBound, yFovBound) {
-    var x = coords[0] / xFovBound;
-    var y = coords[1] / yFovBound;
+function getPupilDisplacement(coords, maxDisplacement, xSensitivity, ySensitivity) {
+    var x = coords[0] * xSensitivity;
+    var y = coords[1] * ySensitivity;
     var polarDistance = Math.hypot(x, y); // Polar coordinate distance
     var theta = Math.atan2(y, x); // Polar coordinate angle
     var pupilDisplacementDistance = maxDisplacement * Math.min(1, polarDistance)

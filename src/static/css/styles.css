@@ -49,12 +49,12 @@ body {
 .sidenav input {
   padding: 0.4em;
   font-size: 1.2em;
-  width: 8em;
+  width: 9em;
   display: inline-block;
 }
 
 .sidenav input {
-  width: 3em;
+  width: 2em;
 }
 
 canvas {
