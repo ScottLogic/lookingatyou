@@ -1,6 +1,7 @@
 const FPS = 30; // ToDo: Add FPS to config menu
 
 var mouseIsOnOptionsMenu;
+var max_pupil_displacement;
 var debugEnabled = false;
 
 // For selecting which eye to move
@@ -68,7 +69,9 @@ function makeEyes() {
 }
 
 function setEyesPosition(coords, eye) {
-    var pupilDisplacements = getPupilDisplacement(coords);
+    var x_fov_bound = parseFloat(document.getElementById("x_fov_bound").value) || 1
+    var y_fov_bound = parseFloat(document.getElementById("y_fov_bound").value) || 1
+    var pupilDisplacements = getPupilDisplacement(coords, max_pupil_displacement, x_fov_bound, y_fov_bound);
     var translationString = "translate(" + pupilDisplacements[0] + "," + pupilDisplacements[1] + ")";
     // Allows user swap camera inputs (left/right)
     var doSwapEyes = document.getElementById('doSwapEyes').checked;
@@ -78,14 +81,12 @@ function setEyesPosition(coords, eye) {
         d3.select(".right_inner").transition().duration(1000 / FPS).attr("transform", translationString);
 }
 
-function getPupilDisplacement(coords) {
-    var x_fov_bound = parseFloat(document.getElementById("x_fov_bound").value) || 1; // defaults to 1 if NaN
-    var y_fov_bound = parseFloat(document.getElementById("y_fov_bound").value) || 1;
+function getPupilDisplacement(coords, max_displacement, x_fov_bound, y_fov_bound) {
     var x = coords[0] / x_fov_bound;
     var y = coords[1] / y_fov_bound;
     var d_ = Math.hypot(x, y); // Polar coordinate distance
     var theta = Math.atan2(y, x); // Polar coordinate angle
-    var pupil_displacement_distance = max_pupil_displacement * Math.min(1, d_)
+    var pupil_displacement_distance = max_displacement * Math.min(1, d_)
     var pupil_x_displacement = -pupil_displacement_distance * Math.cos(theta);
     var pupil_y_displacement = pupil_displacement_distance * Math.sin(theta);
     return [pupil_x_displacement, pupil_y_displacement];
@@ -121,4 +122,4 @@ function xor(a, b) {
     return (a && !b) || (!a && b)
 }
 
-module.exports = { makeEyes, setEyesPosition, sizes, colors };
+module.exports = { getPupilDisplacement };
