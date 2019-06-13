@@ -1,7 +1,7 @@
 const FPS = 30; // ToDo: Add FPS to config menu
 
 var mouseIsOnOptionsMenu;
-var max_pupil_displacement;
+var maxPupilDisplacement;
 var debugEnabled = false;
 
 // For selecting which eye to move
@@ -11,16 +11,16 @@ const eyes = {
 }
 
 function makeEyes() {
-    const min_dimension = Math.min(screen.width, screen.height);
+    const minDimension = Math.min(screen.width, screen.height);
     // console.log("screen.width : " + screen.width + ", screen.height: " + screen.height);
     
     const sizes = {
-        "sclera": min_dimension / 4,
-        "iris": min_dimension / 8,
-        "pupil": min_dimension / 16,
-        "distance_from_centre": screen.width / 4
+        "sclera": minDimension / 4,
+        "iris": minDimension / 8,
+        "pupil": minDimension / 16,
+        "distanceFromCentre": screen.width / 4
     };
-    max_pupil_displacement = (sizes.sclera - sizes.iris);
+    maxPupilDisplacement = (sizes.sclera - sizes.iris);
 
     const colors = {
         "sclera": "white",
@@ -38,35 +38,35 @@ function makeEyes() {
     // ToDo: Make eye class
     // Make left eye
     svg.append("circle")
-        .attr("class", "left_outer")
+        .attr("class", "leftOuter")
         .attr("r", sizes.sclera)
         .style("fill", colors.sclera)
-        .attr("transform", "translate(" + -sizes.distance_from_centre + ",0)");
-    var left_inner = svg.append("g").attr("class", "left_inner");
-    left_inner.append("circle")
+        .attr("transform", "translate(" + -sizes.distanceFromCentre + ",0)");
+    var leftInner = svg.append("g").attr("class", "leftInner");
+    leftInner.append("circle")
         .attr("r", sizes.iris)
         .style("fill", colors.iris)
-        .attr("transform", "translate(" + -sizes.distance_from_centre + ",0)")
-    left_inner.append("circle")
+        .attr("transform", "translate(" + -sizes.distanceFromCentre + ",0)")
+    leftInner.append("circle")
         .attr("r", sizes.pupil)
         .style("fill", colors.pupil)
-        .attr("transform", "translate(" + -sizes.distance_from_centre + ",0)")
+        .attr("transform", "translate(" + -sizes.distanceFromCentre + ",0)")
 
     // Make right eye
     svg.append("circle")
-        .attr("class", "right_outer")
+        .attr("class", "rightOuter")
         .attr("r", sizes.sclera)
         .style("fill", colors.sclera)
-        .attr("transform", "translate(" + sizes.distance_from_centre + ",0)");
-    var right_inner = svg.append("g").attr("class", "right_inner")
-    right_inner.append("circle")
+        .attr("transform", "translate(" + sizes.distanceFromCentre + ",0)");
+    var rightInner = svg.append("g").attr("class", "rightInner")
+    rightInner.append("circle")
         .attr("r", sizes.iris)
         .style("fill", colors.iris)
-        .attr("transform", "translate(" + sizes.distance_from_centre + ",0)")
-    right_inner.append("circle")
+        .attr("transform", "translate(" + sizes.distanceFromCentre + ",0)")
+    rightInner.append("circle")
         .attr("r", sizes.pupil)
         .style("fill", colors.pupil)
-        .attr("transform", "translate(" + sizes.distance_from_centre + ",0)")
+        .attr("transform", "translate(" + sizes.distanceFromCentre + ",0)")
 }
 
 function setEyesPosition(coords, eye) {
@@ -75,22 +75,22 @@ function setEyesPosition(coords, eye) {
     // console.log("setEyesPosition(" + x + ", " + y + ", " + (eye ? "LEFT" : "RIGHT") + ")");
 
     // Scale eye movemen by sensitivity
-    var x_fov_bound = parseFloat(document.getElementById("optionsMenu_xFovBound").value) || 1; // defaults to 1 if NaN
-    var y_fov_bound = parseFloat(document.getElementById("optionsMenu_yFovBound").value) || 1;
-    x = x / x_fov_bound;
-    y = y / y_fov_bound;
-    var d_ = Math.hypot(x, y); // Polar coordinate distance
+    var xFovBound = parseFloat(document.getElementById("optionsMenu_xFovBound").value) || 1; // defaults to 1 if NaN
+    var yFovBound = parseFloat(document.getElementById("optionsMenu_yFovBound").value) || 1;
+    x = x / xFovBound;
+    y = y / yFovBound;
+    var polarDistance= Math.hypot(x, y); // Polar coordinate distance
     var theta = Math.atan2(y, x); // Polar coordinate angle
-    var pupil_displacement_distance = max_pupil_displacement * Math.min(1, d_)
-    var pupil_x_displacement = -pupil_displacement_distance * Math.cos(theta);
-    var pupil_y_displacement = pupil_displacement_distance * Math.sin(theta);
+    var pupilDisplacementDistance = maxPupilDisplacement * Math.min(1, polarDistance)
+    var pupilXDisplacement = -pupilDisplacementDistance * Math.cos(theta);
+    var pupilYDisplacement = pupilDisplacementDistance * Math.sin(theta);
 
     // Allows user swap camera inputs (left/right)
     var doSwapEyes = document.getElementById('optionsMenu_doSwapEyes').checked;
     if (xor(doSwapEyes, eye) === eyes.LEFT)
-        d3.select(".left_inner").transition().duration(1000 / FPS).attr("transform", "translate(" + pupil_x_displacement + "," + pupil_y_displacement + ")");
+        d3.select(".leftInner").transition().duration(1000 / FPS).attr("transform", "translate(" + pupilXDisplacement + "," + pupilYDisplacement + ")");
     else if (xor(doSwapEyes, eye) === eyes.RIGHT)
-        d3.select(".right_inner").transition().duration(1000 / FPS).attr("transform", "translate(" + pupil_x_displacement + "," + pupil_y_displacement + ")");
+        d3.select(".rightInner").transition().duration(1000 / FPS).attr("transform", "translate(" + pupilXDisplacement + "," + pupilYDisplacement + ")");
 }
 
 function setMouseIsInOptionsMenu(value) {

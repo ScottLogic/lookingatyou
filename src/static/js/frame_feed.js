@@ -28,7 +28,7 @@ window.onload = function () {
                 document.getElementById("optionsMenu_topLabel").innerHTML = "Camera";
             }
 
-            // ToDo: Extract into abstracted class
+            // ToDo: Extract into detection class
             // Load Model for object detection
             cocoSsd.load().then(loadModel => { model = loadModel; })
 
@@ -37,18 +37,18 @@ window.onload = function () {
         });
 }
 
+
+
 // Sets interval function for each webcam, based on FPS
 function setupWebcams(webcamIds) {
-    var videos = [];
-
     webcamIds.forEach((webcam, webcamIndex, a) => {
         navigator.mediaDevices.getUserMedia({ video: { deviceId: webcam } }).then((stream) => {
             let video = document.createElement('video');
             video.autoplay = true;
             video.srcObject = stream;
-            video.height = stream.getVideoTracks()[0].getSettings().height;
-            video.width = stream.getVideoTracks()[0].getSettings().width;
-            videos.push(video);
+            var streamSettings = stream.getVideoTracks()[0].getSettings();
+            video.height = streamSettings.height;
+            video.width = streamSettings.width;
             var eye = (webcamIndex == 0 || webcamCount == 1) ? eyes.LEFT : eyes.RIGHT;
             setInterval(function () { processFrame(video, canvases[webcamIndex], eye) }, 1000 / FPS);
         });
@@ -57,6 +57,7 @@ function setupWebcams(webcamIds) {
 
 // Takes frame from webcam, receives bounding box, determines corresponding eye position, sets eye position
 function processFrame(video, canvas, eye) {
+    // ToDo: Extract into detection class
     model.detect(video).then(detections => {
         var boundingBox = getTrackingTarget(detections);
         if (boundingBox !== null) {
@@ -69,12 +70,12 @@ function processFrame(video, canvas, eye) {
     })
 }
 
+// ToDo: Extract into detection class
 function getTrackingTarget(detections) {
-    for (index = 0; index < detections.length; index++) {
-        if (detections[index].class === "person")
-            return detections[index].bbox;
-    }
-    return null;
+    detection =  detections.find(detection => {
+            return detection.class === "person";
+        });
+    return detection !== undefined ? detection.bbox : null;
 }
 
 function updateCanvas(video, canvas, boundingBox) {
