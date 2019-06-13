@@ -24,6 +24,8 @@
 
 * [About the Project](#about-the-project)
 * [Prerequisites](#prerequisites)
+  * [General](#general)
+  * [Test](#test)
 * [Usage](#usage)
 * [Testing](#testing)
 * [Deployment](#deployment)
@@ -35,6 +37,8 @@
 Looking At You is a single page application that tracks the object/motion with a pair of eyes on the screen.
 
 ## Prerequisites
+
+### General
 
 The only requirement for the project to run is the access to the webcam. 
 
@@ -77,7 +81,7 @@ npm run test
 
 ## Deployment
 
-The project is automatically deployed to AWS S3 bucket on merges to Master branch through CircleCI.
+The project is automatically deployed to AWS S3 bucket on merges to Master branch through CircleCI. The project can be accessed [here](http://looking-at-you.s3-website.eu-west-2.amazonaws.com) (Note: currently it only works on Firefox. Chrome does not allow access to webcams from insecure websites).
 
 In order to manually deploy the project to AWS S3 bucket first install aws cli:
 
