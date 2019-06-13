@@ -73,11 +73,11 @@ function setEyesPosition(coords, eye) {
     y = coords[1];
     // console.log("setEyesPosition(" + x + ", " + y + ", " + (eye ? "LEFT" : "RIGHT") + ")");
 
-    // Scale eye movemen by sensitivity
-    var xFovBound = parseFloat(document.getElementById("optionsMenu_xFovBound").value) || 1; // defaults to 1 if NaN
-    var yFovBound = parseFloat(document.getElementById("optionsMenu_yFovBound").value) || 1;
+    // Scale eye movement by sensitivity
+    var xSensitivity = parseFloat(document.getElementById("optionsMenu_xSensitivity").value) || 1; // defaults to 1 if NaN
+    var ySensitivity = parseFloat(document.getElementById("optionsMenu_ySensitivity").value) || 1;
 
-    var coords = getPupilDisplacement(coords, maxPupilDisplacement, xFovBound, yFovBound);
+    var coords = getPupilDisplacement(coords, maxPupilDisplacement, 1 / xSensitivity, 1 / ySensitivity);
     var transformString = "translate(" + coords[0] + "," + coords[1] + ")";
 
     // Allows user swap camera inputs (left/right)
