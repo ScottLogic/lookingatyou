@@ -1,4 +1,4 @@
-const getNormalisedCentrePointOf = require('../static/js/frame_feed').getNormalisedCentrePointOf;
+const getNormalisedCentrePointOf = require('../src/static/js/frame_feed').getNormalisedCentrePointOf;
 var video_1920_1080 = {width: 1920, height: 1080};
 test('bounding box is point in top left corner', () => {
     var coords = [0, 0, 0, 0];

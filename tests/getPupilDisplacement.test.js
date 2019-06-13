@@ -1,4 +1,4 @@
-const getPupilDisplacement = require('../static/js/gui').getPupilDisplacement;
+const getPupilDisplacement = require('../src/static/js/gui').getPupilDisplacement;
 test('basic', () => {
     var coords = [-1, 1];
     var max_displacement = 1000;

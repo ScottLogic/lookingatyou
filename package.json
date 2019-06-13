@@ -1,12 +1,26 @@
 {
-  "name": "my-project",
-  "jest": {
-    "verbose": true
+  "name": "lookingatyou",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^24.8.0"
   },
   "scripts": {
     "test": "jest"
   },
   "devDependencies": {
     "jest": "^24.8.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ScottLogic/lookingatyou.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ScottLogic/lookingatyou/issues"
+  },
+  "homepage": "https://github.com/ScottLogic/lookingatyou#readme"
 }

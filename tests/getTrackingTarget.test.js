@@ -1,4 +1,4 @@
-const getTrackingTarget = require('../static/js/frame_feed').getTrackingTarget;
+const getTrackingTarget = require('../src/static/js/frame_feed').getTrackingTarget;
 test('no detections', () => {
     var detections = [];
     boundingBox = getTrackingTarget(detections);
