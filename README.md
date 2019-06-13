@@ -36,6 +36,8 @@
 
 Looking At You is a single page application that tracks the object/motion with a pair of eyes on the screen.
 
+Research notes can be found [here](https://docs.google.com/document/d/1qzaegY8RV-7zI8W8PFPsT_O9LhHEo22WNC5yQh8-n_Q/edit#heading=h.e2w0fl8vj3ca_).
+
 ## Prerequisites
 
 ### General
@@ -44,7 +46,7 @@ The only requirement for the project to run is the access to the webcam.
 
 ### Tests
 
-Tests have a single requirement - [JEST](https://jestjs.io/). You can install it using following command from the project root directory:
+Tests have a single requirement - [JEST](https://jestjs.io/). You can install it by using the following command from the project root directory:
 
 ```
 npm install
@@ -54,7 +56,7 @@ which will install any dependencies of the project based off of the package.json
 
 ## Usage
 
-Looking At You is a client side web application and does not require a server side to be run. In order to view the project, open the following file in the web browser:
+Looking At You is a client side web application and does not require a server side to be run. In order to run the application, open the following file in the web browser:
 
 ```
 src/index.html
@@ -73,7 +75,7 @@ When mouse movement is detected on the screen, the configuration menu will open 
 
 ## Testing
 
-In order to run tests, execute following command:
+In order to run tests, execute the following command from the project root directory:
 
 ```
 npm run test
