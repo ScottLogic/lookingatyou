@@ -70,15 +70,11 @@ function makeEyes() {
 }
 
 function setEyesPosition(coords, eye) {
-    x = coords[0];
-    y = coords[1];
-    // console.log("setEyesPosition(" + x + ", " + y + ", " + (eye ? "LEFT" : "RIGHT") + ")");
-
     // Scale eye movemen by sensitivity
     var xFovBound = parseFloat(document.getElementById("optionsMenu_xFovBound").value) || 1; // defaults to 1 if NaN
     var yFovBound = parseFloat(document.getElementById("optionsMenu_yFovBound").value) || 1;
-    x = x / xFovBound;
-    y = y / yFovBound;
+    var x = coords[0] / xFovBound;
+    var y = coords[1] / yFovBound;
     var polarDistance= Math.hypot(x, y); // Polar coordinate distance
     var theta = Math.atan2(y, x); // Polar coordinate angle
     var pupilDisplacementDistance = maxPupilDisplacement * Math.min(1, polarDistance)
