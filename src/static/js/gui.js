@@ -69,10 +69,6 @@ function makeEyes() {
 }
 
 function setEyesPosition(coords, eye) {
-    x = coords[0];
-    y = coords[1];
-    // console.log("setEyesPosition(" + x + ", " + y + ", " + (eye ? "LEFT" : "RIGHT") + ")");
-
     // Scale eye movement by sensitivity
     var xSensitivity = parseFloat(document.getElementById("optionsMenu_xSensitivity").value) || 1; // defaults to 1 if NaN
     var ySensitivity = parseFloat(document.getElementById("optionsMenu_ySensitivity").value) || 1;
