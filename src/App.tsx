@@ -1,0 +1,70 @@
+import React from 'react';
+import Eye from './components/eye/Eye';
+import './App.css';
+
+const eyes = {
+  LEFT: 'left',
+  RIGHT: 'right',
+}
+
+
+const colours = {
+  scleraColor: "white",
+  irisColor: "lightBlue",
+  pupilColor: "black"
+}
+
+interface IAppState {
+  width: number,
+  height: number,
+}
+
+class App extends React.Component<{}, IAppState> {
+  constructor(props: {}) {
+    super(props);
+
+    this.state = {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    }
+
+    this.updateDimensions = this.updateDimensions.bind(this);
+  }
+
+  componentDidMount() {
+    //TODO: does not update the dimensions when maximizing or minimazing the window
+    // also has problems when opening the dev console
+    window.addEventListener("resize", this.updateDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
+  }
+
+  updateDimensions() {
+      this.setState({
+        height: window.innerHeight,
+        width: window.innerWidth
+      });
+  }
+
+  render() {
+    return (
+      <div className="App">
+        {Object.values(eyes).map((eye, key) => {
+          return (
+            <Eye
+              class={eye}
+              key={key}
+              width={this.state.width / 2}
+              height={this.state.height}
+              {...colours}
+            />
+          )
+        })}
+      </div>
+    );
+  }
+}
+
+export default App;
