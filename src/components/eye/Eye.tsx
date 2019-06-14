@@ -27,6 +27,7 @@ export default class Eye extends React.Component<IEyeProps, IEyeState> {
         super(props);
 
         this.state = {
+            // x and y pos to be used in moving the eyes
             x_pos: 0,
             y_pos: 0,
             width: this.props.width,
@@ -47,22 +48,22 @@ export default class Eye extends React.Component<IEyeProps, IEyeState> {
     componentDidMount() {
         this.renderEye();
     }
-    
+
     renderEye() {
         // clean the svg
         this.svg.selectAll('*').remove();
 
         // set the svg size
         let svg = this.svg
-        .attr("width", this.props.width)
-        .attr("height", this.props.height)
-        .append("g")
-        .attr("transform", "translate(" + (this.props.width / 2) + "," + (this.props.height / 2) + ")")
+            .attr("width", this.props.width)
+            .attr("height", this.props.height)
+            .append("g")
+            .attr("transform", "translate(" + (this.props.width / 2) + "," + (this.props.height / 2) + ")")
 
         // create sclera
         svg.append("circle")
             .attr("class", this.props.class + "Sclera")
-            .attr("r", this.props.width/ this.state.scleraSize)
+            .attr("r", this.props.width / this.state.scleraSize)
             .style("fill", this.props.scleraColor)
         var leftInner = svg.append("g").attr("class", "leftInner");
         // create iris
@@ -80,7 +81,7 @@ export default class Eye extends React.Component<IEyeProps, IEyeState> {
 
     render() {
         return (
-            <svg 
+            <svg
                 className={this.props.class}
                 ref={element => this.svg = select(element)}
             />

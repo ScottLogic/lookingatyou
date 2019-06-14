@@ -7,7 +7,6 @@ const eyes = {
   RIGHT: 'right',
 }
 
-
 const colours = {
   scleraColor: "white",
   irisColor: "lightBlue",
@@ -42,10 +41,10 @@ class App extends React.Component<{}, IAppState> {
   }
 
   updateDimensions() {
-      this.setState({
-        height: window.innerHeight,
-        width: window.innerWidth
-      });
+    this.setState({
+      height: window.innerHeight,
+      width: window.innerWidth
+    });
   }
 
   render() {
