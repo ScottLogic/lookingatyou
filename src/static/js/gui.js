@@ -6,8 +6,8 @@ var debugEnabled = false;
 
 // For selecting which eye to move
 const eyes = {
-    LEFT: true,
-    RIGHT: false
+    LEFT: false,
+    RIGHT: true
 }
 
 function makeEyes() {
