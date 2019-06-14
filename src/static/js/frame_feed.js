@@ -26,7 +26,7 @@ window.onload = function () {
             if (webcamCount < 2) {
                 document.getElementById("optionsMenu_debugBottom").style.display = "none";
                 document.getElementById("optionsMenu_topLabel").innerHTML = "Camera";
-                document.getElementById("options_menu_swapEyesDiv").style = "display:none";
+                document.getElementById("options_menu_swapEyesDiv").style.display = "none";
             }
 
             // ToDo: Extract into detection class
