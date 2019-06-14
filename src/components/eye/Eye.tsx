@@ -65,14 +65,14 @@ export default class Eye extends React.Component<IEyeProps, IEyeState> {
             .attr("class", this.props.class + "Sclera")
             .attr("r", this.props.width / this.state.scleraSize)
             .style("fill", this.props.scleraColor)
-        var leftInner = svg.append("g").attr("class", "leftInner");
+        var inner = svg.append("g").attr("class", "inner");
         // create iris
-        leftInner.append("circle")
+        inner.append("circle")
             .attr("class", this.props.class + "Iris")
             .attr("r", this.props.width / this.state.irisSize)
             .style("fill", this.props.irisColor)
         // create pupil
-        leftInner.append("circle")
+        inner.append("circle")
             .attr("class", this.props.class + "Pupil")
             .attr("r", this.props.width / this.state.pupilSize)
             .style("fill", this.props.pupilColor)
