@@ -1,44 +1,96 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<!-- PROJECT SHIELDS -->
+[![CircleCI](https://img.shields.io/circleci/build/github/ScottLogic/lookingatyou/master.svg?label=master&style=badge&token=ab5d53d5a9479d50259a1d2febaa710964b4bd8c)](https://circleci.com/gh/ScottLogic/lookingatyou)
 
-## Available Scripts
 
-In the project directory, you can run:
+<!-- PROJECT LOGO -->
+<br />
+<p align="center">
 
-### `npm start`
+  <h1 align="center">Looking At You</h1>
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+  <p align="center">
+    <a href="https://github.com/ScottLogic/lookingatyou/blob/master/README.md"><strong>Explore the docs »</strong></a>
+    <br />
+    <a href="https://looking-at-you.s3.amazonaws.com/index.html">View Demo</a>
+    ·
+    <a href="https://github.com/ScottLogic/lookingatyou/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/ScottLogic/lookingatyou/issues">Request Feature</a>
+  </p>
+</p>
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
 
-### `npm test`
+## Table of Contents
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* [About the Project](#about-the-project)
+* [Prerequisites](#prerequisites)
+  * [General](#general)
+  * [Test](#test)
+* [Running the project (local)](#running-the-project-locally)
+* [Usage](#usage)
+* [Testing](#testing)
+* [Deployment](#deployment)
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+## About The Project
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Looking At You is a single page application that tracks the object/motion with a pair of eyes on the screen.
 
-### `npm run eject`
+Research notes can be found [here](https://docs.google.com/document/d/1qzaegY8RV-7zI8W8PFPsT_O9LhHEo22WNC5yQh8-n_Q/edit#heading=h.e2w0fl8vj3ca_).
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Prerequisites
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### General
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+In order to build and run the project, a package manager like npm or yarn is required.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Tests
 
-## Learn More
+Tests have a single requirement - [JEST](https://jestjs.io/). You can install it by using the following command from the project root directory:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+npm install
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+which will install any dependencies of the project based off of the package.json file.
+
+## Running the project locally
+
+Install the dependencies:
+```
+npm install
+```
+
+To run the project locally, run the following command:
+```
+npm start
+```
+
+This will start the node server and you can access the project on [http://localhost:3000](http://localhost:3000)
+
+
+## Usage
+
+When you first access the application, you will be asked for the permission to access the webcam - click 'Allow'.
+
+When mouse movement is detected on the screen, the configuration menu will open where certain settings can be adjusted. Following options are currently available:
+
+| Option         | Description                                                                  |
+|----------------|------------------------------------------------------------------------------|
+| X Sensitivity  | X axis eyes sensitivity                                                      |
+| Y Sensitivity  | Y axis eyes sensitivity                                                      |
+| Swap Eyes      | Available when two webcams are detected. Swaps the webcam input for the eyes |
+| Toggle Debug   | Displays the camera feed with bounding boxes                                 |
+
+## Testing
+
+In order to run tests, execute the following command from the project root directory:
+
+```
+npm run test
+```
+
+## Deployment
+
+The deployment process will have to be updated following the changes of moving the project to ReactJS. Once this would be done, this section will be updated accordingly.
