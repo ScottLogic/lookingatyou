@@ -8,21 +8,31 @@ interface IMenuItemState {
 }
 
 interface ITextBoxMenuItemProps extends IMenuItemProps {
-    onInputChange: { (text: string): void }
+    onInputChange: { (text: string): void },
+    default: string
 }
 export class TextBoxMenuItem extends React.Component<ITextBoxMenuItemProps> {
     render() {
-        var textbox = <input type="textbox" onChange={(event) => this.props.onInputChange(event.target.value)}></input> as unknown as HTMLInputElement;
+        var textbox = <input
+            type="textbox"
+            defaultValue={this.props.default}
+            onChange={(event) => this.props.onInputChange(event.target.value)}>
+        </input> as unknown as HTMLInputElement;
         return <InputMenuItemDiv name={this.props.name} input={textbox} />
     }
 }
 
 interface ICheckBoxMenuItemProps extends IMenuItemProps {
-    onInputChange: { (checked: boolean): void }
+    onInputChange: { (checked: boolean): void },
+    default: boolean
 }
 export class CheckBoxMenuItem extends React.Component<ICheckBoxMenuItemProps> {
     render() {
-        var checkbox = <input type="checkbox" onChange={(event) => this.props.onInputChange(event.target.checked)}></input> as unknown as HTMLInputElement;
+        var checkbox = <input
+            type="checkbox"
+            defaultChecked={this.props.default}
+            onChange={(event) => this.props.onInputChange(event.target.checked)}>
+        </input> as unknown as HTMLInputElement;
         return <InputMenuItemDiv name={this.props.name} input={checkbox} />
     }
 }
@@ -58,12 +68,12 @@ export class CanvasMenuItem extends React.Component<IMenuItemProps> {
     }
     componentDidMount() {
         this.ctx = this.canvasRef.current.getContext('2d')
-        this.ctx.lineWidth = 10;
+        this.ctx.lineWidth = 5;
         this.ctx.strokeStyle = "red";
         this.canvasWidth = this.canvasRef.current.width;
         this.canvasHeight = this.canvasRef.current.height;
     }
-    drawImage(image : CanvasImageSource, bbox: { x: number, y: number, width: number, height: number }) {
+    drawImage(image: CanvasImageSource, bbox?: { x: number, y: number, width: number, height: number }) {
         this.ctx.drawImage(image, 0, 0, this.canvasWidth, this.canvasHeight);
         if (bbox !== undefined) {
             this.ctx.beginPath();

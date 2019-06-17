@@ -1,7 +1,7 @@
 import React from 'react';
 import Eye from './components/eye/Eye';
 import './App.css';
-import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItem';
+import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItems';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
 
 const eyes = {
@@ -51,7 +51,7 @@ class App extends React.Component<IAppProps, IAppState> {
       img.src = "https://www.w3schools.com/howto/img_forest.jpg";
       img.onload = function () {
         ldr.current.drawImage(img, { x: 5, y: 5, width: 200, height: 100 });
-        rdr.current.drawImage(img, { x: 5, y: 5, width: 200, height: 100 });
+        rdr.current.drawImage(img);
       }
     }
 
@@ -87,11 +87,39 @@ class App extends React.Component<IAppProps, IAppState> {
           )
         })}
         <ConfigMenu width="14em" timerLength={1000}>
-          <TextBoxMenuItem name="X Sensitivity" onInputChange={((text: string) => alert("X Sensitivity = " + text))} />
-          <TextBoxMenuItem name="Y Sensitivity" onInputChange={((text: string) => alert("Y Sensitivity = " + text))} />
-          <CheckBoxMenuItem name="Toggle Debug" onInputChange={((checked: boolean) => alert("Debug " + (checked ? "enabled" : "disabled")))} />
-          <CanvasMenuItem name="Left Camera" ref={this.leftDebugRef} />
-          <CanvasMenuItem name="Right Camera" ref={this.rightDebugRef} />
+          <TextBoxMenuItem
+            name="X Sensitivity"
+            default={"100"}
+            onInputChange={((text: string) => alert("X Sensitivity = " + text))}
+          />
+          <TextBoxMenuItem
+            name="Y Sensitivity"
+            default={"100"}
+            onInputChange={((text: string) => alert("Y Sensitivity = " + text))}
+          />
+          <TextBoxMenuItem
+            name="FPS"
+            default={"5"}
+            onInputChange={((text: string) => alert("Y Sensitivity = " + text))}
+          />
+          <CheckBoxMenuItem
+            name="Swap eyes"
+            default={false}
+            onInputChange={((checked: boolean) => alert(checked ? "Do swap eyes" : "Don't swap eyes"))}
+          />
+          <CheckBoxMenuItem
+            name="Toggle Debug"
+            default={false}
+            onInputChange={(checked: boolean) => alert("Debug " + (checked ? "enabled" : "disabled"))}
+          />
+          <CanvasMenuItem
+            name="Left Camera"
+            ref={this.leftDebugRef}
+          />
+          <CanvasMenuItem
+            name="Right Camera"
+            ref={this.rightDebugRef}
+          />
         </ConfigMenu>
       </div>
     );
