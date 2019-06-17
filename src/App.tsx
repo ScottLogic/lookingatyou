@@ -1,8 +1,8 @@
 import React from 'react';
 import Eye from './components/eye/Eye';
 import './App.css';
-import { TextBoxMenuItem, CheckBoxMenuItem } from './components/ConfigMenu/MenuItem';
-import { ConfigMenu, example } from './components/ConfigMenu/ConfigMenu';
+import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItem';
+import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
 
 const eyes = {
   LEFT: 'left',
@@ -34,12 +34,28 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
+
+    this.leftDebugRef = React.createRef();
+    this.rightDebugRef = React.createRef();
   }
 
   componentDidMount() {
     //TODO: does not update the dimensions when maximizing or minimazing the window
     // also has problems when opening the dev console
     window.addEventListener("resize", this.updateDimensions);
+
+    { // to test canvas functionality
+      var ldr: React.RefObject<CanvasMenuItem> = this.leftDebugRef;
+      var rdr: React.RefObject<CanvasMenuItem> = this.rightDebugRef;
+      var img: HTMLImageElement = new Image();
+      img.src = "https://www.w3schools.com/howto/img_forest.jpg";
+      img.onload = function () {
+        ldr.current.drawImage(img, { x: 5, y: 5, width: 200, height: 100 });
+        rdr.current.drawImage(img, { x: 5, y: 5, width: 200, height: 100 });
+      }
+    }
+
+
   }
 
   componentWillUnmount() {
@@ -53,6 +69,8 @@ class App extends React.Component<IAppProps, IAppState> {
     });
   }
 
+  private leftDebugRef: React.RefObject<CanvasMenuItem>;
+  private rightDebugRef: React.RefObject<CanvasMenuItem>;
   render() {
     return (
       <div className="App">
@@ -65,9 +83,16 @@ class App extends React.Component<IAppProps, IAppState> {
               height={this.state.height}
               {...colours}
             />
+
           )
         })}
-        {example()}
+        <ConfigMenu width="14em" timerLength={1000}>
+          <TextBoxMenuItem name="X Sensitivity" onInputChange={((text: string) => alert("X Sensitivity = " + text))} />
+          <TextBoxMenuItem name="Y Sensitivity" onInputChange={((text: string) => alert("Y Sensitivity = " + text))} />
+          <CheckBoxMenuItem name="Toggle Debug" onInputChange={((checked: boolean) => alert("Debug " + (checked ? "enabled" : "disabled")))} />
+          <CanvasMenuItem name="Left Camera" ref={this.leftDebugRef} />
+          <CanvasMenuItem name="Right Camera" ref={this.rightDebugRef} />
+        </ConfigMenu>
       </div>
     );
   }

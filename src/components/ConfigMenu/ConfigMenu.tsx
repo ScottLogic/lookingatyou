@@ -1,6 +1,5 @@
 import React from 'react';
 import './ConfigMenu.css';
-import { TextBoxMenuItem, CheckBoxMenuItem } from './MenuItem'
 
 interface IConfigMenuProps {
     width: string,
@@ -17,7 +16,7 @@ export class ConfigMenu extends React.Component<IConfigMenuProps, IConfigMenuSta
         this.state = { left: "0" };
         this.show = this.show.bind(this);
         this.hide = this.hide.bind(this);
-        document.onmousemove = this.show;
+        window.addEventListener("mousemove", this.show);
     }
 
     private isUnderMouse: boolean = false;
@@ -44,12 +43,4 @@ export class ConfigMenu extends React.Component<IConfigMenuProps, IConfigMenuSta
             </div>
         );
     }
-}
-export function example(): React.Component {
-    return (
-        <ConfigMenu width="14em" timerLength={1000}>
-            <TextBoxMenuItem name="textbox" onInputChange={((text: string) => alert("Text: " + text))}/>
-            <CheckBoxMenuItem name="checkbox" onInputChange={((checked: boolean) => alert("Checked: " + checked))}/>
-        </ConfigMenu>
-    ) as unknown as React.Component;
 }
