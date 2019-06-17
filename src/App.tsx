@@ -27,8 +27,8 @@ class App extends React.Component<IAppProps, IAppState> {
     super(props);
 
     this.state = {
-      width: window.innerWidth,
-      height: window.innerHeight,
+      width: this.props.environment.innerWidth,
+      height: this.props.environment.innerHeight,
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
