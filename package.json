@@ -12,10 +12,7 @@
   },
   "dependencies": {
     "d3-selection": "^1.4.0",
-<<<<<<< HEAD
     "package.json": "^2.0.1",
-=======
->>>>>>> 0e321fa3d0d1d4f4bee9d2c252d9b4b03aeef262
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1"
