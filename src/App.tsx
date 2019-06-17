@@ -35,11 +35,11 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   componentDidMount() {
-    window.addEventListener("resize", this.updateDimensions);
+    this.props.environment.addEventListener("resize", this.updateDimensions);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensions);
+    this.props.environment.removeEventListener("resize", this.updateDimensions);
   }
 
   updateDimensions() {
