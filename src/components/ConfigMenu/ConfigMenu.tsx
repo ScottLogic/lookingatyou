@@ -48,8 +48,8 @@ export class ConfigMenu extends React.Component<IConfigMenuProps, IConfigMenuSta
 export function example(): React.Component {
     return (
         <ConfigMenu width="14em" timerLength={1000}>
-            <TextBoxMenuItem name="textbox" onInputChange={((text: string) => alert("Text: " + text))}></TextBoxMenuItem>
-            <CheckBoxMenuItem name="checkbox" onInputChange={((checked: boolean) => alert("Checked: " + checked))}></CheckBoxMenuItem>
+            <TextBoxMenuItem name="textbox" onInputChange={((text: string) => alert("Text: " + text))}/>
+            <CheckBoxMenuItem name="checkbox" onInputChange={((checked: boolean) => alert("Checked: " + checked))}/>
         </ConfigMenu>
     ) as unknown as React.Component;
 }

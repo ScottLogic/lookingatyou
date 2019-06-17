@@ -13,14 +13,14 @@ interface ICheckBoxMenuItemProps extends IMenuItemProps {
 export class TextBoxMenuItem extends React.Component<ITextBoxMenuItemProps> {
     render() {
         var textbox = <input type="textbox" onChange={(event) => this.props.onInputChange(event.target.value)}></input> as unknown as HTMLInputElement;
-        return <MenuItemDiv name={this.props.name} input={textbox}></MenuItemDiv>
+        return <MenuItemDiv name={this.props.name} input={textbox}/>
     }
 }
 
 export class CheckBoxMenuItem extends React.Component<ICheckBoxMenuItemProps> {
     render() {
         var checkbox = <input type="checkbox" onChange={(event) => this.props.onInputChange(event.target.checked)}></input> as unknown as HTMLInputElement;
-        return <MenuItemDiv name={this.props.name} input={checkbox}></MenuItemDiv>
+        return <MenuItemDiv name={this.props.name} input={checkbox}/>
     }
 }
 

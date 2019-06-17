@@ -54,7 +54,7 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   render() {
-    //return example();
+    return example();
     return (
       <div className="App">
         {Object.values(eyes).map((eye, key) => {
