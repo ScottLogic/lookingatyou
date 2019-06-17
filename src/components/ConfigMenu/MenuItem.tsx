@@ -3,28 +3,28 @@ import React from 'react';
 interface IMenuItemProps {
     name: string
 }
+
 interface ITextBoxMenuItemProps extends IMenuItemProps {
     onInputChange: { (text: string): void }
 }
-interface ICheckBoxMenuItemProps extends IMenuItemProps {
-    onInputChange: { (checked: boolean): void }
-}
-
 export class TextBoxMenuItem extends React.Component<ITextBoxMenuItemProps> {
     render() {
         var textbox = <input type="textbox" onChange={(event) => this.props.onInputChange(event.target.value)}></input> as unknown as HTMLInputElement;
-        return <MenuItemDiv name={this.props.name} input={textbox}/>
+        return <InputMenuItemDiv name={this.props.name} input={textbox} />
     }
 }
 
+interface ICheckBoxMenuItemProps extends IMenuItemProps {
+    onInputChange: { (checked: boolean): void }
+}
 export class CheckBoxMenuItem extends React.Component<ICheckBoxMenuItemProps> {
     render() {
         var checkbox = <input type="checkbox" onChange={(event) => this.props.onInputChange(event.target.checked)}></input> as unknown as HTMLInputElement;
-        return <MenuItemDiv name={this.props.name} input={checkbox}/>
+        return <InputMenuItemDiv name={this.props.name} input={checkbox} />
     }
 }
 
-class MenuItemDiv extends React.Component<{ name: string, input: HTMLInputElement }> {
+class InputMenuItemDiv extends React.Component<{ name: string, input: HTMLInputElement }> {
     render() {
         return (
             <div>
@@ -34,3 +34,20 @@ class MenuItemDiv extends React.Component<{ name: string, input: HTMLInputElemen
         ) as unknown as HTMLDivElement;
     }
 }
+
+interface ICanvasMenuItemProps extends IMenuItemProps {
+    canvas: HTMLCanvasElement
+}
+/*
+export class CanvasMenuItem extends React.Component<ICanvasMenuItemProps> {
+    render() {
+        return (
+            <div>
+                <label>{this.props.name}</label>
+                <br/>
+                {this.props.canvas}
+            </div>
+        )
+    }
+}
+*/

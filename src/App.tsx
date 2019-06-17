@@ -54,7 +54,6 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   render() {
-    return example();
     return (
       <div className="App">
         {Object.values(eyes).map((eye, key) => {
@@ -68,6 +67,7 @@ class App extends React.Component<IAppProps, IAppState> {
             />
           )
         })}
+        {example()}
       </div>
     );
   }
