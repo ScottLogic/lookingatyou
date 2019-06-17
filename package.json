@@ -1,26 +1,40 @@
 {
   "name": "lookingatyou",
   "version": "0.1.0",
-  "description": "",
-  "main": "index.html",
-  "dependencies": {},
+  "private": true,
   "devDependencies": {
-    "jest": "^24.8.0"
+    "@types/jest": "24.0.14",
+    "typescript": "3.5.1",
+    "@types/d3-selection": "^1.4.1",
+    "@types/node": "12.0.8",
+    "@types/react": "16.8.19",
+    "@types/react-dom": "16.8.4"
+  },
+  "dependencies": {
+    "d3-selection": "^1.4.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "3.0.1"
   },
   "scripts": {
-    "test": "jest"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
-  "devDependencies": {
-    "jest": "^24.8.0"
+  "eslintConfig": {
+    "extends": "react-app"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ScottLogic/lookingatyou.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ScottLogic/lookingatyou/issues"
-  },
-  "homepage": "https://github.com/ScottLogic/lookingatyou#readme"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }

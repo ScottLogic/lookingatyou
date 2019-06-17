@@ -26,6 +26,7 @@
 * [Prerequisites](#prerequisites)
   * [General](#general)
   * [Test](#test)
+* [Running the project (local)](#running-the-project-locally)
 * [Usage](#usage)
 * [Testing](#testing)
 * [Deployment](#deployment)
@@ -42,7 +43,7 @@ Research notes can be found [here](https://docs.google.com/document/d/1qzaegY8RV
 
 ### General
 
-The only requirement for the project to run is the access to the webcam. 
+In order to build and run the project, a package manager like npm or yarn is required.
 
 ### Tests
 
@@ -54,15 +55,24 @@ npm install
 
 which will install any dependencies of the project based off of the package.json file.
 
+## Running the project locally
+
+Install the dependencies:
+```
+npm install
+```
+
+To run the project locally, run the following command:
+```
+npm start
+```
+
+This will start the node server and you can access the project on [http://localhost:3000](http://localhost:3000)
+
+
 ## Usage
 
-Looking At You is a client side web application and does not require a server side to be run. In order to run the application, open the following file in the web browser:
-
-```
-src/index.html
-```
-
-You will be asked for the permission to access the webcam - click 'Allow'.
+When you first access the application, you will be asked for the permission to access the webcam - click 'Allow'.
 
 When mouse movement is detected on the screen, the configuration menu will open where certain settings can be adjusted. Following options are currently available:
 
@@ -83,16 +93,4 @@ npm run test
 
 ## Deployment
 
-The project is automatically deployed to AWS S3 bucket on merges to Master branch through CircleCI. The project can be accessed [here](https://looking-at-you.s3.amazonaws.com/index.html).
-
-In order to manually deploy the project to AWS S3 bucket first install aws cli:
-
-```
-pip install awscli --upgrade --user
-```
-
-Once the aws cli is installed, execute the following command to sync the src files to the bucket:
-
-```
-aws s3 sync ./src/ s3://<bucket-name>/ --delete
-```
+The deployment process will have to be updated following the changes of moving the project to ReactJS. Once this would be done, this section will be updated accordingly.
