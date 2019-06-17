@@ -1,7 +1,6 @@
 import React from 'react';
 import { select } from 'd3-selection';
 
-
 interface IEyeProps {
     class: string,
     width: number,
@@ -20,8 +19,8 @@ interface IEyeState {
 }
 
 export default class Eye extends React.Component<IEyeProps, IEyeState> {
-    svg: any;
-    // svg!: Selection<SVGGElement, {}, HTMLElement, any> | Selection<SVGSVGElement, {}, HTMLElement, any> | null;
+    svg: any
+    // svg!: Selection<SVGGElement | null, {}, HTMLElement, undefined> | Selection<SVGGElement | null, {}, null, undefined>;
     constructor(props: IEyeProps) {
         super(props);
 
@@ -44,35 +43,31 @@ export default class Eye extends React.Component<IEyeProps, IEyeState> {
     }
 
     renderEye() {
-        // clean the svg
-        if (this.svg !== null) {
-            this.svg.selectAll('*').remove();
+        this.svg.selectAll("*").remove();
+        // set the svg size
+        let svg = this.svg
+            .attr("width", this.props.width)
+            .attr("height", this.props.height)
+            .append("g")
+            .attr("transform", "translate(" + (this.props.width / 2) + "," + (this.props.height / 2) + ")")
 
-            // set the svg size
-            let svg = this.svg
-                .attr("width", this.props.width)
-                .attr("height", this.props.height)
-                .append("g")
-                .attr("transform", "translate(" + (this.props.width / 2) + "," + (this.props.height / 2) + ")")
-
-            // create sclera
-            svg.append("circle")
-                .attr("class", this.props.class + "Sclera")
-                .attr("r", this.props.width / this.state.scleraSize)
-                .style("fill", this.props.scleraColor)
-            var leftInner = svg.append("g").attr("class", "leftInner");
-            // create iris
-            leftInner.append("circle")
-                .attr("class", this.props.class + "Iris")
-                .attr("r", this.props.width / this.state.irisSize)
-                .style("fill", this.props.irisColor)
-            // create pupil
-            leftInner.append("circle")
-                .attr("class", this.props.class + "Pupil")
-                .attr("r", this.props.width / this.state.pupilSize)
-                .style("fill", this.props.pupilColor)
-            this.svg = svg;
-        }
+        // create sclera
+        svg.append("circle")
+            .attr("class", this.props.class + "Sclera")
+            .attr("r", this.props.width / this.state.scleraSize)
+            .style("fill", this.props.scleraColor)
+        var leftInner = svg.append("g").attr("class", "leftInner");
+        // create iris
+        leftInner.append("circle")
+            .attr("class", this.props.class + "Iris")
+            .attr("r", this.props.width / this.state.irisSize)
+            .style("fill", this.props.irisColor)
+        // create pupil
+        leftInner.append("circle")
+            .attr("class", this.props.class + "Pupil")
+            .attr("r", this.props.width / this.state.pupilSize)
+            .style("fill", this.props.pupilColor)
+        this.svg = svg;
     }
 
     render() {

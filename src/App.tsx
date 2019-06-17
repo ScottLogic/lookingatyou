@@ -65,7 +65,6 @@ class App extends React.Component<IAppProps, IAppState> {
             />
           )
         })}
-        <input />
       </div>
     );
   }
