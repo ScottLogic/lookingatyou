@@ -35,8 +35,6 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   componentDidMount() {
-    //TODO: does not update the dimensions when maximizing or minimazing the window
-    // also has problems when opening the dev console
     window.addEventListener("resize", this.updateDimensions);
   }
 
