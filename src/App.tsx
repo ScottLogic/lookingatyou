@@ -20,8 +20,12 @@ interface IAppState {
   height: number,
 }
 
-class App extends React.Component<{}, IAppState> {
-  constructor(props: {}) {
+interface IAppProps {
+  environment: Window,
+}
+
+class App extends React.Component<IAppProps, IAppState> {
+  constructor(props: IAppProps) {
     super(props);
 
     this.state = {
@@ -44,8 +48,8 @@ class App extends React.Component<{}, IAppState> {
 
   updateDimensions() {
     this.setState({
-      height: window.innerHeight,
-      width: window.innerWidth
+      height: this.props.environment.innerHeight,
+      width: this.props.environment.innerWidth,
     });
   }
 

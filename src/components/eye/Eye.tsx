@@ -1,7 +1,6 @@
 import React from 'react';
 import { select } from 'd3-selection';
 
-
 interface IEyeProps {
     class: string,
     width: number,
@@ -14,15 +13,14 @@ interface IEyeProps {
 interface IEyeState {
     x_pos: number,
     y_pos: number,
-    width: number,
-    height: number,
     scleraSize: number,
     irisSize: number,
     pupilSize: number,
 }
 
 export default class Eye extends React.Component<IEyeProps, IEyeState> {
-    svg: any;
+    svg: any
+    // svg!: Selection<SVGGElement | null, {}, HTMLElement, undefined> | Selection<SVGGElement | null, {}, null, undefined>;
     constructor(props: IEyeProps) {
         super(props);
 
@@ -30,18 +28,13 @@ export default class Eye extends React.Component<IEyeProps, IEyeState> {
             // x and y pos to be used in moving the eyes
             x_pos: 0,
             y_pos: 0,
-            width: this.props.width,
-            height: this.props.height,
             scleraSize: 4,
             irisSize: 8,
             pupilSize: 16,
         }
     }
 
-    componentWillReceiveProps() {
-        this.setState({
-            width: this.props.width
-        })
+    componentDidUpdate() {
         this.renderEye();
     }
 
@@ -50,9 +43,7 @@ export default class Eye extends React.Component<IEyeProps, IEyeState> {
     }
 
     renderEye() {
-        // clean the svg
-        this.svg.selectAll('*').remove();
-
+        this.svg.selectAll("*").remove();
         // set the svg size
         let svg = this.svg
             .attr("width", this.props.width)
