@@ -51,16 +51,6 @@ class App extends React.Component<IAppProps, IAppState> {
 
   componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
-
-    // Testing drawing on canvas
-    var that: App = this;
-    var img: HTMLImageElement = new Image();
-    img.src = "https://www.w3schools.com/howto/img_forest.jpg";
-    img.onload = function () {
-      that.leftDebugRef.current!.drawImage(img, { x: 5, y: 5, width: 200, height: 100 });
-      that.rightDebugRef.current!.drawImage(img);
-    }
-
     this.getWebcamDevices();
   }
 
@@ -122,7 +112,7 @@ class App extends React.Component<IAppProps, IAppState> {
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
             name={"X Sensitivity"}
-            default={localStorage.getItem("X Sensitivity") || "2"}
+            default={localStorage.getItem("X Sensitivity") || "1"}
             onInputChange={(text: string) => {}} />
           <TextBoxMenuItem
             name={"Y Sensitivity"}
@@ -134,11 +124,11 @@ class App extends React.Component<IAppProps, IAppState> {
             onInputChange={(text: string) => {}} />
           <CheckBoxMenuItem
             name={"Swap Eyes"}
-            default={"true" === (localStorage.getItem("Swap Eyes" || "false"))}
+            default={"true" === (localStorage.getItem("Swap Eyes"))}
             onInputChange={(checked: boolean) => {}} />
           <CheckBoxMenuItem
             name={"Toggle Debug"}
-            default={"true" === (localStorage.getItem("Toggle Debug" || "false"))}
+            default={"true" === (localStorage.getItem("Toggle Debug"))}
             onInputChange={(checked: boolean) => {}} />
           <CanvasMenuItem
             name={"Left Camera"}
