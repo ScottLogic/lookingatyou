@@ -33,6 +33,9 @@ jobs:
           command: sudo apt-get -y install nodejs
       - run: npm --version
       - run:
+          name: Install dependencies
+          command: npm install
+      - run:
           name: Build project
           command: npm run build
       - run:
