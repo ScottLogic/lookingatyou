@@ -1,7 +1,7 @@
 import React from 'react';
 import Eye from './components/eye/Eye';
 import './App.css';
-import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItems';
+import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
 
 const eyes = {
