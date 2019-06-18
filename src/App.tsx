@@ -1,5 +1,7 @@
 import React from 'react';
 import Eye from './components/eye/Eye';
+import { TextBoxMenuItem, CheckBoxMenuItem } from './components/ConfigMenu/MenuItem';
+import { ConfigMenu, Example } from './components/ConfigMenu/ConfigMenu';
 import './App.css';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
 
@@ -102,6 +104,7 @@ class App extends React.Component<IAppProps, IAppState> {
               />
             )
           })}
+          <Example/>>
         </div>
       </div>
     );
