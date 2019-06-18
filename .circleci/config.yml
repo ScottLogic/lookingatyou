@@ -27,8 +27,9 @@ jobs:
       - run: sudo pip install awscli --upgrade
       - run: aws --version
       - run:
-          name: Install npm
-          command: sudo apt-get -y install npm
+          name: Install Node.js and npm
+          command: sudo apt-get -y install nodejs npm
+      - run: npm --version
       - run:
           name: Build project
           command: npm run build
