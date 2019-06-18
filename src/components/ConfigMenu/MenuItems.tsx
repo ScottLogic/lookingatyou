@@ -69,6 +69,8 @@ export class CanvasMenuItem extends React.Component<IMenuItemProps> {
             ctx.drawImage(image, 0, 0);
             if (bbox !== undefined) {
                 ctx.beginPath();
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = "red";
                 ctx.rect(bbox.x, bbox.y, bbox.width, bbox.height);
                 ctx.stroke();
             }
