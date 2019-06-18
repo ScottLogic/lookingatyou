@@ -27,6 +27,9 @@ interface IAppProps {
 }
 
 class App extends React.Component<IAppProps, IAppState> {
+  private leftDebugRef: React.RefObject<CanvasMenuItem>;
+  private rightDebugRef: React.RefObject<CanvasMenuItem>;
+  private isLoading: boolean = false;
   constructor(props: IAppProps) {
     super(props);
 
@@ -45,6 +48,8 @@ class App extends React.Component<IAppProps, IAppState> {
 
   componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
+    if (this.isLoading)
+      return;
 
     // Testing drawing on canvas
     var that: App = this;
@@ -68,53 +73,54 @@ class App extends React.Component<IAppProps, IAppState> {
     });
   }
 
-  private leftDebugRef: React.RefObject<CanvasMenuItem>;
-  private rightDebugRef: React.RefObject<CanvasMenuItem>;
   render() {
-    return (
-      <div className="App">
-        {Object.values(eyes).map((eye, key) => {
-          return (
-            <Eye
-              class={eye}
-              key={key}
-              width={this.state.width / 2}
-              height={this.state.height}
-              {...colours}
-            />
+    if (this.isLoading)
+      return (<div className={"loading-spinner"}></div>)
+    else
+      return (
+        <div className="App">
+          {Object.values(eyes).map((eye, key) => {
+            return (
+              <Eye
+                class={eye}
+                key={key}
+                width={this.state.width / 2}
+                height={this.state.height}
+                {...colours}
+              />
 
-          )
-        })}
-        <ConfigMenu width="14em" timerLength={1000}>
-          <TextBoxMenuItem
-            name={"X Sensitivity"}
-            default={localStorage.getItem("X Sensitivity") || "2"}
-            onInputChange={(text: string) => {}} />
-          <TextBoxMenuItem
-            name={"Y Sensitivity"}
-            default={localStorage.getItem("Y Sensitivity") || "1"}
-            onInputChange={(text: string) => {}} />
-          <TextBoxMenuItem
-            name={"FPS"}
-            default={localStorage.getItem("FPS") || "5"}
-            onInputChange={(text: string) => {}} />
-          <CheckBoxMenuItem
-            name={"Swap Eyes"}
-            default={"true" === (localStorage.getItem("Swap Eyes" || "false"))}
-            onInputChange={(checked: boolean) => {}} />
-          <CheckBoxMenuItem
-            name={"Toggle Debug"}
-            default={"true" === (localStorage.getItem("Toggle Debug" || "false"))}
-            onInputChange={(checked: boolean) => {}} />
-          <CanvasMenuItem
-            name={"Left Camera"}
-            ref={this.leftDebugRef} />
-          <CanvasMenuItem
-            name={"Right Camera"}
-            ref={this.rightDebugRef} />
-        </ConfigMenu>
-      </div>
-    );
+            )
+          })}
+          <ConfigMenu width="14em" timerLength={1000}>
+            <TextBoxMenuItem
+              name={"X Sensitivity"}
+              default={localStorage.getItem("X Sensitivity") || "2"}
+              onInputChange={(text: string) => { }} />
+            <TextBoxMenuItem
+              name={"Y Sensitivity"}
+              default={localStorage.getItem("Y Sensitivity") || "1"}
+              onInputChange={(text: string) => { }} />
+            <TextBoxMenuItem
+              name={"FPS"}
+              default={localStorage.getItem("FPS") || "5"}
+              onInputChange={(text: string) => { }} />
+            <CheckBoxMenuItem
+              name={"Swap Eyes"}
+              default={"true" === (localStorage.getItem("Swap Eyes" || "false"))}
+              onInputChange={(checked: boolean) => { }} />
+            <CheckBoxMenuItem
+              name={"Toggle Debug"}
+              default={"true" === (localStorage.getItem("Toggle Debug" || "false"))}
+              onInputChange={(checked: boolean) => { }} />
+            <CanvasMenuItem
+              name={"Left Camera"}
+              ref={this.leftDebugRef} />
+            <CanvasMenuItem
+              name={"Right Camera"}
+              ref={this.rightDebugRef} />
+          </ConfigMenu>
+        </div>
+      );
   }
 }
 
