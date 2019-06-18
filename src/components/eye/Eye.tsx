@@ -28,7 +28,7 @@ export default class Eye extends React.Component<IEyeProps, IEyeState> {
 
     renderCircle(radius : number, name : string, colour: string){
         return(
-        <circle 
+        <circle
             r={radius}
             className={name}
             fill={colour}
