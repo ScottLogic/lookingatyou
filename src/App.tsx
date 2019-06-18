@@ -1,8 +1,8 @@
 import React from 'react';
 import Eye from './components/eye/Eye';
-import './App.css';
 import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
+import './App.css';
 
 const eyes = {
   LEFT: 'left',
@@ -18,8 +18,8 @@ const colours = {
 interface IAppState {
   width: number,
   height: number,
-  leftDebugRef : React.RefObject<CanvasMenuItem>,
-  rightDebugRef : React.RefObject<CanvasMenuItem>,
+  leftDebugRef: React.RefObject<CanvasMenuItem>,
+  rightDebugRef: React.RefObject<CanvasMenuItem>,
 }
 
 interface IAppProps {
@@ -33,8 +33,8 @@ class App extends React.Component<IAppProps, IAppState> {
     this.state = {
       width: window.innerWidth,
       height: window.innerHeight,
-      leftDebugRef : React.createRef(),
-      rightDebugRef : React.createRef()
+      leftDebugRef: React.createRef(),
+      rightDebugRef: React.createRef()
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -49,7 +49,7 @@ class App extends React.Component<IAppProps, IAppState> {
     window.addEventListener("resize", this.updateDimensions);
 
     { // TESTING CANVAS FUNCTIONALITY
-      var that : App = this;
+      var that: App = this;
       var img: HTMLImageElement = new Image();
       img.src = "https://www.w3schools.com/howto/img_forest.jpg";
       img.onload = function () {
@@ -93,29 +93,29 @@ class App extends React.Component<IAppProps, IAppState> {
           <TextBoxMenuItem
             name="X Sensitivity"
             default={"100"}
-            onInputChange={((text: string) => alert("X Sensitivity = " + text))}/>
+            onInputChange={((text: string) => alert("X Sensitivity = " + text))} />
           <TextBoxMenuItem
             name="Y Sensitivity"
             default={"100"}
-            onInputChange={((text: string) => alert("Y Sensitivity = " + text))}/>
+            onInputChange={((text: string) => alert("Y Sensitivity = " + text))} />
           <TextBoxMenuItem
             name="FPS"
             default={"5"}
-            onInputChange={((text: string) => alert("Y Sensitivity = " + text))}/>
+            onInputChange={((text: string) => alert("Y Sensitivity = " + text))} />
           <CheckBoxMenuItem
             name="Swap eyes"
             default={false}
-            onInputChange={((checked: boolean) => alert(checked ? "Do swap eyes" : "Don't swap eyes"))}/>
+            onInputChange={((checked: boolean) => alert(checked ? "Do swap eyes" : "Don't swap eyes"))} />
           <CheckBoxMenuItem
             name="Toggle Debug"
             default={false}
-            onInputChange={(checked: boolean) => alert("Debug " + (checked ? "enabled" : "disabled"))}/>
+            onInputChange={(checked: boolean) => alert("Debug " + (checked ? "enabled" : "disabled"))} />
           <CanvasMenuItem
             name="Left Camera"
-            ref={this.leftDebugRef}/>
+            ref={this.leftDebugRef} />
           <CanvasMenuItem
             name="Right Camera"
-            ref={this.rightDebugRef}/>
+            ref={this.rightDebugRef} />
         </ConfigMenu>
       </div>
     );
