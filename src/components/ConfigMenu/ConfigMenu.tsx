@@ -1,10 +1,10 @@
-import React, { useState, ReactNode, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import './ConfigMenu.css';
 
 interface IConfigMenuProps {
     width: string,
     timerLength: number,
-    children: ReactNode
+    children: React.ReactNode
 }
 
 export function ConfigMenu(props: IConfigMenuProps) {

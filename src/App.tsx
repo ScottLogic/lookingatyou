@@ -87,30 +87,30 @@ class App extends React.Component<IAppProps, IAppState> {
         })}
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
-            name="X Sensitivity"
-            default={"100"}
-            onInputChange={((text: string) => alert("X Sensitivity = " + text))} />
+            name={"X Sensitivity"}
+            default={localStorage.getItem("X Sensitivity") || "2"}
+            onInputChange={(text: string) => {}} />
           <TextBoxMenuItem
-            name="Y Sensitivity"
-            default={"100"}
-            onInputChange={((text: string) => alert("Y Sensitivity = " + text))} />
+            name={"Y Sensitivity"}
+            default={localStorage.getItem("Y Sensitivity") || "1"}
+            onInputChange={(text: string) => {}} />
           <TextBoxMenuItem
-            name="FPS"
-            default={"5"}
-            onInputChange={((text: string) => alert("Y Sensitivity = " + text))} />
+            name={"FPS"}
+            default={localStorage.getItem("FPS") || "5"}
+            onInputChange={(text: string) => {}} />
           <CheckBoxMenuItem
-            name="Swap eyes"
-            default={false}
-            onInputChange={((checked: boolean) => alert(checked ? "Do swap eyes" : "Don't swap eyes"))} />
+            name={"Swap Eyes"}
+            default={"true" === (localStorage.getItem("Swap Eyes" || "false"))}
+            onInputChange={(checked: boolean) => {}} />
           <CheckBoxMenuItem
-            name="Toggle Debug"
-            default={false}
-            onInputChange={(checked: boolean) => alert("Debug " + (checked ? "enabled" : "disabled"))} />
+            name={"Toggle Debug"}
+            default={"true" === (localStorage.getItem("Toggle Debug" || "false"))}
+            onInputChange={(checked: boolean) => {}} />
           <CanvasMenuItem
-            name="Left Camera"
+            name={"Left Camera"}
             ref={this.leftDebugRef} />
           <CanvasMenuItem
-            name="Right Camera"
+            name={"Right Camera"}
             ref={this.rightDebugRef} />
         </ConfigMenu>
       </div>
