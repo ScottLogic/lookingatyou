@@ -38,16 +38,3 @@ class InputMenuItemDiv extends React.Component<{ name: string, input: HTMLInputE
 interface ICanvasMenuItemProps extends IMenuItemProps {
     canvas: HTMLCanvasElement
 }
-/*
-export class CanvasMenuItem extends React.Component<ICanvasMenuItemProps> {
-    render() {
-        return (
-            <div>
-                <label>{this.props.name}</label>
-                <br/>
-                {this.props.canvas}
-            </div>
-        )
-    }
-}
-*/
