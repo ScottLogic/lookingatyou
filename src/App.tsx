@@ -29,21 +29,19 @@ class App extends React.Component<IAppProps, IAppState> {
     super(props);
 
     this.state = {
-      width: window.innerWidth,
-      height: window.innerHeight,
+      width: this.props.environment.innerWidth,
+      height: this.props.environment.innerHeight,
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
   }
 
   componentDidMount() {
-    //TODO: does not update the dimensions when maximizing or minimazing the window
-    // also has problems when opening the dev console
-    window.addEventListener("resize", this.updateDimensions);
+    this.props.environment.addEventListener("resize", this.updateDimensions);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensions);
+    this.props.environment.removeEventListener("resize", this.updateDimensions);
   }
 
   updateDimensions() {
