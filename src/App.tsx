@@ -53,7 +53,7 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   async getWebcamDevices() {
-    let devices = await navigator.mediaDevices.enumerateDevices()
+    let devices = await navigator.mediaDevices.enumerateDevices();
     devices = devices.filter(device => device.kind === videoinput);
     this.setState({
       webcams: devices
@@ -72,7 +72,7 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   onUserMediaError() {
-    this.setState({ eyesDisplayed: false })
+    this.setState({ eyesDisplayed: false });
   }
 
   render() {
