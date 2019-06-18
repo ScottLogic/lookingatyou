@@ -13,9 +13,9 @@ const WebcamFeed = (props: IWebcamFeedProps) => {
 
   async function getWebcam() {
     try {
-      const myStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: props.deviceId } })
+      const myStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: props.deviceId } });
       if (myStream !== undefined) {
-        setStream(myStream)
+        setStream(myStream);
         var streamSettings = myStream.getVideoTracks()[0].getSettings();
         if (streamSettings.height && streamSettings.width) {
           setHeight(streamSettings.height);

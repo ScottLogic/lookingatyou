@@ -54,14 +54,10 @@ class App extends React.Component<IAppProps, IAppState> {
 
   async getWebcamDevices() {
     let devices = await navigator.mediaDevices.enumerateDevices()
-    devices = devices.filter(device => {
-      if (device.kind === videoinput) {
-        return device;
-      }
-    });
+    devices = devices.filter(device => device.kind === videoinput);
     this.setState({
       webcams: devices
-    })
+    });
   }
 
   updateDimensions() {
@@ -73,12 +69,10 @@ class App extends React.Component<IAppProps, IAppState> {
 
   onUserMedia(stream: MediaStream) {
     this.setState({ eyesDisplayed: true });
-    return
   }
 
   onUserMediaError() {
     this.setState({ eyesDisplayed: false })
-    console.log('error');
   }
 
   render() {
