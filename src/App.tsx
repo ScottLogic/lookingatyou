@@ -82,22 +82,6 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   render() {
-    var loadingSpinnerDiv = <div className="loading-spinner"></div>
-    var eyeDiv = (
-      <div className={this.state.eyesDisplayed ? 'container' : 'hidden'}>
-        {Object.values(eyes).map((eye, key) => {
-          return (
-            <Eye
-              class={eye}
-              key={key}
-              width={this.state.width / 2}
-              height={this.state.height}
-              {...colours}
-            />
-          )
-        })}
-      </div>
-    )
     return (
       <div className="App">
         <div className="webcam-feed">
