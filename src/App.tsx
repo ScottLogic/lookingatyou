@@ -113,7 +113,27 @@ class App extends React.Component<IAppProps, IAppState> {
           })}
         </div>
 
-        {this.state.eyesDisplayed ? eyeDiv : loadingSpinnerDiv}
+        {this.state.eyesDisplayed ?
+          (
+            <div className={this.state.eyesDisplayed ? 'container' : 'hidden'}>
+              {Object.values(eyes).map((eye, key) => {
+                return (
+                  <Eye
+                    class={eye}
+                    key={key}
+                    width={this.state.width / 2}
+                    height={this.state.height}
+                    {...colours}
+                  />
+                )
+              })}
+            </div>
+          )
+          :
+          (
+            <div className="loading-spinner"></div>
+          )
+        }
 
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
