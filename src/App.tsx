@@ -12,7 +12,7 @@ const eyes = {
 const colours = {
   scleraColor: "white",
   irisColor: "lightBlue",
-  pupilColor: "black"
+  pupilColor: "black"//
 }
 
 interface IAppState {
