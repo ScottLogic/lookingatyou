@@ -17,7 +17,14 @@ export class ConfigMenu extends React.Component<IConfigMenuProps, IConfigMenuSta
         this.state = { leftPosition: "0px" };
         this.show = this.show.bind(this);
         this.hide = this.hide.bind(this);
+    }
+
+    componentDidMount() {
         window.addEventListener("mousemove", this.show);
+    }
+
+    componentDidUnmount() {
+        window.removeEventListener("mousemove", this.show);
     }
     
     show() {
