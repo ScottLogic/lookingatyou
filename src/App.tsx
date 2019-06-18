@@ -12,7 +12,7 @@ const eyes = {
 const colours = {
   scleraColor: "white",
   irisColor: "lightBlue",
-  pupilColor: "black"//
+  pupilColor: "black"
 }
 
 interface IAppState {
@@ -31,10 +31,10 @@ class App extends React.Component<IAppProps, IAppState> {
     super(props);
 
     this.state = {
-      width: window.innerWidth,
-      height: window.innerHeight,
       leftDebugRef: React.createRef(),
-      rightDebugRef: React.createRef()
+      rightDebugRef: React.createRef(),
+      width: this.props.environment.innerWidth,
+      height: this.props.environment.innerHeight
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -44,25 +44,21 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   componentDidMount() {
-    //TODO: does not update the dimensions when maximizing or minimazing the window
-    // also has problems when opening the dev console
-    window.addEventListener("resize", this.updateDimensions);
+    this.props.environment.addEventListener("resize", this.updateDimensions);
 
-    { // TESTING CANVAS FUNCTIONALITY
-      var that: App = this;
-      var img: HTMLImageElement = new Image();
-      img.src = "https://www.w3schools.com/howto/img_forest.jpg";
-      img.onload = function () {
-        that.leftDebugRef.current!.drawImage(img, { x: 5, y: 5, width: 200, height: 100 });
-        that.rightDebugRef.current!.drawImage(img, { x: 5, y: 5, width: 200, height: 100 });
-      }
+    // Testing drawing on canvas
+    var that: App = this;
+    var img: HTMLImageElement = new Image();
+    img.src = "https://www.w3schools.com/howto/img_forest.jpg";
+    img.onload = function () {
+      that.leftDebugRef.current!.drawImage(img, { x: 5, y: 5, width: 200, height: 100 });
+      that.rightDebugRef.current!.drawImage(img);
     }
-
 
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensions);
+    this.props.environment.removeEventListener("resize", this.updateDimensions);
   }
 
   updateDimensions() {
