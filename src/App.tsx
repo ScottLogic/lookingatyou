@@ -104,7 +104,7 @@ class App extends React.Component<IAppProps, IAppState> {
               />
             )
           })}
-          <Example/>>
+          <Example/>
         </div>
       </div>
     );
