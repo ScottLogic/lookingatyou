@@ -18,6 +18,8 @@ const colours = {
 interface IAppState {
   width: number,
   height: number,
+  leftDebugRef : React.RefObject<CanvasMenuItem>,
+  rightDebugRef : React.RefObject<CanvasMenuItem>,
 }
 
 interface IAppProps {
@@ -31,6 +33,8 @@ class App extends React.Component<IAppProps, IAppState> {
     this.state = {
       width: window.innerWidth,
       height: window.innerHeight,
+      leftDebugRef : React.createRef(),
+      rightDebugRef : React.createRef()
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -45,13 +49,12 @@ class App extends React.Component<IAppProps, IAppState> {
     window.addEventListener("resize", this.updateDimensions);
 
     { // TESTING CANVAS FUNCTIONALITY
-      var ldr: React.RefObject<CanvasMenuItem> = this.leftDebugRef;
-      var rdr: React.RefObject<CanvasMenuItem> = this.rightDebugRef;
+      var that : App = this;
       var img: HTMLImageElement = new Image();
       img.src = "https://www.w3schools.com/howto/img_forest.jpg";
       img.onload = function () {
-        ldr.current.drawImage(img, { x: 5, y: 5, width: 200, height: 100 });
-        rdr.current.drawImage(img);
+        that.leftDebugRef.current!.drawImage(img, { x: 5, y: 5, width: 200, height: 100 });
+        that.rightDebugRef.current!.drawImage(img, { x: 5, y: 5, width: 200, height: 100 });
       }
     }
 

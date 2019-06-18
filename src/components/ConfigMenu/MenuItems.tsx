@@ -50,12 +50,9 @@ class InputMenuItemDiv extends React.Component<{ name: string, input: HTMLInputE
 
 export class CanvasMenuItem extends React.Component<IMenuItemProps> {
     private canvasRef: React.RefObject<HTMLCanvasElement>;
-    private ctx: CanvasRenderingContext2D;
-    private canvasWidth: number;
-    private canvasHeight: number;
     constructor(props: IMenuItemProps) {
         super(props);
-        this.canvasRef = React.createRef();
+        this.canvasRef = React.createRef<HTMLCanvasElement>();
     }
     render() {
         return (
@@ -66,19 +63,15 @@ export class CanvasMenuItem extends React.Component<IMenuItemProps> {
             </div>
         )
     }
-    componentDidMount() {
-        this.ctx = this.canvasRef.current.getContext('2d')
-        this.ctx.lineWidth = 5;
-        this.ctx.strokeStyle = "red";
-        this.canvasWidth = this.canvasRef.current.width;
-        this.canvasHeight = this.canvasRef.current.height;
-    }
     drawImage(image: CanvasImageSource, bbox?: { x: number, y: number, width: number, height: number }) {
-        this.ctx.drawImage(image, 0, 0, this.canvasWidth, this.canvasHeight);
-        if (bbox !== undefined) {
-            this.ctx.beginPath();
-            this.ctx.rect(bbox.x, bbox.y, bbox.width, bbox.height);
-            this.ctx.stroke();
+        var ctx : CanvasRenderingContext2D | null = this.canvasRef.current!.getContext('2d');
+        if (ctx != null) {
+            ctx.drawImage(image, 0, 0);
+            if (bbox !== undefined) {
+                ctx.beginPath();
+                ctx.rect(bbox.x, bbox.y, bbox.width, bbox.height);
+                ctx.stroke();
+            }
         }
     }
 }
