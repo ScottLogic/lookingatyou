@@ -21,16 +21,11 @@ jobs:
 
   deploy:
     docker:
-      - image: 'circleci/python:3.6.4-stretch'
+      - image: 'circleci/python:3.6.4-stretch-node'
     steps:
       - checkout
       - run: sudo pip install awscli --upgrade
       - run: aws --version
-      - run: sudo apt-get -y install curl
-      - run: curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-      - run:
-          name: Install Node.js and npm
-          command: sudo apt-get -y install nodejs
       - run: npm --version
       - run:
           name: Install dependencies
