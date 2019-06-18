@@ -44,7 +44,7 @@ class App extends React.Component<IAppProps, IAppState> {
     // also has problems when opening the dev console
     window.addEventListener("resize", this.updateDimensions);
 
-    { // to test canvas functionality
+    { // TESTING CANVAS FUNCTIONALITY
       var ldr: React.RefObject<CanvasMenuItem> = this.leftDebugRef;
       var rdr: React.RefObject<CanvasMenuItem> = this.rightDebugRef;
       var img: HTMLImageElement = new Image();
@@ -90,36 +90,29 @@ class App extends React.Component<IAppProps, IAppState> {
           <TextBoxMenuItem
             name="X Sensitivity"
             default={"100"}
-            onInputChange={((text: string) => alert("X Sensitivity = " + text))}
-          />
+            onInputChange={((text: string) => alert("X Sensitivity = " + text))}/>
           <TextBoxMenuItem
             name="Y Sensitivity"
             default={"100"}
-            onInputChange={((text: string) => alert("Y Sensitivity = " + text))}
-          />
+            onInputChange={((text: string) => alert("Y Sensitivity = " + text))}/>
           <TextBoxMenuItem
             name="FPS"
             default={"5"}
-            onInputChange={((text: string) => alert("Y Sensitivity = " + text))}
-          />
+            onInputChange={((text: string) => alert("Y Sensitivity = " + text))}/>
           <CheckBoxMenuItem
             name="Swap eyes"
             default={false}
-            onInputChange={((checked: boolean) => alert(checked ? "Do swap eyes" : "Don't swap eyes"))}
-          />
+            onInputChange={((checked: boolean) => alert(checked ? "Do swap eyes" : "Don't swap eyes"))}/>
           <CheckBoxMenuItem
             name="Toggle Debug"
             default={false}
-            onInputChange={(checked: boolean) => alert("Debug " + (checked ? "enabled" : "disabled"))}
-          />
+            onInputChange={(checked: boolean) => alert("Debug " + (checked ? "enabled" : "disabled"))}/>
           <CanvasMenuItem
             name="Left Camera"
-            ref={this.leftDebugRef}
-          />
+            ref={this.leftDebugRef}/>
           <CanvasMenuItem
             name="Right Camera"
-            ref={this.rightDebugRef}
-          />
+            ref={this.rightDebugRef}/>
         </ConfigMenu>
       </div>
     );
