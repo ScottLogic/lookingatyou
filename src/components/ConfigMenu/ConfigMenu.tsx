@@ -7,36 +7,34 @@ interface IConfigMenuProps {
     timerLength: number
 }
 interface IConfigMenuState {
-    left: string
+    leftPosition: string
 }
 export class ConfigMenu extends React.Component<IConfigMenuProps, IConfigMenuState> {
-    static className: string = "ConfigMenu";
-
+    private isUnderMouse: boolean = false;
+    private timeout: number = window.setTimeout(() => { }, 0);
     constructor(props: IConfigMenuProps) {
         super(props);
-        this.state = { left: "0" };
+        this.state = { leftPosition: "0px" };
         this.show = this.show.bind(this);
         this.hide = this.hide.bind(this);
         document.onmousemove = this.show;
     }
-
-    private isUnderMouse: boolean = false;
-    private timeout: number = window.setTimeout(() => { }, 0);
+    
     show() {
-        this.setState({ left: "0px" });
         clearInterval(this.timeout);
         if (!this.isUnderMouse)
             this.timeout = window.setTimeout(this.hide, this.props.timerLength);
+        this.setState({ leftPosition: "0px" });
     }
     hide() {
-        this.setState({ left: "-" + this.props.width });
+        this.setState({ leftPosition: "-" + this.props.width });
     }
 
     render() {
         return (
             <div
-                style={{ width: this.props.width, left: this.state.left }}
-                className={ConfigMenu.className}
+                style={{ width: this.props.width, left: this.state.leftPosition }}
+                className={"ConfigMenu"}
                 onMouseMove={() => { this.isUnderMouse = true }}
                 onMouseLeave={() => { this.isUnderMouse = false }}
             > <h1>Config</h1>
@@ -45,11 +43,11 @@ export class ConfigMenu extends React.Component<IConfigMenuProps, IConfigMenuSta
         );
     }
 }
-export function example(): React.Component {
+export function Example() {
     return (
         <ConfigMenu width="14em" timerLength={1000}>
             <TextBoxMenuItem name="textbox" onInputChange={((text: string) => alert("Text: " + text))}/>
             <CheckBoxMenuItem name="checkbox" onInputChange={((checked: boolean) => alert("Checked: " + checked))}/>
         </ConfigMenu>
-    ) as unknown as React.Component;
+    );
 }

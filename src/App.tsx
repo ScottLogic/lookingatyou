@@ -1,8 +1,8 @@
 import React from 'react';
 import Eye from './components/eye/Eye';
-import './App.css';
 import { TextBoxMenuItem, CheckBoxMenuItem } from './components/ConfigMenu/MenuItem';
-import { ConfigMenu, example } from './components/ConfigMenu/ConfigMenu';
+import { ConfigMenu, Example } from './components/ConfigMenu/ConfigMenu';
+import './App.css';
 
 const eyes = {
   LEFT: 'left',
@@ -67,7 +67,7 @@ class App extends React.Component<IAppProps, IAppState> {
             />
           )
         })}
-        {example()}
+        <Example/>>
       </div>
     );
   }
