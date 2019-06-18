@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, ReactNode } from 'react';
 
 interface IMenuItemProps {
     name: string
@@ -7,34 +7,25 @@ interface IMenuItemProps {
 interface ITextBoxMenuItemProps extends IMenuItemProps {
     onInputChange: { (text: string): void }
 }
-export class TextBoxMenuItem extends React.Component<ITextBoxMenuItemProps> {
-    render() {
-        var textbox = <input type="textbox" onChange={(event) => this.props.onInputChange(event.target.value)}></input> as unknown as HTMLInputElement;
-        return <InputMenuItemDiv name={this.props.name} input={textbox} />
-    }
+export function TextBoxMenuItem(props: ITextBoxMenuItemProps) {
+    var textbox = <input type="textbox" onChange={(event) => props.onInputChange(event.target.value)}></input> as unknown as HTMLInputElement;
+    return <InputMenuItemDiv name={props.name}>{textbox}</InputMenuItemDiv>
 }
 
 interface ICheckBoxMenuItemProps extends IMenuItemProps {
     onInputChange: { (checked: boolean): void }
 }
-export class CheckBoxMenuItem extends React.Component<ICheckBoxMenuItemProps> {
-    render() {
-        var checkbox = <input type="checkbox" onChange={(event) => this.props.onInputChange(event.target.checked)}></input> as unknown as HTMLInputElement;
-        return <InputMenuItemDiv name={this.props.name} input={checkbox} />
-    }
+export function CheckBoxMenuItem(props: ICheckBoxMenuItemProps) {
+    var checkbox = <input type="checkbox" onChange={(event) => props.onInputChange(event.target.checked)}></input> as unknown as HTMLInputElement;
+    return <InputMenuItemDiv name={props.name}>{checkbox}</InputMenuItemDiv>
 }
 
-class InputMenuItemDiv extends React.Component<{ name: string, input: HTMLInputElement }> {
-    render() {
-        return (
-            <div>
-                <label>{this.props.name}</label>
-                {this.props.input}
-            </div>
-        ) as unknown as HTMLDivElement;
-    }
-}
-
-interface ICanvasMenuItemProps extends IMenuItemProps {
-    canvas: HTMLCanvasElement
+ 
+function InputMenuItemDiv(props: { name: string, children: ReactNode}) {
+    return (
+        <div>
+            <label>{props.name}</label>
+            {props.children}
+        </div>
+    );
 }
