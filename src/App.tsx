@@ -1,5 +1,7 @@
 import React from 'react';
 import Eye from './components/eye/Eye';
+import { TextBoxMenuItem, CheckBoxMenuItem } from './components/ConfigMenu/MenuItem';
+import { ConfigMenu, Example } from './components/ConfigMenu/ConfigMenu';
 import './App.css';
 
 const eyes = {
@@ -63,6 +65,7 @@ class App extends React.Component<IAppProps, IAppState> {
             />
           )
         })}
+        <Example/>>
       </div>
     );
   }
