@@ -10,13 +10,13 @@ interface IConfigMenuProps {
 export function ConfigMenu(props: IConfigMenuProps) {
     const [leftPosition, setLeftPosition] = useState("0px");
     const [isUnderMouse, setIsUnderMouse] = useState(false);
-    const [timeout, setTimeout] = useState(window.setTimeout(() => { }, 0));
+    const [hideTimeout, setHideTimeout] = useState();
     useEffect(() => {
         function show() {
-            clearInterval(timeout);
-            if (!isUnderMouse)
-                setTimeout(window.setTimeout(() => setLeftPosition("-" + props.width), props.timerLength));
+            clearInterval(hideTimeout);
             setLeftPosition("0px");
+            if (!isUnderMouse)
+                setHideTimeout(window.setTimeout(() => setLeftPosition("-" + props.width), props.timerLength));
         }
         window.addEventListener("mousemove", show);
         return (() => window.removeEventListener("mousemove", show));
