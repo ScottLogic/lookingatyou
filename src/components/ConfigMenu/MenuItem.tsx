@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 interface IMenuItemProps {
     name: string
@@ -20,7 +20,7 @@ export function CheckBoxMenuItem(props: ICheckBoxMenuItemProps) {
     return <InputMenuItemDiv name={props.name}>{checkbox}</InputMenuItemDiv>
 }
 
- 
+
 function InputMenuItemDiv(props: { name: string, children: ReactNode}) {
     return (
         <div>
