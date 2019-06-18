@@ -12,7 +12,7 @@ export function TextBoxMenuItem(props: ITextBoxMenuItemProps) {
     var textbox = <input type="textbox" defaultValue={props.default} onChange={(event) => {
         localStorage.setItem(props.name, event.target.value);
         props.onInputChange(event.target.value);
-    }}></input> as unknown as HTMLInputElement;
+    }}></input>;
     return <InputMenuItemDiv name={props.name}>{textbox}</InputMenuItemDiv>
 }
 
@@ -24,7 +24,7 @@ export function CheckBoxMenuItem(props: ICheckBoxMenuItemProps) {
     var checkbox = <input type="checkbox" defaultChecked={props.default} onChange={(event) => {
         localStorage.setItem(props.name, event.target.checked.toString());
         props.onInputChange(event.target.checked);
-    }}></input> as unknown as HTMLInputElement;
+    }}></input>;
     return <InputMenuItemDiv name={props.name}>{checkbox}</InputMenuItemDiv>
 }
 
