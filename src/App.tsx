@@ -79,6 +79,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
   onUserMediaError() {
     this.setState({ eyesDisplayed: false });
+    console.log('error');
   }
 
   render() {
@@ -88,7 +89,7 @@ class App extends React.Component<IAppProps, IAppState> {
           {this.state.webcams.map((device, key) => {
             return (
               <WebcamFeed
-                navigator={this.props.environment.navigator}
+                mediaDevices={this.props.environment.navigator.mediaDevices}
                 key={key}
                 deviceId={device.deviceId}
                 onUserMedia={this.onUserMedia}

@@ -4,8 +4,10 @@ interface IWebcamFeedProps {
   deviceId: string,
   onUserMedia: (stream: MediaStream) => void,
   onUserMediaError: () => void,
-  navigator: Navigator,
+  mediaDevices: MediaDevices ,
 }
+
+
 
 const WebcamFeed = (props: IWebcamFeedProps) => {
   const [stream, setStream] = useState();
@@ -13,21 +15,21 @@ const WebcamFeed = (props: IWebcamFeedProps) => {
   const [height, setHeight] = useState();
 
   async function getWebcam() {
-    console.log(props.navigator.mediaDevices);
-    try {
-      const myStream = await props.navigator.mediaDevices.getUserMedia({ video: { deviceId: props.deviceId } });
-      console.log('test');
-      if (myStream !== undefined) {
-        setStream(myStream);
-        var streamSettings = myStream.getVideoTracks()[0].getSettings();
-        if (streamSettings.height && streamSettings.width) {
-          setHeight(streamSettings.height);
-          setWidth(streamSettings.width);
+    if (stream === undefined) {
+      try {
+        const myStream = await props.mediaDevices.getUserMedia({ video: { deviceId: props.deviceId } });
+        if (myStream !== undefined) {
+          setStream(myStream);
+          var streamSettings = myStream.getVideoTracks()[0].getSettings();
+          if (streamSettings.height && streamSettings.width) {
+            setHeight(streamSettings.height);
+            setWidth(streamSettings.width);
+          }
+          props.onUserMedia(myStream);
         }
-        props.onUserMedia(myStream);
+      } catch {
+        props.onUserMediaError();
       }
-    } catch {
-      props.onUserMediaError();
     }
   };
 
