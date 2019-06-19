@@ -99,7 +99,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
         {this.state.eyesDisplayed ?
           (
-            <div className={this.state.eyesDisplayed ? 'container' : 'hidden'}>
+            <div className="container">
               {Object.values(eyes).map((eye, key) => {
                 return (
                   <Eye
@@ -115,7 +115,10 @@ class App extends React.Component<IAppProps, IAppState> {
           )
           :
           (
-            <div className="loading-spinner"></div>
+            this.state.webcams.length > 0 ?
+              <div className="loading-spinner"></div>
+              :
+              <div></div>
           )
         }
 
