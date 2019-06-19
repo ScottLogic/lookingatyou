@@ -98,7 +98,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 deviceId={device.deviceId}
                 onUserMedia={this.onUserMedia}
                 onUserMediaError={this.onUserMediaError}
-                ref = {this.videos[key]}
+                ref={this.videos[key]}
               />
             )
           })}
