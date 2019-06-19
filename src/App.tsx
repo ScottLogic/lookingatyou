@@ -93,29 +93,21 @@ class App extends React.Component<IAppProps, IAppState> {
           })}
         </div>
 
-        {this.state.eyesDisplayed ?
-          (
-            <div className={this.state.eyesDisplayed ? 'container' : 'hidden'}>
-              {Object.values(eyes).map((eye, key) => {
-                return (
-                  <Eye
-                    class={eye}
-                    key={key}
-                    width={this.state.width / 2}
-                    height={this.state.height}
-                    scleraColor={"white"}
-                    irisColor={this.state.irisColor}
-                    pupilColor={"black"}
-                  />
-                )
-              })}
-            </div>
-          )
-          :
-          (
-            <div className="loading-spinner"></div>
-          )
-        }
+        <div className={this.state.eyesDisplayed ? 'container' : 'hidden'}>
+          {Object.values(eyes).map((eye, key) => {
+            return (
+              <Eye
+                class={eye}
+                key={key}
+                width={this.state.width / 2}
+                height={this.state.height}
+                scleraColor={"white"}
+                irisColor={this.state.irisColor}
+                pupilColor={"black"}
+              />
+            )
+          })}
+        </div>
 
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
@@ -141,7 +133,7 @@ class App extends React.Component<IAppProps, IAppState> {
           <ColorMenuItem
             name={"Eye Colour"}
             default={this.state.irisColor}
-            onInputChange={(color: string) => this.setState({irisColor : color})}/>
+            onInputChange={(color: string) => this.setState({ irisColor: color })} />
           <CanvasMenuItem
             name={"Left Camera"}
             ref={this.leftDebugRef} />
