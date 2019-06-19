@@ -1,4 +1,4 @@
-.App {
+.App, .Error {
   height: 100vh;
   background-color: black;
 }
@@ -9,7 +9,8 @@
   font-size: 2em;
   display: flex;
   justify-content: center;
-  align-items: center
+  align-items: center;
+  width:100%;
 }
 
 .container {
