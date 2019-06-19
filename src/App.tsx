@@ -1,6 +1,6 @@
 import React from 'react';
 import Eye from './components/eye/Eye';
-import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItem';
+import { TextBoxMenuItem, CheckBoxMenuItem, ColorMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
 import './App.css';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
@@ -10,12 +10,6 @@ const eyes = {
   RIGHT: 'right',
 }
 
-const colours = {
-  scleraColor: "white",
-  irisColor: "lightBlue",
-  pupilColor: "black"
-}
-
 const videoinput = 'videoinput';
 
 interface IAppState {
@@ -23,6 +17,7 @@ interface IAppState {
   height: number,
   eyesDisplayed: boolean,
   webcams: MediaDeviceInfo[],
+  irisColor: string
 }
 
 interface IAppProps {
@@ -40,6 +35,7 @@ class App extends React.Component<IAppProps, IAppState> {
       height: this.props.environment.innerHeight,
       eyesDisplayed: false,
       webcams: [],
+      irisColor: localStorage.getItem("Eye Colour") || "#e66465" // must be hex value, as color picker doesnt understand color name strings
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -107,7 +103,9 @@ class App extends React.Component<IAppProps, IAppState> {
                     key={key}
                     width={this.state.width / 2}
                     height={this.state.height}
-                    {...colours}
+                    scleraColor={"white"}
+                    irisColor={this.state.irisColor}
+                    pupilColor={"black"}
                   />
                 )
               })}
@@ -122,24 +120,28 @@ class App extends React.Component<IAppProps, IAppState> {
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
             name={"X Sensitivity"}
-            default={localStorage.getItem("X Sensitivity") || "1"}
+            default={"1"}
             onInputChange={(text: string) => { }} />
           <TextBoxMenuItem
             name={"Y Sensitivity"}
-            default={localStorage.getItem("Y Sensitivity") || "1"}
+            default={"1"}
             onInputChange={(text: string) => { }} />
           <TextBoxMenuItem
             name={"FPS"}
-            default={localStorage.getItem("FPS") || "5"}
+            default={"5"}
             onInputChange={(text: string) => { }} />
           <CheckBoxMenuItem
             name={"Swap Eyes"}
-            default={"true" === (localStorage.getItem("Swap Eyes"))}
+            default={false}
             onInputChange={(checked: boolean) => { }} />
           <CheckBoxMenuItem
             name={"Toggle Debug"}
-            default={"true" === (localStorage.getItem("Toggle Debug"))}
+            default={false}
             onInputChange={(checked: boolean) => { }} />
+          <ColorMenuItem
+            name={"Eye Colour"}
+            default={this.state.irisColor}
+            onInputChange={(color: string) => this.setState({irisColor : color})}/>
           <CanvasMenuItem
             name={"Left Camera"}
             ref={this.leftDebugRef} />

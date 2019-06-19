@@ -9,7 +9,7 @@ interface ITextBoxMenuItemProps extends IMenuItemProps {
     default: string
 }
 export function TextBoxMenuItem(props: ITextBoxMenuItemProps) {
-    var textbox = <input type="textbox" defaultValue={props.default} onChange={(event) => {
+    var textbox = <input type="textbox" defaultValue={localStorage.getItem(props.name) || props.default} onChange={(event) => {
         localStorage.setItem(props.name, event.target.value);
         props.onInputChange(event.target.value);
     }}></input>;
@@ -21,11 +21,23 @@ interface ICheckBoxMenuItemProps extends IMenuItemProps {
     default: boolean
 }
 export function CheckBoxMenuItem(props: ICheckBoxMenuItemProps) {
-    var checkbox = <input type="checkbox" defaultChecked={props.default} onChange={(event) => {
+    var checkbox = <input type="checkbox" defaultChecked={localStorage.getItem(props.name) != null ? localStorage.getItem(props.name) === "true" : props.default} onChange={(event) => {
         localStorage.setItem(props.name, event.target.checked.toString());
         props.onInputChange(event.target.checked);
     }}></input>;
     return <InputMenuItemDiv name={props.name}>{checkbox}</InputMenuItemDiv>
+}
+
+interface IColorMenuItemProps extends IMenuItemProps {
+    onInputChange: { (color : string) : void},
+    default: string
+}
+export function ColorMenuItem(props : IColorMenuItemProps) {
+    var colorpicker = <input type="color" defaultValue={localStorage.getItem(props.name) || props.default} onChange={(event) => {
+        localStorage.setItem(props.name, event.target.value.toString());
+        props.onInputChange(event.target.value);
+    }}></input>;
+    return <InputMenuItemDiv name={props.name}>{colorpicker}</InputMenuItemDiv>
 }
 
 function InputMenuItemDiv(props: { name: string, children: ReactNode }) {

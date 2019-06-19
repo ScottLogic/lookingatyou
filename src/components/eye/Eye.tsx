@@ -12,7 +12,7 @@ interface IEyeProps {
 interface IEyeState {
     scleraSize: number,
     irisSize: number,
-    pupilSize: number,
+    pupilSize: number
 }
 
 export default class Eye extends React.Component<IEyeProps, IEyeState> {
@@ -22,19 +22,19 @@ export default class Eye extends React.Component<IEyeProps, IEyeState> {
         this.state = {
             scleraSize: 4,
             irisSize: 8,
-            pupilSize: 16,
+            pupilSize: 16
         }
     }
 
-    renderCircle(radius : number, name : string, colour: string){
-        return(
-        <circle 
-            r={radius}
-            className={name}
-            fill={colour}
-            cx="50%"
-            cy="50%"
-        />
+    renderCircle(radius: number, name: string, colour: string) {
+        return (
+            <circle
+                r={radius}
+                className={name}
+                fill={colour}
+                cx="50%"
+                cy="50%"
+            />
         )
     }
 
@@ -46,7 +46,13 @@ export default class Eye extends React.Component<IEyeProps, IEyeState> {
                     {this.renderCircle(this.props.width / this.state.irisSize, "iris", this.props.irisColor)}
                     {this.renderCircle(this.props.width / this.state.pupilSize, "pupil", this.props.pupilColor)}
                 </g>
+                <svg className="eyebrow" x="50%">
+                    <path
+                        transform="scale(1,1)"
+                        fill="none" stroke="blue" strokeWidth="5"
+                    />
+                </svg>
             </svg>
-            )
+        )
     }
 }
