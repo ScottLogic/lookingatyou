@@ -103,21 +103,34 @@ class App extends React.Component<IAppProps, IAppState> {
           })}
         </div>
 
-        <div className={this.state.eyesDisplayed ? 'container' : 'hidden'}>
-          {Object.values(eyes).map((eye, key) => {
-            return (
-              <Eye
-                class={eye}
-                key={key}
-                width={this.state.width / 2}
-                height={this.state.height}
-                scleraColor={colours.scleraColor}
-                irisColor={this.state.irisColor}
-                pupilColor={colours.pupilColor}
-              />
-            )
-          })}
-        </div>
+        {this.state.eyesDisplayed ?
+          (
+            <div className="container">
+              {Object.values(eyes).map((eye, key) => {
+                return (
+                  <Eye
+                    class={eye}
+                    key={key}
+                    width={this.state.width / 2}
+                    height={this.state.height}
+                    scleraColor={colours.scleraColor}
+                    irisColor={this.state.irisColor}
+                    pupilColor={colours.pupilColor}
+                  />
+                )
+              })}
+            </div>
+          )
+          :
+          (
+            this.state.webcams.length > 0 ?
+              <div className="loading-spinner"></div>
+              :
+              <div className="Error">
+                No webcam connected. Please connect a webcam and refresh
+              </div>
+          )
+        }
 
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
@@ -163,7 +176,7 @@ class App extends React.Component<IAppProps, IAppState> {
             name={"Right Camera"}
             ref={this.rightDebugRef} />
         </ConfigMenu>
-      </div>
+      </div >
     );
   }
   storedOrDefault(item: string, def: string) {

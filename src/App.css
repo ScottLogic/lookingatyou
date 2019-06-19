@@ -1,6 +1,16 @@
-.App {
+.App, .Error {
   height: 100vh;
   background-color: black;
+}
+
+.Error {
+  text-decoration: none;
+  color: var(--menu-text-colour);
+  font-size: 2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width:100%;
 }
 
 .container {
@@ -8,7 +18,28 @@
   flex-flow: row;
 }
 
+.loading-spinner {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  animation: loading-spinner-spin 1s linear infinite;
+  border: 20px solid var(--loading-spinner-outer-color, rgba(255, 255, 255, 0.3));
+  border-top: 20px solid var(--loading-spinner-inner-color, rgb(255, 255, 255));
+  margin: auto;
+  position: relative;
+  top: calc(50% - 100px);
+}
+
 .hidden {
   display: none;
+}
+
+@keyframes loading-spinner-spin {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
 }
 
