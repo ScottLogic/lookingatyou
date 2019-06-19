@@ -46,12 +46,6 @@ export default class Eye extends React.Component<IEyeProps, IEyeState> {
                     {this.renderCircle(this.props.width / this.state.irisSize, "iris", this.props.irisColor)}
                     {this.renderCircle(this.props.width / this.state.pupilSize, "pupil", this.props.pupilColor)}
                 </g>
-                <svg className="eyebrow" x="50%">
-                    <path
-                        transform="scale(1,1)"
-                        fill="none" stroke="blue" strokeWidth="5"
-                    />
-                </svg>
             </svg>
         )
     }
