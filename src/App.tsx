@@ -62,7 +62,7 @@ class App extends React.Component<IAppProps, IAppState> {
     let devices = await navigator.mediaDevices.enumerateDevices();
     devices = devices.filter(device => device.kind === videoinput);
     this.setState({
-      webcams: devices
+      webcams: devices,
     });
   }
 
@@ -96,40 +96,55 @@ class App extends React.Component<IAppProps, IAppState> {
             )
           })}
         </div>
-        <div className={this.state.eyesDisplayed ? 'container' : 'hidden'}>
-          {Object.values(eyes).map((eye, key) => {
-            return (
-              <Eye
-                class={eye}
-                key={key}
-                width={this.state.width / 2}
-                height={this.state.height}
-                {...colours}
-              />
-            )
-          })}
-        </div>
+
+        {this.state.eyesDisplayed ?
+          (
+            <div className="container">
+              {Object.values(eyes).map((eye, key) => {
+                return (
+                  <Eye
+                    class={eye}
+                    key={key}
+                    width={this.state.width / 2}
+                    height={this.state.height}
+                    {...colours}
+                  />
+                )
+              })}
+            </div>
+          )
+          :
+          (
+            this.state.webcams.length > 0 ?
+              <div className="loading-spinner"></div>
+              :
+              <div className="Error">
+                No webcam connected. Please connect a webcam and refresh
+              </div>
+          )
+        }
+
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
             name={"X Sensitivity"}
             default={localStorage.getItem("X Sensitivity") || "1"}
-            onInputChange={(text: string) => {}} />
+            onInputChange={(text: string) => { }} />
           <TextBoxMenuItem
             name={"Y Sensitivity"}
             default={localStorage.getItem("Y Sensitivity") || "1"}
-            onInputChange={(text: string) => {}} />
+            onInputChange={(text: string) => { }} />
           <TextBoxMenuItem
             name={"FPS"}
             default={localStorage.getItem("FPS") || "5"}
-            onInputChange={(text: string) => {}} />
+            onInputChange={(text: string) => { }} />
           <CheckBoxMenuItem
             name={"Swap Eyes"}
             default={"true" === (localStorage.getItem("Swap Eyes"))}
-            onInputChange={(checked: boolean) => {}} />
+            onInputChange={(checked: boolean) => { }} />
           <CheckBoxMenuItem
             name={"Toggle Debug"}
             default={"true" === (localStorage.getItem("Toggle Debug"))}
-            onInputChange={(checked: boolean) => {}} />
+            onInputChange={(checked: boolean) => { }} />
           <CanvasMenuItem
             name={"Left Camera"}
             ref={this.leftDebugRef} />
