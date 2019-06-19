@@ -1,5 +1,5 @@
 .Eyelid path, .iris, .pupil, .sclera {
-    transition: 1000ms;
+    transition: 250ms;
 }
 
 .Eyelid path {

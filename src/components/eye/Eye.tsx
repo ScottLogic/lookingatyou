@@ -12,8 +12,7 @@ interface IEyeProps {
     irisRadius: number,
     pupilRadius: number,
     closedCoefficient: number,
-    dilatedCoefficient: number,
-    animationTime: string
+    dilatedCoefficient: number
 }
 
 export default class Eye extends React.Component<IEyeProps> {

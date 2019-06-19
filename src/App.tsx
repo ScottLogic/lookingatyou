@@ -120,7 +120,6 @@ class App extends React.Component<IAppProps, IAppState> {
                   pupilRadius={this.state.width / 40}
                   closedCoefficient={this.state.eyesClosedCoefficient}
                   dilatedCoefficient={this.state.eyesDilatedCoefficient}
-                  animationTime={this.state.animationTime}
                 />
               )
             })}
