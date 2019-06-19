@@ -2,8 +2,9 @@ import React from 'react';
 import Eye from './components/eye/Eye';
 import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
-import './App.css';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
+import './App.css';
+
 
 const eyes = {
   LEFT: 'left',
@@ -23,6 +24,7 @@ interface IAppState {
   height: number,
   eyesDisplayed: boolean,
   webcams: MediaDeviceInfo[],
+  eyes: { dilation: number, closed: number }
 }
 
 interface IAppProps {
@@ -40,6 +42,7 @@ class App extends React.Component<IAppProps, IAppState> {
       height: this.props.environment.innerHeight,
       eyesDisplayed: false,
       webcams: [],
+      eyes: { dilation: 0, closed: 0 }
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -47,6 +50,12 @@ class App extends React.Component<IAppProps, IAppState> {
     this.onUserMediaError = this.onUserMediaError.bind(this);
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
+    window.setInterval(() => {
+      this.setState((state) => ({
+        eyes: { dilation: state.eyes.dilation, closed: 1 - state.eyes.closed }
+      }))
+    }, 1500);
+
   }
 
   componentDidMount() {
@@ -107,7 +116,14 @@ class App extends React.Component<IAppProps, IAppState> {
                     key={key}
                     width={this.state.width / 2}
                     height={this.state.height}
-                    {...colours}
+                    scleraColor={colours.scleraColor}
+                    irisColor={colours.irisColor}
+                    pupilColor={colours.pupilColor}
+                    scleraRadius={this.state.width / 8}
+                    irisRadius={this.state.width / 16}
+                    pupilRadius={this.state.width / 40}
+                    closedFactor={this.state.eyes.closed}
+                    dilationFactor={this.state.eyes.dilation}
                   />
                 )
               })}

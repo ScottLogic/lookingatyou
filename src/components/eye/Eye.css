@@ -1,0 +1,9 @@
+.Eyelid path, .iris, .pupil, .sclera {
+    transition: 1000ms;
+}
+
+.Eyelid path {
+    fill : #222323;
+    stroke:black;
+    stroke-width:20;
+}
