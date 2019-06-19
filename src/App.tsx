@@ -32,6 +32,8 @@ interface IAppProps {
 class App extends React.Component<IAppProps, IAppState> {
   private leftDebugRef: React.RefObject<CanvasMenuItem>;
   private rightDebugRef: React.RefObject<CanvasMenuItem>;
+  private videos: HTMLVideoElement[];
+  private cameraCount: number;
   constructor(props: IAppProps) {
     super(props);
 
@@ -47,6 +49,8 @@ class App extends React.Component<IAppProps, IAppState> {
     this.onUserMediaError = this.onUserMediaError.bind(this);
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
+    this.videos = [];
+    this.cameraCount = 0;
   }
 
   componentDidMount() {
@@ -75,6 +79,9 @@ class App extends React.Component<IAppProps, IAppState> {
 
   onUserMedia(stream: MediaStream) {
     this.setState({ eyesDisplayed: true });
+    var video = document.querySelectorAll(".webcam-feed > video")[this.cameraCount];
+    this.videos.push(video as HTMLVideoElement);
+    this.cameraCount ++;
   }
 
   onUserMediaError(error: Error) {
