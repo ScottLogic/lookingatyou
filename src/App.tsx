@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 import Eye from './components/eye/Eye';
 import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
 import './App.css';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
+import {Ref} from './components/webcamFeed/WebcamFeed'
 
 const eyes = {
   LEFT: 'left',
@@ -32,7 +33,7 @@ interface IAppProps {
 class App extends React.Component<IAppProps, IAppState> {
   private leftDebugRef: React.RefObject<CanvasMenuItem>;
   private rightDebugRef: React.RefObject<CanvasMenuItem>;
-  private videos: HTMLVideoElement[];
+  private videos: RefObject<Ref>[];
   private cameraCount: number;
   constructor(props: IAppProps) {
     super(props);
@@ -49,7 +50,7 @@ class App extends React.Component<IAppProps, IAppState> {
     this.onUserMediaError = this.onUserMediaError.bind(this);
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
-    this.videos = [];
+    this.videos = Array(2).map(() => React.createRef());
     this.cameraCount = 0;
   }
 
@@ -79,8 +80,6 @@ class App extends React.Component<IAppProps, IAppState> {
 
   onUserMedia(stream: MediaStream) {
     this.setState({ eyesDisplayed: true });
-    var video = document.querySelectorAll(".webcam-feed > video")[this.cameraCount];
-    this.videos.push(video as HTMLVideoElement);
     this.cameraCount ++;
   }
 
@@ -99,6 +98,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 deviceId={device.deviceId}
                 onUserMedia={this.onUserMedia}
                 onUserMediaError={this.onUserMediaError}
+                ref = {this.videos[key]}
               />
             )
           })}
