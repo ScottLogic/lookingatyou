@@ -3,38 +3,34 @@ import React, { useState, useEffect } from 'react';
 interface IWebcamFeedProps {
   deviceId: string,
   onUserMedia: (stream: MediaStream) => void,
-  onUserMediaError: (e: Error) => void,
+  onUserMediaError: () => void,
 }
 
 const WebcamFeed = (props: IWebcamFeedProps) => {
   const [stream, setStream] = useState();
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
+  const [width, setWidth] = useState();
+  const [height, setHeight] = useState();
 
   async function getWebcam() {
-    if (!stream) {
-      try {
-        const myStream = await getStream(props.deviceId);
+    try {
+      const myStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: props.deviceId } });
+      if (myStream !== undefined) {
+        setStream(myStream);
         var streamSettings = myStream.getVideoTracks()[0].getSettings();
         if (streamSettings.height && streamSettings.width) {
-          setStream(myStream);
-          setWidth(streamSettings.width);
           setHeight(streamSettings.height);
+          setWidth(streamSettings.width);
         }
         props.onUserMedia(myStream);
-      } catch (error) {
-        props.onUserMediaError(error);
       }
+    } catch {
+      props.onUserMediaError();
     }
   };
 
   useEffect(() => {
     getWebcam();
-  }, []);
-
-  function getStream(deviceId: string) {
-    return navigator.mediaDevices.getUserMedia({ video: { deviceId: deviceId } })
-  }
+  });
 
   return <video
     className={props.deviceId + ' hidden'}

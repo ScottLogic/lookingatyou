@@ -1,4 +1,6 @@
 import React from 'react';
+import * as cocoSSD from "@tensorflow-models/coco-ssd"
+
 import Eye from './components/eye/Eye';
 import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
@@ -34,6 +36,7 @@ class App extends React.Component<IAppProps, IAppState> {
   private rightDebugRef: React.RefObject<CanvasMenuItem>;
   private videos: HTMLVideoElement[];
   private cameraCount: number;
+  private model: cocoSSD.ObjectDetection | null;
   constructor(props: IAppProps) {
     super(props);
 
@@ -51,11 +54,13 @@ class App extends React.Component<IAppProps, IAppState> {
     this.rightDebugRef = React.createRef();
     this.videos = [];
     this.cameraCount = 0;
+    this.model = null;
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
     this.getWebcamDevices();
+    this.model = await cocoSSD.load();
   }
 
   componentWillUnmount() {
@@ -86,6 +91,19 @@ class App extends React.Component<IAppProps, IAppState> {
 
   onUserMediaError(error: Error) {
     this.setState({ eyesDisplayed: false });
+  }
+
+  async detectImage(img : ImageData|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, callback : (target: cocoSSD.DetectedObject) => void)
+  {
+    if (this.model !== null){
+      var detections = await this.model.detect(img);
+      selectedTarget(detections, callback)
+    }
+  }
+  
+  selectTarget(detections : cocoSSD.DetectedObject[], callback : (target: cocoSSD.DetectedObject) => void)
+  {
+    
   }
 
   render() {
