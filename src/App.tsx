@@ -10,6 +10,13 @@ const eyes = {
   RIGHT: 'right',
 }
 
+const colours = {
+  scleraColor: "white",
+  irisColor: "#ff8080", // must be hex value, as this is passed to colour picker input
+  pupilColor: "black"
+}
+
+
 const videoinput = 'videoinput';
 
 interface IAppState {
@@ -21,7 +28,7 @@ interface IAppState {
 }
 
 interface IAppProps {
-  environment: Window,
+  environment: Window
 }
 
 class App extends React.Component<IAppProps, IAppState> {
@@ -35,7 +42,7 @@ class App extends React.Component<IAppProps, IAppState> {
       height: this.props.environment.innerHeight,
       eyesDisplayed: false,
       webcams: [],
-      irisColor: localStorage.getItem("Eye Colour") || "#e66465" // must be hex value, as color picker doesnt understand color name strings
+      irisColor: colours.irisColor,
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -48,6 +55,9 @@ class App extends React.Component<IAppProps, IAppState> {
   componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
     this.getWebcamDevices();
+    this.setState((state) => ({
+      irisColor: this.storedOrDefault("Iris Color", state.irisColor)
+    }));
   }
 
   componentWillUnmount() {
@@ -101,9 +111,9 @@ class App extends React.Component<IAppProps, IAppState> {
                 key={key}
                 width={this.state.width / 2}
                 height={this.state.height}
-                scleraColor={"white"}
+                scleraColor={colours.scleraColor}
                 irisColor={this.state.irisColor}
-                pupilColor={"black"}
+                pupilColor={colours.pupilColor}
               />
             )
           })}
@@ -112,28 +122,40 @@ class App extends React.Component<IAppProps, IAppState> {
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
             name={"X Sensitivity"}
-            default={"1"}
-            onInputChange={(text: string) => { }} />
+            default={this.storedOrDefault("X Sensitivity", "1")}
+            onInputChange={(sens: string) => {
+              this.store("X Sensitivity", sens);
+            }} />
           <TextBoxMenuItem
             name={"Y Sensitivity"}
-            default={"1"}
-            onInputChange={(text: string) => { }} />
+            default={this.storedOrDefault("Y Sensitivity", "1")}
+            onInputChange={(sens: string) => {
+              this.store("Y Sensitivity", sens);
+            }} />
           <TextBoxMenuItem
             name={"FPS"}
-            default={"5"}
-            onInputChange={(text: string) => { }} />
+            default={this.storedOrDefault("FPS", "5")}
+            onInputChange={(fps: string) => {
+              this.store("FPS", fps);
+            }} />
           <CheckBoxMenuItem
             name={"Swap Eyes"}
-            default={false}
-            onInputChange={(checked: boolean) => { }} />
+            default={bool(this.storedOrDefault("Swap Eyes", "false"))}
+            onInputChange={(checked: boolean) => {
+              this.store("Swap Eyes", checked.toString());
+            }} />
           <CheckBoxMenuItem
             name={"Toggle Debug"}
-            default={false}
-            onInputChange={(checked: boolean) => { }} />
+            default={bool(this.storedOrDefault("Toggle Debug", "false"))}
+            onInputChange={(checked: boolean) => {
+              this.store("Toggle Debug", checked.toString());
+            }} />
           <ColorMenuItem
-            name={"Eye Colour"}
-            default={this.state.irisColor}
-            onInputChange={(color: string) => this.setState({ irisColor: color })} />
+            name={"Iris Color"}
+            default={this.storedOrDefault("Iris Color", colours.irisColor)}
+            onInputChange={(color: string) => {
+              this.store("Iris Color", color); this.setState({ irisColor: color });
+            }} />
           <CanvasMenuItem
             name={"Left Camera"}
             ref={this.leftDebugRef} />
@@ -144,6 +166,16 @@ class App extends React.Component<IAppProps, IAppState> {
       </div>
     );
   }
+  storedOrDefault(item: string, def: string) {
+    return this.props.environment.localStorage.getItem(item) || def;
+  }
+  store(item: string, val: string) {
+    this.props.environment.localStorage.setItem(item, val);
+  }
 }
+function bool(s: string) {
+  return "true" === s;
+}
+
 
 export default App;
