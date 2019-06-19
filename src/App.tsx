@@ -59,7 +59,7 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   async getWebcamDevices() {
-    let devices = await navigator.mediaDevices.enumerateDevices();
+    let devices = await this.props.environment.navigator.mediaDevices.enumerateDevices();
     devices = devices.filter(device => device.kind === videoinput);
     this.setState({
       webcams: devices,
@@ -88,6 +88,7 @@ class App extends React.Component<IAppProps, IAppState> {
           {this.state.webcams.map((device, key) => {
             return (
               <WebcamFeed
+                navigator={this.props.environment.navigator}
                 key={key}
                 deviceId={device.deviceId}
                 onUserMedia={this.onUserMedia}
