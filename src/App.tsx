@@ -43,7 +43,7 @@ class App extends React.Component<IAppProps, IAppState> {
       width: this.props.environment.innerWidth,
       height: this.props.environment.innerHeight,
       webcams: [],
-      eyesDilatedCoefficient: 0,
+      eyesDilatedCoefficient: 1,
       eyesClosedCoefficient: 1,
       animationTime: "1000ms"
     }
@@ -80,11 +80,11 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   onUserMedia(stream: MediaStream) {
-    this.setState({ eyesClosedCoefficient: 0 });
+    this.setState({ eyesClosedCoefficient: -0 });
   }
 
   onUserMediaError() {
-    this.setState({ eyesClosedCoefficient: 0 });
+    this.setState({ eyesClosedCoefficient: 1 });
   }
 
   render() {
@@ -115,11 +115,13 @@ class App extends React.Component<IAppProps, IAppState> {
                   scleraColor={colours.scleraColor}
                   irisColor={colours.irisColor}
                   pupilColor={colours.pupilColor}
-                  scleraRadius={this.state.width / 8}
-                  irisRadius={this.state.width / 16}
-                  pupilRadius={this.state.width / 40}
+                  scleraRadius={this.state.width / 6}
+                  irisRadius={this.state.width / 12}
+                  pupilRadius={this.state.width / 32}
+                  // 0 is neutral eye position; 1 is fully closed; negative numbers open eye abnormally wide (anything less than -0.5 looks bad)
                   closedCoefficient={this.state.eyesClosedCoefficient}
-                  dilatedCoefficient={this.state.eyesDilatedCoefficient}
+                  // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
+                  dilatedCoefficient={this.state.eyesDilatedCoefficient} 
                 />
               )
             })}
