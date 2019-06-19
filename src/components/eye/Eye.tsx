@@ -11,8 +11,9 @@ interface IEyeProps {
     scleraRadius: number,
     irisRadius: number,
     pupilRadius: number,
-    closedFactor: number,
-    dilationFactor: number,
+    closedCoefficient: number,
+    dilatedCoefficient: number,
+    animationTime: string
 }
 
 export default class Eye extends React.Component<IEyeProps> {
@@ -38,23 +39,23 @@ export default class Eye extends React.Component<IEyeProps> {
         var xRight = xMiddle + this.props.scleraRadius;
         var yMiddle = this.props.height / 2;
         return (
-            <svg className={this.props.class} width={this.props.width} height={this.props.height}>
+            <svg className={this.props.class} width={this.props.width} height={this.props.height} >
                 {this.renderCircle(this.props.scleraRadius, "sclera", this.props.scleraColor)}
                 <g className="inner">
                     {this.renderCircle(this.props.irisRadius, "iris", this.props.irisColor)}
-                    {this.renderCircle(this.props.pupilRadius * (1 + this.props.dilationFactor), "pupil", this.props.pupilColor)}
+                    {this.renderCircle(this.props.pupilRadius * (1 + this.props.dilatedCoefficient), "pupil", this.props.pupilColor)}
                 </g>
                 <svg className = "Eyelid">
                     <path d={
                         `M ${xLeft} ${yMiddle} ` +
                         `A ${this.props.scleraRadius} ${this.props.scleraRadius} 0 0 1 ${xRight} ${yMiddle} ` +
-                        `Q ${xMiddle} ${yMiddle - this.props.scleraRadius * (1 - this.props.closedFactor)}, ${xLeft} ${yMiddle}`
+                        `Q ${xMiddle} ${yMiddle - this.props.scleraRadius * (1 - this.props.closedCoefficient)}, ${xLeft} ${yMiddle}`
                     }>
                     </path>
                     <path d={
                         `M ${xLeft} ${yMiddle} ` +
                         `A ${this.props.scleraRadius} ${this.props.scleraRadius} 0 0 0 ${xRight} ${yMiddle} ` +
-                        `Q ${xMiddle} ${yMiddle + this.props.scleraRadius * (1 - this.props.closedFactor)}, ${xLeft} ${yMiddle}`
+                        `Q ${xMiddle} ${yMiddle + this.props.scleraRadius * (1 - this.props.closedCoefficient)}, ${xLeft} ${yMiddle}`
                     }>
                     </path>
                 </svg>

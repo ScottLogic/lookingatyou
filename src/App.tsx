@@ -13,7 +13,7 @@ const eyes = {
 
 const colours = {
   scleraColor: "white",
-  irisColor: "lightBlue",
+  irisColor: "darkGoldenrod",
   pupilColor: "black"
 }
 
@@ -22,10 +22,12 @@ const videoinput = 'videoinput';
 interface IAppState {
   width: number,
   height: number,
-  eyesDisplayed: boolean,
   webcams: MediaDeviceInfo[],
-  eyes: { dilation: number, closed: number }
+  eyesDilatedCoefficient: number,
+  eyesClosedCoefficient: number,
+  animationTime: string
 }
+
 
 interface IAppProps {
   environment: Window,
@@ -40,9 +42,10 @@ class App extends React.Component<IAppProps, IAppState> {
     this.state = {
       width: this.props.environment.innerWidth,
       height: this.props.environment.innerHeight,
-      eyesDisplayed: false,
       webcams: [],
-      eyes: { dilation: 0, closed: 0 }
+      eyesDilatedCoefficient: 0,
+      eyesClosedCoefficient: 1,
+      animationTime: "1000ms"
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -50,12 +53,6 @@ class App extends React.Component<IAppProps, IAppState> {
     this.onUserMediaError = this.onUserMediaError.bind(this);
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
-    window.setInterval(() => {
-      this.setState((state) => ({
-        eyes: { dilation: state.eyes.dilation, closed: 1 - state.eyes.closed }
-      }))
-    }, 1500);
-
   }
 
   componentDidMount() {
@@ -83,11 +80,11 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   onUserMedia(stream: MediaStream) {
-    this.setState({ eyesDisplayed: true });
+    this.setState({ eyesClosedCoefficient: 0 });
   }
 
   onUserMediaError() {
-    this.setState({ eyesDisplayed: false });
+    this.setState({ eyesClosedCoefficient: 0 });
   }
 
   render() {
@@ -106,39 +103,35 @@ class App extends React.Component<IAppProps, IAppState> {
           })}
         </div>
 
-        {this.state.eyesDisplayed ?
-          (
-            <div className="container">
-              {Object.values(eyes).map((eye, key) => {
-                return (
-                  <Eye
-                    class={eye}
-                    key={key}
-                    width={this.state.width / 2}
-                    height={this.state.height}
-                    scleraColor={colours.scleraColor}
-                    irisColor={colours.irisColor}
-                    pupilColor={colours.pupilColor}
-                    scleraRadius={this.state.width / 8}
-                    irisRadius={this.state.width / 16}
-                    pupilRadius={this.state.width / 40}
-                    closedFactor={this.state.eyes.closed}
-                    dilationFactor={this.state.eyes.dilation}
-                  />
-                )
-              })}
-            </div>
-          )
+        {this.state.webcams.length > 0 ?
+          <div className="container">
+            {Object.values(eyes).map((eye, key) => {
+              return (
+                <Eye
+                  class={eye}
+                  key={key}
+                  width={this.state.width / 2}
+                  height={this.state.height}
+                  scleraColor={colours.scleraColor}
+                  irisColor={colours.irisColor}
+                  pupilColor={colours.pupilColor}
+                  scleraRadius={this.state.width / 8}
+                  irisRadius={this.state.width / 16}
+                  pupilRadius={this.state.width / 40}
+                  closedCoefficient={this.state.eyesClosedCoefficient}
+                  dilatedCoefficient={this.state.eyesDilatedCoefficient}
+                  animationTime={this.state.animationTime}
+                />
+              )
+            })}
+          </div>
           :
-          (
-            this.state.webcams.length > 0 ?
-              <div className="loading-spinner"></div>
-              :
-              <div className="Error">
-                No webcam connected. Please connect a webcam and refresh
-              </div>
-          )
+          <div className="Error">
+            No webcam connected. Please connect a webcam and refresh
+          </div>
         }
+
+
 
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
