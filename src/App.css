@@ -3,6 +3,15 @@
   background-color: black;
 }
 
+.Error {
+  text-decoration: none;
+  color: var(--menu-text-colour);
+  font-size: 2em;
+  display: flex;
+  justify-content: center;
+  align-items: center
+}
+
 .container {
   display: flex;
   flex-flow: row;

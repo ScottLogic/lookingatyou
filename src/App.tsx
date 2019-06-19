@@ -118,7 +118,7 @@ class App extends React.Component<IAppProps, IAppState> {
             this.state.webcams.length > 0 ?
               <div className="loading-spinner"></div>
               :
-              <div></div>
+              <div className="Error"><label>No webcam connected. Please connect a webcam and refresh.</label></div>
           )
         }
 
