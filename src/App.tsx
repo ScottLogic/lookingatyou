@@ -59,7 +59,7 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   async getWebcamDevices() {
-    let devices = await navigator.mediaDevices.enumerateDevices();
+    let devices = await this.props.environment.navigator.mediaDevices.enumerateDevices();
     devices = devices.filter(device => device.kind === videoinput);
     this.setState({
       webcams: devices
@@ -88,6 +88,7 @@ class App extends React.Component<IAppProps, IAppState> {
           {this.state.webcams.map((device, key) => {
             return (
               <WebcamFeed
+                navigator={this.props.environment.navigator}
                 key={key}
                 deviceId={device.deviceId}
                 onUserMedia={this.onUserMedia}
@@ -113,23 +114,23 @@ class App extends React.Component<IAppProps, IAppState> {
           <TextBoxMenuItem
             name={"X Sensitivity"}
             default={localStorage.getItem("X Sensitivity") || "1"}
-            onInputChange={(text: string) => {}} />
+            onInputChange={(text: string) => { }} />
           <TextBoxMenuItem
             name={"Y Sensitivity"}
             default={localStorage.getItem("Y Sensitivity") || "1"}
-            onInputChange={(text: string) => {}} />
+            onInputChange={(text: string) => { }} />
           <TextBoxMenuItem
             name={"FPS"}
             default={localStorage.getItem("FPS") || "5"}
-            onInputChange={(text: string) => {}} />
+            onInputChange={(text: string) => { }} />
           <CheckBoxMenuItem
             name={"Swap Eyes"}
             default={"true" === (localStorage.getItem("Swap Eyes"))}
-            onInputChange={(checked: boolean) => {}} />
+            onInputChange={(checked: boolean) => { }} />
           <CheckBoxMenuItem
             name={"Toggle Debug"}
             default={"true" === (localStorage.getItem("Toggle Debug"))}
-            onInputChange={(checked: boolean) => {}} />
+            onInputChange={(checked: boolean) => { }} />
           <CanvasMenuItem
             name={"Left Camera"}
             ref={this.leftDebugRef} />
