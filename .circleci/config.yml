@@ -26,6 +26,9 @@ jobs:
       - checkout
       - run: sudo pip install awscli --upgrade
       - run: aws --version
+      - run:
+          name: Update npm to use ci command
+          command: sudo npm i -g npm@6.9.0
       - run: npm --version
       - run:
           name: Install dependencies
@@ -43,8 +46,5 @@ workflows:
     jobs:
       - test
       - deploy:
-          filters:
-            branches:
-              only: master
           requires:
             - test
