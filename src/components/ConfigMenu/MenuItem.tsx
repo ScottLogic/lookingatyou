@@ -49,7 +49,6 @@ function InputMenuItemDiv(props: { name: string, children: ReactNode }) {
     );
 }
 
-
 export class CanvasMenuItem extends React.Component<IMenuItemProps> {
     private canvasRef: React.RefObject<HTMLCanvasElement>;
     constructor(props: IMenuItemProps) {
