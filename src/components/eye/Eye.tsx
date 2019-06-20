@@ -31,7 +31,7 @@ export default class Eye extends React.Component<IEyeProps> {
 
     render() {
         var eyeMiddleX = this.props.width / 2;
-        var eyeLeft = eyeMiddleX - this.props.scleraRadius
+        var eyeLeft = eyeMiddleX - this.props.scleraRadius;
         var eyeRight = eyeMiddleX + this.props.scleraRadius;
         var eyeMiddleY = this.props.height / 2;
 
