@@ -4,7 +4,6 @@ import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
 import './App.css';
-import { NumericLiteral } from '@babel/types';
 
 
 const eyes = {
@@ -16,7 +15,10 @@ const eyelids = {
   OPEN: 0.5,
   CLOSED: 0,
   SHOCKED: 0.75,
+  BLINKFREQUENCY: 0.25,
 }
+
+const transitionTime = 100; // for animating eyelids and pupils
 
 const colours = {
   scleraColor: "white",
@@ -32,7 +34,6 @@ interface IAppState {
   webcams: MediaDeviceInfo[],
   eyesDilatedCoefficient: number,
   eyesOpenCoefficient: number,
-  animationTime: string,
   eyesDisplayed: boolean,
   isBlinking: boolean
 }
@@ -54,7 +55,6 @@ class App extends React.Component<IAppProps, IAppState> {
       webcams: [],
       eyesDilatedCoefficient: 1,
       eyesOpenCoefficient: eyelids.CLOSED,
-      animationTime: "1000ms",
       eyesDisplayed: false,
       isBlinking: false
     }
@@ -72,10 +72,10 @@ class App extends React.Component<IAppProps, IAppState> {
     this.props.environment.addEventListener("resize", this.updateDimensions);
     this.getWebcamDevices();
     window.setInterval(() => {
-      this.setState((state, props) => ({
-        isBlinking: state.isBlinking ? false : (Math.random() < 1 / 10)
+      this.setState((state) => ({
+        isBlinking: state.isBlinking ? false : (Math.random() < eyelids.BLINKFREQUENCY / (1000/transitionTime))
       }));
-    }, 100);
+    }, transitionTime);
   }
 
   componentWillUnmount() {
@@ -141,6 +141,7 @@ class App extends React.Component<IAppProps, IAppState> {
                   openCoefficient={this.state.eyesDisplayed ? this.state.eyesOpenCoefficient : 0}
                   // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
                   dilatedCoefficient={this.state.eyesDilatedCoefficient}
+                  transitionTime={transitionTime.toString()}
                 />
               )
             })}

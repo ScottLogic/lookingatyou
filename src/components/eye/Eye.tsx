@@ -13,14 +13,23 @@ interface IEyeProps {
     pupilRadius: number,
     openCoefficient: number,
     dilatedCoefficient: number,
-    isBlinking: boolean
+    isBlinking: boolean,
+    transitionTime: string
 }
 
 export default class Eye extends React.Component<IEyeProps> {
 
+    private transitionStyle : {transition: string}
+
+    constructor(props: IEyeProps) {
+        super(props);
+        this.transitionStyle = {transition : props.transitionTime}
+    }
+
     renderCircle(radius: number, name: string, colour: string) {
         return (
             <circle
+                style = {{transition: "all " + this.props.transitionTime.toString() + " linear 0s"}}
                 r={radius}
                 className={name}
                 fill={colour}
@@ -51,14 +60,14 @@ export default class Eye extends React.Component<IEyeProps> {
                     {this.renderCircle(this.props.pupilRadius * this.props.dilatedCoefficient, "pupil", this.props.pupilColor)}
                 </g>
                 <svg className="Eyelids"> 
-                    <path d={ // upper eyelid
+                    <path style = {this.transitionStyle} d={ // upper eyelid
                         `M ${eyeLeft} ${eyeMiddleY},
                          A ${this.props.scleraRadius} ${this.props.scleraRadius} 0 0 1 ${eyeRight} ${eyeMiddleY}
                          C ${eyeRight} ${eyeMiddleY - bezierControlOffset}, ${eyeMiddleX + bezierControlOffset} ${topEyelidY}, ${eyeMiddleX} ${topEyelidY}
                          C ${eyeMiddleX - bezierControlOffset} ${topEyelidY}, ${eyeLeft} ${eyeMiddleY - bezierControlOffset}, ${eyeLeft} ${eyeMiddleY}`
                     }>
                     </path>
-                    <path d={ // lower eyelid
+                    <path style = {this.transitionStyle} d={ // lower eyelid
                         `M ${eyeLeft} ${eyeMiddleY},
                          A ${this.props.scleraRadius} ${this.props.scleraRadius} 0 0 0 ${eyeRight} ${eyeMiddleY}
                          C ${eyeRight} ${eyeMiddleY + bezierControlOffset}, ${eyeMiddleX + bezierControlOffset} ${bottomEyelidY}, ${eyeMiddleX} ${bottomEyelidY}
