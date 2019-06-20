@@ -12,7 +12,7 @@ const eyes = {
 }
 
 const eyelids = {
-  OPEN: 0.35,
+  OPEN: 0.5,
   CLOSED: 0,
   SHOCKED: 0.75,
   BLINKFREQUENCY: 0.25,
