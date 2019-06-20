@@ -20,6 +20,8 @@ const colours = {
 
 const videoinput = 'videoinput';
 
+const FPS = 30;
+
 interface IAppState {
   width: number,
   height: number,
@@ -27,7 +29,7 @@ interface IAppState {
   webcams: MediaDeviceInfo[],
   videos: RefObject<HTMLVideoElement>[],
   targetX: number,
-  targetY: number;
+  targetY: number,
 }
 
 interface IAppProps {
@@ -49,13 +51,13 @@ class App extends React.Component<IAppProps, IAppState> {
       webcams: [],
       videos: [],
       targetX: this.props.environment.innerWidth/4,
-      targetY: this.props.environment.innerHeight/2,
-
+      targetY: this.props.environment.innerHeight/2
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
     this.onUserMedia = this.onUserMedia.bind(this);
     this.onUserMediaError = this.onUserMediaError.bind(this);
+    this.detectImage = this.detectImage.bind(this);
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
     this.model = null;
@@ -66,11 +68,12 @@ class App extends React.Component<IAppProps, IAppState> {
     this.props.environment.addEventListener("resize", this.updateDimensions);
     this.getWebcamDevices();
     this.model = await cocoSSD.load();
-    this.frameCapture = setInterval(this.detectImage, 1000/30, this.state.videos[0].current) as number;
+    this.frameCapture = setInterval(this.detectImage, 1000/FPS, this.state.videos[0].current) as number;
   }
 
   componentWillUnmount() {
     this.props.environment.removeEventListener("resize", this.updateDimensions);
+    clearInterval(this.frameCapture);
   }
 
   async getWebcamDevices() {
@@ -86,12 +89,13 @@ class App extends React.Component<IAppProps, IAppState> {
     this.setState({
       height: this.props.environment.innerHeight,
       width: this.props.environment.innerWidth,
+      targetX: this.props.environment.innerWidth/4,
+      targetY: this.props.environment.innerHeight/2
     });
   }
 
   onUserMedia(stream: MediaStream) {
     this.setState({ eyesDisplayed: true });
-    console.log(this.state.videos);
   }
 
   onUserMediaError(error: Error) {
@@ -100,7 +104,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
   async detectImage(img : ImageData|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|null)
   {
-    if (this.model !== null && img !== null){
+    if (this.model && img !== null){
       var detections = await this.model.detect(img);
       this.selectTarget(detections);
     }
