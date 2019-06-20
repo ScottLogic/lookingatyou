@@ -79,7 +79,6 @@ class App extends React.Component<IAppProps, IAppState> {
 
   onUserMediaError() {
     this.setState({ eyesDisplayed: false });
-    console.log('error');
   }
 
   render() {
