@@ -33,7 +33,7 @@ const WebcamFeed = (props: IWebcamFeedProps) => {
   }, []);
 
   function getStream(deviceId: string) {
-    return navigator.mediaDevices.getUserMedia({ video: { deviceId: deviceId } })
+    return navigator.mediaDevices.getUserMedia({ video: { deviceId } })
   }
 
   return <video
