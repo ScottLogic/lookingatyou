@@ -64,6 +64,18 @@ class App extends React.Component<IAppProps, IAppState> {
   componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
     this.getWebcamDevices();
+    this.blink();
+  }
+
+  blink() {
+    var blinkTimer = 1000;
+    setTimeout(() => {
+      this.setState({ eyesOpenCoefficient: eyelids.CLOSED });
+      setTimeout(() => {
+        this.setState({ eyesOpenCoefficient: eyelids.OPEN });
+        this.blink();
+      }, 500)
+    }, blinkTimer);
   }
 
   componentWillUnmount() {
