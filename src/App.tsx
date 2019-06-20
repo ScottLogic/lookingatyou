@@ -4,7 +4,6 @@ import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
 import './App.css';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
-import {Ref} from './components/webcamFeed/WebcamFeed'
 
 const eyes = {
   LEFT: 'left',
@@ -24,6 +23,7 @@ interface IAppState {
   height: number,
   eyesDisplayed: boolean,
   webcams: MediaDeviceInfo[],
+  videos: RefObject<HTMLVideoElement>[];
 }
 
 interface IAppProps {
@@ -33,7 +33,6 @@ interface IAppProps {
 class App extends React.Component<IAppProps, IAppState> {
   private leftDebugRef: React.RefObject<CanvasMenuItem>;
   private rightDebugRef: React.RefObject<CanvasMenuItem>;
-  private videos: RefObject<Ref>[];
   constructor(props: IAppProps) {
     super(props);
 
@@ -42,6 +41,7 @@ class App extends React.Component<IAppProps, IAppState> {
       height: this.props.environment.innerHeight,
       eyesDisplayed: false,
       webcams: [],
+      videos: [],
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -49,7 +49,6 @@ class App extends React.Component<IAppProps, IAppState> {
     this.onUserMediaError = this.onUserMediaError.bind(this);
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
-    this.videos = Array(2).map(() => React.createRef());
   }
 
   componentDidMount() {
@@ -66,6 +65,7 @@ class App extends React.Component<IAppProps, IAppState> {
     devices = devices.filter(device => device.kind === videoinput);
     this.setState({
       webcams: devices,
+      videos: Array(devices.length).fill(undefined).map( () => React.createRef())
     });
   }
 
@@ -78,6 +78,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
   onUserMedia(stream: MediaStream) {
     this.setState({ eyesDisplayed: true });
+    console.log(this.state.videos);
   }
 
   onUserMediaError(error: Error) {
@@ -95,7 +96,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 deviceId={device.deviceId}
                 onUserMedia={this.onUserMedia}
                 onUserMediaError={this.onUserMediaError}
-                ref={this.videos[key]}
+                ref={this.state.videos[key]}
               />
             )
           })}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ForwardRefExoticComponent, RefForwardingComponent } from 'react';
+import React, { useState, useEffect} from 'react';
 
 interface IWebcamFeedProps {
   deviceId: string,
@@ -6,9 +6,7 @@ interface IWebcamFeedProps {
   onUserMediaError: (e: Error) => void,
 }
 
-export type Ref = HTMLVideoElement;
-
-const WebcamFeed = React.forwardRef<Ref, IWebcamFeedProps>((props, ref) => {
+const WebcamFeed = React.forwardRef<HTMLVideoElement, IWebcamFeedProps>((props, ref) => {
   const [stream, setStream] = useState();
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
