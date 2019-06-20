@@ -27,7 +27,7 @@ const WebcamFeed = (props: IWebcamFeedProps) => {
           }
           props.onUserMedia(myStream);
         }
-      } catch {
+      } catch (error) {
         props.onUserMediaError();
       }
     }
