@@ -37,7 +37,7 @@ export default class Eye extends React.Component<IEyeProps> {
 
         var topEyelidY = eyeMiddleY - this.props.scleraRadius * this.props.openCoefficient;
         var bottomEyelidY = eyeMiddleY + this.props.scleraRadius * this.props.openCoefficient;
-        
+
         var bezierCurveConstant = 0.55228474983; // (4/3)tan(pi/8)
         var bezierControlOffset = this.props.scleraRadius * bezierCurveConstant * this.props.openCoefficient;
         return (
@@ -47,7 +47,7 @@ export default class Eye extends React.Component<IEyeProps> {
                     {this.renderCircle(this.props.irisRadius, "iris", this.props.irisColor)}
                     {this.renderCircle(this.props.pupilRadius * this.props.dilatedCoefficient, "pupil", this.props.pupilColor)}
                 </g>
-                <svg className="Eyelids">
+                <svg className="Eyelids"> 
                     <path d={ // upper eyelid
                         `M ${eyeLeft} ${eyeMiddleY},
                          A ${this.props.scleraRadius} ${this.props.scleraRadius} 0 0 1 ${eyeRight} ${eyeMiddleY}
