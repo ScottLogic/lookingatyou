@@ -12,7 +12,8 @@ interface IEyeProps {
     irisRadius: number,
     pupilRadius: number,
     openCoefficient: number,
-    dilatedCoefficient: number
+    dilatedCoefficient: number,
+    isBlinking: boolean
 }
 
 export default class Eye extends React.Component<IEyeProps> {
@@ -30,16 +31,18 @@ export default class Eye extends React.Component<IEyeProps> {
     }
 
     render() {
+        var openCoefficient = this.props.isBlinking? 0 : this.props.openCoefficient;
+
         var eyeMiddleX = this.props.width / 2;
         var eyeLeft = eyeMiddleX - this.props.scleraRadius;
         var eyeRight = eyeMiddleX + this.props.scleraRadius;
         var eyeMiddleY = this.props.height / 2;
 
-        var topEyelidY = eyeMiddleY - this.props.scleraRadius * this.props.openCoefficient;
-        var bottomEyelidY = eyeMiddleY + this.props.scleraRadius * this.props.openCoefficient;
+        var topEyelidY = eyeMiddleY - this.props.scleraRadius * openCoefficient;
+        var bottomEyelidY = eyeMiddleY + this.props.scleraRadius * openCoefficient;
 
         var bezierCurveConstant = 0.55228474983; // (4/3)tan(pi/8)
-        var bezierControlOffset = this.props.scleraRadius * bezierCurveConstant * this.props.openCoefficient;
+        var bezierControlOffset = this.props.scleraRadius * bezierCurveConstant * openCoefficient;
         return (
             <svg className={this.props.class} width={this.props.width} height={this.props.height} >
                 {this.renderCircle(this.props.scleraRadius, "sclera", this.props.scleraColor)}

@@ -4,6 +4,7 @@ import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
 import './App.css';
+import { NumericLiteral } from '@babel/types';
 
 
 const eyes = {
@@ -31,7 +32,9 @@ interface IAppState {
   webcams: MediaDeviceInfo[],
   eyesDilatedCoefficient: number,
   eyesOpenCoefficient: number,
-  animationTime: string
+  animationTime: string,
+  eyesDisplayed: boolean,
+  isBlinking: boolean
 }
 
 
@@ -51,7 +54,9 @@ class App extends React.Component<IAppProps, IAppState> {
       webcams: [],
       eyesDilatedCoefficient: 1,
       eyesOpenCoefficient: eyelids.CLOSED,
-      animationTime: "1000ms"
+      animationTime: "1000ms",
+      eyesDisplayed: false,
+      isBlinking: false
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -59,23 +64,18 @@ class App extends React.Component<IAppProps, IAppState> {
     this.onUserMediaError = this.onUserMediaError.bind(this);
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
+
+
   }
 
   componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
     this.getWebcamDevices();
-    this.blink();
-  }
-
-  blink() {
-    var blinkTimer = 1000;
-    setTimeout(() => {
-      this.setState({ eyesOpenCoefficient: eyelids.CLOSED });
-      setTimeout(() => {
-        this.setState({ eyesOpenCoefficient: eyelids.OPEN });
-        this.blink();
-      }, 500)
-    }, blinkTimer);
+    window.setInterval(() => {
+      this.setState((state, props) => ({
+        isBlinking: state.isBlinking ? false : (Math.random() < 1 / 10)
+      }));
+    }, 100);
   }
 
   componentWillUnmount() {
@@ -98,11 +98,11 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   onUserMedia(stream: MediaStream) {
-    this.setState({ eyesOpenCoefficient: eyelids.OPEN });
+    this.setState({ eyesDisplayed: true, eyesOpenCoefficient: eyelids.OPEN });
   }
 
   onUserMediaError() {
-    this.setState({ eyesOpenCoefficient: eyelids.CLOSED });
+    this.setState({ eyesDisplayed: false, eyesOpenCoefficient: eyelids.CLOSED });
   }
 
   render() {
@@ -136,8 +136,9 @@ class App extends React.Component<IAppProps, IAppState> {
                   scleraRadius={this.state.width / 5}
                   irisRadius={this.state.width / 10}
                   pupilRadius={this.state.width / 24}
+                  isBlinking={this.state.isBlinking}
                   // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
-                  openCoefficient={this.state.eyesOpenCoefficient}
+                  openCoefficient={this.state.eyesDisplayed ? this.state.eyesOpenCoefficient : 0}
                   // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
                   dilatedCoefficient={this.state.eyesDilatedCoefficient}
                 />
