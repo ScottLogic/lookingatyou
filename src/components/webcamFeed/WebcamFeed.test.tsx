@@ -33,7 +33,7 @@ describe('WebcamFeed', () => {
 
   it('Should call onUserMediaError when no webcam detected', async () => {
     mount(<WebcamFeed {...props} />);
-    expect(mockOnUserMediaError.mock.results[0].value).toBe(streamFailure);
+    expect(mockOnUserMediaError).toHaveBeenCalled();
   });
 
   it('Should render video object', () => {
