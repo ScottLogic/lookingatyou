@@ -127,7 +127,7 @@ class App extends React.Component<IAppProps, IAppState> {
                   // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
                   openCoefficient={this.state.eyesOpenCoefficient}
                   // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
-                  dilatedCoefficient={this.state.eyesDilatedCoefficient} 
+                  dilatedCoefficient={this.state.eyesDilatedCoefficient}
                 />
               )
             })}
