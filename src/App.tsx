@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 import * as cocoSSD from "@tensorflow-models/coco-ssd"
 
 import Eye from './components/eye/Eye';
@@ -25,6 +25,7 @@ interface IAppState {
   height: number,
   eyesDisplayed: boolean,
   webcams: MediaDeviceInfo[],
+  videos: RefObject<HTMLVideoElement>[];
 }
 
 interface IAppProps {
@@ -34,8 +35,6 @@ interface IAppProps {
 class App extends React.Component<IAppProps, IAppState> {
   private leftDebugRef: React.RefObject<CanvasMenuItem>;
   private rightDebugRef: React.RefObject<CanvasMenuItem>;
-  private videos: HTMLVideoElement[];
-  private cameraCount: number;
   private model: cocoSSD.ObjectDetection | null;
   constructor(props: IAppProps) {
     super(props);
@@ -45,6 +44,7 @@ class App extends React.Component<IAppProps, IAppState> {
       height: this.props.environment.innerHeight,
       eyesDisplayed: false,
       webcams: [],
+      videos: [],
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -52,8 +52,6 @@ class App extends React.Component<IAppProps, IAppState> {
     this.onUserMediaError = this.onUserMediaError.bind(this);
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
-    this.videos = [];
-    this.cameraCount = 0;
     this.model = null;
   }
 
@@ -72,6 +70,7 @@ class App extends React.Component<IAppProps, IAppState> {
     devices = devices.filter(device => device.kind === videoinput);
     this.setState({
       webcams: devices,
+      videos: Array(devices.length).fill(undefined).map( () => React.createRef())
     });
   }
 
@@ -84,24 +83,22 @@ class App extends React.Component<IAppProps, IAppState> {
 
   onUserMedia(stream: MediaStream) {
     this.setState({ eyesDisplayed: true });
-    var video = document.querySelectorAll(".webcam-feed > video")[this.cameraCount];
-    this.videos.push(video as HTMLVideoElement);
-    this.cameraCount ++;
+    console.log(this.state.videos);
   }
 
   onUserMediaError(error: Error) {
     this.setState({ eyesDisplayed: false });
   }
 
-  async detectImage(img : ImageData|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, callback : (target: cocoSSD.DetectedObject) => void)
+  async detectImage(img : ImageData|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement)
   {
     if (this.model !== null){
       var detections = await this.model.detect(img);
-      selectedTarget(detections, callback)
+      this.selectTarget(detections);
     }
   }
   
-  selectTarget(detections : cocoSSD.DetectedObject[], callback : (target: cocoSSD.DetectedObject) => void)
+  selectTarget(detections : cocoSSD.DetectedObject[])
   {
     
   }
@@ -117,6 +114,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 deviceId={device.deviceId}
                 onUserMedia={this.onUserMedia}
                 onUserMediaError={this.onUserMediaError}
+                ref={this.state.videos[key]}
               />
             )
           })}
