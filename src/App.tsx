@@ -50,6 +50,12 @@ class App extends React.Component<IAppProps, IAppState> {
     this.onUserMediaError = this.onUserMediaError.bind(this);
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
+
+    var originalSetItem = this.props.environment.localStorage.setItem;
+    this.props.environment.localStorage.setItem = function(key : string, value : any) {
+      document.createEvent('Event').initEvent('itemInserted', true, true);
+      originalSetItem.apply(key, value);
+    }
   }
 
   componentDidMount() {
@@ -153,13 +159,13 @@ class App extends React.Component<IAppProps, IAppState> {
             }} />
           <CheckBoxMenuItem
             name={"Swap Eyes"}
-            default={bool(this.storedOrDefault("Swap Eyes", "false"))}
+            default={this.storedOrDefault("Swap Eyes", "false")}
             onInputChange={(checked: boolean) => {
               this.store("Swap Eyes", checked.toString());
             }} />
           <CheckBoxMenuItem
             name={"Toggle Debug"}
-            default={bool(this.storedOrDefault("Toggle Debug", "false"))}
+            default={this.storedOrDefault("Toggle Debug", "false")}
             onInputChange={(checked: boolean) => {
               this.store("Toggle Debug", checked.toString());
             }} />
@@ -179,15 +185,15 @@ class App extends React.Component<IAppProps, IAppState> {
       </div >
     );
   }
-  storedOrDefault(item: string, def: string) {
-    return this.props.environment.localStorage.getItem(item) || def;
+  storedOrDefault(item: string, def: string) : any {
+    var json = this.props.environment.localStorage.getItem(item) || def;
+    var val = JSON.parse(json);
+    return val;
   }
-  store(item: string, val: string) {
-    this.props.environment.localStorage.setItem(item, val);
+  store(item: string, val: any) {
+    var json = JSON.stringify(val);
+    this.props.environment.localStorage.setItem(item, json);
   }
-}
-function bool(s: string) {
-  return "true" === s;
 }
 
 
