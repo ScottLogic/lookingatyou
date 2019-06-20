@@ -25,7 +25,9 @@ interface IAppState {
   height: number,
   eyesDisplayed: boolean,
   webcams: MediaDeviceInfo[],
-  videos: RefObject<HTMLVideoElement>[];
+  videos: RefObject<HTMLVideoElement>[],
+  targetX: number,
+  targetY: number;
 }
 
 interface IAppProps {
@@ -36,6 +38,7 @@ class App extends React.Component<IAppProps, IAppState> {
   private leftDebugRef: React.RefObject<CanvasMenuItem>;
   private rightDebugRef: React.RefObject<CanvasMenuItem>;
   private model: cocoSSD.ObjectDetection | null;
+  private frameCapture: number;
   constructor(props: IAppProps) {
     super(props);
 
@@ -45,6 +48,9 @@ class App extends React.Component<IAppProps, IAppState> {
       eyesDisplayed: false,
       webcams: [],
       videos: [],
+      targetX: this.props.environment.innerWidth/4,
+      targetY: this.props.environment.innerHeight/2,
+
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -53,12 +59,14 @@ class App extends React.Component<IAppProps, IAppState> {
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
     this.model = null;
+    this.frameCapture = 0;
   }
 
   async componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
     this.getWebcamDevices();
     this.model = await cocoSSD.load();
+    this.frameCapture = setInterval(this.detectImage, 1000/30, this.state.videos[0].current) as number;
   }
 
   componentWillUnmount() {
@@ -90,9 +98,9 @@ class App extends React.Component<IAppProps, IAppState> {
     this.setState({ eyesDisplayed: false });
   }
 
-  async detectImage(img : ImageData|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement)
+  async detectImage(img : ImageData|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|null)
   {
-    if (this.model !== null){
+    if (this.model !== null && img !== null){
       var detections = await this.model.detect(img);
       this.selectTarget(detections);
     }
@@ -100,7 +108,17 @@ class App extends React.Component<IAppProps, IAppState> {
   
   selectTarget(detections : cocoSSD.DetectedObject[])
   {
-    
+    var target = detections.find( (detection) => detection.class === "person");
+    if (target !== undefined) {
+      this.calculateEyePos(target.bbox);
+    }
+  }
+
+  calculateEyePos(coords : number[]) {
+    this.setState({
+      targetX: coords[0] + coords[2]/2, 
+      targetY: coords[1] + coords[3]/2
+    })
   }
 
   render() {
@@ -131,6 +149,8 @@ class App extends React.Component<IAppProps, IAppState> {
                     width={this.state.width / 2}
                     height={this.state.height}
                     {...colours}
+                    innerX={this.state.targetX}
+                    innerY={this.state.targetY}
                   />
                 )
               })}
