@@ -11,6 +11,12 @@ const eyes = {
   RIGHT: 'right',
 }
 
+const eyelids = {
+  OPEN: 0.5,
+  CLOSED: 0,
+  SHOCKED: 0.75,
+}
+
 const colours = {
   scleraColor: "white",
   irisColor: "darkGoldenrod",
@@ -24,7 +30,7 @@ interface IAppState {
   height: number,
   webcams: MediaDeviceInfo[],
   eyesDilatedCoefficient: number,
-  eyesClosedCoefficient: number,
+  eyesOpenCoefficient: number,
   animationTime: string
 }
 
@@ -44,7 +50,7 @@ class App extends React.Component<IAppProps, IAppState> {
       height: this.props.environment.innerHeight,
       webcams: [],
       eyesDilatedCoefficient: 1,
-      eyesClosedCoefficient: 1,
+      eyesOpenCoefficient: eyelids.CLOSED,
       animationTime: "1000ms"
     }
 
@@ -80,11 +86,11 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   onUserMedia(stream: MediaStream) {
-    this.setState({ eyesClosedCoefficient: -0 });
+    this.setState({ eyesOpenCoefficient: eyelids.OPEN });
   }
 
   onUserMediaError() {
-    this.setState({ eyesClosedCoefficient: 1 });
+    this.setState({ eyesOpenCoefficient: eyelids.CLOSED });
   }
 
   render() {
@@ -115,11 +121,11 @@ class App extends React.Component<IAppProps, IAppState> {
                   scleraColor={colours.scleraColor}
                   irisColor={colours.irisColor}
                   pupilColor={colours.pupilColor}
-                  scleraRadius={this.state.width / 6}
-                  irisRadius={this.state.width / 12}
-                  pupilRadius={this.state.width / 32}
-                  // 0 is neutral eye position; 1 is fully closed; negative numbers open eye abnormally wide (anything less than -0.5 looks bad)
-                  closedCoefficient={this.state.eyesClosedCoefficient}
+                  scleraRadius={this.state.width / 5}
+                  irisRadius={this.state.width / 10}
+                  pupilRadius={this.state.width / 24}
+                  // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
+                  openCoefficient={this.state.eyesOpenCoefficient}
                   // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
                   dilatedCoefficient={this.state.eyesDilatedCoefficient} 
                 />
