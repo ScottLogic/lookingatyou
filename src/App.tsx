@@ -89,6 +89,7 @@ class App extends React.Component<IAppProps, IAppState> {
     this.setState({ eyesOpenCoefficient: eyelids.OPEN });
   }
 
+
   onUserMediaError() {
     this.setState({ eyesOpenCoefficient: eyelids.CLOSED });
   }
