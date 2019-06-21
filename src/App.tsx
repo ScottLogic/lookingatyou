@@ -16,6 +16,17 @@ const colours = {
   pupilColor: "black"
 }
 
+interface configDict { [Key: string]: any }
+
+const defaultConfigValues : configDict = {
+  "X Sensitivity": 1,
+  "Y Sensitivity": 1,
+  "FPS": 5,
+  "Swap Eyes": false,
+  "Toggle Debug": false,
+  "Iris Color": colours.irisColor,
+}
+
 
 const videoinput = 'videoinput';
 
@@ -24,8 +35,7 @@ interface IAppState {
   height: number,
   eyesDisplayed: boolean,
   webcams: MediaDeviceInfo[],
-  irisColor: string,
-  configValues : {[Key: string] : any}
+  configValues: configDict
 }
 
 interface IAppProps {
@@ -43,8 +53,7 @@ class App extends React.Component<IAppProps, IAppState> {
       height: this.props.environment.innerHeight,
       eyesDisplayed: false,
       webcams: [],
-      irisColor: colours.irisColor,
-      configValues : []
+      configValues: defaultConfigValues
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -52,21 +61,12 @@ class App extends React.Component<IAppProps, IAppState> {
     this.onUserMediaError = this.onUserMediaError.bind(this);
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
-
-    var that = this
-    document.addEventListener('setItem', function(event) {
-      that.setState((state,props) => {
-        configValues : [state.configValues]
-      })
-    })
   }
 
   componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
+    this.readConfig();
     this.getWebcamDevices();
-    this.setState((state) => ({
-      irisColor: this.storedOrDefault("Iris Color", state.irisColor)
-    }));
   }
 
   componentWillUnmount() {
@@ -123,7 +123,7 @@ class App extends React.Component<IAppProps, IAppState> {
                     width={this.state.width / 2}
                     height={this.state.height}
                     scleraColor={colours.scleraColor}
-                    irisColor={this.state.irisColor}
+                    irisColor={this.state.configValues["Iris Color"]}
                     pupilColor={colours.pupilColor}
                   />
                 )
@@ -141,42 +141,45 @@ class App extends React.Component<IAppProps, IAppState> {
           )
         }
 
-        <ConfigMenu width="14em" timerLength={1000}>
+        <ConfigMenu width="14em" timerLength={2000}>
           <TextBoxMenuItem
             name={"X Sensitivity"}
-            default={this.storedOrDefault("X Sensitivity", "1")}
+            value={this.state.configValues["X Sensitivity"]}
             onInputChange={(sens: string) => {
-              this.store("X Sensitivity", sens);
+              if (parseInt(sens))
+                this.store("X Sensitivity", parseInt(sens));
             }} />
           <TextBoxMenuItem
             name={"Y Sensitivity"}
-            default={this.storedOrDefault("Y Sensitivity", "1")}
+            value={this.state.configValues["Y Sensitivity"]}
             onInputChange={(sens: string) => {
-              this.store("Y Sensitivity", sens);
+              if (parseInt(sens))
+                this.store("Y Sensitivity", parseInt(sens));
             }} />
           <TextBoxMenuItem
             name={"FPS"}
-            default={this.storedOrDefault("FPS", "5")}
+            value={this.state.configValues["FPS"]}
             onInputChange={(fps: string) => {
-              this.store("FPS", fps);
+              if (parseInt(fps))
+                this.store("FPS", parseInt(fps));
             }} />
           <CheckBoxMenuItem
             name={"Swap Eyes"}
-            default={this.storedOrDefault("Swap Eyes", "false")}
+            checked={this.state.configValues["Swap Eyes"]}
             onInputChange={(checked: boolean) => {
-              this.store("Swap Eyes", checked.toString());
+              this.store("Swap Eyes", checked);
             }} />
           <CheckBoxMenuItem
             name={"Toggle Debug"}
-            default={this.storedOrDefault("Toggle Debug", "false")}
+            checked={this.state.configValues["Toggle Debug"]}
             onInputChange={(checked: boolean) => {
-              this.store("Toggle Debug", checked.toString());
+              this.store("Toggle Debug", checked);
             }} />
           <ColorMenuItem
             name={"Iris Color"}
-            default={this.storedOrDefault("Iris Color", colours.irisColor)}
+            color={this.state.configValues["Iris Color"]}
             onInputChange={(color: string) => {
-              this.store("Iris Color", color); this.setState({ irisColor: color });
+              this.store("Iris Color", color);
             }} />
           <CanvasMenuItem
             name={"Left Camera"}
@@ -188,22 +191,42 @@ class App extends React.Component<IAppProps, IAppState> {
       </div >
     );
   }
-  storedOrDefault(item: string, def: string) : any {
-    var json = this.props.environment.localStorage.getItem(item) || def;
-    var val = JSON.parse(json);
-    return val;
-  }
   store(item: string, val: any) {
-    this.state.configValues[item] = val;
-    this.props.environment.localStorage.setItem("config", JSON.stringify(this.state.configValues));
+    var configValuesCopy: configDict = {};
+    Object.assign(configValuesCopy, this.state.configValues);
+    configValuesCopy[item] = val;
+    this.setState({
+      configValues: configValuesCopy,
+    }, () => {
+      var json = JSON.stringify(this.state.configValues);
+      this.props.environment.localStorage.setItem("config", json);
+    });
+  }
+
+  readConfig() {
+    var json = this.props.environment.localStorage.getItem("config");
+    if (json === "undefined" || json == null) {
+      console.log("Config in local storage");
+    } else {
+      var newConfigValues = this.state.configValues
+      try {
+        newConfigValues = JSON.parse(json);
+      } catch (e) {
+        if (e instanceof SyntaxError)
+          console.log("Malformed JSON Config\n", e);
+        else
+          throw e;
+      }
+      finally {
+        for (const [key, value] of Object.entries(defaultConfigValues))
+          if (typeof newConfigValues[key] != typeof defaultConfigValues[key]) {
+            console.log(`Error: ${newConfigValues[key]} found in place of type:${typeof defaultConfigValues[key]} in config in local storage. Using default value ${defaultConfigValues[key]}, instead.`);
+            newConfigValues[key] = defaultConfigValues[key];
+          }
+        this.setState({ configValues: newConfigValues });
+      }
+    }
   }
 }
-
-function updateDictionary(dictionary : {[Key: string] : any}, key : string, val : any ) {
-  //to-do : something like this ? https://www.freecodecamp.org/forum/t/reactjs-using-setstate-to-update-a-single-property-on-an-object/146772
-  //to-do : when storage values are updated by menuitems (or anywhere for that matter), the values should be reread here and the updated values sent as new defaults
-  //the READ VALUES should be passed, but the SET FUNCTION should be passed.
-}
-
 
 export default App;

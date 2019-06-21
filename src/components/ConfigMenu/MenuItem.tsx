@@ -6,36 +6,36 @@ interface IMenuItemProps {
 
 interface ITextBoxMenuItemProps extends IMenuItemProps {
     onInputChange: { (text: string): void },
-    default: string
+    value: string
 }
 export function TextBoxMenuItem(props: ITextBoxMenuItemProps) {
     return (
         <InputMenuItemDiv name={props.name}>
-            <input type="textbox" defaultValue={props.default} onChange={(event) => { props.onInputChange(event.target.value) }}></input>
+            <input type="textbox" value={props.value} onChange={(event) => { props.onInputChange(event.target.value) }}></input>
         </InputMenuItemDiv>
     )
 }
 
 interface ICheckBoxMenuItemProps extends IMenuItemProps {
     onInputChange: { (checked: boolean): void },
-    default: boolean
+    checked: boolean
 }
 export function CheckBoxMenuItem(props: ICheckBoxMenuItemProps) {
     return (
         <InputMenuItemDiv name={props.name}>
-            <input type="checkbox" defaultChecked={props.default} onChange={(event) => { props.onInputChange(event.target.checked) }}></input>
+            <input type="checkbox" checked={props.checked} onChange={(event) => { props.onInputChange(event.target.checked) }}></input>
         </InputMenuItemDiv>
     )
 }
 
 interface IColorMenuItemProps extends IMenuItemProps {
     onInputChange: { (color: string): void },
-    default: string
+    color: string
 }
 export function ColorMenuItem(props: IColorMenuItemProps) {
     return (
         <InputMenuItemDiv name={props.name}>
-            <input type="color" defaultValue={props.default} onChange={(event) => { props.onInputChange(event.target.value) }}></input>
+            <input type="color" value={props.color} onChange={(event) => { props.onInputChange(event.target.value) }}></input>
         </InputMenuItemDiv>
     )
 }
