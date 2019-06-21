@@ -78,7 +78,6 @@ class App extends React.Component<IAppProps, IAppState> {
 
   onUserMedia(stream: MediaStream) {
     this.setState({ eyesDisplayed: true });
-    console.log(this.state.videos);
   }
 
   onUserMediaError(error: Error) {
