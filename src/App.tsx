@@ -102,16 +102,14 @@ class App extends React.Component<IAppProps, IAppState> {
     this.setState({ eyesDisplayed: false });
   }
 
-  async detectImage(img : ImageData|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|null)
-  {
+  async detectImage(img : ImageData|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|null) {
     if (this.model && img !== null){
       var detections = await this.model.detect(img);
       this.selectTarget(detections);
     }
   }
   
-  selectTarget(detections : cocoSSD.DetectedObject[])
-  {
+  selectTarget(detections : cocoSSD.DetectedObject[]) {
     var target = detections.find( (detection) => detection.class === "person");
     if (target !== undefined) {
       this.calculateEyePos(target.bbox);
