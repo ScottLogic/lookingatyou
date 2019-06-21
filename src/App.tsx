@@ -24,7 +24,8 @@ interface IAppState {
   height: number,
   eyesDisplayed: boolean,
   webcams: MediaDeviceInfo[],
-  irisColor: string
+  irisColor: string,
+  configValues : {[Key: string] : any}
 }
 
 interface IAppProps {
@@ -43,6 +44,7 @@ class App extends React.Component<IAppProps, IAppState> {
       eyesDisplayed: false,
       webcams: [],
       irisColor: colours.irisColor,
+      configValues : []
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -51,11 +53,12 @@ class App extends React.Component<IAppProps, IAppState> {
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
 
-    var originalSetItem = this.props.environment.localStorage.setItem;
-    this.props.environment.localStorage.setItem = function(key : string, value : any) {
-      document.createEvent('Event').initEvent('itemInserted', true, true);
-      originalSetItem.apply(key, value);
-    }
+    var that = this
+    document.addEventListener('setItem', function(event) {
+      that.setState((state,props) => {
+        configValues : [state.configValues]
+      })
+    })
   }
 
   componentDidMount() {
@@ -191,9 +194,15 @@ class App extends React.Component<IAppProps, IAppState> {
     return val;
   }
   store(item: string, val: any) {
-    var json = JSON.stringify(val);
-    this.props.environment.localStorage.setItem(item, json);
+    this.state.configValues[item] = val;
+    this.props.environment.localStorage.setItem("config", JSON.stringify(this.state.configValues));
   }
+}
+
+function updateDictionary(dictionary : {[Key: string] : any}, key : string, val : any ) {
+  //to-do : something like this ? https://www.freecodecamp.org/forum/t/reactjs-using-setstate-to-update-a-single-property-on-an-object/146772
+  //to-do : when storage values are updated by menuitems (or anywhere for that matter), the values should be reread here and the updated values sent as new defaults
+  //the READ VALUES should be passed, but the SET FUNCTION should be passed.
 }
 
 
