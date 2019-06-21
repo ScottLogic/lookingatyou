@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { RefObject } from 'react';
+import * as cocoSSD from "@tensorflow-models/coco-ssd"
+
 import Eye from './components/eye/Eye';
 import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
@@ -18,11 +20,16 @@ const colours = {
 
 const videoinput = 'videoinput';
 
+const FPS = 30;
+
 interface IAppState {
   width: number,
   height: number,
   eyesDisplayed: boolean,
   webcams: MediaDeviceInfo[],
+  videos: RefObject<HTMLVideoElement>[],
+  targetX: number,
+  targetY: number,
 }
 
 interface IAppProps {
@@ -32,6 +39,8 @@ interface IAppProps {
 class App extends React.Component<IAppProps, IAppState> {
   private leftDebugRef: React.RefObject<CanvasMenuItem>;
   private rightDebugRef: React.RefObject<CanvasMenuItem>;
+  private model: cocoSSD.ObjectDetection | null;
+  private frameCapture: number;
   constructor(props: IAppProps) {
     super(props);
 
@@ -40,22 +49,31 @@ class App extends React.Component<IAppProps, IAppState> {
       height: this.props.environment.innerHeight,
       eyesDisplayed: false,
       webcams: [],
+      videos: [],
+      targetX: this.props.environment.innerWidth/4,
+      targetY: this.props.environment.innerHeight/2
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
     this.onUserMedia = this.onUserMedia.bind(this);
     this.onUserMediaError = this.onUserMediaError.bind(this);
+    this.detectImage = this.detectImage.bind(this);
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
+    this.model = null;
+    this.frameCapture = 0;
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
     this.getWebcamDevices();
+    this.model = await cocoSSD.load();
+    this.frameCapture = setInterval(this.detectImage, 1000/FPS, this.state.videos[0].current) as number;
   }
 
   componentWillUnmount() {
     this.props.environment.removeEventListener("resize", this.updateDimensions);
+    clearInterval(this.frameCapture);
   }
 
   async getWebcamDevices() {
@@ -63,6 +81,7 @@ class App extends React.Component<IAppProps, IAppState> {
     devices = devices.filter(device => device.kind === videoinput);
     this.setState({
       webcams: devices,
+      videos: devices.map(() => React.createRef<HTMLVideoElement>())
     });
   }
 
@@ -70,6 +89,8 @@ class App extends React.Component<IAppProps, IAppState> {
     this.setState({
       height: this.props.environment.innerHeight,
       width: this.props.environment.innerWidth,
+      targetX: this.props.environment.innerWidth/4,
+      targetY: this.props.environment.innerHeight/2
     });
   }
 
@@ -79,6 +100,28 @@ class App extends React.Component<IAppProps, IAppState> {
 
   onUserMediaError(error: Error) {
     this.setState({ eyesDisplayed: false });
+  }
+
+  async detectImage(img : ImageData|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|null) {
+    if (this.model && img !== null){
+      var detections = await this.model.detect(img);
+      this.selectTarget(detections);
+    }
+  }
+  
+  selectTarget(detections : cocoSSD.DetectedObject[]){
+    var target = detections.find( (detection) => detection.class === "person");
+    if (target !== undefined) {
+      this.calculateEyePos(target.bbox);
+    }
+  }
+
+  calculateEyePos(bbox : number[]) {
+    const [x, y, width, height] = bbox;
+    this.setState({
+      targetX: x + width/2, 
+      targetY: y + height/2
+    })
   }
 
   render() {
@@ -92,6 +135,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 deviceId={device.deviceId}
                 onUserMedia={this.onUserMedia}
                 onUserMediaError={this.onUserMediaError}
+                ref={this.state.videos[key]}
               />
             )
           })}
@@ -108,6 +152,8 @@ class App extends React.Component<IAppProps, IAppState> {
                     width={this.state.width / 2}
                     height={this.state.height}
                     {...colours}
+                    innerX={this.state.targetX}
+                    innerY={this.state.targetY}
                   />
                 )
               })}
