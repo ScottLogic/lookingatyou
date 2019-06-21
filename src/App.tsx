@@ -1,4 +1,4 @@
-import React, { RefObject, createRef } from 'react';
+import React, { RefObject } from 'react';
 import * as cocoSSD from "@tensorflow-models/coco-ssd"
 
 import Eye from './components/eye/Eye';
@@ -109,7 +109,7 @@ class App extends React.Component<IAppProps, IAppState> {
     }
   }
   
-  selectTarget(detections : cocoSSD.DetectedObject[]) {
+  selectTarget(detections : cocoSSD.DetectedObject[]){
     var target = detections.find( (detection) => detection.class === "person");
     if (target !== undefined) {
       this.calculateEyePos(target.bbox);
