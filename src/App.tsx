@@ -18,7 +18,7 @@ const colours = {
 
 interface configDict { [Key: string]: any }
 
-const defaultConfigValues : configDict = {
+const defaultConfigValues: configDict = {
   "X Sensitivity": 1,
   "Y Sensitivity": 1,
   "FPS": 5,
