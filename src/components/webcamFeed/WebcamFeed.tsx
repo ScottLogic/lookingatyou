@@ -33,7 +33,7 @@ const WebcamFeed = React.forwardRef<HTMLVideoElement, IWebcamFeedProps>((props, 
   }, []);
 
   function getStream(deviceId: string) {
-    return navigator.mediaDevices.getUserMedia({ video: { deviceId: deviceId } })
+    return navigator.mediaDevices.getUserMedia({ video: { deviceId } })
   }
 
   return <video
