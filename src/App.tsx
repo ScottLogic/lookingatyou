@@ -19,9 +19,9 @@ const colours = {
 interface configDict { [Key: string]: any }
 
 const defaultConfigValues: configDict = {
-  "X Sensitivity": 1,
-  "Y Sensitivity": 1,
-  "FPS": 5,
+  "X Sensitivity": "1.0",
+  "Y Sensitivity": "1.0",
+  "FPS": "5",
   "Swap Eyes": false,
   "Toggle Debug": false,
   "Iris Color": colours.irisColor,
@@ -61,11 +61,13 @@ class App extends React.Component<IAppProps, IAppState> {
     this.onUserMediaError = this.onUserMediaError.bind(this);
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
+
+    this.props.environment.addEventListener("storage", () => this.readConfig("config", this.props.environment.localStorage))
   }
 
   componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
-    this.readConfig();
+    this.readConfig("config", this.props.environment.localStorage);
     this.getWebcamDevices();
   }
 
@@ -146,40 +148,37 @@ class App extends React.Component<IAppProps, IAppState> {
             name={"X Sensitivity"}
             value={this.state.configValues["X Sensitivity"]}
             onInputChange={(sens: string) => {
-              if (parseInt(sens))
-                this.store("X Sensitivity", parseInt(sens));
+              this.store("X Sensitivity", sens, this.props.environment.localStorage);
             }} />
           <TextBoxMenuItem
             name={"Y Sensitivity"}
             value={this.state.configValues["Y Sensitivity"]}
             onInputChange={(sens: string) => {
-              if (parseInt(sens))
-                this.store("Y Sensitivity", parseInt(sens));
+              this.store("Y Sensitivity", sens, this.props.environment.localStorage);
             }} />
           <TextBoxMenuItem
             name={"FPS"}
             value={this.state.configValues["FPS"]}
             onInputChange={(fps: string) => {
-              if (parseInt(fps))
-                this.store("FPS", parseInt(fps));
+              this.store("FPS", fps, this.props.environment.localStorage);
             }} />
           <CheckBoxMenuItem
             name={"Swap Eyes"}
             checked={this.state.configValues["Swap Eyes"]}
             onInputChange={(checked: boolean) => {
-              this.store("Swap Eyes", checked);
+              this.store("Swap Eyes", checked, this.props.environment.localStorage);
             }} />
           <CheckBoxMenuItem
             name={"Toggle Debug"}
             checked={this.state.configValues["Toggle Debug"]}
             onInputChange={(checked: boolean) => {
-              this.store("Toggle Debug", checked);
+              this.store("Toggle Debug", checked, this.props.environment.localStorage);
             }} />
           <ColorMenuItem
             name={"Iris Color"}
             color={this.state.configValues["Iris Color"]}
             onInputChange={(color: string) => {
-              this.store("Iris Color", color);
+              this.store("Iris Color", color, this.props.environment.localStorage);
             }} />
           <CanvasMenuItem
             name={"Left Camera"}
@@ -191,20 +190,20 @@ class App extends React.Component<IAppProps, IAppState> {
       </div >
     );
   }
-  store(item: string, val: any) {
+  store(itemKey: string, itemVal: any, storage: Storage) {
     var configValuesCopy: configDict = {};
     Object.assign(configValuesCopy, this.state.configValues);
-    configValuesCopy[item] = val;
+    configValuesCopy[itemKey] = itemVal;
     this.setState({
       configValues: configValuesCopy,
     }, () => {
       var json = JSON.stringify(this.state.configValues);
-      this.props.environment.localStorage.setItem("config", json);
+      storage.setItem("config", json);
     });
   }
 
-  readConfig() {
-    var json = this.props.environment.localStorage.getItem("config");
+  readConfig(configKey: string, storage: Storage) {
+    var json = storage.getItem(configKey);
     if (json === "undefined" || json == null) {
       console.log("Config in local storage");
     } else {
