@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react';
+import React, { RefObject, createRef } from 'react';
 import * as cocoSSD from "@tensorflow-models/coco-ssd"
 
 import Eye from './components/eye/Eye';
@@ -81,7 +81,7 @@ class App extends React.Component<IAppProps, IAppState> {
     devices = devices.filter(device => device.kind === videoinput);
     this.setState({
       webcams: devices,
-      videos: Array(devices.length).fill(undefined).map( () => React.createRef())
+      videos: devices.map(() => React.createRef<HTMLVideoElement>())
     });
   }
 
