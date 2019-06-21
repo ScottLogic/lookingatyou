@@ -19,14 +19,13 @@ const colours = {
 interface configDict { [Key: string]: any }
 
 const defaultConfigValues: configDict = {
-  "X Sensitivity": 1.0,
-  "Y Sensitivity": 1.0,
-  "FPS": 5,
+  "X Sensitivity": "1.0",
+  "Y Sensitivity": "1.0",
+  "FPS": "5",
   "Swap Eyes": false,
   "Toggle Debug": false,
   "Iris Color": colours.irisColor,
 }
-
 
 const videoinput = 'videoinput';
 
@@ -204,27 +203,8 @@ class App extends React.Component<IAppProps, IAppState> {
 
   readConfig(configKey: string, storage: Storage) {
     var json = storage.getItem(configKey);
-    if (json === "undefined" || json == null) {
-      console.log("Config in local storage");
-    } else {
-      var newConfigValues = this.state.configValues
-      try {
-        newConfigValues = JSON.parse(json);
-      } catch (e) {
-        if (e instanceof SyntaxError)
-          console.log("Malformed JSON Config\n", e);
-        else
-          throw e;
-      }
-      finally {
-        for (const [key] of Object.entries(defaultConfigValues))
-          if (typeof newConfigValues[key] != typeof defaultConfigValues[key]) {
-            console.log(`Error: ${newConfigValues[key]}:${typeof newConfigValues[key]} found in place of val:${typeof defaultConfigValues[key]} in config in local storage. Using default value ${defaultConfigValues[key]}, instead.`);
-            newConfigValues[key] = defaultConfigValues[key];
-          }
-        this.setState({ configValues: newConfigValues });
-      }
-    }
+    if (json != null)
+      this.setState({ configValues: JSON.parse(json) });
   }
 }
 
