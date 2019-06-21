@@ -19,9 +19,9 @@ const colours = {
 interface configDict { [Key: string]: any }
 
 const defaultConfigValues: configDict = {
-  "X Sensitivity": "1.0",
-  "Y Sensitivity": "1.0",
-  "FPS": "5",
+  "X Sensitivity": 1.0,
+  "Y Sensitivity": 1.0,
+  "FPS": 5,
   "Swap Eyes": false,
   "Toggle Debug": false,
   "Iris Color": colours.irisColor,
@@ -143,7 +143,7 @@ class App extends React.Component<IAppProps, IAppState> {
           )
         }
 
-        <ConfigMenu width="14em" timerLength={2000}>
+        <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
             name={"X Sensitivity"}
             value={this.state.configValues["X Sensitivity"]}

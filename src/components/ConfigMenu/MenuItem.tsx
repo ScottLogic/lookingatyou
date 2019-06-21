@@ -6,7 +6,7 @@ interface IMenuItemProps {
 
 interface ITextBoxMenuItemProps extends IMenuItemProps {
     onInputChange: { (text: string): void },
-    value: string
+    value: string,
 }
 export function TextBoxMenuItem(props: ITextBoxMenuItemProps) {
     return (
