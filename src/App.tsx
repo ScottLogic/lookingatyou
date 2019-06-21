@@ -218,9 +218,9 @@ class App extends React.Component<IAppProps, IAppState> {
           throw e;
       }
       finally {
-        for (const [key, value] of Object.entries(defaultConfigValues))
+        for (const [key] of Object.entries(defaultConfigValues))
           if (typeof newConfigValues[key] != typeof defaultConfigValues[key]) {
-            console.log(`Error: ${newConfigValues[key]} found in place of type:${typeof defaultConfigValues[key]} in config in local storage. Using default value ${defaultConfigValues[key]}, instead.`);
+            console.log(`Error: ${newConfigValues[key]}:${typeof newConfigValues[key]} found in place of val:${typeof defaultConfigValues[key]} in config in local storage. Using default value ${defaultConfigValues[key]}, instead.`);
             newConfigValues[key] = defaultConfigValues[key];
           }
         this.setState({ configValues: newConfigValues });
