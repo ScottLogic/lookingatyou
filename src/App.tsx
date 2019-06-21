@@ -118,10 +118,11 @@ class App extends React.Component<IAppProps, IAppState> {
     }
   }
 
-  calculateEyePos(coords : number[]) {
+  calculateEyePos(bbox : number[]) {
+    const [x, y, width, height] = bbox;
     this.setState({
-      targetX: coords[0] + coords[2]/2, 
-      targetY: coords[1] + coords[3]/2
+      targetX: x + width/2, 
+      targetY: y + height/2
     })
   }
 
