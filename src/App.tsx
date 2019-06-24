@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* tslint:disable: jsx-no-lambda radix ordered-imports only-arrow-functions */
+=======
+/* tslint:disable: jsx-no-lambda radix */
+>>>>>>> rebased and fixed fudged merge
 
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
 import React, { RefObject } from 'react';
