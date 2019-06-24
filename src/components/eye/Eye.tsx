@@ -27,7 +27,7 @@ export default class Eye extends React.Component<IEyeProps> {
         this.transitionStyle = { transition: props.transitionTime };
     }
 
-    public renderCircle(
+    renderCircle(
         radius: number,
         name: string,
         colour: string,
@@ -51,7 +51,7 @@ export default class Eye extends React.Component<IEyeProps> {
         );
     }
 
-    public render() {
+    render() {
         const openCoefficient = this.props.isBlinking
             ? 0
             : this.props.openCoefficient;

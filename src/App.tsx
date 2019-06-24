@@ -74,7 +74,7 @@ class App extends React.Component<IAppProps, IAppState> {
     this.frameCapture = 0;
   }
 
-  public async componentDidMount() {
+  async componentDidMount() {
     this.props.environment.addEventListener('resize', this.updateDimensions);
     this.getWebcamDevices();
 
@@ -108,14 +108,14 @@ class App extends React.Component<IAppProps, IAppState> {
     }
   }
 
-  public componentWillUnmount() {
+  componentWillUnmount() {
     this.props.environment.removeEventListener('resize', this.updateDimensions);
     clearInterval(this.frameCapture);
     clearInterval(this.blink);
     clearInterval(this.dilate);
   }
 
-  public async getWebcamDevices() {
+  async getWebcamDevices() {
     let devices = await navigator.mediaDevices.enumerateDevices();
     devices = devices.filter(device => device.kind === videoinput);
     this.setState({
@@ -124,7 +124,7 @@ class App extends React.Component<IAppProps, IAppState> {
     });
   }
 
-  public updateDimensions() {
+  updateDimensions() {
     this.setState({
       height: this.props.environment.innerHeight,
       width: this.props.environment.innerWidth,
@@ -142,7 +142,7 @@ class App extends React.Component<IAppProps, IAppState> {
     this.setState({ eyesDisplayed: false, eyesOpenCoefficient: eyelidPosition.CLOSED });
   }
 
-  public async detectImage(
+  async detectImage(
     img:
       | ImageData
       | HTMLImageElement
@@ -156,14 +156,14 @@ class App extends React.Component<IAppProps, IAppState> {
     }
   }
 
-  public selectTarget(detections: cocoSSD.DetectedObject[]) {
+  selectTarget(detections: cocoSSD.DetectedObject[]) {
     const target = detections.find(detection => detection.class === 'person');
     if (target !== undefined) {
       this.calculateEyePos(target.bbox);
     }
   }
 
-  public calculateEyePos(bbox: number[]) {
+  calculateEyePos(bbox: number[]) {
     const [x, y, width, height] = bbox;
     this.setState({
       targetX: x + width / 2,
@@ -171,7 +171,7 @@ class App extends React.Component<IAppProps, IAppState> {
     });
   }
 
-  public render() {
+  render() {
     return (
       <div className="App">
         <div className="webcam-feed">
@@ -274,7 +274,7 @@ class App extends React.Component<IAppProps, IAppState> {
     );
   }
 
-  public store(key: string, partialState: Partial<IUserConfig>) {
+  store(key: string, partialState: Partial<IUserConfig>) {
     const newUserConfig: IUserConfig = {
       ...this.state.userConfig,
       ...partialState,
@@ -290,7 +290,7 @@ class App extends React.Component<IAppProps, IAppState> {
     );
   }
 
-  public readConfig(key: string) {
+  readConfig(key: string) {
     const json = this.props.environment.localStorage.getItem(key);
     if (json != null) {
       return JSON.parse(json);

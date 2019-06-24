@@ -56,7 +56,7 @@ export class CanvasMenuItem extends React.Component<IMenuItemProps> {
     super(props);
     this.canvasRef = React.createRef<HTMLCanvasElement>();
   }
-  public render() {
+  render() {
     return (
       <div>
         <label>{this.props.name}</label>
@@ -65,7 +65,7 @@ export class CanvasMenuItem extends React.Component<IMenuItemProps> {
       </div>
     );
   }
-  public drawImage(
+  drawImage(
     image: CanvasImageSource,
     bbox?: { x: number; y: number; width: number; height: number },
   ) {
