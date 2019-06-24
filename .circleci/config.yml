@@ -6,7 +6,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-        key: lookingatyou-{{ checksum "package-lock.json" }}
+          key: lookingatyou-{{ checksum "package-lock.json" }}
       - run:
           name: Install npm dependencies
           command: npm ci
