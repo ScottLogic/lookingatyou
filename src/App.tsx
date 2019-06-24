@@ -203,7 +203,7 @@ class App extends React.Component<IAppProps, IAppState> {
             value={this.state.userConfig.xSens.toString()}
             isValidInput={((sens: string) => !isNaN(parseFloat(sens)))}
             onValidInput={(sens: string) => {
-              this.store({ xSens: parseFloat(sens) }, this.props.environment.localStorage);
+              this.store("config", this.props.environment.localStorage, { xSens: parseFloat(sens) });
             }} />
           <TextBoxMenuItem
             name={"Y Sensitivity"}
@@ -211,32 +211,32 @@ class App extends React.Component<IAppProps, IAppState> {
             isValidInput={((sens: string) => !isNaN(parseFloat(sens)))}
             onValidInput={(sens: string) => {
               if (!isNaN(parseFloat(sens)))
-                this.store({ ySens: parseFloat(sens) }, this.props.environment.localStorage);
+                this.store("config", this.props.environment.localStorage, { ySens: parseFloat(sens) });
             }} />
           <TextBoxMenuItem
             name={"FPS"}
             value={this.state.userConfig.fps.toString()}
             isValidInput={((sens: string) => !isNaN(parseInt(sens)))}
             onValidInput={(fps: string) => {
-              this.store({ fps: parseInt(fps) }, this.props.environment.localStorage);
+              this.store("config", this.props.environment.localStorage, { fps: parseInt(fps) });
             }} />
           <CheckBoxMenuItem
             name={"Swap Eyes"}
             checked={this.state.userConfig.swapEyes}
             onInputChange={(checked: boolean) => {
-              this.store({ swapEyes: checked }, this.props.environment.localStorage);
+              this.store("config", this.props.environment.localStorage, { swapEyes: checked });
             }} />
           <CheckBoxMenuItem
             name={"Toggle Debug"}
             checked={this.state.userConfig.toggleDebug}
             onInputChange={(checked: boolean) => {
-              this.store({ toggleDebug: checked }, this.props.environment.localStorage);
+              this.store("config", this.props.environment.localStorage, { toggleDebug: checked });
             }} />
           <ColorMenuItem
             name={"Iris Color"}
             color={this.state.userConfig.irisColor}
             onInputChange={(color: string) => {
-              this.store({ irisColor: color }, this.props.environment.localStorage);
+              this.store("config", this.props.environment.localStorage, { irisColor: color });
             }} />
           <CanvasMenuItem
             name={"Left Camera"}
@@ -249,7 +249,7 @@ class App extends React.Component<IAppProps, IAppState> {
     );
   }
 
-  store(partialState: Partial<IUserConfig>, storage: Storage) {
+  store(key: string, storage: Storage, partialState: Partial<IUserConfig>) {
     var newUserConfig: IUserConfig = {
       ...this.state.userConfig,
       ...partialState
@@ -258,7 +258,7 @@ class App extends React.Component<IAppProps, IAppState> {
       userConfig: newUserConfig,
     }, () => {
       var json = JSON.stringify(this.state.userConfig);
-      storage.setItem("config", json);
+      storage.setItem(key, json);
     });
   }
 
