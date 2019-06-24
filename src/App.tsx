@@ -15,7 +15,7 @@ import CanvasMenuItem from './components/configMenu/CanvasMenuItem';
 import CheckBoxMenuItem from './components/configMenu/CheckBoxMenuItem';
 import ColorMenuItem from './components/configMenu/ColorMenuItem';
 import ConfigMenu from './components/configMenu/ConfigMenu';
-import IUserConfig from './components/configMenu/IUserConfig';
+import IUserConfig from './components/configMenu/InterfaceUserConfig';
 import TextBoxMenuItem from './components/configMenu/TextBoxMenuItem';
 import Eye from './components/eye/Eye';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
