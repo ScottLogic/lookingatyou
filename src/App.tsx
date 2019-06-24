@@ -9,8 +9,28 @@ import ColorMenuItem from './components/ConfigMenu/ColorMenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
 import IUserConfig from './components/ConfigMenu/IUserConfig';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
+<<<<<<< HEAD
 import { videoinput, FPS, eyes, colours, defaultConfigValues, configStorageKey, eyelidPosition, pupilSizes, blinkFrequency, pupilSizeChangeInterval, transitionTime } from './AppConstants';
 import './App.css';
+=======
+import configureStream from './components/webcamHandler/WebcamHandler';
+import { IRootStore } from './store/reducers/rootReducer';
+import { getDeviceIds, getStreamForDevice } from './store/selectors/videoSelectors';
+import { connect } from 'react-redux';
+
+const eyes = {
+  LEFT: 'left',
+  RIGHT: 'right',
+}
+
+const colours = {
+  scleraColor: "white",
+  irisColor: "lightBlue",
+  pupilColor: "black"
+}
+
+const videoinput = 'videoinput';
+>>>>>>> refactor for webcam handler and multiple webcams
 
 interface IAppState {
   width: number,
@@ -32,14 +52,30 @@ interface IAppProps {
   environment: Window
 }
 
-class App extends React.Component<IAppProps, IAppState> {
+interface IAppMapStateToProps {
+  deviceIds: string[]
+}
+
+type AppProps = IAppProps &  IAppMapStateToProps;
+
+const mapStateToProps = (state: IRootStore) => {
+  return {
+    deviceIds: getDeviceIds(state)
+  }
+}
+
+class App extends React.Component<AppProps, IAppState> {
   private leftDebugRef: React.RefObject<CanvasMenuItem>;
   private rightDebugRef: React.RefObject<CanvasMenuItem>;
+<<<<<<< HEAD
   private model: cocoSSD.ObjectDetection | null;
   private frameCapture: number;
   private blink: number = 0;
   private dilate: number = 0;
   constructor(props: IAppProps) {
+=======
+  constructor(props: AppProps) {
+>>>>>>> refactor for webcam handler and multiple webcams
     super(props);
 
     this.state = {
@@ -71,6 +107,7 @@ class App extends React.Component<IAppProps, IAppState> {
     this.frameCapture = 0;
   }
 
+<<<<<<< HEAD
   async componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
     this.getWebcamDevices();
@@ -97,6 +134,10 @@ class App extends React.Component<IAppProps, IAppState> {
 
     this.model = await cocoSSD.load();
     this.frameCapture = setInterval(this.detectImage, 1000 / FPS, this.state.videos[0].current) as number;
+=======
+  componentDidMount() {
+    configureStream(this.props.environment.navigator.mediaDevices);
+>>>>>>> refactor for webcam handler and multiple webcams
   }
 
   componentWillUnmount() {
@@ -159,6 +200,7 @@ class App extends React.Component<IAppProps, IAppState> {
     return (
       <div className="App">
         <div className="webcam-feed">
+<<<<<<< HEAD
           {this.state.webcams.map((device, key) => {
             return (
               <WebcamFeed
@@ -169,6 +211,10 @@ class App extends React.Component<IAppProps, IAppState> {
                 ref={this.state.videos[key]}
               />
             )
+=======
+          {this.props.deviceIds.map((device, key) => {
+            return (<WebcamFeed key={key} deviceId={device} />)
+>>>>>>> refactor for webcam handler and multiple webcams
           })}
         </div>
 
@@ -269,4 +315,8 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 }
 
+<<<<<<< HEAD
 export default App;
+=======
+export default connect(mapStateToProps)(App);
+>>>>>>> refactor for webcam handler and multiple webcams

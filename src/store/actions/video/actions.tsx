@@ -1,15 +1,22 @@
-import { SET_VIDEO, VideoActionTypes, IDimensions, SET_DIMENSIONS } from "./types";
+import { SET_VIDEO, VideoActionTypes, IDimensions, SET_DIMENSIONS, IVideoState, SET_VIDEO_STREAMS, IVideo } from "./types";
 
-export function setVideoAction(payload: HTMLVideoElement): VideoActionTypes {
+export function setVideoAction(video: HTMLVideoElement): VideoActionTypes {
   return {
     type: SET_VIDEO,
-    payload: payload,
+    video: video,
   }
 }
 
-export function setVideoDimensions(payload: IDimensions): VideoActionTypes {
+export function setVideoDimensions(dimensions: IDimensions): VideoActionTypes {
   return {
     type: SET_DIMENSIONS,
-    payload: payload,
+    dimensions: dimensions,
+  }
+}
+
+export function setVideoStreamsAction(videos: IVideo[]) :VideoActionTypes {
+  return {
+    type: SET_VIDEO_STREAMS,
+    videos: videos,
   }
 }

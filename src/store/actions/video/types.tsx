@@ -1,10 +1,17 @@
 export const SET_VIDEO = 'SET_VIDEO';
+export const SET_VIDEO_STREAMS = 'SET_VIDEO_STREAMS';
 export const SET_DIMENSIONS = 'SET_DIMENSIONS';
 
-export interface IVideoState {
-  video: HTMLVideoElement | null,
+export interface IVideo {
+  deviceId: string,
+  video?: HTMLVideoElement | undefined,
   width: number,
   height: number,
+  stream: MediaStream | undefined,
+}
+
+export interface IVideoState {
+  videos: IVideo[],
 }
 
 export interface IDimensions {
@@ -14,12 +21,17 @@ export interface IDimensions {
 
 interface ISetVideoAction {
   type: typeof SET_VIDEO,
-  payload: HTMLVideoElement,
+  video: HTMLVideoElement,
 }
 
 interface ISetDimensionsAction {
   type: typeof SET_DIMENSIONS,
-  payload: IDimensions,
+  dimensions: IDimensions,
 }
 
-export type VideoActionTypes = ISetVideoAction | ISetDimensionsAction
+interface ISetVideoStreamsAction {
+  type: typeof SET_VIDEO_STREAMS,
+  videos: IVideo[],
+}
+
+export type VideoActionTypes = ISetVideoAction | ISetDimensionsAction | ISetVideoStreamsAction;
