@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 /* tslint:disable: jsx-no-lambda radix */
+=======
+// ToDo: Refactor lambda functions and disable linting exclusion.
+/* tslint:disable: jsx-no-lambda no-empty*/
+>>>>>>> Added rule exclusions for lambda functions in affected files
 
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
 import React, { RefObject } from 'react';
@@ -72,11 +77,13 @@ class App extends React.Component<IAppProps, IAppState> {
     this.props.environment.addEventListener('resize', this.updateDimensions);
     this.getWebcamDevices();
     this.model = await cocoSSD.load();
-    this.frameCapture = setInterval(
-      this.detectImage,
-      1000 / FPS,
-      this.state.videos[0].current,
-    ) as number;
+    if (this.state.videos[0]) {
+      this.frameCapture = setInterval(
+        this.detectImage,
+        1000 / FPS,
+        this.state.videos[0].current,
+      );
+    }
   }
 
   public componentWillUnmount() {
