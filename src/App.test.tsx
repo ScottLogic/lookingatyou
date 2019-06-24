@@ -1,6 +1,6 @@
+import jsdom from 'jsdom';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import jsdom from 'jsdom';
 import App from './App';
 
 it('renders without crashing', () => {
