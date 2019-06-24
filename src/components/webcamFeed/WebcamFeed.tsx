@@ -6,12 +6,13 @@ interface IWebcamFeedProps {
   onUserMediaError: (e: Error) => void,
 }
 
-const WebcamFeed = (props: IWebcamFeedProps) => {
+const WebcamFeed = React.forwardRef<HTMLVideoElement, IWebcamFeedProps>((props, ref) => {
   const [stream, setStream] = useState();
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
 
   async function getWebcam() {
+
     if (!stream) {
       try {
         const myStream = await getStream(props.deviceId);
@@ -42,7 +43,8 @@ const WebcamFeed = (props: IWebcamFeedProps) => {
     height={height}
     width={width}
     src={stream}
+    ref={ref}
   />
-}
+});
 
 export default WebcamFeed;

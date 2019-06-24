@@ -15,6 +15,8 @@ interface IEyeProps {
     dilatedCoefficient: number,
     isBlinking: boolean,
     transitionTime: string
+    innerX: number,
+    innerY: number,
 }
 
 export default class Eye extends React.Component<IEyeProps> {
@@ -26,16 +28,16 @@ export default class Eye extends React.Component<IEyeProps> {
         this.transitionStyle = { transition: props.transitionTime }
     }
 
-    renderCircle(radius: number, name: string, colour: string) {
-        return (
-            <circle
-                style={{ transition: "all " + this.props.transitionTime.toString() + " linear 0s" }}
-                r={radius}
-                className={name}
-                fill={colour}
-                cx="50%"
-                cy="50%"
-            />
+    renderCircle(radius : number, name : string, colour: string, centerX: number = this.props.width/2, centerY: number = this.props.height/2){
+        return(
+        <circle 
+        style={{ transition: "all " + this.props.transitionTime.toString() + " linear 0s" }}
+            r={radius}
+            className={name}
+            fill={colour}
+            cx={centerX}
+            cy={centerY}
+        />
         )
     }
 
@@ -56,8 +58,8 @@ export default class Eye extends React.Component<IEyeProps> {
             <svg className={this.props.class} width={this.props.width} height={this.props.height} >
                 {this.renderCircle(this.props.scleraRadius, "sclera", this.props.scleraColor)}
                 <g className="inner">
-                    {this.renderCircle(this.props.irisRadius, "iris", this.props.irisColor)}
-                    {this.renderCircle(this.props.pupilRadius * this.props.dilatedCoefficient, "pupil", this.props.pupilColor)}
+                    {this.renderCircle(this.props.irisRadius, "iris", this.props.irisColor, this.props.innerX, this.props.innerY)}
+                    {this.renderCircle(this.props.pupilRadius, "pupil", this.props.pupilColor, this.props.innerX, this.props.innerY)}
                 </g>
                 <svg className="Eyelids">
                     <path style={this.transitionStyle} d={ // upper eyelid
