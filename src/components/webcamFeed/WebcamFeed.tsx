@@ -3,34 +3,39 @@ import React, { useState, useEffect } from 'react';
 interface IWebcamFeedProps {
   deviceId: string,
   onUserMedia: (stream: MediaStream) => void,
-  onUserMediaError: () => void,
+  onUserMediaError: (e: Error) => void,
 }
 
-const WebcamFeed = (props: IWebcamFeedProps) => {
+const WebcamFeed = React.forwardRef<HTMLVideoElement, IWebcamFeedProps>((props, ref) => {
   const [stream, setStream] = useState();
-  const [width, setWidth] = useState();
-  const [height, setHeight] = useState();
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
 
   async function getWebcam() {
-    try {
-      const myStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: props.deviceId } });
-      if (myStream !== undefined) {
-        setStream(myStream);
+
+    if (!stream) {
+      try {
+        const myStream = await getStream(props.deviceId);
         var streamSettings = myStream.getVideoTracks()[0].getSettings();
         if (streamSettings.height && streamSettings.width) {
-          setHeight(streamSettings.height);
+          setStream(myStream);
           setWidth(streamSettings.width);
+          setHeight(streamSettings.height);
         }
         props.onUserMedia(myStream);
+      } catch (error) {
+        props.onUserMediaError(error);
       }
-    } catch {
-      props.onUserMediaError();
     }
   };
 
   useEffect(() => {
     getWebcam();
-  });
+  }, []);
+
+  function getStream(deviceId: string) {
+    return navigator.mediaDevices.getUserMedia({ video: { deviceId } })
+  }
 
   return <video
     className={props.deviceId + ' hidden'}
@@ -38,7 +43,8 @@ const WebcamFeed = (props: IWebcamFeedProps) => {
     height={height}
     width={width}
     src={stream}
+    ref={ref}
   />
-}
+});
 
 export default WebcamFeed;
