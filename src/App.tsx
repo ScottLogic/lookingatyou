@@ -1,49 +1,15 @@
+import './App.css';
 import React, { RefObject } from 'react';
 import * as cocoSSD from "@tensorflow-models/coco-ssd"
-
 import Eye from './components/eye/Eye';
 import TextBoxMenuItem from './components/ConfigMenu/TextBoxMenuItem';
 import CheckBoxMenuItem from './components/ConfigMenu/CheckBoxMenuItem';
 import CanvasMenuItem from './components/ConfigMenu/CanvasMenuItem';
 import ColorMenuItem from './components/ConfigMenu/ColorMenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
-import './App.css';
+import IUserConfig from './components/ConfigMenu/IUserConfig';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
-
-const eyes = {
-  LEFT: 'left',
-  RIGHT: 'right',
-}
-
-const colours = {
-  scleraColor: "white",
-  irisColor: "#ff8080", // must be hex value, as this is passed to colour picker input
-  pupilColor: "black"
-}
-
-interface IUserConfig {
-  xSensitivity: number,
-  ySensitivity: number,
-  fps: number,
-  swapEyes: boolean,
-  toggleDebug: boolean,
-  irisColor: string
-}
-
-const defaultConfigValues: IUserConfig = {
-  xSensitivity: 1,
-  ySensitivity: 1,
-  fps: 5,
-  swapEyes: false,
-  toggleDebug: false,
-  irisColor: colours.irisColor,
-}
-
-const videoinput = 'videoinput';
-
-const FPS = 30;
-
-const storageKey = "config";
+import { videoinput, FPS, eyes, colours, defaultConfigValues, configStorageKey } from './AppConstants';
 
 interface IAppState {
   width: number,
@@ -73,7 +39,7 @@ class App extends React.Component<IAppProps, IAppState> {
       height: this.props.environment.innerHeight,
       eyesDisplayed: false,
       webcams: [],
-      userConfig: this.readConfig(storageKey) || defaultConfigValues,
+      userConfig: this.readConfig(configStorageKey) || defaultConfigValues,
       videos: [],
       targetX: this.props.environment.innerWidth / 4,
       targetY: this.props.environment.innerHeight / 2
@@ -86,7 +52,7 @@ class App extends React.Component<IAppProps, IAppState> {
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
 
-    this.props.environment.addEventListener("storage", () => this.readConfig(storageKey))
+    this.props.environment.addEventListener("storage", () => this.readConfig(configStorageKey))
     this.model = null;
     this.frameCapture = 0;
   }
@@ -204,32 +170,32 @@ class App extends React.Component<IAppProps, IAppState> {
             name={"X Sensitivity"}
             defaultValue={`${this.state.userConfig.xSensitivity}`}
             isValidInput={(sens: string) => !isNaN(parseFloat(sens))}
-            onValidInput={(sens: string) => this.store(storageKey, { xSensitivity: parseFloat(sens) })} 
-            parse={(text: string) => `${parseFloat(text)}`}/>
+            onValidInput={(sens: string) => this.store(configStorageKey, { xSensitivity: parseFloat(sens) })}
+            parse={(text: string) => `${parseFloat(text)}`} />
           <TextBoxMenuItem
             name={"Y Sensitivity"}
             defaultValue={`${this.state.userConfig.ySensitivity}`}
             isValidInput={(sens: string) => !isNaN(parseFloat(sens))}
-            onValidInput={(sens: string) => this.store(storageKey, { ySensitivity: parseFloat(sens) })} 
-            parse={(text: string) => `${parseFloat(text)}`}/>
+            onValidInput={(sens: string) => this.store(configStorageKey, { ySensitivity: parseFloat(sens) })}
+            parse={(text: string) => `${parseFloat(text)}`} />
           <TextBoxMenuItem
             name={"FPS"}
             defaultValue={`${this.state.userConfig.fps}`}
             isValidInput={(sens: string) => !isNaN(parseInt(sens))}
-            onValidInput={(fps: string) => this.store(storageKey, { fps: parseInt(fps) })} 
-            parse={(text: string) => `${parseInt(text)}`}/>
+            onValidInput={(fps: string) => this.store(configStorageKey, { fps: parseInt(fps) })}
+            parse={(text: string) => `${parseInt(text)}`} />
           <CheckBoxMenuItem
             name={"Swap Eyes"}
             checked={this.state.userConfig.swapEyes}
-            onInputChange={(swapEyes: boolean) => this.store(storageKey, { swapEyes })} />
+            onInputChange={(swapEyes: boolean) => this.store(configStorageKey, { swapEyes })} />
           <CheckBoxMenuItem
             name={"Toggle Debug"}
             checked={this.state.userConfig.toggleDebug}
-            onInputChange={(toggleDebug: boolean) => this.store(storageKey, { toggleDebug })} />
+            onInputChange={(toggleDebug: boolean) => this.store(configStorageKey, { toggleDebug })} />
           <ColorMenuItem
             name={"Iris Color"}
             color={this.state.userConfig.irisColor}
-            onInputChange={(irisColor: string) => this.store(storageKey, { irisColor })} />
+            onInputChange={(irisColor: string) => this.store(configStorageKey, { irisColor })} />
           <CanvasMenuItem
             name={"Left Camera"}
             ref={this.leftDebugRef} />
