@@ -1,5 +1,9 @@
-path, circle {
+path {
     transition: 50ms;
+}
+
+circle {
+    transition: 500ms;
 }
 
 .Eyelids path {
