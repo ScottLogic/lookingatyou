@@ -13,8 +13,8 @@ jobs:
       - save_cache:
           key: lookingatyou-{{ checksum "package-lock.json" }}
       - run:
-        name: Check Linting
-        command: npm run lint
+          name: Check Linting
+          command: npm run lint
 
   test:
     docker:
