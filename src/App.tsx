@@ -99,11 +99,13 @@ class App extends React.Component<IAppProps, IAppState> {
     }, pupilSizeChangeInterval);
 
     this.model = await cocoSSD.load();
-    this.frameCapture = setInterval(
-      this.detectImage,
-      1000 / FPS,
-      this.state.videos[0].current,
-    ) as number;
+    if (this.state.videos[0]) {
+      this.frameCapture = setInterval(
+        this.detectImage,
+        1000 / FPS,
+        this.state.videos[0].current,
+      );
+    }
   }
 
   public componentWillUnmount() {
@@ -186,11 +188,7 @@ class App extends React.Component<IAppProps, IAppState> {
           })}
         </div>
 
-<<<<<<< HEAD
-        {this.state.webcams.length > 0 ?
-=======
         {this.state.eyesDisplayed ? (
->>>>>>> Updated file formatting, and fixed easy linting errors
           <div className="container">
             {Object.values(eyes).map((eye, key) => {
               return (
@@ -202,7 +200,6 @@ class App extends React.Component<IAppProps, IAppState> {
                   scleraColor={colours.scleraColor}
                   irisColor={this.state.userConfig.irisColor}
                   pupilColor={colours.pupilColor}
-<<<<<<< HEAD
                   scleraRadius={this.state.width / 5}
                   irisRadius={this.state.width / 10}
                   pupilRadius={this.state.width / 24}
@@ -223,21 +220,6 @@ class App extends React.Component<IAppProps, IAppState> {
             No webcam connected. Please connect a webcam and refresh
           </div>
         }
-=======
-                  innerX={this.state.targetX}
-                  innerY={this.state.targetY}
-                />
-              );
-            })}
-          </div>
-        ) : this.state.webcams.length > 0 ? (
-          <div className="loading-spinner" />
-        ) : (
-          <div className="Error">
-            No webcam connected. Please connect a webcam and refresh
-          </div>
-        )}
->>>>>>> Updated file formatting, and fixed easy linting errors
 
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
@@ -261,18 +243,9 @@ class App extends React.Component<IAppProps, IAppState> {
           <TextBoxMenuItem
             name={'FPS'}
             defaultValue={`${this.state.userConfig.fps}`}
-<<<<<<< HEAD
             isValidInput={(fps: string) => !isNaN(parseInt(fps))}
             onValidInput={(fps: string) => this.store(configStorageKey, { fps: parseInt(fps) })}
             parse={(text: string) => `${parseInt(text)}`} />
-=======
-            isValidInput={(sens: string) => !isNaN(parseInt(sens))}
-            onValidInput={(fps: string) =>
-              this.store(configStorageKey, { fps: parseInt(fps) })
-            }
-            parse={(text: string) => `${parseInt(text)}`}
-          />
->>>>>>> Updated file formatting, and fixed easy linting errors
           <CheckBoxMenuItem
             name={'Swap Eyes'}
             checked={this.state.userConfig.swapEyes}
