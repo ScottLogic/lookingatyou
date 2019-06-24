@@ -13,12 +13,14 @@ const eyes = {
   RIGHT: 'right',
 }
 
-const eyelids = {
+const eyelidPosition = {
   OPEN: 0.5,
   CLOSED: 0,
   SHOCKED: 0.75,
-  BLINKFREQUENCY: 0.25,
+  
 }
+
+const blinkFrequency = 0.25;
 
 const transitionTime = 100; // for animating eyelids and pupils
 
@@ -63,7 +65,7 @@ class App extends React.Component<IAppProps, IAppState> {
       height: this.props.environment.innerHeight,
       webcams: [],
       eyesDilatedCoefficient: 1,
-      eyesOpenCoefficient: eyelids.CLOSED,
+      eyesOpenCoefficient: eyelidPosition.CLOSED,
       eyesDisplayed: false,
       isBlinking: false,
       videos: [],
@@ -88,7 +90,7 @@ class App extends React.Component<IAppProps, IAppState> {
     this.getWebcamDevices();
     window.setInterval(() => {
       this.setState((state) => ({
-        isBlinking: state.isBlinking ? false : (Math.random() < eyelids.BLINKFREQUENCY / (1000/transitionTime))
+        isBlinking: state.isBlinking ? false : (Math.random() < blinkFrequency / (1000/transitionTime))
       }));
     }, transitionTime);
     console.log("Loading model");
@@ -121,12 +123,12 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   onUserMedia(stream: MediaStream) {
-    this.setState({ eyesDisplayed: true, eyesOpenCoefficient: eyelids.OPEN });
+    this.setState({ eyesDisplayed: true, eyesOpenCoefficient: eyelidPosition.OPEN });
   }
 
 
   onUserMediaError() {
-    this.setState({ eyesDisplayed: false, eyesOpenCoefficient: eyelids.CLOSED });
+    this.setState({ eyesDisplayed: false, eyesOpenCoefficient: eyelidPosition.CLOSED });
   }
 
   async detectImage(img : ImageData|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|null) {
