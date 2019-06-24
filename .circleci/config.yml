@@ -12,6 +12,8 @@ jobs:
           command: npm ci
       - save_cache:
           key: lookingatyou-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
       - run:
           name: Check Linting
           command: npm run lint
