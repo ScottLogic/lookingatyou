@@ -1,45 +1,16 @@
+import './App.css';
 import React, { RefObject } from 'react';
 import * as cocoSSD from "@tensorflow-models/coco-ssd"
-
 import Eye from './components/eye/Eye';
-import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItem';
+import TextBoxMenuItem from './components/ConfigMenu/TextBoxMenuItem';
+import CheckBoxMenuItem from './components/ConfigMenu/CheckBoxMenuItem';
+import CanvasMenuItem from './components/ConfigMenu/CanvasMenuItem';
+import ColorMenuItem from './components/ConfigMenu/ColorMenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
+import IUserConfig from './components/ConfigMenu/IUserConfig';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
+import { videoinput, FPS, eyes, colours, defaultConfigValues, configStorageKey, eyelidPosition, pupilSizes, blinkFrequency, pupilSizeChangeInterval, transitionTime } from './AppConstants';
 import './App.css';
-
-
-const eyes = {
-  LEFT: 'left',
-  RIGHT: 'right',
-}
-
-const eyelidPosition = {
-  OPEN: 0.5,
-  CLOSED: 0,
-  SHOCKED: 0.75,
-}
-
-const pupilSizes = {
-  dilated: 1.3,
-  neutral: 1.0,
-  constricted: 0.8
-}
-
-const blinkFrequency = 0.25;
-
-const pupilSizeChangeInterval = 2500;
-
-const transitionTime = 100; // for animating eyelids and pupils
-
-const colours = {
-  scleraColor: "white",
-  irisColor: "darkGoldenrod",
-  pupilColor: "black"
-}
-
-const videoinput = 'videoinput';
-
-const FPS = 30;
 
 interface IAppState {
   width: number,
@@ -49,6 +20,7 @@ interface IAppState {
   eyesOpenCoefficient: number,
   eyesDisplayed: boolean,
   isBlinking: boolean
+  userConfig: IUserConfig
   videos: RefObject<HTMLVideoElement>[],
   targetX: number,
   targetY: number,
@@ -57,7 +29,7 @@ interface IAppState {
 
 
 interface IAppProps {
-  environment: Window,
+  environment: Window
 }
 
 class App extends React.Component<IAppProps, IAppState> {
@@ -81,7 +53,8 @@ class App extends React.Component<IAppProps, IAppState> {
       videos: [],
       targetX: this.props.environment.innerWidth / 4,
       targetY: this.props.environment.innerHeight / 2,
-      dilationCoefficient: pupilSizes.neutral
+      dilationCoefficient: pupilSizes.neutral,
+      userConfig: this.readConfig(configStorageKey) || defaultConfigValues,
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -92,6 +65,7 @@ class App extends React.Component<IAppProps, IAppState> {
     this.rightDebugRef = React.createRef();
 
 
+    this.props.environment.addEventListener("storage", () => this.readConfig(configStorageKey))
     this.model = null;
     this.frameCapture = 0;
   }
@@ -203,7 +177,7 @@ class App extends React.Component<IAppProps, IAppState> {
                   width={this.state.width / 2}
                   height={this.state.height}
                   scleraColor={colours.scleraColor}
-                  irisColor={colours.irisColor}
+                  irisColor={this.state.userConfig.irisColor}
                   pupilColor={colours.pupilColor}
                   scleraRadius={this.state.width / 5}
                   irisRadius={this.state.width / 10}
@@ -231,24 +205,34 @@ class App extends React.Component<IAppProps, IAppState> {
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
             name={"X Sensitivity"}
-            default={localStorage.getItem("X Sensitivity") || "1"}
-            onInputChange={(text: string) => { }} />
+            defaultValue={`${this.state.userConfig.xSensitivity}`}
+            isValidInput={(sens: string) => !isNaN(parseFloat(sens))}
+            onValidInput={(sens: string) => this.store(configStorageKey, { xSensitivity: parseFloat(sens) })}
+            parse={(text: string) => `${parseFloat(text)}`} />
           <TextBoxMenuItem
             name={"Y Sensitivity"}
-            default={localStorage.getItem("Y Sensitivity") || "1"}
-            onInputChange={(text: string) => { }} />
+            defaultValue={`${this.state.userConfig.ySensitivity}`}
+            isValidInput={(sens: string) => !isNaN(parseFloat(sens))}
+            onValidInput={(sens: string) => this.store(configStorageKey, { ySensitivity: parseFloat(sens) })}
+            parse={(text: string) => `${parseFloat(text)}`} />
           <TextBoxMenuItem
             name={"FPS"}
-            default={localStorage.getItem("FPS") || "5"}
-            onInputChange={(text: string) => { }} />
+            defaultValue={`${this.state.userConfig.fps}`}
+            isValidInput={(sens: string) => !isNaN(parseInt(sens))}
+            onValidInput={(fps: string) => this.store(configStorageKey, { fps: parseInt(fps) })}
+            parse={(text: string) => `${parseInt(text)}`} />
           <CheckBoxMenuItem
             name={"Swap Eyes"}
-            default={"true" === (localStorage.getItem("Swap Eyes"))}
-            onInputChange={(checked: boolean) => { }} />
+            checked={this.state.userConfig.swapEyes}
+            onInputChange={(swapEyes: boolean) => this.store(configStorageKey, { swapEyes })} />
           <CheckBoxMenuItem
             name={"Toggle Debug"}
-            default={"true" === (localStorage.getItem("Toggle Debug"))}
-            onInputChange={(checked: boolean) => { }} />
+            checked={this.state.userConfig.toggleDebug}
+            onInputChange={(toggleDebug: boolean) => this.store(configStorageKey, { toggleDebug })} />
+          <ColorMenuItem
+            name={"Iris Color"}
+            color={this.state.userConfig.irisColor}
+            onInputChange={(irisColor: string) => this.store(configStorageKey, { irisColor })} />
           <CanvasMenuItem
             name={"Left Camera"}
             ref={this.leftDebugRef} />
@@ -256,8 +240,29 @@ class App extends React.Component<IAppProps, IAppState> {
             name={"Right Camera"}
             ref={this.rightDebugRef} />
         </ConfigMenu>
-      </div>
+      </div >
     );
+  }
+
+  store(key: string, partialState: Partial<IUserConfig>) {
+    var newUserConfig: IUserConfig = {
+      ...this.state.userConfig,
+      ...partialState
+    };
+    this.setState({
+      userConfig: newUserConfig,
+    }, () => {
+      var json = JSON.stringify(this.state.userConfig);
+      this.props.environment.localStorage.setItem(key, json);
+    });
+  }
+
+  readConfig(key: string) {
+    var json = this.props.environment.localStorage.getItem(key);
+    if (json != null)
+      return JSON.parse(json);
+    else
+      return null;
   }
 }
 

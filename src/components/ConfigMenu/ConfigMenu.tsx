@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import './ConfigMenu.css';
 
 interface IConfigMenuProps {
@@ -6,29 +6,33 @@ interface IConfigMenuProps {
     timerLength: number,
     children: React.ReactNode
 }
+interface IConfigMenuState {
+    leftPosition: string,
+    isUnderMouse: boolean
+}
 
-export function ConfigMenu(props: IConfigMenuProps) {
-    const [leftPosition, setLeftPosition] = useState("0px");
-    const [isUnderMouse, setIsUnderMouse] = useState(false);
-    const [hideTimeout, setHideTimeout] = useState();
-    useEffect(() => {
-        function show() {
-            clearInterval(hideTimeout);
-            setLeftPosition("0px");
-            if (!isUnderMouse)
-                setHideTimeout(window.setTimeout(() => setLeftPosition("-" + props.width), props.timerLength));
-        }
-        window.addEventListener("mousemove", show);
-        return (() => window.removeEventListener("mousemove", show));
-    })
-    return (
-        <div
-            style={{ width: props.width, left: leftPosition }}
-            className={"ConfigMenu"}
-            onMouseMove={() => { setIsUnderMouse(true) }}
-            onMouseLeave={() => { setIsUnderMouse(false) }}
-        > <h1>Config</h1>
-            {props.children}
-        </div>
-    );
+export class ConfigMenu extends React.Component<IConfigMenuProps, IConfigMenuState> {
+    private hideTimeout: number = 0;
+    constructor(props: IConfigMenuProps) {
+        super(props);
+        this.state = { leftPosition: "0px", isUnderMouse: false };
+        window.addEventListener("mousemove", () => {
+            this.setState({ leftPosition: "0px" });
+            clearInterval(this.hideTimeout);
+            if (!this.state.isUnderMouse)
+                this.hideTimeout = window.setTimeout(() => this.setState({ leftPosition: "-" + props.width }), props.timerLength);
+        });
+    }
+    render() {
+        return (
+            <div
+                style={{ width: this.props.width, left: this.state.leftPosition }}
+                className={"ConfigMenu"}
+                onMouseMove={() => { clearInterval(this.hideTimeout); this.setState({ isUnderMouse: true }); }}
+                onMouseLeave={() => { this.setState({ isUnderMouse: false }) }}
+            > <h1>Config</h1>
+                {this.props.children}
+            </div>
+        );
+    }
 }
