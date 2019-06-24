@@ -91,7 +91,9 @@ class App extends React.Component<IAppProps, IAppState> {
         isBlinking: state.isBlinking ? false : (Math.random() < eyelids.BLINKFREQUENCY / (1000/transitionTime))
       }));
     }, transitionTime);
+    console.log("Loading model");
     this.model = await cocoSSD.load();
+    console.log("Loaded model");
     this.frameCapture = setInterval(this.detectImage, 1000/FPS, this.state.videos[0].current) as number;
   }
 
