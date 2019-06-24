@@ -31,8 +31,8 @@ interface IUserConfig {
 }
 
 const defaultConfigValues: IUserConfig = {
-  xSens: 1.0,
-  ySens: 1.0,
+  xSens: 1,
+  ySens: 1,
   fps: 5,
   swapEyes: false,
   toggleDebug: false,
@@ -42,6 +42,8 @@ const defaultConfigValues: IUserConfig = {
 const videoinput = 'videoinput';
 
 const FPS = 30;
+
+const storageKey = "config";
 
 interface IAppState {
   width: number,
@@ -71,7 +73,7 @@ class App extends React.Component<IAppProps, IAppState> {
       height: this.props.environment.innerHeight,
       eyesDisplayed: false,
       webcams: [],
-      userConfig: this.readConfig("config", this.props.environment.localStorage) || defaultConfigValues,
+      userConfig: this.readConfig(storageKey) || defaultConfigValues,
       videos: [],
       targetX: this.props.environment.innerWidth / 4,
       targetY: this.props.environment.innerHeight / 2
@@ -84,7 +86,7 @@ class App extends React.Component<IAppProps, IAppState> {
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
 
-    this.props.environment.addEventListener("storage", () => this.readConfig("config", this.props.environment.localStorage))
+    this.props.environment.addEventListener("storage", () => this.readConfig(storageKey))
     this.model = null;
     this.frameCapture = 0;
   }
@@ -200,44 +202,34 @@ class App extends React.Component<IAppProps, IAppState> {
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
             name={"X Sensitivity"}
-            value={this.state.userConfig.xSens.toString()}
-            isValidInput={((sens: string) => !isNaN(parseFloat(sens)))}
-            onValidInput={(sens: string) => {
-              this.store("config", this.props.environment.localStorage, { xSens: parseFloat(sens) });
-            }} />
+            defaultValue={`${this.state.userConfig.xSens}`}
+            isValidInput={(sens: string) => !isNaN(parseFloat(sens))}
+            onValidInput={(sens: string) => this.store(storageKey, { xSens: parseFloat(sens) })} 
+            parse={(text: string) => `${parseFloat(text)}`}/>
           <TextBoxMenuItem
             name={"Y Sensitivity"}
-            value={this.state.userConfig.ySens.toString()}
-            isValidInput={((sens: string) => !isNaN(parseFloat(sens)))}
-            onValidInput={(sens: string) => {
-              if (!isNaN(parseFloat(sens)))
-                this.store("config", this.props.environment.localStorage, { ySens: parseFloat(sens) });
-            }} />
+            defaultValue={`${this.state.userConfig.ySens}`}
+            isValidInput={(sens: string) => !isNaN(parseFloat(sens))}
+            onValidInput={(sens: string) => this.store(storageKey, { ySens: parseFloat(sens) })} 
+            parse={(text: string) => `${parseFloat(text)}`}/>
           <TextBoxMenuItem
             name={"FPS"}
-            value={this.state.userConfig.fps.toString()}
-            isValidInput={((sens: string) => !isNaN(parseInt(sens)))}
-            onValidInput={(fps: string) => {
-              this.store("config", this.props.environment.localStorage, { fps: parseInt(fps) });
-            }} />
+            defaultValue={`${this.state.userConfig.fps}`}
+            isValidInput={(sens: string) => !isNaN(parseInt(sens))}
+            onValidInput={(fps: string) => this.store(storageKey, { fps: parseInt(fps) })} 
+            parse={(text: string) => `${parseInt(text)}`}/>
           <CheckBoxMenuItem
             name={"Swap Eyes"}
             checked={this.state.userConfig.swapEyes}
-            onInputChange={(checked: boolean) => {
-              this.store("config", this.props.environment.localStorage, { swapEyes: checked });
-            }} />
+            onInputChange={(swapEyes: boolean) => this.store(storageKey, { swapEyes })} />
           <CheckBoxMenuItem
             name={"Toggle Debug"}
             checked={this.state.userConfig.toggleDebug}
-            onInputChange={(checked: boolean) => {
-              this.store("config", this.props.environment.localStorage, { toggleDebug: checked });
-            }} />
+            onInputChange={(toggleDebug: boolean) => this.store(storageKey, { toggleDebug })} />
           <ColorMenuItem
             name={"Iris Color"}
             color={this.state.userConfig.irisColor}
-            onInputChange={(color: string) => {
-              this.store("config", this.props.environment.localStorage, { irisColor: color });
-            }} />
+            onInputChange={(irisColor: string) => this.store(storageKey, { irisColor })} />
           <CanvasMenuItem
             name={"Left Camera"}
             ref={this.leftDebugRef} />
@@ -249,7 +241,7 @@ class App extends React.Component<IAppProps, IAppState> {
     );
   }
 
-  store(key: string, storage: Storage, partialState: Partial<IUserConfig>) {
+  store(key: string, partialState: Partial<IUserConfig>) {
     var newUserConfig: IUserConfig = {
       ...this.state.userConfig,
       ...partialState
@@ -258,12 +250,12 @@ class App extends React.Component<IAppProps, IAppState> {
       userConfig: newUserConfig,
     }, () => {
       var json = JSON.stringify(this.state.userConfig);
-      storage.setItem(key, json);
+      this.props.environment.localStorage.setItem(key, json);
     });
   }
 
-  readConfig(key: string, storage: Storage) {
-    var json = storage.getItem(key);
+  readConfig(key: string) {
+    var json = this.props.environment.localStorage.getItem(key);
     if (json != null)
       return JSON.parse(json);
     else
