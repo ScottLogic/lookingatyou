@@ -28,7 +28,7 @@ export default class Eye extends React.Component<IEyeProps, IEyeState> {
     };
   }
 
-  public render() {
+  render() {
     return (
       <svg
         className={this.props.class}
