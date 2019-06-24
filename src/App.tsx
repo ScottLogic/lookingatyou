@@ -17,10 +17,17 @@ const eyelidPosition = {
   OPEN: 0.5,
   CLOSED: 0,
   SHOCKED: 0.75,
-  
+}
+
+const pupilSizes = {
+  dilated: 1.5,
+  neutral: 1.0,
+  constricted: 0.6
 }
 
 const blinkFrequency = 0.25;
+
+const pupilSizeChangeInterval = 2500;
 
 const transitionTime = 100; // for animating eyelids and pupils
 
@@ -45,6 +52,7 @@ interface IAppState {
   videos: RefObject<HTMLVideoElement>[],
   targetX: number,
   targetY: number,
+  dilationCoefficient: number
 }
 
 
@@ -70,7 +78,8 @@ class App extends React.Component<IAppProps, IAppState> {
       isBlinking: false,
       videos: [],
       targetX: this.props.environment.innerWidth/4,
-      targetY: this.props.environment.innerHeight/2
+      targetY: this.props.environment.innerHeight/2,
+      dilationCoefficient: pupilSizes.neutral
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -88,14 +97,21 @@ class App extends React.Component<IAppProps, IAppState> {
   async componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
     this.getWebcamDevices();
+    // Sets up random blinking animation
     window.setInterval(() => {
       this.setState((state) => ({
         isBlinking: state.isBlinking ? false : (Math.random() < blinkFrequency / (1000/transitionTime))
       }));
     }, transitionTime);
-    console.log("Loading model");
+    // Sets up cyclical dilation animation
+    window.setInterval(() => {
+      this.setState((state) => ({
+        dilationCoefficient : state.dilationCoefficient === pupilSizes.neutral ? pupilSizes.dilated :
+        state.dilationCoefficient === pupilSizes.dilated ? pupilSizes.constricted :
+        pupilSizes.neutral
+      }));
+    }, pupilSizeChangeInterval);
     this.model = await cocoSSD.load();
-    console.log("Loaded model");
     this.frameCapture = setInterval(this.detectImage, 1000/FPS, this.state.videos[0].current) as number;
   }
 
@@ -189,7 +205,7 @@ class App extends React.Component<IAppProps, IAppState> {
                   // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
                   openCoefficient={this.state.eyesDisplayed ? this.state.eyesOpenCoefficient : 0}
                   // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
-                  dilatedCoefficient={this.state.eyesDilatedCoefficient}
+                  dilatedCoefficient={this.state.dilationCoefficient}
                   transitionTime={transitionTime.toString()}
                   innerX={this.state.targetX}
                   innerY={this.state.targetY}

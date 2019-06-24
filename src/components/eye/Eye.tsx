@@ -59,7 +59,7 @@ export default class Eye extends React.Component<IEyeProps> {
                 {this.renderCircle(this.props.scleraRadius, "sclera", this.props.scleraColor)}
                 <g className="inner">
                     {this.renderCircle(this.props.irisRadius, "iris", this.props.irisColor, this.props.innerX, this.props.innerY)}
-                    {this.renderCircle(this.props.pupilRadius, "pupil", this.props.pupilColor, this.props.innerX, this.props.innerY)}
+                    {this.renderCircle(this.props.pupilRadius * this.props.dilatedCoefficient, "pupil", this.props.pupilColor, this.props.innerX, this.props.innerY)}
                 </g>
                 <svg className="Eyelids">
                     <path style={this.transitionStyle} d={ // upper eyelid
