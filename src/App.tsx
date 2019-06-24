@@ -1,21 +1,9 @@
-<<<<<<< HEAD
 /* tslint:disable: jsx-no-lambda radix ordered-imports only-arrow-functions */
-=======
-/* tslint:disable: jsx-no-lambda radix */
->>>>>>> rebased and fixed fudged merge
 
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
 import React, { RefObject } from 'react';
 
 import './App.css';
-<<<<<<< HEAD
-import CanvasMenuItem from './components/ConfigMenu/CanvasMenuItem';
-import CheckBoxMenuItem from './components/ConfigMenu/CheckBoxMenuItem';
-import ColorMenuItem from './components/ConfigMenu/ColorMenuItem';
-import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
-import IUserConfig from './components/ConfigMenu/IUserConfig';
-import TextBoxMenuItem from './components/ConfigMenu/TextBoxMenuItem';
-=======
 import {
   colours,
   configStorageKey,
@@ -28,9 +16,8 @@ import CanvasMenuItem from './components/configMenu/CanvasMenuItem';
 import CheckBoxMenuItem from './components/configMenu/CheckBoxMenuItem';
 import ColorMenuItem from './components/configMenu/ColorMenuItem';
 import ConfigMenu from './components/configMenu/ConfigMenu';
-import IUserConfig from './components/configMenu/IUserConfig';
+import IUserConfig from './components/configMenu/InterfaceUserConfig';
 import TextBoxMenuItem from './components/configMenu/TextBoxMenuItem';
->>>>>>> fixed linting errors introduced by rebase
 import Eye from './components/eye/Eye';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
 import { blinkFrequency, colours, configStorageKey, defaultConfigValues, eyelidPosition, eyes, FPS, pupilSizeChangeInterval, pupilSizes, transitionTime, videoinput } from './AppConstants';
