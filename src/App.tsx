@@ -2,7 +2,10 @@ import React, { RefObject } from 'react';
 import * as cocoSSD from "@tensorflow-models/coco-ssd"
 
 import Eye from './components/eye/Eye';
-import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItem';
+import TextBoxMenuItem from './components/ConfigMenu/TextBoxMenuItem';
+import CheckBoxMenuItem from './components/ConfigMenu/CheckBoxMenuItem';
+import CanvasMenuItem from './components/ConfigMenu/CanvasMenuItem';
+import ColorMenuItem from './components/ConfigMenu/ColorMenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
 import './App.css';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
@@ -14,26 +17,47 @@ const eyes = {
 
 const colours = {
   scleraColor: "white",
-  irisColor: "lightBlue",
+  irisColor: "#ff8080", // must be hex value, as this is passed to colour picker input
   pupilColor: "black"
+}
+
+interface IUserConfig {
+  xSensitivity: number,
+  ySensitivity: number,
+  fps: number,
+  swapEyes: boolean,
+  toggleDebug: boolean,
+  irisColor: string
+}
+
+const defaultConfigValues: IUserConfig = {
+  xSensitivity: 1,
+  ySensitivity: 1,
+  fps: 5,
+  swapEyes: false,
+  toggleDebug: false,
+  irisColor: colours.irisColor,
 }
 
 const videoinput = 'videoinput';
 
 const FPS = 30;
 
+const storageKey = "config";
+
 interface IAppState {
   width: number,
   height: number,
   eyesDisplayed: boolean,
   webcams: MediaDeviceInfo[],
+  userConfig: IUserConfig
   videos: RefObject<HTMLVideoElement>[],
   targetX: number,
   targetY: number,
 }
 
 interface IAppProps {
-  environment: Window,
+  environment: Window
 }
 
 class App extends React.Component<IAppProps, IAppState> {
@@ -49,9 +73,10 @@ class App extends React.Component<IAppProps, IAppState> {
       height: this.props.environment.innerHeight,
       eyesDisplayed: false,
       webcams: [],
+      userConfig: this.readConfig(storageKey) || defaultConfigValues,
       videos: [],
-      targetX: this.props.environment.innerWidth/4,
-      targetY: this.props.environment.innerHeight/2
+      targetX: this.props.environment.innerWidth / 4,
+      targetY: this.props.environment.innerHeight / 2
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -60,6 +85,8 @@ class App extends React.Component<IAppProps, IAppState> {
     this.detectImage = this.detectImage.bind(this);
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
+
+    this.props.environment.addEventListener("storage", () => this.readConfig(storageKey))
     this.model = null;
     this.frameCapture = 0;
   }
@@ -68,7 +95,7 @@ class App extends React.Component<IAppProps, IAppState> {
     this.props.environment.addEventListener("resize", this.updateDimensions);
     this.getWebcamDevices();
     this.model = await cocoSSD.load();
-    this.frameCapture = setInterval(this.detectImage, 1000/FPS, this.state.videos[0].current) as number;
+    this.frameCapture = setInterval(this.detectImage, 1000 / FPS, this.state.videos[0].current) as number;
   }
 
   componentWillUnmount() {
@@ -89,8 +116,8 @@ class App extends React.Component<IAppProps, IAppState> {
     this.setState({
       height: this.props.environment.innerHeight,
       width: this.props.environment.innerWidth,
-      targetX: this.props.environment.innerWidth/4,
-      targetY: this.props.environment.innerHeight/2
+      targetX: this.props.environment.innerWidth / 4,
+      targetY: this.props.environment.innerHeight / 2
     });
   }
 
@@ -102,25 +129,25 @@ class App extends React.Component<IAppProps, IAppState> {
     this.setState({ eyesDisplayed: false });
   }
 
-  async detectImage(img : ImageData|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|null) {
-    if (this.model && img !== null){
+  async detectImage(img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | null) {
+    if (this.model && img !== null) {
       var detections = await this.model.detect(img);
       this.selectTarget(detections);
     }
   }
-  
-  selectTarget(detections : cocoSSD.DetectedObject[]){
-    var target = detections.find( (detection) => detection.class === "person");
+
+  selectTarget(detections: cocoSSD.DetectedObject[]) {
+    var target = detections.find((detection) => detection.class === "person");
     if (target !== undefined) {
       this.calculateEyePos(target.bbox);
     }
   }
 
-  calculateEyePos(bbox : number[]) {
+  calculateEyePos(bbox: number[]) {
     const [x, y, width, height] = bbox;
     this.setState({
-      targetX: x + width/2, 
-      targetY: y + height/2
+      targetX: x + width / 2,
+      targetY: y + height / 2
     })
   }
 
@@ -151,7 +178,9 @@ class App extends React.Component<IAppProps, IAppState> {
                     key={key}
                     width={this.state.width / 2}
                     height={this.state.height}
-                    {...colours}
+                    scleraColor={colours.scleraColor}
+                    irisColor={this.state.userConfig.irisColor}
+                    pupilColor={colours.pupilColor}
                     innerX={this.state.targetX}
                     innerY={this.state.targetY}
                   />
@@ -173,24 +202,34 @@ class App extends React.Component<IAppProps, IAppState> {
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
             name={"X Sensitivity"}
-            default={localStorage.getItem("X Sensitivity") || "1"}
-            onInputChange={(text: string) => { }} />
+            defaultValue={`${this.state.userConfig.xSensitivity}`}
+            isValidInput={(sens: string) => !isNaN(parseFloat(sens))}
+            onValidInput={(sens: string) => this.store(storageKey, { xSensitivity: parseFloat(sens) })} 
+            parse={(text: string) => `${parseFloat(text)}`}/>
           <TextBoxMenuItem
             name={"Y Sensitivity"}
-            default={localStorage.getItem("Y Sensitivity") || "1"}
-            onInputChange={(text: string) => { }} />
+            defaultValue={`${this.state.userConfig.ySensitivity}`}
+            isValidInput={(sens: string) => !isNaN(parseFloat(sens))}
+            onValidInput={(sens: string) => this.store(storageKey, { ySensitivity: parseFloat(sens) })} 
+            parse={(text: string) => `${parseFloat(text)}`}/>
           <TextBoxMenuItem
             name={"FPS"}
-            default={localStorage.getItem("FPS") || "5"}
-            onInputChange={(text: string) => { }} />
+            defaultValue={`${this.state.userConfig.fps}`}
+            isValidInput={(sens: string) => !isNaN(parseInt(sens))}
+            onValidInput={(fps: string) => this.store(storageKey, { fps: parseInt(fps) })} 
+            parse={(text: string) => `${parseInt(text)}`}/>
           <CheckBoxMenuItem
             name={"Swap Eyes"}
-            default={"true" === (localStorage.getItem("Swap Eyes"))}
-            onInputChange={(checked: boolean) => { }} />
+            checked={this.state.userConfig.swapEyes}
+            onInputChange={(swapEyes: boolean) => this.store(storageKey, { swapEyes })} />
           <CheckBoxMenuItem
             name={"Toggle Debug"}
-            default={"true" === (localStorage.getItem("Toggle Debug"))}
-            onInputChange={(checked: boolean) => { }} />
+            checked={this.state.userConfig.toggleDebug}
+            onInputChange={(toggleDebug: boolean) => this.store(storageKey, { toggleDebug })} />
+          <ColorMenuItem
+            name={"Iris Color"}
+            color={this.state.userConfig.irisColor}
+            onInputChange={(irisColor: string) => this.store(storageKey, { irisColor })} />
           <CanvasMenuItem
             name={"Left Camera"}
             ref={this.leftDebugRef} />
@@ -198,8 +237,29 @@ class App extends React.Component<IAppProps, IAppState> {
             name={"Right Camera"}
             ref={this.rightDebugRef} />
         </ConfigMenu>
-      </div>
+      </div >
     );
+  }
+
+  store(key: string, partialState: Partial<IUserConfig>) {
+    var newUserConfig: IUserConfig = {
+      ...this.state.userConfig,
+      ...partialState
+    };
+    this.setState({
+      userConfig: newUserConfig,
+    }, () => {
+      var json = JSON.stringify(this.state.userConfig);
+      this.props.environment.localStorage.setItem(key, json);
+    });
+  }
+
+  readConfig(key: string) {
+    var json = this.props.environment.localStorage.getItem(key);
+    if (json != null)
+      return JSON.parse(json);
+    else
+      return null;
   }
 }
 
