@@ -61,6 +61,7 @@ class App extends React.Component<IAppProps, IAppState> {
     this.onUserMedia = this.onUserMedia.bind(this);
     this.onUserMediaError = this.onUserMediaError.bind(this);
     this.detectImage = this.detectImage.bind(this);
+
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
 
@@ -204,8 +205,6 @@ class App extends React.Component<IAppProps, IAppState> {
           </div>
         }
 
-
-
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
             name={"X Sensitivity"}
@@ -222,7 +221,7 @@ class App extends React.Component<IAppProps, IAppState> {
           <TextBoxMenuItem
             name={"FPS"}
             defaultValue={`${this.state.userConfig.fps}`}
-            isValidInput={(sens: string) => !isNaN(parseInt(sens))}
+            isValidInput={(fps: string) => !isNaN(parseInt(fps))}
             onValidInput={(fps: string) => this.store(configStorageKey, { fps: parseInt(fps) })}
             parse={(text: string) => `${parseInt(text)}`} />
           <CheckBoxMenuItem
