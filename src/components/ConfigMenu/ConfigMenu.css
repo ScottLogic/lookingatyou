@@ -28,7 +28,7 @@
   color: var(--menu-text-colour);
   font-size: 1.2em;
 
-  transition: 500ms
+  transition: 500ms;
 }
 
 .ConfigMenu a,

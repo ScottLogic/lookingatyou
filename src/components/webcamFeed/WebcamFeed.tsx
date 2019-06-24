@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 interface IWebcamFeedProps {
   deviceId: string;
@@ -6,47 +6,48 @@ interface IWebcamFeedProps {
   onUserMediaError: (e: Error) => void;
 }
 
-const WebcamFeed = React.forwardRef<HTMLVideoElement, IWebcamFeedProps>((props, ref) => {
-  const [stream, setStream] = useState();
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
+const WebcamFeed = React.forwardRef<HTMLVideoElement, IWebcamFeedProps>(
+  (props, ref) => {
+    const [stream, setStream] = useState();
+    const [width, setWidth] = useState(0);
+    const [height, setHeight] = useState(0);
 
-  async function getWebcam() {
-
-    if (!stream) {
-      try {
-        const myStream = await getStream(props.deviceId);
-        const streamSettings = myStream.getVideoTracks()[0].getSettings();
-        if (streamSettings.height && streamSettings.width) {
-          setStream(myStream);
-          setWidth(streamSettings.width);
-          setHeight(streamSettings.height);
+    async function getWebcam() {
+      if (!stream) {
+        try {
+          const myStream = await getStream(props.deviceId);
+          const streamSettings = myStream.getVideoTracks()[0].getSettings();
+          if (streamSettings.height && streamSettings.width) {
+            setStream(myStream);
+            setWidth(streamSettings.width);
+            setHeight(streamSettings.height);
+          }
+          props.onUserMedia(myStream);
+        } catch (error) {
+          props.onUserMediaError(error);
         }
-        props.onUserMedia(myStream);
-      } catch (error) {
-        props.onUserMediaError(error);
       }
     }
-  };
 
-  useEffect(() => {
-    getWebcam();
-  }, []);
+    useEffect(() => {
+      getWebcam();
+    }, []);
 
-  function getStream(deviceId: string) {
-    return navigator.mediaDevices.getUserMedia({ video: { deviceId } })
-  }
+    function getStream(deviceId: string) {
+      return navigator.mediaDevices.getUserMedia({ video: { deviceId } });
+    }
 
-  return (
-  <video
-    className={props.deviceId + " hidden"}
-    autoPlay={true}
-    height={height}
-    width={width}
-    src={stream}
-    ref={ref}
-  />
-  );
-});
+    return (
+      <video
+        className={props.deviceId + ' hidden'}
+        autoPlay={true}
+        height={height}
+        width={width}
+        src={stream}
+        ref={ref}
+      />
+    );
+  },
+);
 
 export default WebcamFeed;
