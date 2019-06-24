@@ -10,7 +10,6 @@ export default function TextBoxMenuItem(props: ITextBoxMenuItemProps) {
             <label>{props.name}</label>
             <input type="textbox" defaultValue={props.value} style={{color : isValid ? "black" : "red"}} onChange={(event) => {
                 var isValid = props.isValidInput(event.target.value);
-                console.log(isValid);
                 setIsValid(isValid);
                 if (isValid)
                     props.onValidInput(event.target.value)

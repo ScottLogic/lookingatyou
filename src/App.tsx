@@ -91,9 +91,9 @@ class App extends React.Component<IAppProps, IAppState> {
 
   async componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
-    //this.getWebcamDevices();
-    //this.model = await cocoSSD.load();
-    //this.frameCapture = setInterval(this.detectImage, 1000 / FPS, this.state.videos[0].current) as number;
+    this.getWebcamDevices();
+    this.model = await cocoSSD.load();
+    this.frameCapture = setInterval(this.detectImage, 1000 / FPS, this.state.videos[0].current) as number;
   }
 
   componentWillUnmount() {
