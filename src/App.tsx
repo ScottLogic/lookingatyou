@@ -1,26 +1,11 @@
 import React, { RefObject } from 'react';
 import * as cocoSSD from "@tensorflow-models/coco-ssd"
-
 import Eye from './components/eye/Eye';
 import { TextBoxMenuItem, CheckBoxMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
 import './App.css';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
-
-const eyes = {
-  LEFT: 'left',
-  RIGHT: 'right',
-}
-
-const colours = {
-  scleraColor: "white",
-  irisColor: "lightBlue",
-  pupilColor: "black"
-}
-
-const videoinput = 'videoinput';
-
-const FPS = 30;
+import * as constants from './AppConstants';
 
 interface IAppState {
   width: number,
@@ -68,7 +53,7 @@ class App extends React.Component<IAppProps, IAppState> {
     this.props.environment.addEventListener("resize", this.updateDimensions);
     this.getWebcamDevices();
     this.model = await cocoSSD.load();
-    this.frameCapture = setInterval(this.detectImage, 1000/FPS, this.state.videos[0].current) as number;
+    this.frameCapture = setInterval(this.detectImage, 1000/constants.FPS, this.state.videos[0].current) as number;
   }
 
   componentWillUnmount() {
@@ -78,7 +63,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
   async getWebcamDevices() {
     let devices = await navigator.mediaDevices.enumerateDevices();
-    devices = devices.filter(device => device.kind === videoinput);
+    devices = devices.filter(device => device.kind === constants.videoinput);
     this.setState({
       webcams: devices,
       videos: devices.map(() => React.createRef<HTMLVideoElement>())
@@ -144,14 +129,14 @@ class App extends React.Component<IAppProps, IAppState> {
         {this.state.eyesDisplayed ?
           (
             <div className="container">
-              {Object.values(eyes).map((eye, key) => {
+              {Object.values(constants.eyes).map((eye, key) => {
                 return (
                   <Eye
                     class={eye}
                     key={key}
                     width={this.state.width / 2}
                     height={this.state.height}
-                    {...colours}
+                    {...(constants.colours)}
                     innerX={this.state.targetX}
                     innerY={this.state.targetY}
                   />
