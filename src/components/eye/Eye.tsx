@@ -14,7 +14,7 @@ interface IEyeProps {
 interface IEyeState {
     scleraSize: number,
     irisSize: number,
-    pupilSize: number,
+    pupilSize: number
 }
 
 export default class Eye extends React.Component<IEyeProps, IEyeState> {
@@ -24,7 +24,7 @@ export default class Eye extends React.Component<IEyeProps, IEyeState> {
         this.state = {
             scleraSize: 4,
             irisSize: 8,
-            pupilSize: 16,
+            pupilSize: 16
         }
     }
 
@@ -49,6 +49,6 @@ export default class Eye extends React.Component<IEyeProps, IEyeState> {
                     {this.renderCircle(this.props.width / this.state.pupilSize, "pupil", this.props.pupilColor, this.props.innerX, this.props.innerY)}
                 </g>
             </svg>
-            )
+        )
     }
 }
