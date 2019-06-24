@@ -1,6 +1,9 @@
 import React from 'react';
 import Eye from './components/eye/Eye';
-import { TextBoxMenuItem, CheckBoxMenuItem, ColorMenuItem, CanvasMenuItem } from './components/ConfigMenu/MenuItem';
+import TextBoxMenuItem from './components/ConfigMenu/TextBoxMenuItem';
+import CheckBoxMenuItem from './components/ConfigMenu/CheckBoxMenuItem';
+import CanvasMenuItem from './components/ConfigMenu/CanvasMenuItem';
+import ColorMenuItem from './components/ConfigMenu/ColorMenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
 import './App.css';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
@@ -189,6 +192,7 @@ class App extends React.Component<IAppProps, IAppState> {
       </div >
     );
   }
+  
   store(itemKey: string, itemVal: any, storage: Storage) {
     var configValuesCopy: configDict = {};
     Object.assign(configValuesCopy, this.state.configValues);
