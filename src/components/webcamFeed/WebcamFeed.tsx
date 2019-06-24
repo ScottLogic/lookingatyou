@@ -12,6 +12,7 @@ const WebcamFeed = React.forwardRef<HTMLVideoElement, IWebcamFeedProps>((props, 
   const [height, setHeight] = useState(0);
 
   async function getWebcam() {
+
     if (!stream) {
       try {
         const myStream = await getStream(props.deviceId);
