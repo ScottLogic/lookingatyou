@@ -7,13 +7,13 @@ circle {
 }
 
 .Eyelids path {
-    fill : black;
+    fill: black;
     stroke:black;
     stroke-width:2;
 }
 
 .BlackFill path {
-    fill : black;
+    fill: black;
     stroke:black;
     stroke-width:2;
 }

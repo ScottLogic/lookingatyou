@@ -79,17 +79,21 @@ class App extends React.Component<IAppProps, IAppState> {
       this.setState((state) => ({
         isBlinking: state.isBlinking ? false : (Math.random() < blinkFrequency / (1000 / transitionTime))
       }));
-    }, transitionTime); 
+    }, transitionTime);
 
     // Sets up cyclical dilation animation
     this.dilate = window.setInterval(() => {
       this.setState((state) => ({
-        dilationCoefficient: state.dilationCoefficient === pupilSizes.neutral ? pupilSizes.dilated :
-          state.dilationCoefficient === pupilSizes.dilated ? pupilSizes.constricted :
-            pupilSizes.neutral
+        dilationCoefficient: function () {
+          switch (state.dilationCoefficient) {
+            case pupilSizes.neutral: return pupilSizes.dilated;
+            case pupilSizes.dilated: return pupilSizes.constricted;
+            default: return pupilSizes.neutral;
+          }
+        }()
       }));
-    }, pupilSizeChangeInterval); 
-    
+    }, pupilSizeChangeInterval);
+
     this.model = await cocoSSD.load();
     this.frameCapture = setInterval(this.detectImage, 1000 / FPS, this.state.videos[0].current) as number;
   }
