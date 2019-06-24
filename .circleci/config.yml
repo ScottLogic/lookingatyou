@@ -5,12 +5,12 @@ jobs:
       - image: 'circleci/node:10.16'
     steps:
       -checkout
-      -restore_cache:
+      - restore_cache:
           key: lookingatyou-{{ checksum "package-lock.json" }}
       - run:
           name: Install npm dependencies
           command: npm ci
-      -save_cache:
+      - save_cache:
           key: lookingatyou-{{ checksum "package-lock.json" }}
       - run:
         name: Check Linting
