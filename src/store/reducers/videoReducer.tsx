@@ -1,30 +1,23 @@
-import { VideoActionTypes, IVideoState, SET_VIDEO, SET_DIMENSIONS, IDimensions } from "../actions/video/types";
+import { VideoActionTypes, IVideoState, SET_VIDEO, SET_DIMENSIONS, IDimensions, IVideo, SET_VIDEO_STREAMS } from "../actions/video/types";
 
 
-const initialState: IVideoState ={
-  video: null,
-  width: 0,
-  height: 0,
+export const initialState: IVideoState = {
+  videos: [],
 }
 
-export default (state = initialState, action: VideoActionTypes): IVideoState => {
+
+const videoStore = (state: IVideoState = initialState, action: VideoActionTypes): IVideoState => {
   switch (action.type) {
-    case SET_VIDEO:
-    case SET_DIMENSIONS:
-      return Object.assign({}, state, action.payload);
-   default:
-    return state
+    case SET_VIDEO_STREAMS:
+      return { ...state, videos: action.videos };
+    default:
+      return state
   }
- }
+}
+
+export function getVideo(state: IVideoState): (HTMLVideoElement | undefined)[] {
+  return state.videos.map(item => item.video);
+}
 
 
-export function getVideo(state: IVideoState): HTMLVideoElement | null {
-   return state.video;
- }
-
- export function getDimensions(state: IVideoState): IDimensions {
-   return {
-     width: state.width,
-     height: state.height,
-   }
- }
+export default videoStore;

@@ -38,7 +38,7 @@ jobs:
 
   deploy:
     docker:
-      - image: 'circleci/python:3.6.4-stretch-node'
+  - image: 'circleci/python:3.6.4-stretch-node'
     steps:
       - checkout
       - run: sudo pip install awscli --upgrade

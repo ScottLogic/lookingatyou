@@ -25,6 +25,13 @@ import {
     transitionTime,
     videoinput,
 } from './AppConstants';
+import configureStream from './components/webcamHandler/WebcamHandler';
+import { IRootStore } from './store/reducers/rootReducer';
+import {
+    getDeviceIds,
+    getStreamForDevice,
+} from './store/selectors/videoSelectors';
+import { connect } from 'react-redux';
 
 interface IAppState {
     width: number;
@@ -45,14 +52,26 @@ interface IAppProps {
     environment: Window;
 }
 
-class App extends React.Component<IAppProps, IAppState> {
+interface IAppMapStateToProps {
+    deviceIds: string[];
+}
+
+type AppProps = IAppProps & IAppMapStateToProps;
+
+const mapStateToProps = (state: IRootStore) => {
+    return {
+        deviceIds: getDeviceIds(state),
+    };
+};
+
+class App extends React.Component<AppProps, IAppState> {
     private leftDebugRef: React.RefObject<CanvasMenuItem>;
     private rightDebugRef: React.RefObject<CanvasMenuItem>;
     private model: cocoSSD.ObjectDetection | null;
     private frameCapture: number;
     private blink: number = 0;
     private dilate: number = 0;
-    constructor(props: IAppProps) {
+    constructor(props: AppProps) {
         super(props);
 
         this.state = {
@@ -91,7 +110,13 @@ class App extends React.Component<IAppProps, IAppState> {
             'resize',
             this.updateDimensions,
         );
-        this.getWebcamDevices();
+        configureStream(this.props.environment.navigator.mediaDevices);
+
+        this.props.environment.addEventListener('storage', () =>
+            this.readConfig(configStorageKey),
+        );
+        this.model = null;
+        this.frameCapture = 0;
 
         // Sets up random blinking animation
         this.blink = window.setInterval(() => {
@@ -205,16 +230,8 @@ class App extends React.Component<IAppProps, IAppState> {
         return (
             <div className="App">
                 <div className="webcam-feed">
-                    {this.state.webcams.map((device, key) => {
-                        return (
-                            <WebcamFeed
-                                key={key}
-                                deviceId={device.deviceId}
-                                onUserMedia={this.onUserMedia}
-                                onUserMediaError={this.onUserMediaError}
-                                ref={this.state.videos[key]}
-                            />
-                        );
+                    {this.props.deviceIds.map((device, key) => {
+                        return <WebcamFeed key={key} deviceId={device} />;
                     })}
                 </div>
 
@@ -353,4 +370,4 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 }
 
-export default App;
+export default connect(mapStateToProps)(App);
