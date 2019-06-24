@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 /* tslint:disable: jsx-no-lambda radix */
-=======
-// ToDo: Refactor lambda functions and disable linting exclusion.
-/* tslint:disable: jsx-no-lambda no-empty*/
->>>>>>> Added rule exclusions for lambda functions in affected files
 
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
 import React, { RefObject } from 'react';
@@ -245,7 +240,7 @@ class App extends React.Component<IAppProps, IAppState> {
     );
   }
 
-  public store(key: string, partialState: Partial<IUserConfig>) {
+  store(key: string, partialState: Partial<IUserConfig>) {
     const newUserConfig: IUserConfig = {
       ...this.state.userConfig,
       ...partialState,
@@ -261,7 +256,7 @@ class App extends React.Component<IAppProps, IAppState> {
     );
   }
 
-  public readConfig(key: string) {
+  readConfig(key: string) {
     const json = this.props.environment.localStorage.getItem(key);
     if (json != null) {
       return JSON.parse(json);
