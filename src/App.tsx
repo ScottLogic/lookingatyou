@@ -65,6 +65,8 @@ class App extends React.Component<IAppProps, IAppState> {
   private rightDebugRef: React.RefObject<CanvasMenuItem>;
   private model: cocoSSD.ObjectDetection | null;
   private frameCapture: number;
+  private blink: number = 0;
+  private dilate: number = 0;
   constructor(props: IAppProps) {
     super(props);
 
@@ -77,8 +79,8 @@ class App extends React.Component<IAppProps, IAppState> {
       eyesDisplayed: false,
       isBlinking: false,
       videos: [],
-      targetX: this.props.environment.innerWidth/4,
-      targetY: this.props.environment.innerHeight/2,
+      targetX: this.props.environment.innerWidth / 4,
+      targetY: this.props.environment.innerHeight / 2,
       dilationCoefficient: pupilSizes.neutral
     }
 
@@ -97,27 +99,32 @@ class App extends React.Component<IAppProps, IAppState> {
   async componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
     this.getWebcamDevices();
+
     // Sets up random blinking animation
-    window.setInterval(() => {
+    this.blink = window.setInterval(() => {
       this.setState((state) => ({
-        isBlinking: state.isBlinking ? false : (Math.random() < blinkFrequency / (1000/transitionTime))
+        isBlinking: state.isBlinking ? false : (Math.random() < blinkFrequency / (1000 / transitionTime))
       }));
-    }, transitionTime);
+    }, transitionTime); 
+
     // Sets up cyclical dilation animation
-    window.setInterval(() => {
+    this.dilate = window.setInterval(() => {
       this.setState((state) => ({
-        dilationCoefficient : state.dilationCoefficient === pupilSizes.neutral ? pupilSizes.dilated :
-        state.dilationCoefficient === pupilSizes.dilated ? pupilSizes.constricted :
-        pupilSizes.neutral
+        dilationCoefficient: state.dilationCoefficient === pupilSizes.neutral ? pupilSizes.dilated :
+          state.dilationCoefficient === pupilSizes.dilated ? pupilSizes.constricted :
+            pupilSizes.neutral
       }));
-    }, pupilSizeChangeInterval);
+    }, pupilSizeChangeInterval); 
+    
     this.model = await cocoSSD.load();
-    this.frameCapture = setInterval(this.detectImage, 1000/FPS, this.state.videos[0].current) as number;
+    this.frameCapture = setInterval(this.detectImage, 1000 / FPS, this.state.videos[0].current) as number;
   }
 
   componentWillUnmount() {
     this.props.environment.removeEventListener("resize", this.updateDimensions);
     clearInterval(this.frameCapture);
+    clearInterval(this.blink);
+    clearInterval(this.dilate);
   }
 
   async getWebcamDevices() {
@@ -133,8 +140,8 @@ class App extends React.Component<IAppProps, IAppState> {
     this.setState({
       height: this.props.environment.innerHeight,
       width: this.props.environment.innerWidth,
-      targetX: this.props.environment.innerWidth/4,
-      targetY: this.props.environment.innerHeight/2
+      targetX: this.props.environment.innerWidth / 4,
+      targetY: this.props.environment.innerHeight / 2
     });
   }
 
@@ -147,25 +154,25 @@ class App extends React.Component<IAppProps, IAppState> {
     this.setState({ eyesDisplayed: false, eyesOpenCoefficient: eyelidPosition.CLOSED });
   }
 
-  async detectImage(img : ImageData|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|null) {
-    if (this.model && img !== null){
+  async detectImage(img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | null) {
+    if (this.model && img !== null) {
       var detections = await this.model.detect(img);
       this.selectTarget(detections);
     }
   }
-  
-  selectTarget(detections : cocoSSD.DetectedObject[]){
-    var target = detections.find( (detection) => detection.class === "person");
+
+  selectTarget(detections: cocoSSD.DetectedObject[]) {
+    var target = detections.find((detection) => detection.class === "person");
     if (target !== undefined) {
       this.calculateEyePos(target.bbox);
     }
   }
 
-  calculateEyePos(bbox : number[]) {
+  calculateEyePos(bbox: number[]) {
     const [x, y, width, height] = bbox;
     this.setState({
-      targetX: x + width/2, 
-      targetY: y + height/2
+      targetX: x + width / 2,
+      targetY: y + height / 2
     })
   }
 
