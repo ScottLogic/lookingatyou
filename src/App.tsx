@@ -22,8 +22,8 @@ const colours = {
 }
 
 interface IUserConfig {
-  xSens: number,
-  ySens: number,
+  xSensitivity: number,
+  ySensitivity: number,
   fps: number,
   swapEyes: boolean,
   toggleDebug: boolean,
@@ -31,8 +31,8 @@ interface IUserConfig {
 }
 
 const defaultConfigValues: IUserConfig = {
-  xSens: 1,
-  ySens: 1,
+  xSensitivity: 1,
+  ySensitivity: 1,
   fps: 5,
   swapEyes: false,
   toggleDebug: false,
@@ -202,15 +202,15 @@ class App extends React.Component<IAppProps, IAppState> {
         <ConfigMenu width="14em" timerLength={1000}>
           <TextBoxMenuItem
             name={"X Sensitivity"}
-            defaultValue={`${this.state.userConfig.xSens}`}
+            defaultValue={`${this.state.userConfig.xSensitivity}`}
             isValidInput={(sens: string) => !isNaN(parseFloat(sens))}
-            onValidInput={(sens: string) => this.store(storageKey, { xSens: parseFloat(sens) })} 
+            onValidInput={(sens: string) => this.store(storageKey, { xSensitivity: parseFloat(sens) })} 
             parse={(text: string) => `${parseFloat(text)}`}/>
           <TextBoxMenuItem
             name={"Y Sensitivity"}
-            defaultValue={`${this.state.userConfig.ySens}`}
+            defaultValue={`${this.state.userConfig.ySensitivity}`}
             isValidInput={(sens: string) => !isNaN(parseFloat(sens))}
-            onValidInput={(sens: string) => this.store(storageKey, { ySens: parseFloat(sens) })} 
+            onValidInput={(sens: string) => this.store(storageKey, { ySensitivity: parseFloat(sens) })} 
             parse={(text: string) => `${parseFloat(text)}`}/>
           <TextBoxMenuItem
             name={"FPS"}
