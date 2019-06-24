@@ -1,3 +1,5 @@
+/* tslint:disable: jsx-no-lambda */
+
 import React from 'react';
 import './ConfigMenu.css';
 
@@ -11,7 +13,7 @@ interface IConfigMenuState {
   isUnderMouse: boolean;
 }
 
-export class ConfigMenu extends React.Component<
+export default class ConfigMenu extends React.Component<
   IConfigMenuProps,
   IConfigMenuState
 > {
@@ -30,7 +32,7 @@ export class ConfigMenu extends React.Component<
       }
     });
   }
-  public render() {
+  render() {
     return (
       <div
         style={{ width: this.props.width, left: this.state.leftPosition }}

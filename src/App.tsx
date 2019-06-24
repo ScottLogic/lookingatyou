@@ -11,12 +11,12 @@ import {
   FPS,
   videoinput,
 } from './AppConstants';
-import CanvasMenuItem from './components/ConfigMenu/CanvasMenuItem';
-import CheckBoxMenuItem from './components/ConfigMenu/CheckBoxMenuItem';
-import ColorMenuItem from './components/ConfigMenu/ColorMenuItem';
-import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
-import IUserConfig from './components/ConfigMenu/IUserConfig';
-import TextBoxMenuItem from './components/ConfigMenu/TextBoxMenuItem';
+import CanvasMenuItem from './components/configMenu/CanvasMenuItem';
+import CheckBoxMenuItem from './components/configMenu/CheckBoxMenuItem';
+import ColorMenuItem from './components/configMenu/ColorMenuItem';
+import ConfigMenu from './components/configMenu/ConfigMenu';
+import IUserConfig from './components/configMenu/IUserConfig';
+import TextBoxMenuItem from './components/configMenu/TextBoxMenuItem';
 import Eye from './components/eye/Eye';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
 
