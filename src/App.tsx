@@ -20,9 +20,9 @@ const eyelidPosition = {
 }
 
 const pupilSizes = {
-  dilated: 1.5,
+  dilated: 1.3,
   neutral: 1.0,
-  constricted: 0.6
+  constricted: 0.8
 }
 
 const blinkFrequency = 0.25;
