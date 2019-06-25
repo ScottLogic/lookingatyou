@@ -39,6 +39,8 @@ interface IAppState {
     targetY: number;
     dilationCoefficient: number;
     modelLoaded: boolean;
+    personDetected: boolean;
+    direction: boolean;
 }
 
 interface IAppProps {
@@ -88,12 +90,20 @@ export class App extends React.Component<AppProps, IAppState> {
             userConfig:
                 this.readConfig(configStorageKey) || defaultConfigValues,
             modelLoaded: true,
+            personDetected: false,
+            direction: true,
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);
         this.onUserMedia = this.onUserMedia.bind(this);
         this.onUserMediaError = this.onUserMediaError.bind(this);
         this.detectImage = this.detectImage.bind(this);
+        this.checkLight = this.checkLight.bind(this);
+        this.isNewTarget = this.isNewTarget.bind(this);
+        this.hasTargetLeft = this.hasTargetLeft.bind(this);
+        this.setDilation = this.setDilation.bind(this);
+        this.analyseLight = this.analyseLight.bind(this);
+
         this.leftDebugRef = React.createRef();
         this.rightDebugRef = React.createRef();
 
@@ -124,7 +134,8 @@ export class App extends React.Component<AppProps, IAppState> {
             }));
         }, transitionTime);
 
-        this.dilate = window.setInterval(() => {
+        // Sets up cyclical dilation animation
+        /*this.dilate = window.setInterval(() => {
             this.setState(state => ({
                 dilationCoefficient: (function() {
                     switch (state.dilationCoefficient) {
@@ -137,7 +148,7 @@ export class App extends React.Component<AppProps, IAppState> {
                     }
                 })(),
             }));
-        }, pupilSizeChangeInterval);
+        }, pupilSizeChangeInterval);*/
 
         this.model = await cocoSSD.load();
         if (this.props.videos[0]) {
@@ -188,6 +199,7 @@ export class App extends React.Component<AppProps, IAppState> {
     ) {
         if (this.model && img !== null) {
             const detections = await this.model.detect(img);
+            this.checkLight(img, this.analyseLight);
             this.selectTarget(detections);
         }
     }
@@ -196,8 +208,127 @@ export class App extends React.Component<AppProps, IAppState> {
         const target = detections.find(
             detection => detection.class === 'person',
         );
+
         if (target !== undefined) {
             this.calculateEyePos(target.bbox);
+            this.isNewTarget();
+        } else {
+            this.hasTargetLeft();
+        }
+    }
+
+    naturalMovement() {
+        const middleOfFrame = window.innerWidth / 4;
+
+        if (this.state.targetX === middleOfFrame) {
+            if (Math.random() < 0.05) {
+                this.moveEye();
+            }
+        }
+    }
+
+    isNewTarget() {
+        if (!this.state.personDetected) {
+            this.setState({ personDetected: true });
+            this.setDilation(pupilSizes.dilated);
+            this.setDilation(pupilSizes.neutral);
+        }
+    }
+
+    hasTargetLeft() {
+        if (this.state.personDetected) {
+            this.setState({ personDetected: false });
+            this.setDilation(pupilSizes.constricted);
+            this.setDilation(pupilSizes.neutral);
+        }
+    }
+
+    setDilation(pupilSize: number) {
+        window.setInterval(() => {
+            this.setState(() => ({
+                dilationCoefficient: pupilSize,
+            }));
+        }, 50);
+    }
+
+    moveEye() {
+        if (this.state.direction) {
+            this.moveLeft();
+        } else {
+            this.moveRight();
+        }
+    }
+
+    moveLeft() {
+        const middleX = window.innerWidth / 4;
+        const xIncrement = window.innerWidth / 16;
+        const buffer = 6;
+
+        if (this.state.targetX > middleX - xIncrement + buffer) {
+            this.setState({ targetX: this.state.targetX - 4 });
+        } else {
+            this.setState({ direction: !this.state.direction });
+        }
+    }
+
+    moveRight() {
+        const middleX = window.innerWidth / 4;
+        const xIncrement = window.innerWidth / 16;
+        const buffer = 6;
+
+        if (this.state.targetX < middleX + xIncrement - buffer) {
+            this.setState({ targetX: this.state.targetX + 4 });
+        } else {
+            this.setState({ direction: !this.state.direction });
+        }
+    }
+
+    checkLight(
+        video:
+            | ImageData
+            | HTMLImageElement
+            | HTMLCanvasElement
+            | HTMLVideoElement
+            | null,
+        callback: Function,
+    ) {
+        if (video && video instanceof HTMLVideoElement) {
+            const canvas = document.createElement('canvas');
+            canvas.height = video.height;
+            canvas.width = video.width;
+            const canvasCtx = canvas.getContext('2d');
+
+            if (canvasCtx) {
+                canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const img = new Image();
+
+                callback.call(this, canvas, this.setDilation);
+            }
+        }
+    }
+
+    analyseLight(canvas: HTMLCanvasElement, callback: Function) {
+        const ctx = canvas.getContext('2d');
+
+        if (ctx && canvas.width > 0) {
+            const imageData = ctx.getImageData(
+                0,
+                0,
+                canvas.width,
+                canvas.height,
+            );
+
+            const data = imageData.data;
+
+            const colorSum = data.reduce((r, g, b) => {
+                return Math.floor((r + g + b) / 3);
+            });
+
+            const brightness = Math.floor(colorSum / (data.length / 3));
+
+            const scaledPupilSize = ((255 - brightness) / 255) * 0.7 + 0.8;
+
+            callback(scaledPupilSize);
         }
     }
 
@@ -293,7 +424,9 @@ export class App extends React.Component<AppProps, IAppState> {
                         defaultValue={`${this.state.userConfig.fps}`}
                         isValidInput={(fps: string) => !isNaN(parseInt(fps))}
                         onValidInput={(fps: string) =>
-                            this.store(configStorageKey, { fps: parseInt(fps) })
+                            this.store(configStorageKey, {
+                                fps: parseInt(fps),
+                            })
                         }
                         parse={(text: string) => `${parseInt(text)}`}
                     />
