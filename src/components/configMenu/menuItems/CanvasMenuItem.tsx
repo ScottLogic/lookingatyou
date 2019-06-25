@@ -1,5 +1,3 @@
-/* tslint:disable:jsx-no-lambda */
-
 import React from 'react';
 interface ICanvasMenuItemProps {
     name: string;
