@@ -3,6 +3,7 @@ import { Bbox, ICoords } from '../types';
 export default function calculateTargetPos(bbox: Bbox): ICoords | undefined {
     if (bbox) {
         const [x, y, width, height] = bbox;
+<<<<<<< HEAD
         return { x: x + width / 2, y: y + (height * 3) / 4 };
     }
 }
@@ -17,3 +18,8 @@ export function normalise(
     const normalised = (val - min) / (max - min);
     return normalised * (newMax - newMin) + newMin;
 }
+=======
+        return { x: (x + width) / 2, y: ((y + height) / 4) * 3 };
+    }
+}
+>>>>>>> refactored object detection to be modular
