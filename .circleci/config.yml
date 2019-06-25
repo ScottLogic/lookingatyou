@@ -54,7 +54,6 @@ jobs:
           name: Build project
           command: npm run build
       - run:
-<<<<<<< HEAD
           name: "Deploy to S3"
           command: |
             if ["${CIRCLE_BRANCH}" == "master" ]; then
@@ -62,10 +61,6 @@ jobs:
             else
               aws s3 sync ./build/ s3://looking-at-you/$CIRCLE_BRANCH --delete
             fi
-=======
-          name: 'Deploy to S3'
-          command: aws s3 sync ./build/ s3://looking-at-you/ --delete
->>>>>>> master
 
 workflows:
   version: 2
