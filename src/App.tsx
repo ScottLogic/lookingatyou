@@ -48,7 +48,7 @@ class App extends React.Component<IAppProps, IAppState> {
       height: this.props.environment.innerHeight,
       webcams: [],
       eyesDilatedCoefficient: 1,
-      eyesOpenCoefficient: eyelidPosition.CLOSED,
+      eyesOpenCoefficient: eyelidPosition.OPEN,
       webcamAvailable: false,
       isBlinking: false,
       videos: [],
