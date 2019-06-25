@@ -1,17 +1,9 @@
-/* tslint:disable: jsx-no-lambda radix ordered-imports only-arrow-functions */
+/* tslint:disable: jsx-no-lambda radix only-arrow-functions */
 
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
 import React, { RefObject } from 'react';
 
 import './App.css';
-import CanvasMenuItem from './components/configMenu/CanvasMenuItem';
-import CheckBoxMenuItem from './components/configMenu/CheckBoxMenuItem';
-import ColorMenuItem from './components/configMenu/ColorMenuItem';
-import ConfigMenu from './components/configMenu/ConfigMenu';
-import IUserConfig from './components/configMenu/InterfaceUserConfig';
-import TextBoxMenuItem from './components/configMenu/TextBoxMenuItem';
-import Eye from './components/eye/Eye';
-import WebcamFeed from './components/webcamFeed/WebcamFeed';
 import {
     blinkFrequency,
     colours,
@@ -25,21 +17,29 @@ import {
     transitionTime,
     videoinput,
 } from './AppConstants';
+import CanvasMenuItem from './components/configMenu/CanvasMenuItem';
+import CheckBoxMenuItem from './components/configMenu/CheckBoxMenuItem';
+import ColorMenuItem from './components/configMenu/ColorMenuItem';
+import ConfigMenu from './components/configMenu/ConfigMenu';
+import IUserConfig from './components/configMenu/InterfaceUserConfig';
+import TextBoxMenuItem from './components/configMenu/TextBoxMenuItem';
+import Eye from './components/eye/Eye';
+import WebcamFeed from './components/webcamFeed/WebcamFeed';
 
 interface IAppState {
-    width: number,
-    height: number,
-    webcams: MediaDeviceInfo[],
-    eyesDilatedCoefficient: number,
-    eyesOpenCoefficient: number,
-    webcamAvailable: boolean,
-    isBlinking: boolean
-    userConfig: IUserConfig
-    videos: Array<RefObject<HTMLVideoElement>>,
-    targetX: number,
-    targetY: number,
-    dilationCoefficient: number,
-    modelLoaded: boolean
+    width: number;
+    height: number;
+    webcams: MediaDeviceInfo[];
+    eyesDilatedCoefficient: number;
+    eyesOpenCoefficient: number;
+    webcamAvailable: boolean;
+    isBlinking: boolean;
+    userConfig: IUserConfig;
+    videos: Array<RefObject<HTMLVideoElement>>;
+    targetX: number;
+    targetY: number;
+    dilationCoefficient: number;
+    modelLoaded: boolean;
 }
 
 interface IAppProps {
@@ -68,9 +68,10 @@ class App extends React.Component<IAppProps, IAppState> {
             targetX: this.props.environment.innerWidth / 4,
             targetY: this.props.environment.innerHeight / 2,
             dilationCoefficient: pupilSizes.neutral,
-            userConfig: this.readConfig(configStorageKey) || defaultConfigValues,
-            modelLoaded: true
-        }
+            userConfig:
+                this.readConfig(configStorageKey) || defaultConfigValues,
+            modelLoaded: true,
+        };
 
         this.updateDimensions = this.updateDimensions.bind(this);
         this.onUserMedia = this.onUserMedia.bind(this);
@@ -105,7 +106,11 @@ class App extends React.Component<IAppProps, IAppState> {
 
         this.model = await cocoSSD.load();
         this.setState({ modelLoaded: true });
-        this.frameCapture = setInterval(this.detectImage, 1000 / FPS, this.state.videos[0].current) as number;
+        this.frameCapture = setInterval(
+            this.detectImage,
+            1000 / FPS,
+            this.state.videos[0].current,
+        ) as number;
 
         this.dilate = window.setInterval(() => {
             this.setState(state => ({
@@ -122,8 +127,6 @@ class App extends React.Component<IAppProps, IAppState> {
             }));
         }, pupilSizeChangeInterval);
     }
-
-
 
     componentWillUnmount() {
         this.props.environment.removeEventListener(
@@ -211,38 +214,48 @@ class App extends React.Component<IAppProps, IAppState> {
                     })}
                 </div>
 
-                {this.state.webcams.length > 0 ?
-                    (
-                        !(this.state.webcamAvailable && this.state.modelLoaded) ?
-                            <div className="loading-spinner" /> : (
-                                <div className="container">
-                                    {Object.values(eyes).map((eye, key) => {
-                                        return (
-                                            <Eye
-                                                class={eye}
-                                                key={key}
-                                                width={this.state.width / 2}
-                                                height={this.state.height}
-                                                scleraColor={colours.scleraColor}
-                                                irisColor={this.state.userConfig.irisColor}
-                                                pupilColor={colours.pupilColor}
-                                                scleraRadius={this.state.width / 5}
-                                                irisRadius={this.state.width / 10}
-                                                pupilRadius={this.state.width / 24}
-                                                isBlinking={this.state.isBlinking}
-                                                // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
-                                                openCoefficient={this.state.eyesOpenCoefficient}
-                                                // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
-                                                dilatedCoefficient={this.state.dilationCoefficient}
-                                                transitionTime={transitionTime.toString()}
-                                                innerX={this.state.targetX}
-                                                innerY={this.state.targetY}
-                                            />
-                                        )
-                                    })}
-                                </div>
-                            )) : (<div className="Error">No webcam connected. Please connect a webcam and refresh </div>)
-                }
+                {this.state.webcams.length > 0 ? (
+                    !(this.state.webcamAvailable && this.state.modelLoaded) ? (
+                        <div className="loading-spinner" />
+                    ) : (
+                        <div className="container">
+                            {Object.values(eyes).map((eye, key) => {
+                                return (
+                                    <Eye
+                                        class={eye}
+                                        key={key}
+                                        width={this.state.width / 2}
+                                        height={this.state.height}
+                                        scleraColor={colours.scleraColor}
+                                        irisColor={
+                                            this.state.userConfig.irisColor
+                                        }
+                                        pupilColor={colours.pupilColor}
+                                        scleraRadius={this.state.width / 5}
+                                        irisRadius={this.state.width / 10}
+                                        pupilRadius={this.state.width / 24}
+                                        isBlinking={this.state.isBlinking}
+                                        // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
+                                        openCoefficient={
+                                            this.state.eyesOpenCoefficient
+                                        }
+                                        // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
+                                        dilatedCoefficient={
+                                            this.state.dilationCoefficient
+                                        }
+                                        transitionTime={transitionTime.toString()}
+                                        innerX={this.state.targetX}
+                                        innerY={this.state.targetY}
+                                    />
+                                );
+                            })}
+                        </div>
+                    )
+                ) : (
+                    <div className="Error">
+                        No webcam connected. Please connect a webcam and refresh{' '}
+                    </div>
+                )}
 
                 <ConfigMenu width="14em" timerLength={1000}>
                     <TextBoxMenuItem
