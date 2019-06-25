@@ -4,6 +4,7 @@ import * as cocoSSD from '@tensorflow-models/coco-ssd';
 import React, { RefObject } from 'react';
 
 import './App.css';
+<<<<<<< HEAD
 import CanvasMenuItem from './components/configMenu/CanvasMenuItem';
 import CheckBoxMenuItem from './components/configMenu/CheckBoxMenuItem';
 import ColorMenuItem from './components/configMenu/ColorMenuItem';
@@ -22,13 +23,10 @@ import {
     pupilSizeChangeInterval,
     pupilSizes,
     transitionTime,
-    videoinput,
 } from './AppConstants';
-import configureStream from './components/webcamHandler/WebcamHandler';
 import { IRootStore } from './store/reducers/rootReducer';
 import {
     getDeviceIds,
-    getStreamForDevice,
 } from './store/selectors/videoSelectors';
 import { connect } from 'react-redux';
 import Video from './components/video/Video';
@@ -49,7 +47,8 @@ interface IAppState {
 }
 
 interface IAppProps {
-    environment: Window;
+  environment: Window,
+  configureStream: (mediaDevices: MediaDevices, onUserMedia: () => void, onUserMediaError: () => void) => void;
 }
 
 interface IAppMapStateToProps {
@@ -64,7 +63,7 @@ const mapStateToProps = (state: IRootStore) => {
     };
 };
 
-class App extends React.Component<AppProps, IAppState> {
+export class App extends React.Component<AppProps, IAppState> {
     private leftDebugRef: React.RefObject<CanvasMenuItem>;
     private rightDebugRef: React.RefObject<CanvasMenuItem>;
     private model: cocoSSD.ObjectDetection | null;
@@ -110,7 +109,7 @@ class App extends React.Component<AppProps, IAppState> {
             'resize',
             this.updateDimensions,
         );
-        configureStream(
+        this.props.configureStream(
             this.props.environment.navigator.mediaDevices,
             this.onUserMedia,
             this.onUserMediaError,
