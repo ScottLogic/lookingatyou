@@ -21,7 +21,7 @@ import configureStream from './components/webcamHandler/WebcamHandler';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds } from './store/selectors/videoSelectors';
 import { connect } from 'react-redux';
-import Video from './components/webcamFeed/WebcamFeed';
+import Video from './components/video/Video';
 
 const eyes = {
   LEFT: 'left',
@@ -104,11 +104,15 @@ class App extends React.Component<AppProps, IAppState> {
     this.updateDimensions = this.updateDimensions.bind(this);
     this.onUserMedia = this.onUserMedia.bind(this);
 <<<<<<< HEAD
+<<<<<<< HEAD
     this.onUserMediaError = this.onUserMediaError.bind(this);
     this.detectImage = this.detectImage.bind(this);
 
 =======
 >>>>>>> refactored WebcamFeed to use global video store
+=======
+    this.onUserMediaError = this.onUserMediaError.bind(this);
+>>>>>>> clean up
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
 
@@ -148,11 +152,16 @@ class App extends React.Component<AppProps, IAppState> {
 =======
   componentDidMount() {
 <<<<<<< HEAD
+<<<<<<< HEAD
     configureStream(this.props.environment.navigator.mediaDevices);
 >>>>>>> refactor for webcam handler and multiple webcams
 =======
     configureStream(this.props.environment.navigator.mediaDevices, this.onUserMedia);
 >>>>>>> refactored WebcamFeed to use global video store
+=======
+    configureStream(this.props.environment.navigator.mediaDevices, this.onUserMedia, this.onUserMediaError);
+    this.props.environment.navigator.mediaDevices.ondevicechange = () => configureStream(this.props.environment.navigator.mediaDevices, this.onUserMedia, this.onUserMediaError);
+>>>>>>> clean up
   }
 
   componentWillUnmount() {
@@ -220,7 +229,14 @@ class App extends React.Component<AppProps, IAppState> {
     this.setState({ eyesDisplayed: true });
   }
 
+<<<<<<< HEAD
 >>>>>>> refactored WebcamFeed to use global video store
+=======
+  onUserMediaError() {
+    this.setState({ eyesDisplayed: false });
+  }
+
+>>>>>>> clean up
   render() {
     return (
       <div className="App">
