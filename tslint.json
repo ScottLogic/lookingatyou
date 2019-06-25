@@ -1,0 +1,11 @@
+{
+    "extends": ["tslint:latest", "tslint-react", "tslint-config-prettier"],
+    "linterOptions": {
+        "exclude": ["node_modules/**/*.ts", "src/serviceWorker.ts"]
+    },
+    "rules": {
+        "no-implicit-dependencies": [true, "dev"],
+        "object-literal-sort-keys": false,
+        "member-access": [true, "no-public"]
+    }
+}

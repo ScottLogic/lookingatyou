@@ -1,6 +1,6 @@
 <!-- PROJECT SHIELDS -->
-[![CircleCI](https://img.shields.io/circleci/build/github/ScottLogic/lookingatyou/master.svg?label=master&style=badge&token=ab5d53d5a9479d50259a1d2febaa710964b4bd8c)](https://circleci.com/gh/ScottLogic/lookingatyou)
 
+[![CircleCI](https://img.shields.io/circleci/build/github/ScottLogic/lookingatyou/master.svg?label=master&style=badge&token=ab5d53d5a9479d50259a1d2febaa710964b4bd8c)](https://circleci.com/gh/ScottLogic/lookingatyou)
 
 <!-- PROJECT LOGO -->
 <br />
@@ -19,19 +19,16 @@
   </p>
 </p>
 
-
 ## Table of Contents
 
-* [About the Project](#about-the-project)
-* [Prerequisites](#prerequisites)
-  * [General](#general)
-  * [Test](#test)
-* [Running the project (local)](#running-the-project-locally)
-* [Usage](#usage)
-* [Testing](#testing)
-* [Deployment](#deployment)
-
-
+-   [About the Project](#about-the-project)
+-   [Prerequisites](#prerequisites)
+    -   [General](#general)
+    -   [Test](#test)
+-   [Running the project (local)](#running-the-project-locally)
+-   [Usage](#usage)
+-   [Testing](#testing)
+-   [Deployment](#deployment)
 
 ## About The Project
 
@@ -58,17 +55,18 @@ which will install any dependencies of the project based off of the package.json
 ## Running the project locally
 
 Install the dependencies:
+
 ```
 npm install
 ```
 
 To run the project locally, run the following command:
+
 ```
 npm start
 ```
 
 This will start the node server and you can access the project on [http://localhost:3000](http://localhost:3000)
-
 
 ## Usage
 
@@ -76,12 +74,12 @@ When you first access the application, you will be asked for the permission to a
 
 When mouse movement is detected on the screen, the configuration menu will open where certain settings can be adjusted. Following options are currently available:
 
-| Option         | Description                                                                  |
-|----------------|------------------------------------------------------------------------------|
-| X Sensitivity  | X axis eyes sensitivity                                                      |
-| Y Sensitivity  | Y axis eyes sensitivity                                                      |
-| Swap Eyes      | Available when two webcams are detected. Swaps the webcam input for the eyes |
-| Toggle Debug   | Displays the camera feed with bounding boxes                                 |
+| Option        | Description                                                                  |
+| ------------- | ---------------------------------------------------------------------------- |
+| X Sensitivity | X axis eyes sensitivity                                                      |
+| Y Sensitivity | Y axis eyes sensitivity                                                      |
+| Swap Eyes     | Available when two webcams are detected. Swaps the webcam input for the eyes |
+| Toggle Debug  | Displays the camera feed with bounding boxes                                 |
 
 ## Testing
 

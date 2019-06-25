@@ -1,0 +1,19 @@
+path {
+    transition: 50ms;
+}
+
+circle {
+    transition: 500ms;
+}
+
+.Eyelids path {
+    fill: black;
+    stroke: black;
+    stroke-width: 2;
+}
+
+.BlackFill path {
+    fill: black;
+    stroke: black;
+    stroke-width: 2;
+}
