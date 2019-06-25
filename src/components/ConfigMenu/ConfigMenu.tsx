@@ -11,7 +11,7 @@ interface IConfigMenuState {
     isUnderMouse: boolean
 }
 
-export class ConfigMenu extends React.Component<IConfigMenuProps, IConfigMenuState> {
+export default class ConfigMenu extends React.Component<IConfigMenuProps, IConfigMenuState> {
     private hideTimeout: number = 0;
     constructor(props: IConfigMenuProps) {
         super(props);
