@@ -7,16 +7,21 @@ import CheckBoxMenuItem from './components/ConfigMenu/CheckBoxMenuItem';
 import CanvasMenuItem from './components/ConfigMenu/CanvasMenuItem';
 import ColorMenuItem from './components/ConfigMenu/ColorMenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
+<<<<<<< HEAD
 import IUserConfig from './components/ConfigMenu/IUserConfig';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
 <<<<<<< HEAD
 import { videoinput, FPS, eyes, colours, defaultConfigValues, configStorageKey, eyelidPosition, pupilSizes, blinkFrequency, pupilSizeChangeInterval, transitionTime } from './AppConstants';
 import './App.css';
 =======
+=======
+import './App.css';
+>>>>>>> refactored WebcamFeed to use global video store
 import configureStream from './components/webcamHandler/WebcamHandler';
 import { IRootStore } from './store/reducers/rootReducer';
-import { getDeviceIds, getStreamForDevice } from './store/selectors/videoSelectors';
+import { getDeviceIds } from './store/selectors/videoSelectors';
 import { connect } from 'react-redux';
+import Video from './components/webcamFeed/WebcamFeed';
 
 const eyes = {
   LEFT: 'left',
@@ -29,9 +34,12 @@ const colours = {
   pupilColor: "black"
 }
 
+<<<<<<< HEAD
 const videoinput = 'videoinput';
 >>>>>>> refactor for webcam handler and multiple webcams
 
+=======
+>>>>>>> refactored WebcamFeed to use global video store
 interface IAppState {
   width: number,
   height: number,
@@ -95,9 +103,12 @@ class App extends React.Component<AppProps, IAppState> {
 
     this.updateDimensions = this.updateDimensions.bind(this);
     this.onUserMedia = this.onUserMedia.bind(this);
+<<<<<<< HEAD
     this.onUserMediaError = this.onUserMediaError.bind(this);
     this.detectImage = this.detectImage.bind(this);
 
+=======
+>>>>>>> refactored WebcamFeed to use global video store
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
 
@@ -136,8 +147,12 @@ class App extends React.Component<AppProps, IAppState> {
     this.frameCapture = setInterval(this.detectImage, 1000 / FPS, this.state.videos[0].current) as number;
 =======
   componentDidMount() {
+<<<<<<< HEAD
     configureStream(this.props.environment.navigator.mediaDevices);
 >>>>>>> refactor for webcam handler and multiple webcams
+=======
+    configureStream(this.props.environment.navigator.mediaDevices, this.onUserMedia);
+>>>>>>> refactored WebcamFeed to use global video store
   }
 
   componentWillUnmount() {
@@ -147,6 +162,7 @@ class App extends React.Component<AppProps, IAppState> {
     clearInterval(this.dilate);
   }
 
+<<<<<<< HEAD
   async getWebcamDevices() {
     let devices = await navigator.mediaDevices.enumerateDevices();
     devices = devices.filter(device => device.kind === videoinput);
@@ -156,6 +172,8 @@ class App extends React.Component<AppProps, IAppState> {
     });
   }
 
+=======
+>>>>>>> refactored WebcamFeed to use global video store
   updateDimensions() {
     this.setState({
       height: this.props.environment.innerHeight,
@@ -165,6 +183,7 @@ class App extends React.Component<AppProps, IAppState> {
     });
   }
 
+<<<<<<< HEAD
   onUserMedia(stream: MediaStream) {
     this.setState({ eyesDisplayed: true, eyesOpenCoefficient: eyelidPosition.OPEN });
   }
@@ -196,10 +215,17 @@ class App extends React.Component<AppProps, IAppState> {
     })
   }
 
+=======
+  onUserMedia() {
+    this.setState({ eyesDisplayed: true });
+  }
+
+>>>>>>> refactored WebcamFeed to use global video store
   render() {
     return (
       <div className="App">
         <div className="webcam-feed">
+<<<<<<< HEAD
 <<<<<<< HEAD
           {this.state.webcams.map((device, key) => {
             return (
@@ -216,6 +242,11 @@ class App extends React.Component<AppProps, IAppState> {
             return (<WebcamFeed key={key} deviceId={device} />)
 >>>>>>> refactor for webcam handler and multiple webcams
           })}
+=======
+          {this.props.deviceIds.map((device, key) =>
+            <Video key={key} deviceId={device} />
+          )}
+>>>>>>> refactored WebcamFeed to use global video store
         </div>
 
         {this.state.webcams.length > 0 ?

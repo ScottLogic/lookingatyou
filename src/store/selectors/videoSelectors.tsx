@@ -1,11 +1,10 @@
 import { IRootStore } from "../reducers/rootReducer";
-import { IVideo, IVideoState } from "../actions/video/types";
+import { IVideo } from "../actions/video/types";
 
 export function getDeviceIds(state: IRootStore): string[] {
-  console.log( state.videoStore.videos.map(item => item.deviceId))
-  return state.videoStore.videos.map(item => item.deviceId);
+  return Object.keys(state.videoStore.videos).map((deviceId: string) => deviceId);
 }
 
 export function getStreamForDevice(state: IRootStore, deviceId: string): IVideo {
-  return state.videoStore.videos.filter(device => device.deviceId === deviceId)[0];
+  return Object.keys(state.videoStore.videos).filter((key: string) => key === deviceId).map((key: string) => state.videoStore.videos[key])[0];
 }
