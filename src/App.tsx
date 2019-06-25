@@ -7,146 +7,93 @@ import CheckBoxMenuItem from './components/ConfigMenu/CheckBoxMenuItem';
 import CanvasMenuItem from './components/ConfigMenu/CanvasMenuItem';
 import ColorMenuItem from './components/ConfigMenu/ColorMenuItem';
 import { ConfigMenu } from './components/ConfigMenu/ConfigMenu';
-<<<<<<< HEAD
 import IUserConfig from './components/ConfigMenu/IUserConfig';
-import WebcamFeed from './components/webcamFeed/WebcamFeed';
-<<<<<<< HEAD
-import { videoinput, FPS, eyes, colours, defaultConfigValues, configStorageKey, eyelidPosition, pupilSizes, blinkFrequency, pupilSizeChangeInterval, transitionTime } from './AppConstants';
+import { FPS, eyes, colours, defaultConfigValues, configStorageKey, eyelidPosition, pupilSizes, blinkFrequency, pupilSizeChangeInterval, transitionTime } from './AppConstants';
 import './App.css';
-=======
-=======
-import './App.css';
-<<<<<<< HEAD
->>>>>>> refactored WebcamFeed to use global video store
 import configureStream from './components/webcamHandler/WebcamHandler';
-=======
->>>>>>> added enzyme to the project and 2 tests for the Video component
 import { IRootStore } from './store/reducers/rootReducer';
-import { getDeviceIds } from './store/selectors/videoSelectors';
+import { getDeviceIds, getVideos } from './store/selectors/videoSelectors';
 import { connect } from 'react-redux';
 import Video from './components/video/Video';
 
-const eyes = {
-  LEFT: 'left',
-  RIGHT: 'right',
-}
-
-const colours = {
-  scleraColor: "white",
-  irisColor: "lightBlue",
-  pupilColor: "black"
-}
-
-<<<<<<< HEAD
-const videoinput = 'videoinput';
->>>>>>> refactor for webcam handler and multiple webcams
-
-=======
->>>>>>> refactored WebcamFeed to use global video store
 interface IAppState {
   width: number,
   height: number,
-<<<<<<< HEAD
-  webcams: MediaDeviceInfo[],
   eyesDilatedCoefficient: number,
   eyesOpenCoefficient: number,
   eyesDisplayed: boolean,
   isBlinking: boolean
-  userConfig: IUserConfig
-  videos: RefObject<HTMLVideoElement>[],
+  userConfig: IUserConfig,
   targetX: number,
   targetY: number,
-  dilationCoefficient: number
-=======
-  eyesDisplayed: boolean,
->>>>>>> removed webcams from the local state
+  dilationCoefficient: number,
 }
 
 
 interface IAppProps {
-<<<<<<< HEAD
-  environment: Window
-=======
   environment: Window,
-  configureStream: (mediaDevices: MediaDevices, onUserMedia: () => void, onUserMediaError: () => void) => void;
->>>>>>> added enzyme to the project and 2 tests for the Video component
+  configureStream: (mediaDevices: MediaDevices, onUserMedia: () => void, onUserMediaError: () => void) => void,
 }
 
 interface IAppMapStateToProps {
-  deviceIds: string[]
+  deviceIds: string[],
+  videos: (HTMLVideoElement | undefined)[]
 }
 
 type AppProps = IAppProps &  IAppMapStateToProps;
 
 const mapStateToProps = (state: IRootStore) => {
   return {
-    deviceIds: getDeviceIds(state)
+    deviceIds: getDeviceIds(state),
+    videos: getVideos(state),
   }
 }
 
 export class App extends React.Component<AppProps, IAppState> {
   private leftDebugRef: React.RefObject<CanvasMenuItem>;
   private rightDebugRef: React.RefObject<CanvasMenuItem>;
-<<<<<<< HEAD
   private model: cocoSSD.ObjectDetection | null;
   private frameCapture: number;
   private blink: number = 0;
   private dilate: number = 0;
-  constructor(props: IAppProps) {
-=======
   constructor(props: AppProps) {
->>>>>>> refactor for webcam handler and multiple webcams
     super(props);
 
     this.state = {
       width: this.props.environment.innerWidth,
       height: this.props.environment.innerHeight,
-<<<<<<< HEAD
-      webcams: [],
       eyesDilatedCoefficient: 1,
       eyesOpenCoefficient: eyelidPosition.CLOSED,
       eyesDisplayed: false,
       isBlinking: false,
-      videos: [],
       targetX: this.props.environment.innerWidth / 4,
       targetY: this.props.environment.innerHeight / 2,
       dilationCoefficient: pupilSizes.neutral,
       userConfig: this.readConfig(configStorageKey) || defaultConfigValues,
-=======
-      eyesDisplayed: false,
->>>>>>> removed webcams from the local state
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
     this.onUserMedia = this.onUserMedia.bind(this);
-<<<<<<< HEAD
-<<<<<<< HEAD
     this.onUserMediaError = this.onUserMediaError.bind(this);
     this.detectImage = this.detectImage.bind(this);
 
-=======
->>>>>>> refactored WebcamFeed to use global video store
-=======
-    this.onUserMediaError = this.onUserMediaError.bind(this);
->>>>>>> clean up
     this.leftDebugRef = React.createRef();
     this.rightDebugRef = React.createRef();
 
 
-    this.props.environment.addEventListener("storage", () => this.readConfig(configStorageKey))
+    this.props.environment.addEventListener("storage", () => this.readConfig(configStorageKey));
     this.model = null;
     this.frameCapture = 0;
   }
 
-<<<<<<< HEAD
   async componentDidMount() {
     this.props.environment.addEventListener("resize", this.updateDimensions);
-    this.getWebcamDevices();
+    this.props.configureStream(this.props.environment.navigator.mediaDevices, this.onUserMedia, this.onUserMediaError);
 
     // Sets up random blinking animation
     this.blink = window.setInterval(() => {
       this.setState((state) => ({
-        isBlinking: state.isBlinking ? false : (Math.random() < blinkFrequency / (1000 / transitionTime))
+        isBlinking: state.isBlinking ? false : (Math.random() < blinkFrequency / (1000 / transitionTime)),
       }));
     }, transitionTime);
 
@@ -164,24 +111,12 @@ export class App extends React.Component<AppProps, IAppState> {
     }, pupilSizeChangeInterval);
 
     this.model = await cocoSSD.load();
-    this.frameCapture = setInterval(this.detectImage, 1000 / FPS, this.state.videos[0].current) as number;
-=======
-  componentDidMount() {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    configureStream(this.props.environment.navigator.mediaDevices);
->>>>>>> refactor for webcam handler and multiple webcams
-=======
-    configureStream(this.props.environment.navigator.mediaDevices, this.onUserMedia);
->>>>>>> refactored WebcamFeed to use global video store
-=======
-    configureStream(this.props.environment.navigator.mediaDevices, this.onUserMedia, this.onUserMediaError);
-    this.props.environment.navigator.mediaDevices.ondevicechange = () => configureStream(this.props.environment.navigator.mediaDevices, this.onUserMedia, this.onUserMediaError);
->>>>>>> clean up
-=======
-    this.props.configureStream(this.props.environment.navigator.mediaDevices, this.onUserMedia, this.onUserMediaError);
->>>>>>> added enzyme to the project and 2 tests for the Video component
+    if (typeof this.props.videos[0] !== 'undefined') {
+      this.frameCapture = setInterval(this.detectImage, 1000 / FPS, this.props.videos[0]) as number;
+    }
+  }
+
+  componentWillReceiveProps() {
   }
 
   componentWillUnmount() {
@@ -191,18 +126,6 @@ export class App extends React.Component<AppProps, IAppState> {
     clearInterval(this.dilate);
   }
 
-<<<<<<< HEAD
-  async getWebcamDevices() {
-    let devices = await navigator.mediaDevices.enumerateDevices();
-    devices = devices.filter(device => device.kind === videoinput);
-    this.setState({
-      webcams: devices,
-      videos: devices.map(() => React.createRef<HTMLVideoElement>())
-    });
-  }
-
-=======
->>>>>>> refactored WebcamFeed to use global video store
   updateDimensions() {
     this.setState({
       height: this.props.environment.innerHeight,
@@ -212,8 +135,7 @@ export class App extends React.Component<AppProps, IAppState> {
     });
   }
 
-<<<<<<< HEAD
-  onUserMedia(stream: MediaStream) {
+  onUserMedia() {
     this.setState({ eyesDisplayed: true, eyesOpenCoefficient: eyelidPosition.OPEN });
   }
 
@@ -223,6 +145,7 @@ export class App extends React.Component<AppProps, IAppState> {
   }
 
   async detectImage(img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | null) {
+    console.log(img);
     if (this.model && img !== null) {
       var detections = await this.model.detect(img);
       this.selectTarget(detections);
@@ -244,48 +167,16 @@ export class App extends React.Component<AppProps, IAppState> {
     })
   }
 
-=======
-  onUserMedia() {
-    this.setState({ eyesDisplayed: true });
-  }
-
-<<<<<<< HEAD
->>>>>>> refactored WebcamFeed to use global video store
-=======
-  onUserMediaError() {
-    this.setState({ eyesDisplayed: false });
-  }
-
->>>>>>> clean up
   render() {
     return (
       <div className="App">
         <div className="webcam-feed">
-<<<<<<< HEAD
-<<<<<<< HEAD
-          {this.state.webcams.map((device, key) => {
-            return (
-              <WebcamFeed
-                key={key}
-                deviceId={device.deviceId}
-                onUserMedia={this.onUserMedia}
-                onUserMediaError={this.onUserMediaError}
-                ref={this.state.videos[key]}
-              />
-            )
-=======
           {this.props.deviceIds.map((device, key) => {
-            return (<WebcamFeed key={key} deviceId={device} />)
->>>>>>> refactor for webcam handler and multiple webcams
+            return (<Video key={key} deviceId={device} />)
           })}
-=======
-          {this.props.deviceIds.map((device, key) =>
-            <Video key={key} deviceId={device} />
-          )}
->>>>>>> refactored WebcamFeed to use global video store
         </div>
 
-        {this.state.webcams.length > 0 ?
+        {this.props.deviceIds.length > 0 ?
           <div className="container">
             {Object.values(eyes).map((eye, key) => {
               return (
@@ -313,20 +204,9 @@ export class App extends React.Component<AppProps, IAppState> {
             })}
           </div>
           :
-<<<<<<< HEAD
           <div className="Error">
             No webcam connected. Please connect a webcam and refresh
           </div>
-=======
-          (
-            this.props.deviceIds.length > 0 ?
-              <div className="loading-spinner"></div>
-              :
-              <div className="Error">
-                No webcam connected. Please connect a webcam and refresh
-              </div>
-          )
->>>>>>> removed webcams from the local state
         }
 
         <ConfigMenu width="14em" timerLength={1000}>
@@ -393,8 +273,4 @@ export class App extends React.Component<AppProps, IAppState> {
   }
 }
 
-<<<<<<< HEAD
-export default App;
-=======
 export default connect(mapStateToProps)(App);
->>>>>>> refactor for webcam handler and multiple webcams

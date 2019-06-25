@@ -7,14 +7,13 @@ export const initialState: IVideoState = {
 const videoStore = (state: IVideoState = initialState, action: VideoActionTypes): IVideoState => {
   switch (action.type) {
     case SET_VIDEO_STREAMS:
-      console.log(action);
       let videos: {[deviceId: string]: IVideo} = {};
       action.videos.map((video: IVideo) => videos[video.deviceId] = video);
       return { ...state, videos };
     case SET_VIDEO:
       return { ...state, ...state.videos[action.payload.deviceId].video = action.payload.video };
     default:
-      return state
+      return state;
   }
 }
 

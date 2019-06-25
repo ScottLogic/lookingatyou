@@ -7,6 +7,6 @@ it('renders without crashing', () => {
   const window = new jsdom.JSDOM(`...`, {url: "http://localhost"}).window;
   const div = document.createElement('div');
   const configureStream = jest.fn();
-  ReactDOM.render(<App deviceIds={[]} environment={window} configureStream={configureStream} />, div);
+  ReactDOM.render(<App deviceIds={[]} environment={window} configureStream={configureStream} videos={[]} />, div);
   ReactDOM.unmountComponentAtNode(div);
 });

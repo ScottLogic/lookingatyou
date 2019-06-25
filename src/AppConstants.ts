@@ -1,6 +1,5 @@
 import IUserConfig from './components/ConfigMenu/IUserConfig';
 
-export const videoinput = 'videoinput';
 export const FPS = 30;
 export const eyes = {
     LEFT: 'left',

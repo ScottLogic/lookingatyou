@@ -1,7 +1,6 @@
 import React from 'react';
 import { Video, VideoProps } from './Video';
 import { shallow, mount } from 'enzyme';
-import configureMockStore from 'redux-mock-store';
 
 let props: VideoProps;
 
