@@ -31,7 +31,7 @@ import {
     getStreamForDevice,
 } from './store/selectors/videoSelectors';
 import { connect } from 'react-redux';
-import Video from './components/webcamFeed/WebcamFeed';
+import Video from './components/video/Video';
 
 interface IAppState {
     width: number;
@@ -165,15 +165,6 @@ class App extends React.Component<AppProps, IAppState> {
         clearInterval(this.frameCapture);
         clearInterval(this.blink);
         clearInterval(this.dilate);
-    }
-
-    async getWebcamDevices() {
-        let devices = await navigator.mediaDevices.enumerateDevices();
-        devices = devices.filter(device => device.kind === videoinput);
-        this.setState({
-            webcams: devices,
-            videos: devices.map(() => React.createRef<HTMLVideoElement>()),
-        });
     }
 
     updateDimensions() {

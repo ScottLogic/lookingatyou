@@ -3,7 +3,7 @@ import { SET_VIDEO_STREAMS } from '../../store/actions/video/types';
 
 const videoinput = 'videoinput';
 
-export default async function configureStream(mediaDevices: MediaDevices, onUserMedia: () => void) {
+export default async function configureStream(mediaDevices: MediaDevices, onUserMedia: () => void, onUserMediaError: () => void) {
   try {
     const devices = await enumerateDevices(mediaDevices);
     const streams = await Promise.all(await devices.map(async deviceId => {
@@ -12,7 +12,7 @@ export default async function configureStream(mediaDevices: MediaDevices, onUser
         deviceId,
         stream
       }
-    }))
+    }));
     const videos = streams.map(item => {
       const streamSettings = item.stream.getVideoTracks()[0].getSettings();
       if (streamSettings.width && streamSettings.height) {
@@ -25,9 +25,14 @@ export default async function configureStream(mediaDevices: MediaDevices, onUser
       return [];
     });
     store.dispatch({ type: SET_VIDEO_STREAMS, videos });
-    onUserMedia();
+    if (videos.length > 0) {
+      onUserMedia();
+    } else {
+      onUserMediaError();
+    }
   } catch (error) {
     console.error(error);
+    onUserMediaError();
   }
 }
 
