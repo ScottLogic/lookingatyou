@@ -128,12 +128,12 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   onUserMedia(stream: MediaStream) {
-    this.setState({ webcamAvailable: true, eyesOpenCoefficient: eyelidPosition.OPEN });
+    this.setState({ webcamAvailable: true });
   }
 
 
   onUserMediaError() {
-    this.setState({ webcamAvailable: false, eyesOpenCoefficient: eyelidPosition.CLOSED });
+    this.setState({ webcamAvailable: false });
   }
 
   async detectImage(img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | null) {
