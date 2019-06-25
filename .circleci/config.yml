@@ -1,80 +1,80 @@
 version: 2
 jobs:
-    lint:
-        docker:
-            - image: 'circleci/node:10.16'
-        steps:
-            - checkout
-            - restore_cache:
-                  key: lookingatyou-{{ checksum "package-lock.json" }}
-            - run:
-                  name: Install npm dependencies
-                  command: npm ci
-            - save_cache:
-                  key: lookingatyou-{{ checksum "package-lock.json" }}
-                  paths:
-                      - node_modules
-            - run:
-                  name: Check Linting
-                  command: npm run lint
+  lint:
+    docker:
+      - image: 'circleci/node:10.16'
+    steps:
+      - checkout
+      - restore_cache:
+          key: lookingatyou-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install npm dependencies
+          command: npm ci
+      - save_cache:
+          key: lookingatyou-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Check Linting
+          command: npm run lint
 
-    test:
-        docker:
-            - image: 'circleci/node:10.16'
-        steps:
-            - checkout
-            - restore_cache:
-                  key: lookingatyou-{{ checksum "package-lock.json" }}
-            - run:
-                  name: Install npm dependencies
-                  command: npm ci
-            - save_cache:
-                  key: lookingatyou-{{ checksum "package-lock.json" }}
-                  paths:
-                      - node_modules
-            - run:
-                  name: Run tests
-                  command: npm run test
+  test:
+    docker:
+      - image: 'circleci/node:10.16'
+    steps:
+      - checkout
+      - restore_cache:
+          key: lookingatyou-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install npm dependencies
+          command: npm ci
+      - save_cache:
+          key: lookingatyou-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Run tests
+          command: npm run test
 
-    deploy:
-        docker:
-            - image: 'circleci/python:3.6.4-stretch-node'
-        steps:
-            - checkout
-            - run: sudo pip install awscli --upgrade
-            - run: aws --version
-            - run:
-                  name: Update npm to use ci command
-                  command: sudo npm i -g npm@6.9.0
-            - run: npm --version
-            - run:
-                  name: Install dependencies
-                  command: npm ci
-            - run:
-                  name: Build project
-                  command: npm run build
-            - run:
-                  name: 'Deploy to S3'
-                  command: |
-                      if ["${CIRCLE_BRANCH}" == "master" ]; then
-                        aws s3 sync ./build/ s3://looking-at-you/ --delete
-                      else
-                        aws s3 sync ./build/ s3://looking-at-you/$CIRCLE_BRANCH --delete
-                      fi
+  deploy:
+    docker:
+      - image: 'circleci/python:3.6.4-stretch-node'
+    steps:
+      - checkout
+      - run: sudo pip install awscli --upgrade
+      - run: aws --version
+      - run:
+          name: Update npm to use ci command
+          command: sudo npm i -g npm@6.9.0
+      - run: npm --version
+      - run:
+          name: Install dependencies
+          command: npm ci
+      - run:
+          name: Build project
+          command: npm run build
+      - run:
+          name: "Deploy to S3"
+          command: |
+            if ["${CIRCLE_BRANCH}" == "master" ]; then
+              aws s3 sync ./build/ s3://looking-at-you/ --delete
+            else
+              aws s3 sync ./build/ s3://looking-at-you/$CIRCLE_BRANCH --delete
+            fi
 
 workflows:
-    version: 2
-    test-and-deploy:
-        jobs:
+  version: 2
+  test-and-deploy:
+    jobs:
+      - lint
+      - test:
+          requires:
             - lint
-            - test:
-                  requires:
-                      - lint
-            - deploy:
-                  filters:
-                      branches:
-                          only:
-                              - master
-                              - /feature.*/
-                  requires:
-                      - test
+      - deploy:
+          filters:
+            branches:
+              only:
+                - master
+                - /feature.*/
+          requires:
+            - test
