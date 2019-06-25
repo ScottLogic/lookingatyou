@@ -200,7 +200,7 @@ export class App extends React.Component<AppProps, IAppState> {
     ) {
         if (this.model && img !== null) {
             const detections = await this.model.detect(img);
-            // this.checkLight(img);
+            this.checkLight(img, this.analyseLight);
             this.selectTarget(detections);
         }
     }
@@ -217,14 +217,6 @@ export class App extends React.Component<AppProps, IAppState> {
             this.hasTargetLeft();
             this.naturalMovement();
         }
-    }
-
-    calculateEyePos(bbox: number[]) {
-        const [x, y, width, height] = bbox;
-        this.setState({
-            targetX: x + width / 2,
-            targetY: y + height / 2,
-        });
     }
 
     naturalMovement() {
@@ -300,32 +292,27 @@ export class App extends React.Component<AppProps, IAppState> {
             | HTMLCanvasElement
             | HTMLVideoElement
             | null,
+        callback: Function,
     ) {
         if (video && video instanceof HTMLVideoElement) {
-            const image = new Image();
-
             const canvas = document.createElement('canvas');
             canvas.height = video.height;
             canvas.width = video.width;
             const canvasCtx = canvas.getContext('2d');
 
             if (canvasCtx) {
-                canvasCtx.drawImage(video, 0, 0, video.width, video.height);
-                this.analyseLight(image);
+                canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const img = new Image();
+
+                callback.call(this, canvas, this.setDilation);
             }
         }
     }
 
-    analyseLight(image: HTMLImageElement) {
-        const canvas = document.createElement('canvas');
-        canvas.width = image.width;
-        canvas.height = image.height;
-
+    analyseLight(canvas: HTMLCanvasElement, callback: Function) {
         const ctx = canvas.getContext('2d');
 
         if (ctx && canvas.width > 0) {
-            ctx.drawImage(image, 0, 0);
-
             const imageData = ctx.getImageData(
                 0,
                 0,
@@ -335,32 +322,24 @@ export class App extends React.Component<AppProps, IAppState> {
 
             const data = imageData.data;
 
-            let r = 0;
-            let g = 0;
-            let b = 0;
-            let avg = 0;
+            const colorSum = data.reduce((r, g, b) => {
+                return Math.floor((r + g + b) / 3);
+            });
 
-            let colorSum = 0;
+            const brightness = Math.floor(colorSum / (data.length / 3));
 
-            for (let i = 0, len = data.length; i < len; i += 4) {
-                r = data[i];
-                g = data[i + 1];
-                b = data[i + 2];
+            const scaledPupilSize = ((255 - brightness) / 255) * 0.7 + 0.8;
 
-                avg = Math.floor((r + g + b) / 3);
-                colorSum += avg;
-            }
-
-            const brightness = Math.floor(
-                colorSum / (image.width * image.height),
-            );
-
-            if (brightness > 175) {
-                this.setDilation(pupilSizes.dilated);
-            } else if (brightness < 50) {
-                this.setDilation(pupilSizes.constricted);
-            }
+            callback(scaledPupilSize);
         }
+    }
+
+    calculateEyePos(bbox: number[]) {
+        const [x, y, width, height] = bbox;
+        this.setState({
+            targetX: x + width / 2,
+            targetY: y + height / 2,
+        });
     }
 
     render() {
@@ -447,7 +426,9 @@ export class App extends React.Component<AppProps, IAppState> {
                         defaultValue={`${this.state.userConfig.fps}`}
                         isValidInput={(fps: string) => !isNaN(parseInt(fps))}
                         onValidInput={(fps: string) =>
-                            this.store(configStorageKey, { fps: parseInt(fps) })
+                            this.store(configStorageKey, {
+                                fps: parseInt(fps),
+                            })
                         }
                         parse={(text: string) => `${parseInt(text)}`}
                     />
