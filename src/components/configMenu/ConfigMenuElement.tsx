@@ -35,10 +35,10 @@ export default function LookingAtYouConfig(props: ILookingAtYouConfig) {
         return `${parseInt(intString, 10)}`;
     }
     function validFloatString(floatString: string): boolean {
-        return parseFloat(floatString) != null;
+        return !isNaN(parseFloat(floatString));
     }
     function validIntString(intString: string): boolean {
-        return parseInt(intString, 10) != null;
+        return !isNaN(parseInt(intString, 10));
     }
     return (
         <ConfigMenu width="14em" timerLength={1000}>
