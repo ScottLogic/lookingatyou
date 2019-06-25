@@ -1,13 +1,11 @@
 import { combineReducers } from 'redux';
-import videoStore from './videoReducer';
 import { IVideoState } from '../actions/video/types';
-
+import videoStore from './videoReducer';
 
 export default combineReducers({
-  videoStore
+    videoStore,
 });
 
-
 export interface IRootStore {
-  videoStore: IVideoState,
+    videoStore: IVideoState;
 }

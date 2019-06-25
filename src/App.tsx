@@ -30,13 +30,12 @@ import Video from './components/video/Video';
 interface IAppState {
     width: number;
     height: number;
-    webcams: MediaDeviceInfo[];
     eyesDilatedCoefficient: number;
     eyesOpenCoefficient: number;
     eyesDisplayed: boolean;
     isBlinking: boolean;
     userConfig: IUserConfig;
-    videos: Array<RefObject<HTMLVideoElement>>;
+    videos: HTMLVideoElement[];
     targetX: number;
     targetY: number;
     dilationCoefficient: number;
@@ -77,7 +76,6 @@ export class App extends React.Component<AppProps, IAppState> {
         this.state = {
             width: this.props.environment.innerWidth,
             height: this.props.environment.innerHeight,
-            webcams: [],
             eyesDilatedCoefficient: 1,
             eyesOpenCoefficient: eyelidPosition.CLOSED,
             eyesDisplayed: false,
@@ -145,7 +143,7 @@ export class App extends React.Component<AppProps, IAppState> {
             this.frameCapture = setInterval(
                 this.detectImage,
                 1000 / FPS,
-                this.state.videos[0].current,
+                this.state.videos[0],
             );
         }
     }
@@ -223,7 +221,7 @@ export class App extends React.Component<AppProps, IAppState> {
                     ))}
                 </div>
 
-                {this.state.webcams.length > 0 ? (
+                {this.props.deviceIds.length > 0 ? (
                     <div className="container">
                         {Object.values(eyes).map((eye, key) => {
                             return (
