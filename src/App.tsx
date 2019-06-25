@@ -38,7 +38,11 @@ interface IAppState {
     targetX: number;
     targetY: number;
     dilationCoefficient: number;
+<<<<<<< HEAD
     modelLoaded: boolean;
+=======
+    personDetected: boolean;
+>>>>>>> Dilate when someone first seen/can't be seen and initial broken implementation of dilation based on light from camera feed
 }
 
 interface IAppProps {
@@ -87,13 +91,26 @@ export class App extends React.Component<AppProps, IAppState> {
             dilationCoefficient: pupilSizes.neutral,
             userConfig:
                 this.readConfig(configStorageKey) || defaultConfigValues,
+<<<<<<< HEAD
             modelLoaded: true,
+=======
+            personDetected: false,
+>>>>>>> Dilate when someone first seen/can't be seen and initial broken implementation of dilation based on light from camera feed
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);
         this.onUserMedia = this.onUserMedia.bind(this);
         this.onUserMediaError = this.onUserMediaError.bind(this);
         this.detectImage = this.detectImage.bind(this);
+<<<<<<< HEAD
+=======
+        this.checkLight = this.checkLight.bind(this);
+        this.isNewTarget = this.isNewTarget.bind(this);
+        this.hasTargetLeft = this.hasTargetLeft.bind(this);
+        this.setDilation = this.setDilation.bind(this);
+        this.analyseLight = this.analyseLight.bind(this);
+
+>>>>>>> Dilate when someone first seen/can't be seen and initial broken implementation of dilation based on light from camera feed
         this.leftDebugRef = React.createRef();
         this.rightDebugRef = React.createRef();
 
@@ -124,7 +141,12 @@ export class App extends React.Component<AppProps, IAppState> {
             }));
         }, transitionTime);
 
+<<<<<<< HEAD
         this.dilate = window.setInterval(() => {
+=======
+        // Sets up cyclical dilation animation
+        /*this.dilate = window.setInterval(() => {
+>>>>>>> Dilate when someone first seen/can't be seen and initial broken implementation of dilation based on light from camera feed
             this.setState(state => ({
                 dilationCoefficient: (function() {
                     switch (state.dilationCoefficient) {
@@ -137,14 +159,19 @@ export class App extends React.Component<AppProps, IAppState> {
                     }
                 })(),
             }));
-        }, pupilSizeChangeInterval);
+        }, pupilSizeChangeInterval);*/
 
         this.model = await cocoSSD.load();
         if (this.props.videos[0]) {
             this.frameCapture = setInterval(
                 this.detectImage,
                 1000 / FPS,
+<<<<<<< HEAD
                 this.props.videos[0],
+=======
+                this.state.videos[0].current,
+                this.checkLight,
+>>>>>>> Dilate when someone first seen/can't be seen and initial broken implementation of dilation based on light from camera feed
             );
         }
     }
@@ -188,6 +215,7 @@ export class App extends React.Component<AppProps, IAppState> {
     ) {
         if (this.model && img !== null) {
             const detections = await this.model.detect(img);
+            this.checkLight(img);
             this.selectTarget(detections);
         }
     }
@@ -196,8 +224,113 @@ export class App extends React.Component<AppProps, IAppState> {
         const target = detections.find(
             detection => detection.class === 'person',
         );
+
         if (target !== undefined) {
             this.calculateEyePos(target.bbox);
+            this.isNewTarget();
+        } else {
+            this.hasTargetLeft();
+        }
+    }
+
+    isNewTarget() {
+        if (!this.state.personDetected) {
+            this.setState({ personDetected: true });
+            this.setDilation(pupilSizes.dilated);
+            this.setDilation(pupilSizes.neutral);
+        }
+    }
+
+    hasTargetLeft() {
+        if (this.state.personDetected) {
+            this.setState({ personDetected: false });
+            this.setDilation(pupilSizes.constricted);
+            this.setDilation(pupilSizes.neutral);
+        }
+    }
+
+    setDilation(pupilSize: number) {
+        window.setInterval(() => {
+            this.setState(() => ({
+                dilationCoefficient: pupilSize,
+            }));
+        }, 50);
+    }
+
+    checkLight(
+        video:
+            | ImageData
+            | HTMLImageElement
+            | HTMLCanvasElement
+            | HTMLVideoElement
+            | null,
+    ) {
+        if (video && video instanceof HTMLVideoElement) {
+            const image = new Image();
+
+            const canvas = document.createElement('canvas');
+            canvas.height = video.height;
+            canvas.width = video.width;
+            const canvasCtx = canvas.getContext('2d');
+
+            if (canvasCtx) {
+                canvasCtx.drawImage(video, 0, 0, video.width, video.height);
+                image.src = canvas.toDataURL();
+                this.analyseLight(image);
+            }
+        }
+    }
+
+    analyseLight(image: HTMLImageElement) {
+        const canvas = document.createElement('canvas');
+        canvas.width = image.width;
+        canvas.height = image.height;
+
+        const ctx = canvas.getContext('2d');
+
+        if (ctx) {
+            ctx.drawImage(image, 0, 0);
+
+            const imageData = ctx.getImageData(
+                0,
+                0,
+                canvas.width,
+                canvas.height,
+            );
+
+            const data = imageData.data;
+
+            let r = 0;
+            let g = 0;
+            let b = 0;
+            let avg = 0;
+
+            let colorSum = 0;
+
+            for (let i = 0, len = data.length; i < len; i += 4) {
+                r = data[i];
+                g = data[i + 1];
+                b = data[i + 2];
+
+                avg = Math.floor((r + g + b) / 3);
+                colorSum += avg;
+            }
+
+            const brightness = Math.floor(
+                colorSum / (image.width * image.height),
+            );
+
+            if (brightness > 175) {
+                this.setDilation(pupilSizes.dilated);
+            } else if (brightness < 50) {
+                this.setDilation(pupilSizes.constricted);
+            }
+        }
+    }
+
+    moveLeft() {
+        if (Math.random() < 0.5) {
+            this.setState({ targetX: this.state.targetX + 4 });
         }
     }
 
