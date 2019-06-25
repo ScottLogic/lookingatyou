@@ -16,8 +16,11 @@ import './App.css';
 =======
 =======
 import './App.css';
+<<<<<<< HEAD
 >>>>>>> refactored WebcamFeed to use global video store
 import configureStream from './components/webcamHandler/WebcamHandler';
+=======
+>>>>>>> added enzyme to the project and 2 tests for the Video component
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds } from './store/selectors/videoSelectors';
 import { connect } from 'react-redux';
@@ -57,7 +60,12 @@ interface IAppState {
 
 
 interface IAppProps {
+<<<<<<< HEAD
   environment: Window
+=======
+  environment: Window,
+  configureStream: (mediaDevices: MediaDevices, onUserMedia: () => void, onUserMediaError: () => void) => void;
+>>>>>>> added enzyme to the project and 2 tests for the Video component
 }
 
 interface IAppMapStateToProps {
@@ -72,7 +80,7 @@ const mapStateToProps = (state: IRootStore) => {
   }
 }
 
-class App extends React.Component<AppProps, IAppState> {
+export class App extends React.Component<AppProps, IAppState> {
   private leftDebugRef: React.RefObject<CanvasMenuItem>;
   private rightDebugRef: React.RefObject<CanvasMenuItem>;
 <<<<<<< HEAD
@@ -153,6 +161,7 @@ class App extends React.Component<AppProps, IAppState> {
   componentDidMount() {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     configureStream(this.props.environment.navigator.mediaDevices);
 >>>>>>> refactor for webcam handler and multiple webcams
 =======
@@ -162,6 +171,9 @@ class App extends React.Component<AppProps, IAppState> {
     configureStream(this.props.environment.navigator.mediaDevices, this.onUserMedia, this.onUserMediaError);
     this.props.environment.navigator.mediaDevices.ondevicechange = () => configureStream(this.props.environment.navigator.mediaDevices, this.onUserMedia, this.onUserMediaError);
 >>>>>>> clean up
+=======
+    this.props.configureStream(this.props.environment.navigator.mediaDevices, this.onUserMedia, this.onUserMediaError);
+>>>>>>> added enzyme to the project and 2 tests for the Video component
   }
 
   componentWillUnmount() {

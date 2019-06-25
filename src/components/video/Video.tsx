@@ -5,7 +5,7 @@ import { Dispatch } from 'redux';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getStreamForDevice } from '../../store/selectors/videoSelectors';
 
-interface IWebcamFeedProps {
+interface IVideoProps {
   deviceId: string,
 }
 
@@ -13,9 +13,9 @@ interface IDispatchProps {
   setVideo: (payload: ISetVideoPayload) => void,
 }
 
-type Props = IWebcamFeedProps & IVideo & IDispatchProps;
+export type VideoProps = IVideoProps & IVideo & IDispatchProps;
 
-const mapStateToProps = (state: IRootStore, props: IWebcamFeedProps) => {
+const mapStateToProps = (state: IRootStore, props: IVideoProps) => {
   return getStreamForDevice(state, props.deviceId);
 }
 
@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 
-function Video(props: Props) {
+export function Video(props: VideoProps) {
 
   function getVideo(element: HTMLVideoElement | null) {
     if (element && props.stream) {
@@ -33,14 +33,14 @@ function Video(props: Props) {
       const payload = {
         video: element,
         deviceId: props.deviceId,
-      }
+      };
       props.setVideo(payload);
     }
   }
 
   return (
     <video
-      className={props.deviceId + ' hidden'}
+      className={'hidden'}
       autoPlay={true}
       height={props.height}
       width={props.width}
