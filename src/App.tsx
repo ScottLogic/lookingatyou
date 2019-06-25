@@ -2,8 +2,8 @@ import './App.css';
 import React, { RefObject } from 'react';
 import * as cocoSSD from "@tensorflow-models/coco-ssd"
 import Eye from './components/eye/Eye';
-import IUserConfig from './components/configMenu2/IUserConfig';
-import ConfigMenuElement from './components/configMenu2/ConfigMenuElement';
+import IUserConfig from './components/configMenu/IUserConfig';
+import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
 import { videoinput, FPS, eyes, colours, defaultConfigValues, configStorageKey, eyelidPosition, pupilSizes, blinkFrequency, pupilSizeChangeInterval, transitionTime } from './AppConstants';
 import './App.css';

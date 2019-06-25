@@ -1,8 +1,8 @@
 import React from 'react';
-import TextBoxMenuItem from './menuItems2/TextBoxMenuItem';
-import CheckBoxMenuItem from './menuItems2/CheckBoxMenuItem';
-import CanvasMenuItem from './menuItems2/CanvasMenuItem';
-import ColorMenuItem from './menuItems2/ColorMenuItem';
+import TextBoxMenuItem from './menuItems/TextBoxMenuItem';
+import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
+import CanvasMenuItem from './menuItems/CanvasMenuItem';
+import ColorMenuItem from './menuItems/ColorMenuItem';
 import ConfigMenu from './ConfigMenu';
 import IUserConfig from './IUserConfig';
 interface ILookingAtYouConfig {

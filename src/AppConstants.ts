@@ -1,4 +1,4 @@
-import IUserConfig from './components/configMenu2/IUserConfig';
+import IUserConfig from './components/configMenu/IUserConfig';
 
 export const videoinput = 'videoinput';
 export const FPS = 30;
