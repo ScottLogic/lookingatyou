@@ -5,12 +5,12 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 
 const getEnvironment = () => {
-  return window;
+    return window;
 };
 
 ReactDOM.render(
-  <App environment={getEnvironment()} />,
-  document.getElementById('root'),
+    <App environment={getEnvironment()} />,
+    document.getElementById('root'),
 );
 
 // If you want your app to work offline and load faster, you can change

@@ -21,14 +21,14 @@
 
 ## Table of Contents
 
-- [About the Project](#about-the-project)
-- [Prerequisites](#prerequisites)
-  - [General](#general)
-  - [Test](#test)
-- [Running the project (local)](#running-the-project-locally)
-- [Usage](#usage)
-- [Testing](#testing)
-- [Deployment](#deployment)
+-   [About the Project](#about-the-project)
+-   [Prerequisites](#prerequisites)
+    -   [General](#general)
+    -   [Test](#test)
+-   [Running the project (local)](#running-the-project-locally)
+-   [Usage](#usage)
+-   [Testing](#testing)
+-   [Deployment](#deployment)
 
 ## About The Project
 
