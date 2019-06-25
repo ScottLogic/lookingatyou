@@ -18,13 +18,14 @@ interface IAppState {
   webcams: MediaDeviceInfo[],
   eyesDilatedCoefficient: number,
   eyesOpenCoefficient: number,
-  eyesDisplayed: boolean,
+  webcamAvailable: boolean,
   isBlinking: boolean
   userConfig: IUserConfig
   videos: RefObject<HTMLVideoElement>[],
   targetX: number,
   targetY: number,
-  dilationCoefficient: number
+  dilationCoefficient: number,
+  modelLoaded: boolean
 }
 
 
@@ -48,13 +49,14 @@ class App extends React.Component<IAppProps, IAppState> {
       webcams: [],
       eyesDilatedCoefficient: 1,
       eyesOpenCoefficient: eyelidPosition.CLOSED,
-      eyesDisplayed: false,
+      webcamAvailable: false,
       isBlinking: false,
       videos: [],
       targetX: this.props.environment.innerWidth / 4,
       targetY: this.props.environment.innerHeight / 2,
       dilationCoefficient: pupilSizes.neutral,
       userConfig: this.readConfig(configStorageKey) || defaultConfigValues,
+      modelLoaded: true
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -96,6 +98,7 @@ class App extends React.Component<IAppProps, IAppState> {
     }, pupilSizeChangeInterval);
 
     this.model = await cocoSSD.load();
+    this.setState({modelLoaded : true});
     this.frameCapture = setInterval(this.detectImage, 1000 / FPS, this.state.videos[0].current) as number;
   }
 
@@ -125,12 +128,12 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   onUserMedia(stream: MediaStream) {
-    this.setState({ eyesDisplayed: true, eyesOpenCoefficient: eyelidPosition.OPEN });
+    this.setState({ webcamAvailable: true, eyesOpenCoefficient: eyelidPosition.OPEN });
   }
 
 
   onUserMediaError() {
-    this.setState({ eyesDisplayed: false, eyesOpenCoefficient: eyelidPosition.CLOSED });
+    this.setState({ webcamAvailable: false, eyesOpenCoefficient: eyelidPosition.CLOSED });
   }
 
   async detectImage(img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | null) {
@@ -173,36 +176,45 @@ class App extends React.Component<IAppProps, IAppState> {
         </div>
 
         {this.state.webcams.length > 0 ?
-          <div className="container">
-            {Object.values(eyes).map((eye, key) => {
-              return (
-                <Eye
-                  class={eye}
-                  key={key}
-                  width={this.state.width / 2}
-                  height={this.state.height}
-                  scleraColor={colours.scleraColor}
-                  irisColor={this.state.userConfig.irisColor}
-                  pupilColor={colours.pupilColor}
-                  scleraRadius={this.state.width / 5}
-                  irisRadius={this.state.width / 10}
-                  pupilRadius={this.state.width / 24}
-                  isBlinking={this.state.isBlinking}
-                  // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
-                  openCoefficient={this.state.eyesDisplayed ? this.state.eyesOpenCoefficient : 0}
-                  // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
-                  dilatedCoefficient={this.state.dilationCoefficient}
-                  transitionTime={transitionTime.toString()}
-                  innerX={this.state.targetX}
-                  innerY={this.state.targetY}
-                />
+          (
+            !(this.state.webcamAvailable && this.state.modelLoaded) ?
+              <div className="loading-spinner"></div>
+              :
+              (
+                <div className="container">
+                  {Object.values(eyes).map((eye, key) => {
+                    return (
+                      <Eye
+                        class={eye}
+                        key={key}
+                        width={this.state.width / 2}
+                        height={this.state.height}
+                        scleraColor={colours.scleraColor}
+                        irisColor={this.state.userConfig.irisColor}
+                        pupilColor={colours.pupilColor}
+                        scleraRadius={this.state.width / 5}
+                        irisRadius={this.state.width / 10}
+                        pupilRadius={this.state.width / 24}
+                        isBlinking={this.state.isBlinking}
+                        // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
+                        openCoefficient={this.state.eyesOpenCoefficient}
+                        // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
+                        dilatedCoefficient={this.state.dilationCoefficient}
+                        transitionTime={transitionTime.toString()}
+                        innerX={this.state.targetX}
+                        innerY={this.state.targetY}
+                      />
+                    )
+                  })}
+                </div>
               )
-            })}
-          </div>
+          )
           :
-          <div className="Error">
-            No webcam connected. Please connect a webcam and refresh
-          </div>
+          (
+            <div className="Error">
+              No webcam connected. Please connect a webcam and refresh
+            </div>
+          )
         }
 
         <ConfigMenu width="14em" timerLength={1000}>
