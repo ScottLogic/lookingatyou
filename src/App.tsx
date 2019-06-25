@@ -11,7 +11,6 @@ import ConfigMenu from './components/configMenu/ConfigMenu';
 import IUserConfig from './components/configMenu/InterfaceUserConfig';
 import TextBoxMenuItem from './components/configMenu/TextBoxMenuItem';
 import Eye from './components/eye/Eye';
-import WebcamFeed from './components/webcamFeed/WebcamFeed';
 import {
     blinkFrequency,
     colours,
@@ -32,6 +31,7 @@ import {
     getStreamForDevice,
 } from './store/selectors/videoSelectors';
 import { connect } from 'react-redux';
+import Video from './components/webcamFeed/WebcamFeed';
 
 interface IAppState {
     width: number;
@@ -110,7 +110,11 @@ class App extends React.Component<AppProps, IAppState> {
             'resize',
             this.updateDimensions,
         );
-        configureStream(this.props.environment.navigator.mediaDevices);
+        configureStream(
+            this.props.environment.navigator.mediaDevices,
+            this.onUserMedia,
+            this.onUserMediaError,
+        );
 
         this.props.environment.addEventListener('storage', () =>
             this.readConfig(configStorageKey),
@@ -181,7 +185,7 @@ class App extends React.Component<AppProps, IAppState> {
         });
     }
 
-    onUserMedia(stream: MediaStream) {
+    onUserMedia() {
         this.setState({
             eyesDisplayed: true,
             eyesOpenCoefficient: eyelidPosition.OPEN,
@@ -230,9 +234,9 @@ class App extends React.Component<AppProps, IAppState> {
         return (
             <div className="App">
                 <div className="webcam-feed">
-                    {this.props.deviceIds.map((device, key) => {
-                        return <WebcamFeed key={key} deviceId={device} />;
-                    })}
+                    {this.props.deviceIds.map((device, key) => (
+                        <Video key={key} deviceId={device} />
+                    ))}
                 </div>
 
                 {this.state.webcams.length > 0 ? (

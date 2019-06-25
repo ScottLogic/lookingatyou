@@ -11,22 +11,17 @@ export interface IVideo {
 }
 
 export interface IVideoState {
-  videos: IVideo[],
+  videos: {[deviceId: string]: IVideo},
 }
 
-export interface IDimensions {
-  width: number,
-  height: number,
+export interface ISetVideoPayload {
+  video: HTMLVideoElement,
+  deviceId: string,
 }
 
 interface ISetVideoAction {
   type: typeof SET_VIDEO,
-  video: HTMLVideoElement,
-}
-
-interface ISetDimensionsAction {
-  type: typeof SET_DIMENSIONS,
-  dimensions: IDimensions,
+  payload: ISetVideoPayload,
 }
 
 interface ISetVideoStreamsAction {
@@ -34,4 +29,4 @@ interface ISetVideoStreamsAction {
   videos: IVideo[],
 }
 
-export type VideoActionTypes = ISetVideoAction | ISetDimensionsAction | ISetVideoStreamsAction;
+export type VideoActionTypes = ISetVideoAction | ISetVideoStreamsAction;
