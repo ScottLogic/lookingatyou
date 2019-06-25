@@ -4,7 +4,6 @@ import * as cocoSSD from '@tensorflow-models/coco-ssd';
 import React, { RefObject } from 'react';
 
 import './App.css';
-
 import CanvasMenuItem from './components/configMenu/CanvasMenuItem';
 import CheckBoxMenuItem from './components/configMenu/CheckBoxMenuItem';
 import ColorMenuItem from './components/configMenu/ColorMenuItem';
@@ -106,7 +105,7 @@ class App extends React.Component<IAppProps, IAppState> {
         // Sets up cyclical dilation animation
         this.dilate = window.setInterval(() => {
             this.setState(state => ({
-                dilationCoefficient: (function() {
+                dilationCoefficient: (() => {
                     switch (state.dilationCoefficient) {
                         case pupilSizes.neutral:
                             return pupilSizes.dilated;
@@ -219,7 +218,7 @@ class App extends React.Component<IAppProps, IAppState> {
                     })}
                 </div>
 
-                {this.state.eyesDisplayed ? (
+                {this.state.webcams.length > 0 ? (
                     <div className="container">
                         {Object.values(eyes).map((eye, key) => {
                             return (

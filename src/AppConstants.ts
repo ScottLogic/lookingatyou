@@ -3,14 +3,13 @@ import IUserConfig from './components/configMenu/InterfaceUserConfig';
 export const videoinput = 'videoinput';
 export const FPS = 30;
 export const eyes = {
-<<<<<<< HEAD
     LEFT: 'left',
     RIGHT: 'right',
 };
 export const colours = {
-    scleraColor: "white",
-    irisColor: "#ff8080", // must be hex value, as this is passed to colour picker input
-    pupilColor: "black",
+    scleraColor: 'white',
+    irisColor: '#ff8080', // must be hex value, as this is passed to colour picker input
+    pupilColor: 'black',
 };
 export const defaultConfigValues: IUserConfig = {
     xSensitivity: 1,
@@ -20,7 +19,7 @@ export const defaultConfigValues: IUserConfig = {
     toggleDebug: false,
     irisColor: colours.irisColor,
 };
-export const configStorageKey = "config";
+export const configStorageKey = 'config';
 export const eyelidPosition = {
     OPEN: 0.5,
     CLOSED: 0,
@@ -34,22 +33,3 @@ export const pupilSizes = {
 export const blinkFrequency = 0.25;
 export const pupilSizeChangeInterval = 2500;
 export const transitionTime = 100; // for animating eyelids and pupils
-=======
-  LEFT: 'left',
-  RIGHT: 'right',
-};
-export const colours = {
-  scleraColor: 'white',
-  irisColor: '#ff8080', // must be hex value, as this is passed to colour picker input
-  pupilColor: 'black',
-};
-export const defaultConfigValues: IUserConfig = {
-  xSensitivity: 1,
-  ySensitivity: 1,
-  fps: 5,
-  swapEyes: false,
-  toggleDebug: false,
-  irisColor: colours.irisColor,
-};
-export const configStorageKey = 'config';
->>>>>>> fixed file casing error
