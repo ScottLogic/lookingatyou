@@ -39,6 +39,7 @@ interface IAppState {
     targetX: number;
     targetY: number;
     dilationCoefficient: number;
+    personDetected: boolean;
 }
 
 interface IAppProps {
@@ -69,12 +70,18 @@ class App extends React.Component<IAppProps, IAppState> {
             dilationCoefficient: pupilSizes.neutral,
             userConfig:
                 this.readConfig(configStorageKey) || defaultConfigValues,
+            personDetected: false,
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);
         this.onUserMedia = this.onUserMedia.bind(this);
         this.onUserMediaError = this.onUserMediaError.bind(this);
         this.detectImage = this.detectImage.bind(this);
+        this.checkLight = this.checkLight.bind(this);
+        this.isNewTarget = this.isNewTarget.bind(this);
+        this.hasTargetLeft = this.hasTargetLeft.bind(this);
+        this.setDilation = this.setDilation.bind(this);
+        this.analyseLight = this.analyseLight.bind(this);
 
         this.leftDebugRef = React.createRef();
         this.rightDebugRef = React.createRef();
@@ -103,7 +110,7 @@ class App extends React.Component<IAppProps, IAppState> {
         }, transitionTime);
 
         // Sets up cyclical dilation animation
-        this.dilate = window.setInterval(() => {
+        /*this.dilate = window.setInterval(() => {
             this.setState(state => ({
                 dilationCoefficient: (() => {
                     switch (state.dilationCoefficient) {
@@ -116,7 +123,7 @@ class App extends React.Component<IAppProps, IAppState> {
                     }
                 })(),
             }));
-        }, pupilSizeChangeInterval);
+        }, pupilSizeChangeInterval);*/
 
         this.model = await cocoSSD.load();
         if (this.state.videos[0]) {
@@ -124,6 +131,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 this.detectImage,
                 1000 / FPS,
                 this.state.videos[0].current,
+                this.checkLight,
             );
         }
     }
@@ -180,6 +188,7 @@ class App extends React.Component<IAppProps, IAppState> {
     ) {
         if (this.model && img !== null) {
             const detections = await this.model.detect(img);
+            this.checkLight(img);
             this.selectTarget(detections);
         }
     }
@@ -188,8 +197,113 @@ class App extends React.Component<IAppProps, IAppState> {
         const target = detections.find(
             detection => detection.class === 'person',
         );
+
         if (target !== undefined) {
             this.calculateEyePos(target.bbox);
+            this.isNewTarget();
+        } else {
+            this.hasTargetLeft();
+        }
+    }
+
+    isNewTarget() {
+        if (!this.state.personDetected) {
+            this.setState({ personDetected: true });
+            this.setDilation(pupilSizes.dilated);
+            this.setDilation(pupilSizes.neutral);
+        }
+    }
+
+    hasTargetLeft() {
+        if (this.state.personDetected) {
+            this.setState({ personDetected: false });
+            this.setDilation(pupilSizes.constricted);
+            this.setDilation(pupilSizes.neutral);
+        }
+    }
+
+    setDilation(pupilSize: number) {
+        window.setInterval(() => {
+            this.setState(() => ({
+                dilationCoefficient: pupilSize,
+            }));
+        }, 50);
+    }
+
+    checkLight(
+        video:
+            | ImageData
+            | HTMLImageElement
+            | HTMLCanvasElement
+            | HTMLVideoElement
+            | null,
+    ) {
+        if (video && video instanceof HTMLVideoElement) {
+            const image = new Image();
+
+            const canvas = document.createElement('canvas');
+            canvas.height = video.height;
+            canvas.width = video.width;
+            const canvasCtx = canvas.getContext('2d');
+
+            if (canvasCtx) {
+                canvasCtx.drawImage(video, 0, 0, video.width, video.height);
+                image.src = canvas.toDataURL();
+                this.analyseLight(image);
+            }
+        }
+    }
+
+    analyseLight(image: HTMLImageElement) {
+        const canvas = document.createElement('canvas');
+        canvas.width = image.width;
+        canvas.height = image.height;
+
+        const ctx = canvas.getContext('2d');
+
+        if (ctx) {
+            ctx.drawImage(image, 0, 0);
+
+            const imageData = ctx.getImageData(
+                0,
+                0,
+                canvas.width,
+                canvas.height,
+            );
+
+            const data = imageData.data;
+
+            let r = 0;
+            let g = 0;
+            let b = 0;
+            let avg = 0;
+
+            let colorSum = 0;
+
+            for (let i = 0, len = data.length; i < len; i += 4) {
+                r = data[i];
+                g = data[i + 1];
+                b = data[i + 2];
+
+                avg = Math.floor((r + g + b) / 3);
+                colorSum += avg;
+            }
+
+            const brightness = Math.floor(
+                colorSum / (image.width * image.height),
+            );
+
+            if (brightness > 175) {
+                this.setDilation(pupilSizes.dilated);
+            } else if (brightness < 50) {
+                this.setDilation(pupilSizes.constricted);
+            }
+        }
+    }
+
+    moveLeft() {
+        if (Math.random() < 0.5) {
+            this.setState({ targetX: this.state.targetX + 4 });
         }
     }
 
