@@ -2,9 +2,7 @@
 
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
 import React, { RefObject } from 'react';
-
 import './App.css';
-<<<<<<< HEAD
 import CanvasMenuItem from './components/configMenu/CanvasMenuItem';
 import CheckBoxMenuItem from './components/configMenu/CheckBoxMenuItem';
 import ColorMenuItem from './components/configMenu/ColorMenuItem';
@@ -25,9 +23,7 @@ import {
     transitionTime,
 } from './AppConstants';
 import { IRootStore } from './store/reducers/rootReducer';
-import {
-    getDeviceIds,
-} from './store/selectors/videoSelectors';
+import { getDeviceIds } from './store/selectors/videoSelectors';
 import { connect } from 'react-redux';
 import Video from './components/video/Video';
 
@@ -47,8 +43,12 @@ interface IAppState {
 }
 
 interface IAppProps {
-  environment: Window,
-  configureStream: (mediaDevices: MediaDevices, onUserMedia: () => void, onUserMediaError: () => void) => void;
+    environment: Window;
+    configureStream: (
+        mediaDevices: MediaDevices,
+        onUserMedia: () => void,
+        onUserMediaError: () => void,
+    ) => void;
 }
 
 interface IAppMapStateToProps {
@@ -70,6 +70,7 @@ export class App extends React.Component<AppProps, IAppState> {
     private frameCapture: number;
     private blink: number = 0;
     private dilate: number = 0;
+
     constructor(props: AppProps) {
         super(props);
 
@@ -93,7 +94,6 @@ export class App extends React.Component<AppProps, IAppState> {
         this.onUserMedia = this.onUserMedia.bind(this);
         this.onUserMediaError = this.onUserMediaError.bind(this);
         this.detectImage = this.detectImage.bind(this);
-
         this.leftDebugRef = React.createRef();
         this.rightDebugRef = React.createRef();
 
@@ -115,12 +115,6 @@ export class App extends React.Component<AppProps, IAppState> {
             this.onUserMediaError,
         );
 
-        this.props.environment.addEventListener('storage', () =>
-            this.readConfig(configStorageKey),
-        );
-        this.model = null;
-        this.frameCapture = 0;
-
         // Sets up random blinking animation
         this.blink = window.setInterval(() => {
             this.setState(state => ({
@@ -133,7 +127,7 @@ export class App extends React.Component<AppProps, IAppState> {
         // Sets up cyclical dilation animation
         this.dilate = window.setInterval(() => {
             this.setState(state => ({
-                dilationCoefficient: (() => {
+                dilationCoefficient: (function() {
                     switch (state.dilationCoefficient) {
                         case pupilSizes.neutral:
                             return pupilSizes.dilated;
