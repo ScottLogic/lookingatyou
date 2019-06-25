@@ -253,7 +253,7 @@ class App extends React.Component<IAppProps, IAppState> {
                     )
                 ) : (
                     <div className="Error">
-                        No webcam connected. Please connect a webcam and refresh{' '}
+                        No webcam connected. Please connect a webcam and refresh
                     </div>
                 )}
 
