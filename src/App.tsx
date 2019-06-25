@@ -46,6 +46,7 @@ const videoinput = 'videoinput';
 interface IAppState {
   width: number,
   height: number,
+<<<<<<< HEAD
   webcams: MediaDeviceInfo[],
   eyesDilatedCoefficient: number,
   eyesOpenCoefficient: number,
@@ -56,6 +57,9 @@ interface IAppState {
   targetX: number,
   targetY: number,
   dilationCoefficient: number
+=======
+  eyesDisplayed: boolean,
+>>>>>>> removed webcams from the local state
 }
 
 
@@ -97,6 +101,7 @@ export class App extends React.Component<AppProps, IAppState> {
     this.state = {
       width: this.props.environment.innerWidth,
       height: this.props.environment.innerHeight,
+<<<<<<< HEAD
       webcams: [],
       eyesDilatedCoefficient: 1,
       eyesOpenCoefficient: eyelidPosition.CLOSED,
@@ -107,6 +112,9 @@ export class App extends React.Component<AppProps, IAppState> {
       targetY: this.props.environment.innerHeight / 2,
       dilationCoefficient: pupilSizes.neutral,
       userConfig: this.readConfig(configStorageKey) || defaultConfigValues,
+=======
+      eyesDisplayed: false,
+>>>>>>> removed webcams from the local state
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -305,9 +313,20 @@ export class App extends React.Component<AppProps, IAppState> {
             })}
           </div>
           :
+<<<<<<< HEAD
           <div className="Error">
             No webcam connected. Please connect a webcam and refresh
           </div>
+=======
+          (
+            this.props.deviceIds.length > 0 ?
+              <div className="loading-spinner"></div>
+              :
+              <div className="Error">
+                No webcam connected. Please connect a webcam and refresh
+              </div>
+          )
+>>>>>>> removed webcams from the local state
         }
 
         <ConfigMenu width="14em" timerLength={1000}>
