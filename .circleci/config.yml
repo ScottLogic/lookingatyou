@@ -54,8 +54,13 @@ jobs:
           name: Build project
           command: npm run build
       - run:
-          name: 'Deploy to S3'
-          command: aws s3 sync ./build/ s3://looking-at-you/ --delete
+          name: "Deploy to S3"
+          command: |
+            if ["${CIRCLE_BRANCH}" == "master" ]; then
+              aws s3 sync ./build/ s3://looking-at-you/ --delete
+            else
+              aws s3 sync ./build/ s3://looking-at-you/$CIRCLE_BRANCH --delete
+            fi
 
 workflows:
   version: 2
@@ -68,6 +73,8 @@ workflows:
       - deploy:
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - /feature.*/
           requires:
             - test
