@@ -5,7 +5,7 @@ import React, { RefObject } from 'react';
 
 import './App.css';
 import Eye from './components/eye/Eye';
-import IUserConfig from './components/configMenu/IUserConfig';
+import InterfaceUserConfig from './components/configMenu/InterfaceUserConfig';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
 import {
@@ -30,7 +30,7 @@ interface IAppState {
     eyesOpenCoefficient: number;
     eyesDisplayed: boolean;
     isBlinking: boolean;
-    userConfig: IUserConfig;
+    userConfig: InterfaceUserConfig;
     videos: Array<RefObject<HTMLVideoElement>>;
     targetX: number;
     targetY: number;
@@ -243,20 +243,23 @@ class App extends React.Component<IAppProps, IAppState> {
                         })}
                     </div>
                 ) : (
-                        <div className="Error">
-                            No webcam connected. Please connect a webcam and refresh
+                    <div className="Error">
+                        No webcam connected. Please connect a webcam and refresh
                     </div>
-                    )}
+                )}
 
                 <ConfigMenuElement
                     config={this.state.userConfig}
-                    store={(partialState: Partial<IUserConfig>) => this.store(configStorageKey, partialState)} />
-            </div >
+                    store={(partialState: Partial<InterfaceUserConfig>) =>
+                        this.store(configStorageKey, partialState)
+                    }
+                />
+            </div>
         );
     }
 
-    store(key: string, partialState: Partial<IUserConfig>) {
-        const newUserConfig: IUserConfig = {
+    store(key: string, partialState: Partial<InterfaceUserConfig>) {
+        const newUserConfig: InterfaceUserConfig = {
             ...this.state.userConfig,
             ...partialState,
         };
