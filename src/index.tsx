@@ -1,19 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
-import store from './store/store';
+import App from './App';
 import configureStream from './components/webcamHandler/WebcamHandler';
+import './index.css';
+import * as serviceWorker from './serviceWorker';
+import store from './store/store';
 
-const getEnvironment = () => { return window }
+const getEnvironment = () => {
+    return window;
+};
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App environment={getEnvironment()} configureStream={configureStream} />
-  </Provider>,
-  document.getElementById('root')
+    <Provider store={store}>
+        <App environment={getEnvironment()} configureStream={configureStream} />
+    </Provider>,
+    document.getElementById('root'),
 );
 
 // If you want your app to work offline and load faster, you can change
