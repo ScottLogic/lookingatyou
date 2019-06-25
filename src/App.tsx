@@ -71,6 +71,7 @@ export class App extends React.Component<AppProps, IAppState> {
         this.onUserMedia = this.onUserMedia.bind(this);
         this.onUserMediaError = this.onUserMediaError.bind(this);
         this.detectionHandler = this.detectionHandler.bind(this);
+        this.detectionHandler = this.detectionHandler.bind(this);
         this.model = null;
         this.captureInterval = 0;
     }

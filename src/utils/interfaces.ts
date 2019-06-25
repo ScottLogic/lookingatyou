@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Bbox, DetectionConfig, DetectionImage } from './types';
+=======
+import { Bbox, DetectionConfig, DetectionImage, ModelConfig } from './types';
+>>>>>>> refactored object detection to be modular
 
 export interface IObjectDetector {
     detect(
