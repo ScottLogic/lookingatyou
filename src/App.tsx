@@ -112,6 +112,13 @@ export class App extends React.Component<AppProps, IAppState> {
             await this.setState({ webcamAvailable: true });
             this.model = await CocoSSD.init();
             this.setState({ modelLoaded: true });
+            if (this.props.videos[0]) {
+                this.captureInterval = setInterval(
+                    this.detectionHandler,
+                    1000 / FPS,
+                    this.props.videos[0],
+                );
+            }
         }
     }
 
