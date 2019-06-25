@@ -1,3 +1,4 @@
+/* tslint:disable: jsx-no-lambda radix ordered-imports only-arrow-functions */
 import React from 'react';
 import './ConfigMenu.css';
 
@@ -19,8 +20,9 @@ export default class ConfigMenu extends React.Component<IConfigMenuProps, IConfi
         window.addEventListener("mousemove", () => {
             this.setState({ leftPosition: "0px" });
             clearInterval(this.hideTimeout);
-            if (!this.state.isUnderMouse)
+            if (!this.state.isUnderMouse) {
                 this.hideTimeout = window.setTimeout(() => this.setState({ leftPosition: "-" + props.width }), props.timerLength);
+            }
         });
     }
     render() {

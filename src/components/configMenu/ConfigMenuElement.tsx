@@ -1,3 +1,4 @@
+/* tslint:disable: jsx-no-lambda radix ordered-imports only-arrow-functions */
 import React from 'react';
 import TextBoxMenuItem from './menuItems/TextBoxMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
@@ -7,7 +8,7 @@ import ConfigMenu from './ConfigMenu';
 import IUserConfig from './IUserConfig';
 interface ILookingAtYouConfig {
     config: IUserConfig,
-    store: { (partialState: Partial<IUserConfig>): void }
+    store: (partialState: Partial<IUserConfig>) => void
 }
 export default function LookingAtYouConfig(props: ILookingAtYouConfig) {
     return (
@@ -43,9 +44,9 @@ export default function LookingAtYouConfig(props: ILookingAtYouConfig) {
                 color={props.config.irisColor}
                 onInputChange={(irisColor: string) => props.store({ irisColor })} />
             <CanvasMenuItem
-                name={"Left Camera"}/>
+                name={"Left Camera"} />
             <CanvasMenuItem
-                name={"Right Camera"}/>
+                name={"Right Camera"} />
         </ConfigMenu>
     )
 }
