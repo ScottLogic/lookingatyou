@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "name": "lookingatyou",
     "version": "0.1.0",
     "private": true,
@@ -61,4 +62,63 @@
             "last 1 safari version"
         ]
     }
+=======
+  "name": "lookingatyou",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": ".",
+  "devDependencies": {
+    "@types/enzyme": "^3.9.4",
+    "@types/enzyme-adapter-react-16": "^1.0.5",
+    "@types/enzyme-to-json": "^1.5.3",
+    "@types/jest": "24.0.14",
+    "@types/jsdom": "^12.2.3",
+    "@types/node": "12.0.8",
+    "@types/react": "16.8.19",
+    "@types/react-dom": "16.8.4",
+    "@types/react-redux": "^7.1.0",
+    "@types/redux-mock-store": "^1.0.1",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "enzyme-to-json": "^3.3.5",
+    "jsdom": "^15.1.1",
+    "prettier": "^1.18.2",
+    "redux-devtools": "^3.5.0",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-react": "^4.0.0",
+    "typescript": "3.5.1"
+  },
+  "dependencies": {
+    "@tensorflow-models/coco-ssd": "^1.0.2",
+    "@tensorflow/tfjs": "^1.2.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-redux": "^7.1.0",
+    "react-scripts": "3.0.1",
+    "redux": "^4.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "./node_modules/.bin/tslint -p ."
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+>>>>>>> refactored object detection to be modular
 }
