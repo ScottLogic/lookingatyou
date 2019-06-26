@@ -2,8 +2,8 @@
 
 import React from 'react';
 export default function CheckBoxMenuItem(props: {
-name: string;
-onInputChange: (checked: boolean) => void;
+    name: string;
+    onInputChange: (checked: boolean) => void;
     checked: boolean;
 }) {
     return (

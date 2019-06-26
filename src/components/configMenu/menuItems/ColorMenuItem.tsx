@@ -2,8 +2,8 @@
 
 import React from 'react';
 export default function TextBoxMenuItem(props: {
-name: string;
-onInputChange: (text: string) => void;
+    name: string;
+    onInputChange: (text: string) => void;
     color: string;
 }) {
     return (
