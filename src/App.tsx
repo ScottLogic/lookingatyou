@@ -305,7 +305,10 @@ export class App extends React.Component<AppProps, IAppState> {
             | HTMLCanvasElement
             | HTMLVideoElement
             | null,
-        callback: Function,
+        callback: (
+            canvas: HTMLCanvasElement,
+            callback: (n: number) => void,
+        ) => void,
     ) {
         if (video && video instanceof HTMLVideoElement) {
             const canvas = document.createElement('canvas');
@@ -322,7 +325,7 @@ export class App extends React.Component<AppProps, IAppState> {
         }
     }
 
-    analyseLight(canvas: HTMLCanvasElement, callback: Function) {
+    analyseLight(canvas: HTMLCanvasElement, callback: (n: number) => void) {
         const ctx = canvas.getContext('2d');
 
         if (ctx && canvas.width > 0) {
@@ -340,6 +343,8 @@ export class App extends React.Component<AppProps, IAppState> {
             });
 
             const brightness = Math.floor(colorSum / (data.length / 3));
+
+            console.log(brightness);
 
             const scaledPupilSize = ((255 - brightness) / 255) * 0.7 + 0.8;
 
