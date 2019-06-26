@@ -219,6 +219,14 @@ export class App extends React.Component<AppProps, IAppState> {
         }
     }
 
+    calculateEyePos(bbox: number[]) {
+        const [x, y, width, height] = bbox;
+        this.setState({
+            targetX: x + width / 2,
+            targetY: y + height / 2,
+        });
+    }
+
     naturalMovement() {
         const middleOfFrame = window.innerWidth / 4;
 
@@ -332,14 +340,6 @@ export class App extends React.Component<AppProps, IAppState> {
 
             callback(scaledPupilSize);
         }
-    }
-
-    calculateEyePos(bbox: number[]) {
-        const [x, y, width, height] = bbox;
-        this.setState({
-            targetX: x + width / 2,
-            targetY: y + height / 2,
-        });
     }
 
     render() {
