@@ -1,4 +1,3 @@
-/* tslint:disable: jsx-no-lambda radix ordered-imports only-arrow-functions */
 import React from 'react';
 import './ConfigMenu.css';
 
@@ -20,6 +19,8 @@ export default class ConfigMenu extends React.Component<
     constructor(props: IConfigMenuProps) {
         super(props);
         this.state = { leftPosition: '0px', isUnderMouse: false };
+        this.onMouseMove = this.onMouseMove.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
         window.addEventListener('mousemove', () => {
             this.setState({ leftPosition: '0px' });
             clearInterval(this.hideTimeout);
@@ -31,6 +32,13 @@ export default class ConfigMenu extends React.Component<
             }
         });
     }
+    onMouseMove(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+        clearInterval(this.hideTimeout);
+        this.setState({ isUnderMouse: true });
+    }
+    onMouseLeave(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+        this.setState({ isUnderMouse: false });
+    }
     render() {
         return (
             <div
@@ -39,14 +47,10 @@ export default class ConfigMenu extends React.Component<
                     left: this.state.leftPosition,
                 }}
                 className={'ConfigMenu'}
-                onMouseMove={() => {
-                    clearInterval(this.hideTimeout);
-                    this.setState({ isUnderMouse: true });
-                }}
-                onMouseLeave={() => {
-                    this.setState({ isUnderMouse: false });
-                }}
+                onMouseMove={this.onMouseMove}
+                onMouseLeave={this.onMouseLeave}
             >
+                {' '}
                 <h1>Config</h1>
                 {this.props.children}
             </div>
