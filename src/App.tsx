@@ -7,9 +7,7 @@ import './App.css';
 import {
     configStorageKey,
     defaultConfigValues,
-    eyelidPosition,
     FPS,
-    pupilSizes,
     videoinput,
 } from './AppConstants';
 import CanvasMenuItem from './components/configMenu/CanvasMenuItem';
