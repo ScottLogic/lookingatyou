@@ -235,8 +235,6 @@ export class App extends React.Component<AppProps, IAppState> {
     naturalMovement() {
         const middleOfFrame = window.innerWidth / 4;
 
-        console.log(this.state.targetX);
-
         if (this.state.targetX === middleOfFrame) {
             if (Math.random() < 0.05) {
                 this.moveEye();
@@ -263,11 +261,9 @@ export class App extends React.Component<AppProps, IAppState> {
     }
 
     setDilation(pupilSize: number) {
-        window.setInterval(() => {
-            this.setState(() => ({
-                dilationCoefficient: pupilSize,
-            }));
-        }, 50);
+        this.setState(() => ({
+            dilationCoefficient: pupilSize,
+        }));
     }
 
     moveEye() {
