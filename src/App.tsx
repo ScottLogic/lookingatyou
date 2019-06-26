@@ -1,5 +1,5 @@
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
-import React, { RefObject } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import './App.css';
 import {
@@ -78,7 +78,7 @@ export class App extends React.Component<AppProps, IAppState> {
             targetY: this.props.environment.innerHeight / 2,
             dilationCoefficient: pupilSizes.neutral,
             userConfig: this.readConfig() || defaultConfigValues,
-            modelLoaded: true,
+            modelLoaded: false,
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);
@@ -130,14 +130,22 @@ export class App extends React.Component<AppProps, IAppState> {
                 })(),
             }));
         }, pupilSizeChangeInterval);
+    }
 
-        this.model = await cocoSSD.load();
-        if (this.props.videos[0]) {
-            this.frameCapture = setInterval(
-                this.detectImage,
-                1000 / FPS,
-                this.props.videos[0],
-            );
+    async componentDidUpdate() {
+        if (!this.state.modelLoaded && this.props.deviceIds.length > 0) {
+            if (!this.state.webcamAvailable) {
+                await this.setState({ webcamAvailable: true });
+            }
+            this.model = await cocoSSD.load();
+            this.setState({ modelLoaded: true });
+            if (this.props.videos[0]) {
+                this.frameCapture = setInterval(
+                    this.detectImage,
+                    1000 / FPS,
+                    this.props.videos[0],
+                );
+            }
         }
     }
 
