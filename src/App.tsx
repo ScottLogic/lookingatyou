@@ -1,5 +1,3 @@
-/* tslint:disable: jsx-no-lambda radix only-arrow-functions */
-
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
 import React, { RefObject } from 'react';
 
@@ -62,8 +60,7 @@ class App extends React.Component<IAppProps, IAppState> {
             targetX: this.props.environment.innerWidth / 4,
             targetY: this.props.environment.innerHeight / 2,
             dilationCoefficient: pupilSizes.neutral,
-            userConfig:
-                this.readConfig(configStorageKey) || defaultConfigValues,
+            userConfig: this.readConfig() || defaultConfigValues,
             modelLoaded: true,
         };
 
@@ -71,9 +68,10 @@ class App extends React.Component<IAppProps, IAppState> {
         this.onUserMedia = this.onUserMedia.bind(this);
         this.onUserMediaError = this.onUserMediaError.bind(this);
         this.detectImage = this.detectImage.bind(this);
+        this.store = this.store.bind(this);
 
         this.props.environment.addEventListener('storage', () =>
-            this.readConfig(configStorageKey),
+            this.readConfig(),
         );
         this.model = null;
         this.frameCapture = 0;
@@ -250,15 +248,13 @@ class App extends React.Component<IAppProps, IAppState> {
 
                 <ConfigMenuElement
                     config={this.state.userConfig}
-                    store={(partialState: Partial<InterfaceUserConfig>) =>
-                        this.store(configStorageKey, partialState)
-                    }
+                    store={this.store}
                 />
             </div>
         );
     }
 
-    store(key: string, partialState: Partial<InterfaceUserConfig>) {
+    store(partialState: Partial<InterfaceUserConfig>) {
         const newUserConfig: InterfaceUserConfig = {
             ...this.state.userConfig,
             ...partialState,
@@ -269,13 +265,18 @@ class App extends React.Component<IAppProps, IAppState> {
             },
             () => {
                 const json = JSON.stringify(this.state.userConfig);
-                this.props.environment.localStorage.setItem(key, json);
+                this.props.environment.localStorage.setItem(
+                    configStorageKey,
+                    json,
+                );
             },
         );
     }
 
-    readConfig(key: string) {
-        const json = this.props.environment.localStorage.getItem(key);
+    readConfig() {
+        const json = this.props.environment.localStorage.getItem(
+            configStorageKey,
+        );
         if (json != null) {
             return JSON.parse(json);
         } else {
