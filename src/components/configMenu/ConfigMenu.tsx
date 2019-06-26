@@ -47,7 +47,6 @@ export default class ConfigMenu extends React.Component<
                     this.setState({ isUnderMouse: false });
                 }}
             >
-                {' '}
                 <h1>Config</h1>
                 {this.props.children}
             </div>
