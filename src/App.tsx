@@ -361,8 +361,6 @@ export class App extends React.Component<AppProps, IAppState> {
                 colorSum / (canvas.width * canvas.height),
             );
 
-            console.log(brightness);
-
             const scaledPupilSize = ((255 - brightness) / 255) * 0.7 + 0.8;
 
             callback(scaledPupilSize);
