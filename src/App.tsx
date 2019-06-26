@@ -102,6 +102,9 @@ export class App extends React.Component<AppProps, IAppState> {
         this.checkLight = this.checkLight.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
         this.hasTargetLeft = this.hasTargetLeft.bind(this);
+        this.moveEye = this.moveEye.bind(this);
+        this.moveLeft = this.moveLeft.bind(this);
+        this.moveRight = this.moveRight.bind(this);
         this.setDilation = this.setDilation.bind(this);
         this.analyseLight = this.analyseLight.bind(this);
 
@@ -156,7 +159,11 @@ export class App extends React.Component<AppProps, IAppState> {
             this.frameCapture = setInterval(
                 this.detectImage,
                 1000 / FPS,
+<<<<<<< HEAD
                 this.props.videos[0],
+=======
+                this.state.videos[0].current,
+>>>>>>> Light thing
             );
         }
     }
@@ -200,7 +207,13 @@ export class App extends React.Component<AppProps, IAppState> {
     ) {
         if (this.model && img !== null) {
             const detections = await this.model.detect(img);
+<<<<<<< HEAD
             this.checkLight(img, this.analyseLight);
+=======
+            if (Math.random() < 0.1) {
+                this.checkLight(img, this.analyseLight);
+            }
+>>>>>>> Light thing
             this.selectTarget(detections);
         }
     }
@@ -333,9 +346,15 @@ export class App extends React.Component<AppProps, IAppState> {
             const colorSum = data.reduce((r, g, b) => {
                 return Math.floor((r + g + b) / 3);
             });
+<<<<<<< HEAD
 
             const brightness = Math.floor(colorSum / (data.length / 3));
 
+=======
+
+            const brightness = Math.floor(colorSum / (data.length / 3));
+
+>>>>>>> Light thing
             const scaledPupilSize = ((255 - brightness) / 255) * 0.7 + 0.8;
 
             callback(scaledPupilSize);
