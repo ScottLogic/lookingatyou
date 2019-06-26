@@ -75,6 +75,7 @@ workflows:
                       branches:
                           only:
                               - master
+                              - /bug.*/
                               - /feature.*/
                   requires:
                       - test
