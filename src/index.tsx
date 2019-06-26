@@ -1,15 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import App from './App';
+import configureStream from './components/webcamHandler/WebcamHandler';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
+import store from './store/store';
 
 const getEnvironment = () => {
     return window;
 };
 
 ReactDOM.render(
-    <App environment={getEnvironment()} />,
+    <Provider store={store}>
+        <App environment={getEnvironment()} configureStream={configureStream} />
+    </Provider>,
     document.getElementById('root'),
 );
 
