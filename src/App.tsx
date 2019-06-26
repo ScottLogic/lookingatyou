@@ -1,6 +1,7 @@
 /* tslint:disable: jsx-no-lambda radix only-arrow-functions */
 
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
+import { sumOutType } from '@tensorflow/tfjs-core/dist/types';
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import './App.css';
@@ -37,12 +38,10 @@ interface IAppState {
     userConfig: IUserConfig;
     targetX: number;
     targetY: number;
+    direction: boolean;
     dilationCoefficient: number;
-<<<<<<< HEAD
     modelLoaded: boolean;
-=======
     personDetected: boolean;
->>>>>>> Dilate when someone first seen/can't be seen and initial broken implementation of dilation based on light from camera feed
 }
 
 interface IAppProps {
@@ -88,29 +87,24 @@ export class App extends React.Component<AppProps, IAppState> {
             isBlinking: false,
             targetX: this.props.environment.innerWidth / 4,
             targetY: this.props.environment.innerHeight / 2,
+            direction: true,
             dilationCoefficient: pupilSizes.neutral,
             userConfig:
                 this.readConfig(configStorageKey) || defaultConfigValues,
-<<<<<<< HEAD
             modelLoaded: true,
-=======
             personDetected: false,
->>>>>>> Dilate when someone first seen/can't be seen and initial broken implementation of dilation based on light from camera feed
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);
         this.onUserMedia = this.onUserMedia.bind(this);
         this.onUserMediaError = this.onUserMediaError.bind(this);
         this.detectImage = this.detectImage.bind(this);
-<<<<<<< HEAD
-=======
         this.checkLight = this.checkLight.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
         this.hasTargetLeft = this.hasTargetLeft.bind(this);
         this.setDilation = this.setDilation.bind(this);
         this.analyseLight = this.analyseLight.bind(this);
 
->>>>>>> Dilate when someone first seen/can't be seen and initial broken implementation of dilation based on light from camera feed
         this.leftDebugRef = React.createRef();
         this.rightDebugRef = React.createRef();
 
@@ -141,12 +135,8 @@ export class App extends React.Component<AppProps, IAppState> {
             }));
         }, transitionTime);
 
-<<<<<<< HEAD
-        this.dilate = window.setInterval(() => {
-=======
         // Sets up cyclical dilation animation
         /*this.dilate = window.setInterval(() => {
->>>>>>> Dilate when someone first seen/can't be seen and initial broken implementation of dilation based on light from camera feed
             this.setState(state => ({
                 dilationCoefficient: (function() {
                     switch (state.dilationCoefficient) {
@@ -166,12 +156,7 @@ export class App extends React.Component<AppProps, IAppState> {
             this.frameCapture = setInterval(
                 this.detectImage,
                 1000 / FPS,
-<<<<<<< HEAD
                 this.props.videos[0],
-=======
-                this.state.videos[0].current,
-                this.checkLight,
->>>>>>> Dilate when someone first seen/can't be seen and initial broken implementation of dilation based on light from camera feed
             );
         }
     }
@@ -215,7 +200,7 @@ export class App extends React.Component<AppProps, IAppState> {
     ) {
         if (this.model && img !== null) {
             const detections = await this.model.detect(img);
-            this.checkLight(img);
+            // this.checkLight(img);
             this.selectTarget(detections);
         }
     }
@@ -230,6 +215,25 @@ export class App extends React.Component<AppProps, IAppState> {
             this.isNewTarget();
         } else {
             this.hasTargetLeft();
+            this.naturalMovement();
+        }
+    }
+
+    calculateEyePos(bbox: number[]) {
+        const [x, y, width, height] = bbox;
+        this.setState({
+            targetX: x + width / 2,
+            targetY: y + height / 2,
+        });
+    }
+
+    naturalMovement() {
+        const middleOfFrame = window.innerWidth / 4;
+
+        if (this.state.targetX === middleOfFrame) {
+            if (Math.random() < 0.05) {
+                this.moveEye();
+            }
         }
     }
 
@@ -257,6 +261,38 @@ export class App extends React.Component<AppProps, IAppState> {
         }, 50);
     }
 
+    moveEye() {
+        if (this.state.direction) {
+            this.moveLeft();
+        } else {
+            this.moveRight();
+        }
+    }
+
+    moveLeft() {
+        const middleX = window.innerWidth / 4;
+        const xIncrement = window.innerWidth / 16;
+        const buffer = 6;
+
+        if (this.state.targetX > middleX - xIncrement + buffer) {
+            this.setState({ targetX: this.state.targetX - 4 });
+        } else {
+            this.setState({ direction: !this.state.direction });
+        }
+    }
+
+    moveRight() {
+        const middleX = window.innerWidth / 4;
+        const xIncrement = window.innerWidth / 16;
+        const buffer = 6;
+
+        if (this.state.targetX < middleX + xIncrement - buffer) {
+            this.setState({ targetX: this.state.targetX + 4 });
+        } else {
+            this.setState({ direction: !this.state.direction });
+        }
+    }
+
     checkLight(
         video:
             | ImageData
@@ -275,7 +311,6 @@ export class App extends React.Component<AppProps, IAppState> {
 
             if (canvasCtx) {
                 canvasCtx.drawImage(video, 0, 0, video.width, video.height);
-                image.src = canvas.toDataURL();
                 this.analyseLight(image);
             }
         }
@@ -288,7 +323,7 @@ export class App extends React.Component<AppProps, IAppState> {
 
         const ctx = canvas.getContext('2d');
 
-        if (ctx) {
+        if (ctx && canvas.width > 0) {
             ctx.drawImage(image, 0, 0);
 
             const imageData = ctx.getImageData(
@@ -326,20 +361,6 @@ export class App extends React.Component<AppProps, IAppState> {
                 this.setDilation(pupilSizes.constricted);
             }
         }
-    }
-
-    moveLeft() {
-        if (Math.random() < 0.5) {
-            this.setState({ targetX: this.state.targetX + 4 });
-        }
-    }
-
-    calculateEyePos(bbox: number[]) {
-        const [x, y, width, height] = bbox;
-        this.setState({
-            targetX: x + width / 2,
-            targetY: y + height / 2,
-        });
     }
 
     render() {
