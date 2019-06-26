@@ -25,6 +25,7 @@ import {
     transitionTime,
     videoinput,
 } from './AppConstants';
+import { sumOutType } from '@tensorflow/tfjs-core/dist/types';
 
 interface IAppState {
     width: number;
@@ -38,6 +39,7 @@ interface IAppState {
     videos: Array<RefObject<HTMLVideoElement>>;
     targetX: number;
     targetY: number;
+    direction: boolean;
     dilationCoefficient: number;
     personDetected: boolean;
 }
@@ -67,6 +69,7 @@ class App extends React.Component<IAppProps, IAppState> {
             videos: [],
             targetX: this.props.environment.innerWidth / 4,
             targetY: this.props.environment.innerHeight / 2,
+            direction: true,
             dilationCoefficient: pupilSizes.neutral,
             userConfig:
                 this.readConfig(configStorageKey) || defaultConfigValues,
@@ -188,7 +191,7 @@ class App extends React.Component<IAppProps, IAppState> {
     ) {
         if (this.model && img !== null) {
             const detections = await this.model.detect(img);
-            this.checkLight(img);
+            // this.checkLight(img);
             this.selectTarget(detections);
         }
     }
@@ -203,6 +206,25 @@ class App extends React.Component<IAppProps, IAppState> {
             this.isNewTarget();
         } else {
             this.hasTargetLeft();
+            this.naturalMovement();
+        }
+    }
+
+    calculateEyePos(bbox: number[]) {
+        const [x, y, width, height] = bbox;
+        this.setState({
+            targetX: x + width / 2,
+            targetY: y + height / 2,
+        });
+    }
+
+    naturalMovement() {
+        const middleOfFrame = window.innerWidth / 4;
+
+        if (this.state.targetX === middleOfFrame) {
+            if (Math.random() < 0.05) {
+                this.moveEye();
+            }
         }
     }
 
@@ -230,6 +252,38 @@ class App extends React.Component<IAppProps, IAppState> {
         }, 50);
     }
 
+    moveEye() {
+        if (this.state.direction) {
+            this.moveLeft();
+        } else {
+            this.moveRight();
+        }
+    }
+
+    moveLeft() {
+        const middleX = window.innerWidth / 4;
+        const xIncrement = window.innerWidth / 16;
+        const buffer = 6;
+
+        if (this.state.targetX > middleX - xIncrement + buffer) {
+            this.setState({ targetX: this.state.targetX - 4 });
+        } else {
+            this.setState({ direction: !this.state.direction });
+        }
+    }
+
+    moveRight() {
+        const middleX = window.innerWidth / 4;
+        const xIncrement = window.innerWidth / 16;
+        const buffer = 6;
+
+        if (this.state.targetX < middleX + xIncrement - buffer) {
+            this.setState({ targetX: this.state.targetX + 4 });
+        } else {
+            this.setState({ direction: !this.state.direction });
+        }
+    }
+
     checkLight(
         video:
             | ImageData
@@ -248,7 +302,6 @@ class App extends React.Component<IAppProps, IAppState> {
 
             if (canvasCtx) {
                 canvasCtx.drawImage(video, 0, 0, video.width, video.height);
-                image.src = canvas.toDataURL();
                 this.analyseLight(image);
             }
         }
@@ -261,7 +314,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
         const ctx = canvas.getContext('2d');
 
-        if (ctx) {
+        if (ctx && canvas.width > 0) {
             ctx.drawImage(image, 0, 0);
 
             const imageData = ctx.getImageData(
@@ -299,20 +352,6 @@ class App extends React.Component<IAppProps, IAppState> {
                 this.setDilation(pupilSizes.constricted);
             }
         }
-    }
-
-    moveLeft() {
-        if (Math.random() < 0.5) {
-            this.setState({ targetX: this.state.targetX + 4 });
-        }
-    }
-
-    calculateEyePos(bbox: number[]) {
-        const [x, y, width, height] = bbox;
-        this.setState({
-            targetX: x + width / 2,
-            targetY: y + height / 2,
-        });
     }
 
     render() {
