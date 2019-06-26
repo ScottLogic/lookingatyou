@@ -2,14 +2,9 @@
 
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
 import React, { RefObject } from 'react';
-
+import { connect } from 'react-redux';
 import './App.css';
-import {
-    configStorageKey,
-    defaultConfigValues,
-    FPS,
-    videoinput,
-} from './AppConstants';
+import { configStorageKey, defaultConfigValues, FPS } from './AppConstants';
 import CanvasMenuItem from './components/configMenu/CanvasMenuItem';
 import CheckBoxMenuItem from './components/configMenu/CheckBoxMenuItem';
 import ColorMenuItem from './components/configMenu/ColorMenuItem';
@@ -17,15 +12,15 @@ import ConfigMenu from './components/configMenu/ConfigMenu';
 import IUserConfig from './components/configMenu/InterfaceUserConfig';
 import TextBoxMenuItem from './components/configMenu/TextBoxMenuItem';
 import EyeController from './components/eye/EyeController';
-import WebcamFeed from './components/webcamFeed/WebcamFeed';
+import Video from './components/video/Video';
+import { IRootStore } from './store/reducers/rootReducer';
+import { getDeviceIds, getVideos } from './store/selectors/videoSelectors';
 
 interface IAppState {
     width: number;
     height: number;
-    webcams: MediaDeviceInfo[];
     webcamAvailable: boolean;
     userConfig: IUserConfig;
-    videos: Array<RefObject<HTMLVideoElement>>;
     targetX: number;
     targetY: number;
     modelLoaded: boolean;
@@ -33,34 +28,51 @@ interface IAppState {
 
 interface IAppProps {
     environment: Window;
+    configureStream: (
+        mediaDevices: MediaDevices,
+        onUserMedia: () => void,
+        onUserMediaError: () => void,
+    ) => void;
 }
 
-class App extends React.Component<IAppProps, IAppState> {
+interface IAppMapStateToProps {
+    deviceIds: string[];
+    videos: Array<HTMLVideoElement | undefined>;
+}
+
+type AppProps = IAppProps & IAppMapStateToProps;
+
+const mapStateToProps = (state: IRootStore) => {
+    return {
+        deviceIds: getDeviceIds(state),
+        videos: getVideos(state),
+    };
+};
+
+export class App extends React.Component<AppProps, IAppState> {
     private leftDebugRef: React.RefObject<CanvasMenuItem>;
     private rightDebugRef: React.RefObject<CanvasMenuItem>;
     private model: cocoSSD.ObjectDetection | null;
     private frameCapture: number;
-    constructor(props: IAppProps) {
+
+    constructor(props: AppProps) {
         super(props);
 
         this.state = {
             width: this.props.environment.innerWidth,
             height: this.props.environment.innerHeight,
-            webcams: [],
             webcamAvailable: false,
-            videos: [],
             targetX: this.props.environment.innerWidth / 4,
             targetY: this.props.environment.innerHeight / 2,
             userConfig:
                 this.readConfig(configStorageKey) || defaultConfigValues,
-            modelLoaded: true,
+            modelLoaded: false,
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);
         this.onUserMedia = this.onUserMedia.bind(this);
         this.onUserMediaError = this.onUserMediaError.bind(this);
         this.detectImage = this.detectImage.bind(this);
-
         this.leftDebugRef = React.createRef();
         this.rightDebugRef = React.createRef();
 
@@ -76,15 +88,28 @@ class App extends React.Component<IAppProps, IAppState> {
             'resize',
             this.updateDimensions,
         );
-        this.getWebcamDevices();
+        this.props.configureStream(
+            this.props.environment.navigator.mediaDevices,
+            this.onUserMedia,
+            this.onUserMediaError,
+        );
+    }
 
-        this.model = await cocoSSD.load();
-        this.setState({ modelLoaded: true });
-        this.frameCapture = setInterval(
-            this.detectImage,
-            1000 / FPS,
-            this.state.videos[0].current,
-        ) as number;
+    async componentDidUpdate() {
+        if (!this.state.modelLoaded && this.props.deviceIds.length > 0) {
+            if (!this.state.webcamAvailable) {
+                await this.setState({ webcamAvailable: true });
+            }
+            this.model = await cocoSSD.load();
+            this.setState({ modelLoaded: true });
+            if (this.props.videos[0]) {
+                this.frameCapture = setInterval(
+                    this.detectImage,
+                    1000 / FPS,
+                    this.props.videos[0],
+                );
+            }
+        }
     }
 
     componentWillUnmount() {
@@ -93,15 +118,6 @@ class App extends React.Component<IAppProps, IAppState> {
             this.updateDimensions,
         );
         clearInterval(this.frameCapture);
-    }
-
-    async getWebcamDevices() {
-        let devices = await navigator.mediaDevices.enumerateDevices();
-        devices = devices.filter(device => device.kind === videoinput);
-        this.setState({
-            webcams: devices,
-            videos: devices.map(() => React.createRef<HTMLVideoElement>()),
-        });
     }
 
     updateDimensions() {
@@ -158,21 +174,13 @@ class App extends React.Component<IAppProps, IAppState> {
         return (
             <div className="App">
                 <div className="webcam-feed">
-                    {this.state.webcams.map((device, key) => {
-                        return (
-                            <WebcamFeed
-                                key={key}
-                                deviceId={device.deviceId}
-                                onUserMedia={this.onUserMedia}
-                                onUserMediaError={this.onUserMediaError}
-                                ref={this.state.videos[key]}
-                            />
-                        );
-                    })}
+                    {this.props.deviceIds.map((device, key) => (
+                        <Video key={key} deviceId={device} />
+                    ))}
                 </div>
 
-                {this.state.webcams.length > 0 ? (
-                    !(this.state.webcamAvailable && this.state.modelLoaded) ? (
+                {this.state.webcamAvailable ? (
+                    !this.state.modelLoaded ? (
                         <div className="loading-spinner" />
                     ) : (
                         <EyeController
@@ -286,4 +294,4 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 }
 
-export default App;
+export default connect(mapStateToProps)(App);
