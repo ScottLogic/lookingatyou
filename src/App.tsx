@@ -116,8 +116,9 @@ export class App extends React.Component<AppProps, IAppState> {
 
         this.dilate = window.setInterval(() => {
             this.setState(state => ({
-// tslint:disable-next-line: only-arrow-functions: this won't be a problem once #90 is merged
+                // tslint:disable-next-line: only-arrow-functions
                 dilationCoefficient: (function() {
+                    // this won't be a problem once #90 is merged
                     switch (state.dilationCoefficient) {
                         case pupilSizes.neutral:
                             return pupilSizes.dilated;
