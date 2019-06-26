@@ -1,6 +1,7 @@
 /* tslint:disable: jsx-no-lambda radix only-arrow-functions */
 
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
+import { sumOutType } from '@tensorflow/tfjs-core/dist/types';
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import './App.css';
@@ -37,10 +38,10 @@ interface IAppState {
     userConfig: IUserConfig;
     targetX: number;
     targetY: number;
+    direction: boolean;
     dilationCoefficient: number;
     modelLoaded: boolean;
     personDetected: boolean;
-    direction: boolean;
 }
 
 interface IAppProps {
@@ -86,12 +87,12 @@ export class App extends React.Component<AppProps, IAppState> {
             isBlinking: false,
             targetX: this.props.environment.innerWidth / 4,
             targetY: this.props.environment.innerHeight / 2,
+            direction: true,
             dilationCoefficient: pupilSizes.neutral,
             userConfig:
                 this.readConfig(configStorageKey) || defaultConfigValues,
             modelLoaded: true,
             personDetected: false,
-            direction: true,
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);
@@ -214,7 +215,16 @@ export class App extends React.Component<AppProps, IAppState> {
             this.isNewTarget();
         } else {
             this.hasTargetLeft();
+            this.naturalMovement();
         }
+    }
+
+    calculateEyePos(bbox: number[]) {
+        const [x, y, width, height] = bbox;
+        this.setState({
+            targetX: x + width / 2,
+            targetY: y + height / 2,
+        });
     }
 
     naturalMovement() {
@@ -330,14 +340,6 @@ export class App extends React.Component<AppProps, IAppState> {
 
             callback(scaledPupilSize);
         }
-    }
-
-    calculateEyePos(bbox: number[]) {
-        const [x, y, width, height] = bbox;
-        this.setState({
-            targetX: x + width / 2,
-            targetY: y + height / 2,
-        });
     }
 
     render() {
