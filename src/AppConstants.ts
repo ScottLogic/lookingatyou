@@ -1,6 +1,6 @@
 import IUserConfig from './components/configMenu/InterfaceUserConfig';
 
-export const FPS = 30;
+export const FPS = 2;
 export const eyes = {
     LEFT: 'left',
     RIGHT: 'right',
