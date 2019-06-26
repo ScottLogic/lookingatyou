@@ -1,6 +1,6 @@
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
 import React, { RefObject } from 'react';
-
+import { connect } from 'react-redux';
 import './App.css';
 import {
     blinkFrequency,
@@ -13,23 +13,22 @@ import {
     pupilSizeChangeInterval,
     pupilSizes,
     transitionTime,
-    videoinput,
 } from './AppConstants';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import InterfaceUserConfig from './components/configMenu/InterfaceUserConfig';
 import Eye from './components/eye/Eye';
-import WebcamFeed from './components/webcamFeed/WebcamFeed';
+import Video from './components/video/Video';
+import { IRootStore } from './store/reducers/rootReducer';
+import { getDeviceIds, getVideos } from './store/selectors/videoSelectors';
 
 interface IAppState {
     width: number;
     height: number;
-    webcams: MediaDeviceInfo[];
     eyesDilatedCoefficient: number;
     eyesOpenCoefficient: number;
     webcamAvailable: boolean;
     isBlinking: boolean;
     userConfig: InterfaceUserConfig;
-    videos: Array<RefObject<HTMLVideoElement>>;
     targetX: number;
     targetY: number;
     dilationCoefficient: number;
@@ -38,25 +37,43 @@ interface IAppState {
 
 interface IAppProps {
     environment: Window;
+    configureStream: (
+        mediaDevices: MediaDevices,
+        onUserMedia: () => void,
+        onUserMediaError: () => void,
+    ) => void;
 }
 
-class App extends React.Component<IAppProps, IAppState> {
+interface IAppMapStateToProps {
+    deviceIds: string[];
+    videos: Array<HTMLVideoElement | undefined>;
+}
+
+type AppProps = IAppProps & IAppMapStateToProps;
+
+const mapStateToProps = (state: IRootStore) => {
+    return {
+        deviceIds: getDeviceIds(state),
+        videos: getVideos(state),
+    };
+};
+
+export class App extends React.Component<AppProps, IAppState> {
     private model: cocoSSD.ObjectDetection | null;
     private frameCapture: number;
     private blink: number = 0;
     private dilate: number = 0;
-    constructor(props: IAppProps) {
+
+    constructor(props: AppProps) {
         super(props);
 
         this.state = {
             width: this.props.environment.innerWidth,
             height: this.props.environment.innerHeight,
-            webcams: [],
             eyesDilatedCoefficient: 1,
             eyesOpenCoefficient: eyelidPosition.OPEN,
             webcamAvailable: false,
             isBlinking: false,
-            videos: [],
             targetX: this.props.environment.innerWidth / 4,
             targetY: this.props.environment.innerHeight / 2,
             dilationCoefficient: pupilSizes.neutral,
@@ -82,7 +99,11 @@ class App extends React.Component<IAppProps, IAppState> {
             'resize',
             this.updateDimensions,
         );
-        this.getWebcamDevices();
+        this.props.configureStream(
+            this.props.environment.navigator.mediaDevices,
+            this.onUserMedia,
+            this.onUserMediaError,
+        );
 
         // Sets up random blinking animation
         this.blink = window.setInterval(() => {
@@ -93,17 +114,10 @@ class App extends React.Component<IAppProps, IAppState> {
             }));
         }, transitionTime);
 
-        this.model = await cocoSSD.load();
-        this.setState({ modelLoaded: true });
-        this.frameCapture = setInterval(
-            this.detectImage,
-            1000 / FPS,
-            this.state.videos[0].current,
-        ) as number;
-
         this.dilate = window.setInterval(() => {
             this.setState(state => ({
-                dilationCoefficient: (() => {
+// tslint:disable-next-line: only-arrow-functions: this won't be a problem once #90 is merged
+                dilationCoefficient: (function() {
                     switch (state.dilationCoefficient) {
                         case pupilSizes.neutral:
                             return pupilSizes.dilated;
@@ -115,6 +129,15 @@ class App extends React.Component<IAppProps, IAppState> {
                 })(),
             }));
         }, pupilSizeChangeInterval);
+
+        this.model = await cocoSSD.load();
+        if (this.props.videos[0]) {
+            this.frameCapture = setInterval(
+                this.detectImage,
+                1000 / FPS,
+                this.props.videos[0],
+            );
+        }
     }
 
     componentWillUnmount() {
@@ -127,15 +150,6 @@ class App extends React.Component<IAppProps, IAppState> {
         clearInterval(this.dilate);
     }
 
-    async getWebcamDevices() {
-        let devices = await navigator.mediaDevices.enumerateDevices();
-        devices = devices.filter(device => device.kind === videoinput);
-        this.setState({
-            webcams: devices,
-            videos: devices.map(() => React.createRef<HTMLVideoElement>()),
-        });
-    }
-
     updateDimensions() {
         this.setState({
             height: this.props.environment.innerHeight,
@@ -145,7 +159,7 @@ class App extends React.Component<IAppProps, IAppState> {
         });
     }
 
-    onUserMedia(stream: MediaStream) {
+    onUserMedia() {
         this.setState({
             webcamAvailable: true,
         });
@@ -190,20 +204,12 @@ class App extends React.Component<IAppProps, IAppState> {
         return (
             <div className="App">
                 <div className="webcam-feed">
-                    {this.state.webcams.map((device, key) => {
-                        return (
-                            <WebcamFeed
-                                key={key}
-                                deviceId={device.deviceId}
-                                onUserMedia={this.onUserMedia}
-                                onUserMediaError={this.onUserMediaError}
-                                ref={this.state.videos[key]}
-                            />
-                        );
-                    })}
+                    {this.props.deviceIds.map((device, key) => (
+                        <Video key={key} deviceId={device} />
+                    ))}
                 </div>
 
-                {this.state.webcams.length > 0 ? (
+                {this.props.deviceIds.length > 0 ? (
                     !(this.state.webcamAvailable && this.state.modelLoaded) ? (
                         <div className="loading-spinner" />
                     ) : (
@@ -285,4 +291,4 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 }
 
-export default App;
+export default connect(mapStateToProps)(App);
