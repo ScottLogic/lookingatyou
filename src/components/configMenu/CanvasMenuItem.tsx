@@ -4,7 +4,7 @@ interface ICanvasMenuItemProps {
 }
 export default class CanvasMenuItem extends React.Component<
     ICanvasMenuItemProps
-> {
+    > {
     private canvasRef: React.RefObject<HTMLCanvasElement>;
     constructor(props: ICanvasMenuItemProps) {
         super(props);
