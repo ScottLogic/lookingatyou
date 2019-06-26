@@ -1,8 +1,8 @@
 /* tslint:disable: jsx-no-lambda radix only-arrow-functions */
 
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
-import { sumOutType } from '@tensorflow/tfjs-core/dist/types';
-import React, { RefObject } from 'react';
+// import { sumOutType } from '@tensorflow/tfjs-core/dist/types';
+import React /*, { RefObject }*/ from 'react';
 import { connect } from 'react-redux';
 import './App.css';
 import {
@@ -13,7 +13,7 @@ import {
     eyelidPosition,
     eyes,
     FPS,
-    pupilSizeChangeInterval,
+    // pupilSizeChangeInterval,
     pupilSizes,
     transitionTime,
 } from './AppConstants';
@@ -27,7 +27,6 @@ import Eye from './components/eye/Eye';
 import Video from './components/video/Video';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds, getVideos } from './store/selectors/videoSelectors';
-
 interface IAppState {
     width: number;
     height: number;
@@ -91,7 +90,7 @@ export class App extends React.Component<AppProps, IAppState> {
             dilationCoefficient: pupilSizes.neutral,
             userConfig:
                 this.readConfig(configStorageKey) || defaultConfigValues,
-            modelLoaded: true,
+            modelLoaded: false,
             personDetected: false,
         };
 
@@ -153,18 +152,19 @@ export class App extends React.Component<AppProps, IAppState> {
                 })(),
             }));
         }, pupilSizeChangeInterval);*/
+    }
 
-        this.model = await cocoSSD.load();
-        if (this.props.videos[0]) {
-            this.frameCapture = setInterval(
-                this.detectImage,
-                1000 / FPS,
-<<<<<<< HEAD
-                this.props.videos[0],
-=======
-                this.state.videos[0].current,
->>>>>>> Light thing
-            );
+    async componentDidUpdate() {
+        if (!this.state.modelLoaded) {
+            this.model = await cocoSSD.load();
+            this.setState({ modelLoaded: true });
+            if (this.props.videos[0]) {
+                this.frameCapture = setInterval(
+                    this.detectImage,
+                    1000 / FPS,
+                    this.props.videos[0],
+                );
+            }
         }
     }
 
@@ -205,16 +205,15 @@ export class App extends React.Component<AppProps, IAppState> {
             | HTMLVideoElement
             | null,
     ) {
-        if (this.model && img !== null) {
-            const detections = await this.model.detect(img);
-<<<<<<< HEAD
-            this.checkLight(img, this.analyseLight);
-=======
-            if (Math.random() < 0.1) {
+        if (img !== null) {
+            if (Math.random() < 0.02) {
                 this.checkLight(img, this.analyseLight);
             }
->>>>>>> Light thing
-            this.selectTarget(detections);
+
+            if (this.model) {
+                const detections = await this.model.detect(img);
+                this.selectTarget(detections);
+            }
         }
     }
 
@@ -244,7 +243,7 @@ export class App extends React.Component<AppProps, IAppState> {
         const middleOfFrame = window.innerWidth / 4;
 
         if (this.state.targetX === middleOfFrame) {
-            if (Math.random() < 0.05) {
+            if (Math.random() < 0.25) {
                 this.moveEye();
             }
         }
@@ -252,7 +251,11 @@ export class App extends React.Component<AppProps, IAppState> {
 
     isNewTarget() {
         if (!this.state.personDetected) {
-            this.setState({ personDetected: true });
+            this.setState({
+                personDetected: true,
+                targetX: window.innerWidth / 4,
+                targetY: window.innerHeight / 2,
+            });
             this.setDilation(pupilSizes.dilated);
             this.setDilation(pupilSizes.neutral);
         }
@@ -283,6 +286,7 @@ export class App extends React.Component<AppProps, IAppState> {
     }
 
     moveLeft() {
+        console.log('left');
         const middleX = window.innerWidth / 4;
         const xIncrement = window.innerWidth / 16;
         const buffer = 6;
@@ -295,6 +299,7 @@ export class App extends React.Component<AppProps, IAppState> {
     }
 
     moveRight() {
+        console.log('right');
         const middleX = window.innerWidth / 4;
         const xIncrement = window.innerWidth / 16;
         const buffer = 6;
@@ -323,7 +328,6 @@ export class App extends React.Component<AppProps, IAppState> {
 
             if (canvasCtx) {
                 canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                const img = new Image();
 
                 callback.call(this, canvas, this.setDilation);
             }
@@ -343,18 +347,22 @@ export class App extends React.Component<AppProps, IAppState> {
 
             const data = imageData.data;
 
-            const colorSum = data.reduce((r, g, b) => {
-                return Math.floor((r + g + b) / 3);
-            });
-<<<<<<< HEAD
+            let colorSum = 0;
 
-            const brightness = Math.floor(colorSum / (data.length / 3));
+            for (let i = 0; i < data.length; i += 4) {
+                const avg = Math.floor(
+                    (data[i] + data[i + 1] + data[i + 2]) / 3,
+                );
 
-=======
+                colorSum += avg;
+            }
 
-            const brightness = Math.floor(colorSum / (data.length / 3));
+            const brightness = Math.floor(
+                colorSum / (canvas.width * canvas.height),
+            );
 
->>>>>>> Light thing
+            console.log(brightness);
+
             const scaledPupilSize = ((255 - brightness) / 255) * 0.7 + 0.8;
 
             callback(scaledPupilSize);
