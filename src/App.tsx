@@ -5,16 +5,11 @@ import React, { RefObject } from 'react';
 
 import './App.css';
 import {
-    blinkFrequency,
-    colours,
     configStorageKey,
     defaultConfigValues,
     eyelidPosition,
-    eyes,
     FPS,
-    pupilSizeChangeInterval,
     pupilSizes,
-    transitionTime,
     videoinput,
 } from './AppConstants';
 import CanvasMenuItem from './components/configMenu/CanvasMenuItem';
@@ -23,22 +18,18 @@ import ColorMenuItem from './components/configMenu/ColorMenuItem';
 import ConfigMenu from './components/configMenu/ConfigMenu';
 import IUserConfig from './components/configMenu/InterfaceUserConfig';
 import TextBoxMenuItem from './components/configMenu/TextBoxMenuItem';
-import Eye from './components/eye/Eye';
+import EyeController from './components/eye/EyeController';
 import WebcamFeed from './components/webcamFeed/WebcamFeed';
 
 interface IAppState {
     width: number;
     height: number;
     webcams: MediaDeviceInfo[];
-    eyesDilatedCoefficient: number;
-    eyesOpenCoefficient: number;
     webcamAvailable: boolean;
-    isBlinking: boolean;
     userConfig: IUserConfig;
     videos: Array<RefObject<HTMLVideoElement>>;
     targetX: number;
     targetY: number;
-    dilationCoefficient: number;
     modelLoaded: boolean;
 }
 
@@ -51,8 +42,6 @@ class App extends React.Component<IAppProps, IAppState> {
     private rightDebugRef: React.RefObject<CanvasMenuItem>;
     private model: cocoSSD.ObjectDetection | null;
     private frameCapture: number;
-    private blink: number = 0;
-    private dilate: number = 0;
     constructor(props: IAppProps) {
         super(props);
 
@@ -60,14 +49,10 @@ class App extends React.Component<IAppProps, IAppState> {
             width: this.props.environment.innerWidth,
             height: this.props.environment.innerHeight,
             webcams: [],
-            eyesDilatedCoefficient: 1,
-            eyesOpenCoefficient: eyelidPosition.OPEN,
             webcamAvailable: false,
-            isBlinking: false,
             videos: [],
             targetX: this.props.environment.innerWidth / 4,
             targetY: this.props.environment.innerHeight / 2,
-            dilationCoefficient: pupilSizes.neutral,
             userConfig:
                 this.readConfig(configStorageKey) || defaultConfigValues,
             modelLoaded: true,
@@ -95,15 +80,6 @@ class App extends React.Component<IAppProps, IAppState> {
         );
         this.getWebcamDevices();
 
-        // Sets up random blinking animation
-        this.blink = window.setInterval(() => {
-            this.setState(state => ({
-                isBlinking: state.isBlinking
-                    ? false
-                    : Math.random() < blinkFrequency / (1000 / transitionTime),
-            }));
-        }, transitionTime);
-
         this.model = await cocoSSD.load();
         this.setState({ modelLoaded: true });
         this.frameCapture = setInterval(
@@ -111,21 +87,6 @@ class App extends React.Component<IAppProps, IAppState> {
             1000 / FPS,
             this.state.videos[0].current,
         ) as number;
-
-        this.dilate = window.setInterval(() => {
-            this.setState(state => ({
-                dilationCoefficient: (() => {
-                    switch (state.dilationCoefficient) {
-                        case pupilSizes.neutral:
-                            return pupilSizes.dilated;
-                        case pupilSizes.dilated:
-                            return pupilSizes.constricted;
-                        default:
-                            return pupilSizes.neutral;
-                    }
-                })(),
-            }));
-        }, pupilSizeChangeInterval);
     }
 
     componentWillUnmount() {
@@ -134,8 +95,6 @@ class App extends React.Component<IAppProps, IAppState> {
             this.updateDimensions,
         );
         clearInterval(this.frameCapture);
-        clearInterval(this.blink);
-        clearInterval(this.dilate);
     }
 
     async getWebcamDevices() {
@@ -156,7 +115,7 @@ class App extends React.Component<IAppProps, IAppState> {
         });
     }
 
-    onUserMedia(stream: MediaStream) {
+    onUserMedia() {
         this.setState({
             webcamAvailable: true,
         });
@@ -218,38 +177,14 @@ class App extends React.Component<IAppProps, IAppState> {
                     !(this.state.webcamAvailable && this.state.modelLoaded) ? (
                         <div className="loading-spinner" />
                     ) : (
-                        <div className="container">
-                            {Object.values(eyes).map((eye, key) => {
-                                return (
-                                    <Eye
-                                        class={eye}
-                                        key={key}
-                                        width={this.state.width / 2}
-                                        height={this.state.height}
-                                        scleraColor={colours.scleraColor}
-                                        irisColor={
-                                            this.state.userConfig.irisColor
-                                        }
-                                        pupilColor={colours.pupilColor}
-                                        scleraRadius={this.state.width / 5}
-                                        irisRadius={this.state.width / 10}
-                                        pupilRadius={this.state.width / 24}
-                                        isBlinking={this.state.isBlinking}
-                                        // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
-                                        openCoefficient={
-                                            this.state.eyesOpenCoefficient
-                                        }
-                                        // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
-                                        dilatedCoefficient={
-                                            this.state.dilationCoefficient
-                                        }
-                                        transitionTime={transitionTime.toString()}
-                                        innerX={this.state.targetX}
-                                        innerY={this.state.targetY}
-                                    />
-                                );
-                            })}
-                        </div>
+                        <EyeController
+                            width={this.state.width}
+                            height={this.state.height}
+                            userConfig={this.state.userConfig}
+                            environment={this.props.environment}
+                            targetX={this.state.targetX}
+                            targetY={this.state.targetY}
+                        />
                     )
                 ) : (
                     <div className="Error">

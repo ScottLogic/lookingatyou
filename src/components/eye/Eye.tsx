@@ -1,4 +1,5 @@
 import React from 'react';
+import { transitionTime } from '../../AppConstants';
 import './Eye.css';
 
 interface IEyeProps {
@@ -13,18 +14,21 @@ interface IEyeProps {
     pupilRadius: number;
     openCoefficient: number;
     dilatedCoefficient: number;
-    isBlinking: boolean;
-    transitionTime: string;
     innerX: number;
     innerY: number;
 }
 
 export default class Eye extends React.Component<IEyeProps> {
-    private transitionStyle: { transition: string };
-
+    private circleTransitionStyle: { transition: string };
+    private eyelidTransitionStyle: { transition: string };
     constructor(props: IEyeProps) {
         super(props);
-        this.transitionStyle = { transition: props.transitionTime };
+        this.circleTransitionStyle = {
+            transition: `r ${transitionTime.dilate}ms`,
+        };
+        this.eyelidTransitionStyle = {
+            transition: `d ${transitionTime.blink}ms`,
+        };
     }
 
     renderCircle(
@@ -36,12 +40,7 @@ export default class Eye extends React.Component<IEyeProps> {
     ) {
         return (
             <circle
-                style={{
-                    transition:
-                        'all ' +
-                        this.props.transitionTime.toString() +
-                        ' linear 0s',
-                }}
+                style={this.circleTransitionStyle}
                 r={radius}
                 className={name}
                 fill={colour}
@@ -52,23 +51,21 @@ export default class Eye extends React.Component<IEyeProps> {
     }
 
     render() {
-        const openCoefficient = this.props.isBlinking
-            ? 0
-            : this.props.openCoefficient;
-
         const eyeMiddleX = this.props.width / 2;
         const eyeLeft = eyeMiddleX - this.props.scleraRadius;
         const eyeRight = eyeMiddleX + this.props.scleraRadius;
         const eyeMiddleY = this.props.height / 2;
 
         const topEyelidY =
-            eyeMiddleY - this.props.scleraRadius * openCoefficient;
+            eyeMiddleY - this.props.scleraRadius * this.props.openCoefficient;
         const bottomEyelidY =
-            eyeMiddleY + this.props.scleraRadius * openCoefficient;
+            eyeMiddleY + this.props.scleraRadius * this.props.openCoefficient;
 
         const bezierCurveConstant = 0.55228474983; // (4/3)tan(pi/8)
         const bezierControlOffset =
-            this.props.scleraRadius * bezierCurveConstant * openCoefficient;
+            this.props.scleraRadius *
+            bezierCurveConstant *
+            this.props.openCoefficient;
         return (
             <svg
                 className={this.props.class}
@@ -98,7 +95,7 @@ export default class Eye extends React.Component<IEyeProps> {
                 </g>
                 <svg className="Eyelids">
                     <path
-                        style={this.transitionStyle}
+                        style={this.eyelidTransitionStyle}
                         d={
                             // upper eyelid
                             `M ${eyeLeft} ${eyeMiddleY},
@@ -114,7 +111,7 @@ export default class Eye extends React.Component<IEyeProps> {
                         }
                     />
                     <path
-                        style={this.transitionStyle}
+                        style={this.eyelidTransitionStyle}
                         d={
                             // lower eyelid
                             `M ${eyeLeft} ${eyeMiddleY},
@@ -132,7 +129,6 @@ export default class Eye extends React.Component<IEyeProps> {
                 </svg>
                 <svg className="BlackFill">
                     <path
-                        style={this.transitionStyle}
                         d={
                             // upper eyelid
                             `M ${0} ${eyeMiddleY},
@@ -146,7 +142,6 @@ export default class Eye extends React.Component<IEyeProps> {
                         }
                     />
                     <path
-                        style={this.transitionStyle}
                         d={
                             // upper eyelid
                             `M ${0} ${eyeMiddleY},
