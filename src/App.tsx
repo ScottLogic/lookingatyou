@@ -206,7 +206,7 @@ export class App extends React.Component<AppProps, IAppState> {
             | null,
     ) {
         if (img !== null) {
-            if (Math.random() < 0.05) {
+            if (Math.random() < 0.025) {
                 this.checkLight(img, this.analyseLight);
             }
 
@@ -222,13 +222,13 @@ export class App extends React.Component<AppProps, IAppState> {
             detection => detection.class === 'person',
         );
 
-        if (target !== undefined) {
-            this.calculateEyePos(target.bbox);
-            this.isNewTarget();
-        } else {
-            this.hasTargetLeft();
-            this.naturalMovement();
-        }
+        // if (target !== undefined) {
+        // this.calculateEyePos(target.bbox);
+        //    this.isNewTarget();
+        // } else {
+        //    this.hasTargetLeft();
+        this.naturalMovement();
+        // }
     }
 
     calculateEyePos(bbox: number[]) {
@@ -246,6 +246,8 @@ export class App extends React.Component<AppProps, IAppState> {
             if (Math.random() < 0.25) {
                 this.moveEye();
             }
+        } else {
+            this.moveEye();
         }
     }
 
