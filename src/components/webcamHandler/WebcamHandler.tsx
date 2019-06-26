@@ -11,7 +11,7 @@ export default async function configureStream(
     try {
         const devices = await enumerateDevices(mediaDevices);
         const streams = await Promise.all(
-            await devices.map(async deviceId => {
+            devices.map(async deviceId => {
                 const stream = await getStream(mediaDevices, deviceId);
                 return {
                     deviceId,
