@@ -206,7 +206,7 @@ export class App extends React.Component<AppProps, IAppState> {
             | null,
     ) {
         if (img !== null) {
-            if (Math.random() < 0.02) {
+            if (Math.random() < 0.05) {
                 this.checkLight(img, this.analyseLight);
             }
 
@@ -286,7 +286,6 @@ export class App extends React.Component<AppProps, IAppState> {
     }
 
     moveLeft() {
-        console.log('left');
         const middleX = window.innerWidth / 4;
         const xIncrement = window.innerWidth / 16;
         const buffer = 6;
@@ -299,7 +298,6 @@ export class App extends React.Component<AppProps, IAppState> {
     }
 
     moveRight() {
-        console.log('right');
         const middleX = window.innerWidth / 4;
         const xIncrement = window.innerWidth / 16;
         const buffer = 6;
@@ -318,7 +316,10 @@ export class App extends React.Component<AppProps, IAppState> {
             | HTMLCanvasElement
             | HTMLVideoElement
             | null,
-        callback: Function,
+        callback: (
+            canvas: HTMLCanvasElement,
+            callback: (n: number) => void,
+        ) => void,
     ) {
         if (video && video instanceof HTMLVideoElement) {
             const canvas = document.createElement('canvas');
@@ -334,7 +335,7 @@ export class App extends React.Component<AppProps, IAppState> {
         }
     }
 
-    analyseLight(canvas: HTMLCanvasElement, callback: Function) {
+    analyseLight(canvas: HTMLCanvasElement, callback: (n: number) => void) {
         const ctx = canvas.getContext('2d');
 
         if (ctx && canvas.width > 0) {
@@ -360,6 +361,8 @@ export class App extends React.Component<AppProps, IAppState> {
             const brightness = Math.floor(
                 colorSum / (canvas.width * canvas.height),
             );
+
+            console.log(brightness);
 
             const scaledPupilSize = ((255 - brightness) / 255) * 0.7 + 0.8;
 
