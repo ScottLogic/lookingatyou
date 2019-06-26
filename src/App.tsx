@@ -215,13 +215,13 @@ export class App extends React.Component<AppProps, IAppState> {
             detection => detection.class === 'person',
         );
 
-        // if (target !== undefined) {
-        // this.calculateEyePos(target.bbox);
-        //    this.isNewTarget();
-        // } else {
-        //    this.hasTargetLeft();
-        this.naturalMovement();
-        // }
+        if (target !== undefined) {
+            this.calculateEyePos(target.bbox);
+            this.isNewTarget();
+        } else {
+            this.hasTargetLeft();
+            this.naturalMovement();
+        }
     }
 
     calculateEyePos(bbox: number[]) {
@@ -234,6 +234,8 @@ export class App extends React.Component<AppProps, IAppState> {
 
     naturalMovement() {
         const middleOfFrame = window.innerWidth / 4;
+
+        console.log(this.state.targetX);
 
         if (this.state.targetX === middleOfFrame) {
             if (Math.random() < 0.05) {
@@ -278,25 +280,29 @@ export class App extends React.Component<AppProps, IAppState> {
 
     moveLeft() {
         const middleX = window.innerWidth / 4;
-        const xIncrement = window.innerWidth / 16;
-        const buffer = 6;
+        const xIncrement = window.innerWidth / 12;
+        const buffer = 12;
 
         if (this.state.targetX > middleX - xIncrement + buffer) {
-            this.setState({ targetX: this.state.targetX - 4 });
+            this.setState({ targetX: this.state.targetX - 10 });
         } else {
-            this.setState({ direction: !this.state.direction });
+            if (Math.random() < 0.25) {
+                this.setState({ direction: !this.state.direction });
+            }
         }
     }
 
     moveRight() {
         const middleX = window.innerWidth / 4;
-        const xIncrement = window.innerWidth / 16;
-        const buffer = 6;
+        const xIncrement = window.innerWidth / 14;
+        const buffer = 12;
 
         if (this.state.targetX < middleX + xIncrement - buffer) {
-            this.setState({ targetX: this.state.targetX + 4 });
+            this.setState({ targetX: this.state.targetX + 10 });
         } else {
-            this.setState({ direction: !this.state.direction });
+            if (Math.random() < 0.25) {
+                this.setState({ direction: !this.state.direction });
+            }
         }
     }
 
