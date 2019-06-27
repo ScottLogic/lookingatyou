@@ -7,24 +7,24 @@ import {
 } from '../../../store/actions/video/types';
 import videoStore from '../../../store/reducers/videoReducer';
 
-const testDevice1 = 'testDevice1';
-const testDevice2 = 'testDevice2';
+export const testDevice1 = 'testDevice1';
+export const testDevice2 = 'testDevice2';
 
-const mockInitialAction: IVideo = {
+export const mockInitialAction: IVideo = {
     deviceId: testDevice1,
     width: 260,
     height: 380,
     stream: undefined,
 };
 
-const mockSetVideoStreamsPayload: IVideo = {
+export const mockSetVideoStreamsPayload: IVideo = {
     deviceId: testDevice2,
     width: 100,
     height: 100,
     stream: undefined,
 };
 
-const mockSetVideoStreamsAction: VideoActionTypes = {
+export const mockSetVideoStreamsAction: VideoActionTypes = {
     type: SET_VIDEO_STREAMS,
     videos: [mockSetVideoStreamsPayload],
 };
@@ -45,7 +45,7 @@ describe('Video Reducer', () => {
                 testDevice1: mockInitialAction,
             },
         };
-        expect(mockStore).toStrictEqual(expectedState);
+        expect(mockStore).toEqual(expectedState);
     });
 
     it('should return a new state when dispaching Set Video Streams action', () => {
@@ -56,7 +56,7 @@ describe('Video Reducer', () => {
                 testDevice2: mockSetVideoStreamsPayload,
             },
         };
-        expect(newState).toStrictEqual(expectedState);
+        expect(newState).toEqual(expectedState);
     });
 
     it('should add HTML element when dispatching Set Vide action', () => {
