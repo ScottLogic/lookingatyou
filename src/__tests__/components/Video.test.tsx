@@ -1,6 +1,6 @@
 import { mount, shallow } from 'enzyme';
 import React from 'react';
-import { Video, VideoProps } from './Video';
+import { Video, VideoProps } from '../../components/video/Video';
 
 let props: VideoProps;
 
