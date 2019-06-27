@@ -339,13 +339,16 @@ export class App extends React.Component<AppProps, IAppState> {
                 return Math.floor((r + g + b) / 3);
             });
 
-            const brightness = Math.floor(colorSum / (data.length / 3));
+            let brightness = Math.floor(
+                colorSum / (canvas.width * canvas.height),
+            );
 
             if (brightness > 220) {
                 this.setState({
                     eyesOpenCoefficient: eyelidPosition.CLOSED,
                     tooBright: true,
                 });
+                brightness = 220;
             } else if (this.state.tooBright) {
                 this.setState({
                     eyesOpenCoefficient: eyelidPosition.OPEN,
@@ -353,8 +356,7 @@ export class App extends React.Component<AppProps, IAppState> {
                 });
             }
 
-            const scaledPupilSize =
-                Math.abs((220 - brightness) / 220) * 0.7 + 0.8;
+            const scaledPupilSize = ((220 - brightness) / 220) * 0.7 + 0.8;
 
             callback(scaledPupilSize);
         }
