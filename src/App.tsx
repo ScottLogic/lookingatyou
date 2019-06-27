@@ -33,7 +33,6 @@ import Eye from './components/eye/Eye';
 import Video from './components/video/Video';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds, getVideos } from './store/selectors/videoSelectors';
-
 interface IAppState {
     width: number;
     height: number;
@@ -101,7 +100,7 @@ export class App extends React.Component<AppProps, IAppState> {
             dilationCoefficient: pupilSizes.neutral,
             userConfig:
                 this.readConfig(configStorageKey) || defaultConfigValues,
-            modelLoaded: true,
+            modelLoaded: false,
             personDetected: false,
         };
 
@@ -147,14 +146,19 @@ export class App extends React.Component<AppProps, IAppState> {
                     : Math.random() < blinkFrequency / (1000 / transitionTime),
             }));
         }, transitionTime);
+    }
 
-        this.model = await cocoSSD.load();
-        if (this.props.videos[0]) {
-            this.frameCapture = setInterval(
-                this.detectImage,
-                1000 / FPS,
-                this.props.videos[0],
-            );
+    async componentDidUpdate() {
+        if (!this.state.modelLoaded) {
+            this.model = await cocoSSD.load();
+            this.setState({ modelLoaded: true });
+            if (this.props.videos[0]) {
+                this.frameCapture = setInterval(
+                    this.detectImage,
+                    1000 / FPS,
+                    this.props.videos[0],
+                );
+            }
         }
     }
 
@@ -340,7 +344,10 @@ export class App extends React.Component<AppProps, IAppState> {
             let colorSum = 0;
 
             for (let i = 0; i < data.length; i += 4) {
-                const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                const avg = Math.floor(
+                    (data[i] + data[i + 1] + data[i + 2]) / 3,
+                );
+
                 colorSum += avg;
             }
 
