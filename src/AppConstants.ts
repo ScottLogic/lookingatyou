@@ -22,6 +22,7 @@ export const configStorageKey = 'config';
 export const eyelidPosition = {
     OPEN: 0.5,
     CLOSED: 0,
+    SQUINT: 0.2,
     SHOCKED: 0.75,
 };
 export const pupilSizes = {
@@ -35,6 +36,7 @@ export const transitionTime = 100; // for animating eyelids and pupils
 export const middleX = window.innerWidth / 4;
 export const middleY = window.innerHeight / 2;
 export const xIncrement = window.innerWidth / 14;
+export const moveSize = 10;
 export const buffer = 12;
 export const maxBrightness = 220;
 export const dilationMultipler = 0.7;
