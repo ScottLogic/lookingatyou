@@ -41,6 +41,7 @@ interface IAppState {
     userConfig: IUserConfig;
     targetX: number;
     targetY: number;
+    tooBright: boolean;
     direction: boolean;
     dilationCoefficient: number;
     modelLoaded: boolean;
@@ -91,6 +92,7 @@ export class App extends React.Component<AppProps, IAppState> {
             isSquinting: false,
             targetX: this.props.environment.innerWidth / 4,
             targetY: this.props.environment.innerHeight / 2,
+            tooBright: false,
             direction: true,
             dilationCoefficient: pupilSizes.neutral,
             userConfig:
@@ -339,7 +341,20 @@ export class App extends React.Component<AppProps, IAppState> {
 
             const brightness = Math.floor(colorSum / (data.length / 3));
 
-            const scaledPupilSize = ((255 - brightness) / 255) * 0.7 + 0.8;
+            if (brightness > 220) {
+                this.setState({
+                    eyesOpenCoefficient: eyelidPosition.CLOSED,
+                    tooBright: true,
+                });
+            } else if (this.state.tooBright) {
+                this.setState({
+                    eyesOpenCoefficient: eyelidPosition.OPEN,
+                    tooBright: false,
+                });
+            }
+
+            const scaledPupilSize =
+                Math.abs((220 - brightness) / 220) * 0.7 + 0.8;
 
             callback(scaledPupilSize);
         }
