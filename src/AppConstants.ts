@@ -36,3 +36,6 @@ export const middleX = window.innerWidth / 4;
 export const middleY = window.innerHeight / 2;
 export const xIncrement = window.innerWidth / 14;
 export const buffer = 12;
+export const maxBrightness = 220;
+export const dilationMultipler = 0.7;
+export const dilationOffset = 0.8;

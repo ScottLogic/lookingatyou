@@ -10,9 +10,12 @@ import {
     colours,
     configStorageKey,
     defaultConfigValues,
+    dilationMultipler,
+    dilationOffset,
     eyelidPosition,
     eyes,
     FPS,
+    maxBrightness,
     middleX,
     middleY,
     pupilSizes,
@@ -343,12 +346,12 @@ export class App extends React.Component<AppProps, IAppState> {
                 colorSum / (canvas.width * canvas.height),
             );
 
-            if (brightness > 220) {
+            if (brightness > maxBrightness) {
                 this.setState({
                     eyesOpenCoefficient: eyelidPosition.CLOSED,
                     tooBright: true,
                 });
-                brightness = 220;
+                brightness = maxBrightness;
             } else if (this.state.tooBright) {
                 this.setState({
                     eyesOpenCoefficient: eyelidPosition.OPEN,
@@ -356,7 +359,10 @@ export class App extends React.Component<AppProps, IAppState> {
                 });
             }
 
-            const scaledPupilSize = ((220 - brightness) / 220) * 0.7 + 0.8;
+            const scaledPupilSize =
+                ((maxBrightness - brightness) / maxBrightness) *
+                    dilationMultipler +
+                dilationOffset;
 
             callback(scaledPupilSize);
         }
