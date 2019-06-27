@@ -2,6 +2,7 @@ import React from 'react';
 import tinycolor from 'tinycolor2';
 import { eyes, transitionTime } from '../../AppConstants';
 import './Eye.css';
+import { Gradients } from './Gradients';
 import { innerPath } from './innerPath';
 
 export interface IEyeProps {
@@ -233,6 +234,15 @@ export default class Eye extends React.Component<IEyeProps> {
                         }
                     />
                 </svg>
+                {/* {this.renderCircle(
+                    this.props.scleraRadius,
+                    'reflection',
+                    this.props.scleraColor,
+                )} */}
+                <Gradients
+                    pupilColor={this.props.pupilColor}
+                    irisColor={this.props.irisColor}
+                />
             </svg>
         );
     }
