@@ -1,8 +1,7 @@
 /* tslint:disable: jsx-no-lambda radix only-arrow-functions */
 
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
-// import { sumOutType } from '@tensorflow/tfjs-core/dist/types';
-import React /*, { RefObject }*/ from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import './App.css';
 import {
@@ -13,9 +12,9 @@ import {
     defaultConfigValues,
     eyelidPosition,
     eyes,
-    // pupilSizeChangeInterval,
     FPS,
     middleX,
+    middleY,
     pupilSizes,
     transitionTime,
     xIncrement,
@@ -139,22 +138,6 @@ export class App extends React.Component<AppProps, IAppState> {
                     : Math.random() < blinkFrequency / (1000 / transitionTime),
             }));
         }, transitionTime);
-
-        // Sets up cyclical dilation animation
-        /*this.dilate = window.setInterval(() => {
-            this.setState(state => ({
-                dilationCoefficient: (function() {
-                    switch (state.dilationCoefficient) {
-                        case pupilSizes.neutral:
-                            return pupilSizes.dilated;
-                        case pupilSizes.dilated:
-                            return pupilSizes.constricted;
-                        default:
-                            return pupilSizes.neutral;
-                    }
-                })(),
-            }));
-        }, pupilSizeChangeInterval);*/
     }
 
     async componentDidUpdate() {
@@ -208,16 +191,15 @@ export class App extends React.Component<AppProps, IAppState> {
             | HTMLVideoElement
             | null,
     ) {
-        this.naturalMovement();
         if (img !== null) {
             if (Math.random() < 0.025) {
                 this.checkLight(img, this.analyseLight);
             }
 
-            // if (this.model) {
-            //    const detections = await this.model.detect(img);
-            //    this.selectTarget(detections);
-            // }
+            if (this.model) {
+                const detections = await this.model.detect(img);
+                this.selectTarget(detections);
+            }
         }
     }
 
@@ -226,13 +208,13 @@ export class App extends React.Component<AppProps, IAppState> {
             detection => detection.class === 'person',
         );
 
-        // if (target !== undefined) {
-        //    this.calculateEyePos(target.bbox);
-        //    this.isNewTarget();
-        // } else {
-        //    this.hasTargetLeft();
-        this.naturalMovement();
-        // }
+        if (target !== undefined) {
+            this.calculateEyePos(target.bbox);
+            this.isNewTarget();
+        } else {
+            this.hasTargetLeft();
+            this.naturalMovement();
+        }
     }
 
     calculateEyePos(bbox: number[]) {
@@ -259,8 +241,8 @@ export class App extends React.Component<AppProps, IAppState> {
         if (!this.state.personDetected) {
             this.setState({
                 personDetected: true,
-                targetX: window.innerWidth / 4,
-                targetY: window.innerHeight / 2,
+                targetX: middleX,
+                targetY: middleY,
             });
             this.setDilation(pupilSizes.dilated);
             this.setDilation(pupilSizes.neutral);
