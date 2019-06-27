@@ -24,7 +24,7 @@ export default class Eye extends React.Component<IEyeProps> {
     constructor(props: IEyeProps) {
         super(props);
         this.circleTransitionStyle = {
-            transition: `r ${transitionTime.dilate}ms, c ${1000 / FPS}ms`, // cx and cy transitions based on FPS
+            transition: `r ${transitionTime.dilate}ms, cx ${1000 / FPS}ms`, // cx and cy transitions based on FPS
         };
         this.eyelidTransitionStyle = {
             transition: `d ${transitionTime.blink}ms`,
