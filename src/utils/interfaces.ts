@@ -1,4 +1,4 @@
-import { Bbox, DetectionConfig, DetectionImage, ModelConfig } from './types';
+import { Bbox, DetectionConfig, DetectionImage } from './types';
 
 export interface IObjectDetector {
     detect(
