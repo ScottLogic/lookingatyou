@@ -1,5 +1,7 @@
-import { Bbox, ICoords } from '../types';
-import calculateTargetPos, { normalise } from './calculateFocus';
+import calculateTargetPos, {
+    normalise,
+} from '../../utils/objectTracking/calculateFocus';
+import { Bbox, ICoords } from '../../utils/types';
 
 describe('normalise should return', () => {
     it('arg:newMin if arg:val equals arg:min', () => {

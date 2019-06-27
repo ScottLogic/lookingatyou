@@ -7,6 +7,7 @@ import { AnyAction, Store } from 'redux';
 import configureStore from 'redux-mock-store';
 import ConnectedApp, { App as WrappedApp } from '../App';
 import { initialState as initialConfigState } from '../store/reducers/configReducer';
+import { initialState as initialDetectionState } from '../store/reducers/detectionReducer';
 import { IRootStore } from '../store/reducers/rootReducer';
 import { initialState as initialVideoState } from '../store/reducers/videoReducer';
 import { testDevice1, testDevice2 } from './reducers/video/videoReducer.test';
@@ -27,6 +28,7 @@ describe('App', () => {
         const initialState: IRootStore = {
             videoStore: initialVideoState,
             configStore: initialConfigState,
+            detectionStore: initialDetectionState,
         };
         store = mockStore(initialState);
         configureStream = jest.fn();
@@ -48,8 +50,7 @@ describe('App', () => {
                 deviceIds={[testDevice1, testDevice2]}
                 environment={window}
                 configureStream={configureStream}
-                videos={[]}
-                config={initialConfigState.config}
+                isModelLoaded={false}
             />,
         );
         expect(wrapper.find('Connect(Video)')).toHaveLength(2);
