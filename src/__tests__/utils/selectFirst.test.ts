@@ -1,5 +1,5 @@
 import { IDetection } from '../../models/objectDetection';
-import selectFirst from './selectFirst';
+import selectFirst from '../../utils/objectSelection/selectFirst';
 
 const notPerson: IDetection = {
     bbox: [0, 0, 0, 0],
