@@ -21,7 +21,9 @@ export default function EyeController(props: IEyeControllerProps) {
     const [blinkFrequencyCoefficient] = useState(1); // Will change based on camera feed e.g. lower coefficient when object in frame
     const [isBlinking, setIsBlinking] = useState(false); // Will change based on camera feed e.g. blink less when object in frame
     const [eyesOpenCoefficient] = useState(eyelidPosition.OPEN); // Will change based on camera feed e.g. higher coefficient to show surprise
-    const [dilationCoefficient, setDilationCoefficient] = useState(1); // Will change based on camera feed e.g. briefly increase coefficient (dilate) when object enters frame then reset to 1 (neutral)
+    const [dilationCoefficient, setDilationCoefficient] = useState(
+        pupilSizes.neutral,
+    ); // Will change based on camera feed e.g. briefly increase coefficient (dilate) when object enters frame then reset to 1 (neutral)
 
     useEffect(() => {
         const blink = props.environment.setInterval(() => {
@@ -34,30 +36,29 @@ export default function EyeController(props: IEyeControllerProps) {
                 setIsBlinking(Math.random() < blinkProbability);
             }
         }, transitionTime.blink);
-        return () => {
-            props.environment.clearInterval(blink);
-        };
-    });
-
-    useEffect(() => {
-        const dilateInterval = 1000;
         const dilate = props.environment.setInterval(() => {
             switch (dilationCoefficient) {
                 case pupilSizes.neutral:
                     setDilationCoefficient(pupilSizes.dilated);
-                    return;
+                    break;
                 case pupilSizes.dilated:
                     setDilationCoefficient(pupilSizes.constricted);
-                    return;
+                    break;
                 default:
                     setDilationCoefficient(pupilSizes.neutral);
-                    return;
+                    break;
             }
-        }, dilateInterval);
+        }, 1000);
         return () => {
+            props.environment.clearInterval(blink);
             props.environment.clearInterval(dilate);
         };
-    });
+    }, [
+        props.environment,
+        isBlinking,
+        blinkFrequencyCoefficient,
+        dilationCoefficient,
+    ]);
     const scleraRadius = props.width / 5;
     const irisRadius = props.width / 10;
     const pupilRadius = props.width / 24;

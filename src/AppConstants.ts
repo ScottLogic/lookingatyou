@@ -31,6 +31,6 @@ export const pupilSizes = {
 };
 export const transitionTime = {
     blink: 200,
-    dilate: 500,
+    dilate: 750,
 };
 export const neutralBlinkFrequency = 0.25;
