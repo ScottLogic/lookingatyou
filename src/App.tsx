@@ -192,7 +192,7 @@ export class App extends React.Component<AppProps, IAppState> {
             | null,
     ) {
         if (img !== null) {
-            if (Math.random() < 0.025) {
+            if (Math.random() < 0.05) {
                 this.checkLight(img, this.analyseLight);
             }
 
