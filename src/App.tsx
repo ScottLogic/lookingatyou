@@ -44,6 +44,7 @@ const mapStateToProps = (state: IRootStore) => {
 };
 
 export class App extends React.Component<AppProps, IAppState> {
+    begunLoadingModel: boolean = false;
     private model: cocoSSD.ObjectDetection | null;
     private frameCapture: number;
 
@@ -86,10 +87,9 @@ export class App extends React.Component<AppProps, IAppState> {
     }
 
     async componentDidUpdate() {
-        if (!this.state.modelLoaded && this.props.deviceIds.length > 0) {
-            if (!this.state.webcamAvailable) {
-                await this.setState({ webcamAvailable: true });
-            }
+        if (!this.begunLoadingModel && this.props.deviceIds.length > 0) {
+            this.begunLoadingModel = true;
+            await this.setState({ webcamAvailable: true });
             this.model = await cocoSSD.load();
             this.setState({ modelLoaded: true });
             if (this.props.videos[0]) {
