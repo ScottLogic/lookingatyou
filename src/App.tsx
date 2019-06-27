@@ -260,7 +260,10 @@ export class App extends React.Component<AppProps, IAppState> {
         }
 
         if (this.state.isSquinting && Math.random() < 0.1) {
-            this.setState({ eyesOpenCoefficient: eyelidPosition.OPEN });
+            this.setState({
+                eyesOpenCoefficient: eyelidPosition.OPEN,
+                isSquinting: false,
+            });
         }
     }
 
