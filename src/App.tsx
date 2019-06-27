@@ -234,14 +234,12 @@ export class App extends React.Component<AppProps, IAppState> {
     }
 
     naturalMovement() {
-        if (Math.random() < 0.1) {
-            if (this.state.targetX === middleX) {
-                if (Math.random() < 0.01) {
-                    this.moveEye();
-                }
-            } else {
+        if (this.state.targetX === middleX) {
+            if (Math.random() < 0.01) {
                 this.moveEye();
             }
+        } else {
+            this.moveEye();
         }
     }
 
