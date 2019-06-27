@@ -18,6 +18,7 @@ import {
     maxBrightness,
     middleX,
     middleY,
+    moveSize,
     pupilSizes,
     transitionTime,
     xIncrement,
@@ -261,7 +262,7 @@ export class App extends React.Component<AppProps, IAppState> {
             this.setState({ personDetected: false, isSquinting: true });
             this.setDilation(pupilSizes.constricted);
             this.setDilation(pupilSizes.neutral);
-            this.setState({ eyesOpenCoefficient: 0.2 });
+            this.setState({ eyesOpenCoefficient: eyelidPosition.SQUINT });
         }
 
         if (this.state.isSquinting && Math.random() < 0.1) {
@@ -288,7 +289,7 @@ export class App extends React.Component<AppProps, IAppState> {
 
     moveLeft() {
         if (this.state.targetX > middleX - xIncrement + buffer) {
-            this.setState({ targetX: this.state.targetX - 10 });
+            this.setState({ targetX: this.state.targetX - moveSize });
         } else if (Math.random() < 0.1) {
             this.setState({ direction: !this.state.direction });
         }
@@ -296,7 +297,7 @@ export class App extends React.Component<AppProps, IAppState> {
 
     moveRight() {
         if (this.state.targetX < middleX + xIncrement - buffer) {
-            this.setState({ targetX: this.state.targetX + 10 });
+            this.setState({ targetX: this.state.targetX + moveSize });
         } else if (Math.random() < 0.1) {
             this.setState({ direction: !this.state.direction });
         }
