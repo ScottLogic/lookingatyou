@@ -155,8 +155,9 @@ export class App extends React.Component<AppProps, IAppState> {
     calculateEyePos(bbox: number[]) {
         const [x, y, width, height] = bbox;
         this.setState({
-            targetX: x + width / 2,
-            targetY: y + height / 2,
+            targetX: 2 * ((x + width / 2) / this.props.videos[0]!.width - 0.5), // scaled to value between -1 and 1
+            targetY:
+                2 * ((y + height / 2) / this.props.videos[0]!.height - 0.5), // scaled to value between -1 and 1
         });
     }
 
