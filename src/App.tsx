@@ -36,6 +36,7 @@ interface IAppState {
     eyesOpenCoefficient: number;
     webcamAvailable: boolean;
     isBlinking: boolean;
+    isSquinting: boolean;
     userConfig: IUserConfig;
     targetX: number;
     targetY: number;
@@ -86,6 +87,7 @@ export class App extends React.Component<AppProps, IAppState> {
             eyesOpenCoefficient: eyelidPosition.OPEN,
             webcamAvailable: false,
             isBlinking: false,
+            isSquinting: false,
             targetX: this.props.environment.innerWidth / 4,
             targetY: this.props.environment.innerHeight / 2,
             direction: true,
@@ -251,9 +253,14 @@ export class App extends React.Component<AppProps, IAppState> {
 
     hasTargetLeft() {
         if (this.state.personDetected) {
-            this.setState({ personDetected: false });
+            this.setState({ personDetected: false, isSquinting: true });
             this.setDilation(pupilSizes.constricted);
             this.setDilation(pupilSizes.neutral);
+            this.setState({ eyesOpenCoefficient: 0.2 });
+        }
+
+        if (this.state.isSquinting && Math.random() < 0.1) {
+            this.setState({ eyesOpenCoefficient: eyelidPosition.OPEN });
         }
     }
 
