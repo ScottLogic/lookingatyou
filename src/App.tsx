@@ -7,15 +7,18 @@ import { connect } from 'react-redux';
 import './App.css';
 import {
     blinkFrequency,
+    buffer,
     colours,
     configStorageKey,
     defaultConfigValues,
     eyelidPosition,
     eyes,
-    FPS,
     // pupilSizeChangeInterval,
+    FPS,
+    middleX,
     pupilSizes,
     transitionTime,
+    xIncrement,
 } from './AppConstants';
 import CanvasMenuItem from './components/configMenu/CanvasMenuItem';
 import CheckBoxMenuItem from './components/configMenu/CheckBoxMenuItem';
@@ -205,15 +208,16 @@ export class App extends React.Component<AppProps, IAppState> {
             | HTMLVideoElement
             | null,
     ) {
+        this.naturalMovement();
         if (img !== null) {
             if (Math.random() < 0.025) {
                 this.checkLight(img, this.analyseLight);
             }
 
-            if (this.model) {
-                const detections = await this.model.detect(img);
-                this.selectTarget(detections);
-            }
+            // if (this.model) {
+            //    const detections = await this.model.detect(img);
+            //    this.selectTarget(detections);
+            // }
         }
     }
 
@@ -222,13 +226,13 @@ export class App extends React.Component<AppProps, IAppState> {
             detection => detection.class === 'person',
         );
 
-        if (target !== undefined) {
-            this.calculateEyePos(target.bbox);
-            this.isNewTarget();
-        } else {
-            this.hasTargetLeft();
-            this.naturalMovement();
-        }
+        // if (target !== undefined) {
+        //    this.calculateEyePos(target.bbox);
+        //    this.isNewTarget();
+        // } else {
+        //    this.hasTargetLeft();
+        this.naturalMovement();
+        // }
     }
 
     calculateEyePos(bbox: number[]) {
@@ -240,14 +244,14 @@ export class App extends React.Component<AppProps, IAppState> {
     }
 
     naturalMovement() {
-        const middleOfFrame = window.innerWidth / 4;
-
-        if (this.state.targetX === middleOfFrame) {
-            if (Math.random() < 0.25) {
+        if (Math.random() < 0.1) {
+            if (this.state.targetX === middleX) {
+                if (Math.random() < 0.01) {
+                    this.moveEye();
+                }
+            } else {
                 this.moveEye();
             }
-        } else {
-            this.moveEye();
         }
     }
 
@@ -286,30 +290,18 @@ export class App extends React.Component<AppProps, IAppState> {
     }
 
     moveLeft() {
-        const middleX = window.innerWidth / 4;
-        const xIncrement = window.innerWidth / 12;
-        const buffer = 12;
-
         if (this.state.targetX > middleX - xIncrement + buffer) {
             this.setState({ targetX: this.state.targetX - 10 });
-        } else {
-            if (Math.random() < 0.25) {
-                this.setState({ direction: !this.state.direction });
-            }
+        } else if (Math.random() < 0.1) {
+            this.setState({ direction: !this.state.direction });
         }
     }
 
     moveRight() {
-        const middleX = window.innerWidth / 4;
-        const xIncrement = window.innerWidth / 14;
-        const buffer = 12;
-
         if (this.state.targetX < middleX + xIncrement - buffer) {
             this.setState({ targetX: this.state.targetX + 10 });
-        } else {
-            if (Math.random() < 0.25) {
-                this.setState({ direction: !this.state.direction });
-            }
+        } else if (Math.random() < 0.1) {
+            this.setState({ direction: !this.state.direction });
         }
     }
 
