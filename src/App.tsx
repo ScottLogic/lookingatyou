@@ -1,7 +1,5 @@
-/* tslint:disable: jsx-no-lambda radix only-arrow-functions */
-
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
-import React, { RefObject } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import './App.css';
 import {
@@ -16,12 +14,8 @@ import {
     pupilSizes,
     transitionTime,
 } from './AppConstants';
-import CanvasMenuItem from './components/configMenu/CanvasMenuItem';
-import CheckBoxMenuItem from './components/configMenu/CheckBoxMenuItem';
-import ColorMenuItem from './components/configMenu/ColorMenuItem';
-import ConfigMenu from './components/configMenu/ConfigMenu';
-import IUserConfig from './components/configMenu/InterfaceUserConfig';
-import TextBoxMenuItem from './components/configMenu/TextBoxMenuItem';
+import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
+import InterfaceUserConfig from './components/configMenu/InterfaceUserConfig';
 import Eye from './components/eye/Eye';
 import Video from './components/video/Video';
 import { IRootStore } from './store/reducers/rootReducer';
@@ -34,7 +28,7 @@ interface IAppState {
     eyesOpenCoefficient: number;
     webcamAvailable: boolean;
     isBlinking: boolean;
-    userConfig: IUserConfig;
+    userConfig: InterfaceUserConfig;
     targetX: number;
     targetY: number;
     dilationCoefficient: number;
@@ -65,8 +59,7 @@ const mapStateToProps = (state: IRootStore) => {
 };
 
 export class App extends React.Component<AppProps, IAppState> {
-    private leftDebugRef: React.RefObject<CanvasMenuItem>;
-    private rightDebugRef: React.RefObject<CanvasMenuItem>;
+    begunLoadingModel: boolean = false;
     private model: cocoSSD.ObjectDetection | null;
     private frameCapture: number;
     private blink: number = 0;
@@ -85,20 +78,18 @@ export class App extends React.Component<AppProps, IAppState> {
             targetX: this.props.environment.innerWidth / 4,
             targetY: this.props.environment.innerHeight / 2,
             dilationCoefficient: pupilSizes.neutral,
-            userConfig:
-                this.readConfig(configStorageKey) || defaultConfigValues,
-            modelLoaded: true,
+            userConfig: this.readConfig() || defaultConfigValues,
+            modelLoaded: false,
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);
         this.onUserMedia = this.onUserMedia.bind(this);
         this.onUserMediaError = this.onUserMediaError.bind(this);
         this.detectImage = this.detectImage.bind(this);
-        this.leftDebugRef = React.createRef();
-        this.rightDebugRef = React.createRef();
+        this.store = this.store.bind(this);
 
         this.props.environment.addEventListener('storage', () =>
-            this.readConfig(configStorageKey),
+            this.readConfig(),
         );
         this.model = null;
         this.frameCapture = 0;
@@ -126,7 +117,9 @@ export class App extends React.Component<AppProps, IAppState> {
 
         this.dilate = window.setInterval(() => {
             this.setState(state => ({
+                // tslint:disable-next-line: only-arrow-functions
                 dilationCoefficient: (function() {
+                    // this won't be a problem once #90 is merged
                     switch (state.dilationCoefficient) {
                         case pupilSizes.neutral:
                             return pupilSizes.dilated;
@@ -138,14 +131,21 @@ export class App extends React.Component<AppProps, IAppState> {
                 })(),
             }));
         }, pupilSizeChangeInterval);
+    }
 
-        this.model = await cocoSSD.load();
-        if (this.props.videos[0]) {
-            this.frameCapture = setInterval(
-                this.detectImage,
-                1000 / FPS,
-                this.props.videos[0],
-            );
+    async componentDidUpdate() {
+        if (!this.begunLoadingModel && this.props.deviceIds.length > 0) {
+            this.begunLoadingModel = true;
+            await this.setState({ webcamAvailable: true });
+            this.model = await cocoSSD.load();
+            this.setState({ modelLoaded: true });
+            if (this.props.videos[0]) {
+                this.frameCapture = setInterval(
+                    this.detectImage,
+                    1000 / FPS,
+                    this.props.videos[0],
+                );
+            }
         }
     }
 
@@ -261,78 +261,16 @@ export class App extends React.Component<AppProps, IAppState> {
                     </div>
                 )}
 
-                <ConfigMenu width="14em" timerLength={1000}>
-                    <TextBoxMenuItem
-                        name={'X Sensitivity'}
-                        defaultValue={`${this.state.userConfig.xSensitivity}`}
-                        isValidInput={(sens: string) =>
-                            !isNaN(parseFloat(sens))
-                        }
-                        onValidInput={(sens: string) =>
-                            this.store(configStorageKey, {
-                                xSensitivity: parseFloat(sens),
-                            })
-                        }
-                        parse={(text: string) => `${parseFloat(text)}`}
-                    />
-                    <TextBoxMenuItem
-                        name={'Y Sensitivity'}
-                        defaultValue={`${this.state.userConfig.ySensitivity}`}
-                        isValidInput={(sens: string) =>
-                            !isNaN(parseFloat(sens))
-                        }
-                        onValidInput={(sens: string) =>
-                            this.store(configStorageKey, {
-                                ySensitivity: parseFloat(sens),
-                            })
-                        }
-                        parse={(text: string) => `${parseFloat(text)}`}
-                    />
-                    <TextBoxMenuItem
-                        name={'FPS'}
-                        defaultValue={`${this.state.userConfig.fps}`}
-                        isValidInput={(fps: string) => !isNaN(parseInt(fps))}
-                        onValidInput={(fps: string) =>
-                            this.store(configStorageKey, { fps: parseInt(fps) })
-                        }
-                        parse={(text: string) => `${parseInt(text)}`}
-                    />
-                    <CheckBoxMenuItem
-                        name={'Swap Eyes'}
-                        checked={this.state.userConfig.swapEyes}
-                        onInputChange={(swapEyes: boolean) =>
-                            this.store(configStorageKey, { swapEyes })
-                        }
-                    />
-                    <CheckBoxMenuItem
-                        name={'Toggle Debug'}
-                        checked={this.state.userConfig.toggleDebug}
-                        onInputChange={(toggleDebug: boolean) =>
-                            this.store(configStorageKey, { toggleDebug })
-                        }
-                    />
-                    <ColorMenuItem
-                        name={'Iris Color'}
-                        color={this.state.userConfig.irisColor}
-                        onInputChange={(irisColor: string) =>
-                            this.store(configStorageKey, { irisColor })
-                        }
-                    />
-                    <CanvasMenuItem
-                        name={'Left Camera'}
-                        ref={this.leftDebugRef}
-                    />
-                    <CanvasMenuItem
-                        name={'Right Camera'}
-                        ref={this.rightDebugRef}
-                    />
-                </ConfigMenu>
+                <ConfigMenuElement
+                    config={this.state.userConfig}
+                    store={this.store}
+                />
             </div>
         );
     }
 
-    store(key: string, partialState: Partial<IUserConfig>) {
-        const newUserConfig: IUserConfig = {
+    store(partialState: Partial<InterfaceUserConfig>) {
+        const newUserConfig: InterfaceUserConfig = {
             ...this.state.userConfig,
             ...partialState,
         };
@@ -342,13 +280,18 @@ export class App extends React.Component<AppProps, IAppState> {
             },
             () => {
                 const json = JSON.stringify(this.state.userConfig);
-                this.props.environment.localStorage.setItem(key, json);
+                this.props.environment.localStorage.setItem(
+                    configStorageKey,
+                    json,
+                );
             },
         );
     }
 
-    readConfig(key: string) {
-        const json = this.props.environment.localStorage.getItem(key);
+    readConfig() {
+        const json = this.props.environment.localStorage.getItem(
+            configStorageKey,
+        );
         if (json != null) {
             return JSON.parse(json);
         } else {
