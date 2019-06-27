@@ -319,8 +319,6 @@ export class App extends React.Component<AppProps, IAppState> {
 
             if (canvasCtx) {
                 canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                const img = new Image();
-
                 callback.call(this, canvas, this.setDilation);
             }
         }
@@ -339,9 +337,12 @@ export class App extends React.Component<AppProps, IAppState> {
 
             const data = imageData.data;
 
-            const colorSum = data.reduce((r, g, b) => {
-                return Math.floor((r + g + b) / 3);
-            });
+            let colorSum = 0;
+
+            for (let i = 0; i < data.length; i += 4) {
+                const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                colorSum += avg;
+            }
 
             let brightness = Math.floor(
                 colorSum / (canvas.width * canvas.height),
