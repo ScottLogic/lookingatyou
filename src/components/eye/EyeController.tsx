@@ -22,11 +22,9 @@ interface IEyeControllerMapStateToProps {
     config: IUserConfig;
 }
 type EyeControllerProps = IEyeControllerProps & IEyeControllerMapStateToProps;
-const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => {
-    return {
-        config: getConfig(state),
-    };
-};
+const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
+    config: getConfig(state),
+});
 export function EyeController(props: EyeControllerProps) {
     const [blinkFrequencyCoefficient] = useState(1); // Will change based on camera feed e.g. lower coefficient when object in frame
     const [isBlinking, setIsBlinking] = useState(false); // Will change based on camera feed e.g. blink less when object in frame
