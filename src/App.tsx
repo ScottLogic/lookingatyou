@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Unsubscribe } from 'redux';
 import './App.css';
 import { configStorageKey } from './AppConstants';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
@@ -58,7 +57,6 @@ export class App extends React.Component<AppProps, IAppState> {
     begunLoadingModel: boolean = false;
     private model: IObjectDetector | null;
     private captureInterval: number;
-    private unsubscribe: Unsubscribe | null = null;
 
     constructor(props: AppProps) {
         super(props);
@@ -122,9 +120,6 @@ export class App extends React.Component<AppProps, IAppState> {
             'resize',
             this.updateDimensions,
         );
-        if (this.unsubscribe !== null) {
-            this.unsubscribe();
-        }
         clearInterval(this.captureInterval);
     }
 
