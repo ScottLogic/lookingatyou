@@ -87,10 +87,10 @@ function ConfigMenuElement(props: ConfigMenuElementProps) {
     function extractIntToString(intString: string): string {
         return `${parseInt(intString, 10)}`;
     }
-    function validSensitivityString(sensitivity: string): boolean {
+    function isValidSensitivity(sensitivity: string): boolean {
         return !isNaN(parseFloat(sensitivity)) && parseFloat(sensitivity) >= 0;
     }
-    function validFPSString(fps: string): boolean {
+    function isValidFPS(fps: string): boolean {
         return !isNaN(parseInt(fps, 10)) && parseInt(fps, 10) > 0;
     }
     return (
@@ -98,21 +98,21 @@ function ConfigMenuElement(props: ConfigMenuElementProps) {
             <TextBoxMenuItem
                 name={'X Sensitivity'}
                 defaultValue={`${props.config.xSensitivity}`}
-                isValidInput={validSensitivityString}
+                isValidInput={isValidSensitivity}
                 onValidInput={parseAndStoreXSensitivity}
                 parse={extractFloatToString}
             />
             <TextBoxMenuItem
                 name={'Y Sensitivity'}
                 defaultValue={`${props.config.ySensitivity}`}
-                isValidInput={validSensitivityString}
+                isValidInput={isValidSensitivity}
                 onValidInput={parseAndStoreYSensitivity}
                 parse={extractFloatToString}
             />
             <TextBoxMenuItem
                 name={'FPS'}
                 defaultValue={`${props.config.fps}`}
-                isValidInput={validFPSString}
+                isValidInput={isValidFPS}
                 onValidInput={parseAndStoreFPS}
                 parse={extractIntToString}
             />
