@@ -188,7 +188,6 @@ export class App extends React.Component<AppProps, IAppState> {
             }
 
             this.setState({ dilationCoefficient: pupilSize });
-            console.log(this.state.dilationCoefficient);
 
             if (this.model) {
                 const detections = await this.model.detect(img);
