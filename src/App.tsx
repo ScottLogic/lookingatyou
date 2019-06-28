@@ -12,7 +12,7 @@ import { IObjectDetector } from './utils/interfaces';
 import CocoSSD from './utils/objectDetection/cocoSSD';
 import selectFirst from './utils/objectSelection/selectFirst';
 import calculateFocus, {
-    normalize,
+    normalise,
 } from './utils/objectTracking/calculateFocus';
 import { DetectionImage } from './utils/types';
 
@@ -208,8 +208,8 @@ export class App extends React.Component<AppProps, IAppState> {
             const coords = calculateFocus(selection);
             if (coords) {
                 this.setState({
-                    targetX: normalize(coords.x, image.width),
-                    targetY: normalize(coords.y, image.height),
+                    targetX: normalise(coords.x, image.width),
+                    targetY: normalise(coords.y, image.height),
                 });
             }
         }

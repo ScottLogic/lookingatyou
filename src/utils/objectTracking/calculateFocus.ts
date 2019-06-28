@@ -8,13 +8,13 @@ export default function calculateTargetPos(bbox: Bbox): ICoords | undefined {
     }
 }
 
-export function normalize(
+export function normalise(
     val: number,
     max: number,
     min: number = 0,
     newMin: number = -1,
     newMax: number = 1,
 ): number {
-    const normalized = (val - min) / (max - min);
-    return normalized * (newMax - newMin) + newMin;
+    const normalised = (val - min) / (max - min);
+    return normalised * (newMax - newMin) + newMin;
 }
