@@ -1,9 +1,6 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
 import { configStorageKey } from '../../AppConstants';
 import { updateConfigAction } from '../../store/actions/config/actions';
-import { IRootStore } from '../../store/reducers/rootReducer';
-import { getConfig } from '../../store/selectors/configSelectors';
 import store from '../../store/store';
 import ConfigMenu from './ConfigMenu';
 import IUserConfig from './IUserConfig';
@@ -15,18 +12,6 @@ interface IConfigMenuElementProps {
     storage: Storage;
     config: IUserConfig;
 }
-interface IConfigMenuElementMapStateToProps {
-    config: IUserConfig;
-}
-type ConfigMenuElementProps = IConfigMenuElementProps &
-    IConfigMenuElementMapStateToProps;
-const mapStateToProps = (
-    state: IRootStore,
-): IConfigMenuElementMapStateToProps => {
-    return {
-        config: getConfig(state),
-    };
-};
 
 export default function ConfigMenuElement(props: IConfigMenuElementProps) {
     useEffect(() => {
@@ -126,5 +111,3 @@ export default function ConfigMenuElement(props: IConfigMenuElementProps) {
         </ConfigMenu>
     );
 }
-
-connect(mapStateToProps)(ConfigMenuElement);
