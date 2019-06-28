@@ -16,14 +16,14 @@ interface IEyeControllerProps {
     environment: Window;
     targetX: number;
     targetY: number;
+    openCoefficient: number;
+    dilationCoefficient: number;
 }
 export default function EyeController(props: IEyeControllerProps) {
     const [blinkFrequencyCoefficient] = useState(1); // Will change based on camera feed e.g. lower coefficient when object in frame
     const [isBlinking, setIsBlinking] = useState(false); // Will change based on camera feed e.g. blink less when object in frame
     const [eyesOpenCoefficient] = useState(eyelidPosition.OPEN); // Will change based on camera feed e.g. higher coefficient to show surprise
-    const [dilationCoefficient, setDilationCoefficient] = useState(
-        pupilSizes.neutral,
-    ); // Will change based on camera feed e.g. briefly increase coefficient (dilate) when object enters frame then reset to 1 (neutral)
+    const [dilationCoefficient] = useState(pupilSizes.neutral); // Will change based on camera feed e.g. briefly increase coefficient (dilate) when object enters frame then reset to 1 (neutral)
 
     useEffect(() => {
         const blink = props.environment.setInterval(() => {
@@ -36,22 +36,8 @@ export default function EyeController(props: IEyeControllerProps) {
                 setIsBlinking(Math.random() < blinkProbability);
             }
         }, transitionTime.blink);
-        const dilate = props.environment.setInterval(() => {
-            switch (dilationCoefficient) {
-                case pupilSizes.neutral:
-                    setDilationCoefficient(pupilSizes.dilated);
-                    break;
-                case pupilSizes.dilated:
-                    setDilationCoefficient(pupilSizes.constricted);
-                    break;
-                default:
-                    setDilationCoefficient(pupilSizes.neutral);
-                    break;
-            }
-        }, 1000);
         return () => {
             props.environment.clearInterval(blink);
-            props.environment.clearInterval(dilate);
         };
     }, [
         props.environment,
@@ -87,9 +73,15 @@ export default function EyeController(props: IEyeControllerProps) {
                         irisRadius={irisRadius}
                         pupilRadius={pupilRadius}
                         // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
-                        openCoefficient={isBlinking ? 0 : eyesOpenCoefficient}
+                        openCoefficient={
+                            props.openCoefficient === eyelidPosition.SQUINT
+                                ? eyelidPosition.SQUINT
+                                : isBlinking
+                                ? 0
+                                : eyesOpenCoefficient
+                        }
                         // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
-                        dilatedCoefficient={dilationCoefficient}
+                        dilatedCoefficient={props.dilationCoefficient}
                         innerX={innerX}
                         innerY={innerY}
                     />

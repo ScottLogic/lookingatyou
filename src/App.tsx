@@ -167,27 +167,28 @@ export class App extends React.Component<AppProps, IAppState> {
             | null,
     ) {
         if (img !== null) {
-            if (Math.random() < 0.05) {
-                const [isBright, pupilSize] = checkLight(
-                    this.state.tooBright,
-                    img,
-                    analyseLight,
-                );
+            const [isBright, pupilSize] = checkLight(
+                this.state.tooBright,
+                img,
+                analyseLight,
+            );
 
-                this.setDilation(pupilSize);
+            this.setDilation(pupilSize);
 
-                if (isBright) {
-                    this.setState({
-                        tooBright: true,
-                        eyesOpenCoefficient: eyelidPosition.CLOSED,
-                    });
-                } else if (this.state.tooBright) {
-                    this.setState({
-                        tooBright: false,
-                        eyesOpenCoefficient: eyelidPosition.OPEN,
-                    });
-                }
+            if (isBright) {
+                this.setState({
+                    tooBright: true,
+                    eyesOpenCoefficient: eyelidPosition.CLOSED,
+                });
+            } else if (this.state.tooBright) {
+                this.setState({
+                    tooBright: false,
+                    eyesOpenCoefficient: eyelidPosition.OPEN,
+                });
             }
+
+            this.setState({ dilationCoefficient: pupilSize });
+            console.log(this.state.dilationCoefficient);
 
             if (this.model) {
                 const detections = await this.model.detect(img);
@@ -205,12 +206,19 @@ export class App extends React.Component<AppProps, IAppState> {
             this.calculateEyePos(target.bbox);
             this.isNewTarget();
         } else {
+            if (Math.abs(this.state.targetX) > 1) {
+                this.setState({ targetX: 0 });
+            }
             this.hasTargetLeft();
             const [newX, newDirection] = naturalMovement(
                 this.state.targetX,
                 this.state.direction,
             );
-            this.setState({ targetX: newX, direction: newDirection });
+            this.setState({
+                targetY: 0,
+                targetX: newX,
+                direction: newDirection,
+            });
         }
     }
 
@@ -234,7 +242,7 @@ export class App extends React.Component<AppProps, IAppState> {
             this.setState({ eyesOpenCoefficient: eyelidPosition.SQUINT });
         }
 
-        if (this.state.isSquinting && Math.random() < 0.1) {
+        if (this.state.isSquinting && Math.random() < 0.05) {
             this.setState({
                 eyesOpenCoefficient: eyelidPosition.OPEN,
                 isSquinting: false,
@@ -277,6 +285,8 @@ export class App extends React.Component<AppProps, IAppState> {
                             environment={this.props.environment}
                             targetX={this.state.targetX}
                             targetY={this.state.targetY}
+                            dilationCoefficient={this.state.dilationCoefficient}
+                            openCoefficient={this.state.eyesOpenCoefficient}
                         />
                     )
                 ) : (

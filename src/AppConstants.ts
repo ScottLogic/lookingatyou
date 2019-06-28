@@ -31,14 +31,14 @@ export const pupilSizes = {
     constricted: 0.8,
 };
 export const pupilSizeChangeInterval = 2500;
-export const middleX = window.innerWidth / 4;
-export const middleY = window.innerHeight / 2;
-export const xIncrement = window.innerWidth / 14;
-export const moveSize = 10;
-export const buffer = 12;
+export const middleX = 0;
+export const middleY = 0;
+export const xIncrement = 1;
+export const moveSize = 0.4;
+export const buffer = 0.2;
 export const maxBrightness = 220;
-export const dilationMultipler = 0.7;
-export const dilationOffset = 0.8;
+export const dilationMultipler = 0.8;
+export const dilationOffset = 0.7;
 export const transitionTime = {
     blink: 200,
     dilate: 750,

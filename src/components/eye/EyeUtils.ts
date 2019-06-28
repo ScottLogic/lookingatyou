@@ -77,7 +77,7 @@ export function naturalMovement(
     direction: boolean,
 ): [number, boolean] {
     if (currentX === middleX) {
-        if (Math.random() < 0.01) {
+        if (Math.random() < 0.1) {
             return moveEye(currentX, direction);
         }
         return [0, direction];
@@ -97,8 +97,8 @@ function moveEye(currentX: number, direction: boolean): [number, boolean] {
 function moveLeft(currentX: number, direction: boolean): [number, boolean] {
     if (currentX > middleX - xIncrement + buffer) {
         return [currentX - moveSize, direction];
-    } else if (Math.random() < 0.1) {
-        return [currentX, !direction];
+    } else if (Math.random() < 0.5) {
+        return [currentX + moveSize, !direction];
     }
     return [currentX, direction];
 }
@@ -106,8 +106,8 @@ function moveLeft(currentX: number, direction: boolean): [number, boolean] {
 function moveRight(currentX: number, direction: boolean): [number, boolean] {
     if (currentX < middleX + xIncrement - buffer) {
         return [currentX + moveSize, direction];
-    } else if (Math.random() < 0.1) {
-        return [currentX, !direction];
+    } else if (Math.random() < 0.5) {
+        return [currentX - moveSize, !direction];
     }
     return [currentX, direction];
 }
