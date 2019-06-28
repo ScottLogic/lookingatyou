@@ -2,21 +2,10 @@ import * as cocoSSD from '@tensorflow-models/coco-ssd';
 import React from 'react';
 import { connect } from 'react-redux';
 import './App.css';
-import {
-    blinkFrequency,
-    colours,
-    configStorageKey,
-    defaultConfigValues,
-    eyelidPosition,
-    eyes,
-    FPS,
-    pupilSizeChangeInterval,
-    pupilSizes,
-    transitionTime,
-} from './AppConstants';
+import { configStorageKey, defaultConfigValues, FPS } from './AppConstants';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import InterfaceUserConfig from './components/configMenu/InterfaceUserConfig';
-import Eye from './components/eye/Eye';
+import EyeController from './components/eye/EyeController';
 import Video from './components/video/Video';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds, getVideos } from './store/selectors/videoSelectors';
@@ -24,14 +13,10 @@ import { getDeviceIds, getVideos } from './store/selectors/videoSelectors';
 interface IAppState {
     width: number;
     height: number;
-    eyesDilatedCoefficient: number;
-    eyesOpenCoefficient: number;
     webcamAvailable: boolean;
-    isBlinking: boolean;
     userConfig: InterfaceUserConfig;
     targetX: number;
     targetY: number;
-    dilationCoefficient: number;
     modelLoaded: boolean;
 }
 
@@ -62,8 +47,6 @@ export class App extends React.Component<AppProps, IAppState> {
     begunLoadingModel: boolean = false;
     private model: cocoSSD.ObjectDetection | null;
     private frameCapture: number;
-    private blink: number = 0;
-    private dilate: number = 0;
 
     constructor(props: AppProps) {
         super(props);
@@ -71,13 +54,9 @@ export class App extends React.Component<AppProps, IAppState> {
         this.state = {
             width: this.props.environment.innerWidth,
             height: this.props.environment.innerHeight,
-            eyesDilatedCoefficient: 1,
-            eyesOpenCoefficient: eyelidPosition.OPEN,
             webcamAvailable: false,
-            isBlinking: false,
             targetX: this.props.environment.innerWidth / 4,
             targetY: this.props.environment.innerHeight / 2,
-            dilationCoefficient: pupilSizes.neutral,
             userConfig: this.readConfig() || defaultConfigValues,
             modelLoaded: false,
         };
@@ -105,32 +84,6 @@ export class App extends React.Component<AppProps, IAppState> {
             this.onUserMedia,
             this.onUserMediaError,
         );
-
-        // Sets up random blinking animation
-        this.blink = window.setInterval(() => {
-            this.setState(state => ({
-                isBlinking: state.isBlinking
-                    ? false
-                    : Math.random() < blinkFrequency / (1000 / transitionTime),
-            }));
-        }, transitionTime);
-
-        this.dilate = window.setInterval(() => {
-            this.setState(state => ({
-                // tslint:disable-next-line: only-arrow-functions
-                dilationCoefficient: (function() {
-                    // this won't be a problem once #90 is merged
-                    switch (state.dilationCoefficient) {
-                        case pupilSizes.neutral:
-                            return pupilSizes.dilated;
-                        case pupilSizes.dilated:
-                            return pupilSizes.constricted;
-                        default:
-                            return pupilSizes.neutral;
-                    }
-                })(),
-            }));
-        }, pupilSizeChangeInterval);
     }
 
     async componentDidUpdate() {
@@ -155,8 +108,6 @@ export class App extends React.Component<AppProps, IAppState> {
             this.updateDimensions,
         );
         clearInterval(this.frameCapture);
-        clearInterval(this.blink);
-        clearInterval(this.dilate);
     }
 
     updateDimensions() {
@@ -204,8 +155,9 @@ export class App extends React.Component<AppProps, IAppState> {
     calculateEyePos(bbox: number[]) {
         const [x, y, width, height] = bbox;
         this.setState({
-            targetX: x + width / 2,
-            targetY: y + height / 2,
+            targetX: 2 * ((x + width / 2) / this.props.videos[0]!.width - 0.5), // scaled to value between -1 and 1
+            targetY:
+                2 * ((y + height / 2) / this.props.videos[0]!.height - 0.5), // scaled to value between -1 and 1
         });
     }
 
@@ -218,42 +170,18 @@ export class App extends React.Component<AppProps, IAppState> {
                     ))}
                 </div>
 
-                {this.props.deviceIds.length > 0 ? (
-                    !(this.state.webcamAvailable && this.state.modelLoaded) ? (
+                {this.state.webcamAvailable ? (
+                    !this.state.modelLoaded ? (
                         <div className="loading-spinner" />
                     ) : (
-                        <div className="container">
-                            {Object.values(eyes).map((eye, key) => {
-                                return (
-                                    <Eye
-                                        class={eye}
-                                        key={key}
-                                        width={this.state.width / 2}
-                                        height={this.state.height}
-                                        scleraColor={colours.scleraColor}
-                                        irisColor={
-                                            this.state.userConfig.irisColor
-                                        }
-                                        pupilColor={colours.pupilColor}
-                                        scleraRadius={this.state.width / 5}
-                                        irisRadius={this.state.width / 10}
-                                        pupilRadius={this.state.width / 24}
-                                        isBlinking={this.state.isBlinking}
-                                        // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
-                                        openCoefficient={
-                                            this.state.eyesOpenCoefficient
-                                        }
-                                        // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
-                                        dilatedCoefficient={
-                                            this.state.dilationCoefficient
-                                        }
-                                        transitionTime={transitionTime.toString()}
-                                        innerX={this.state.targetX}
-                                        innerY={this.state.targetY}
-                                    />
-                                );
-                            })}
-                        </div>
+                        <EyeController
+                            width={this.state.width}
+                            height={this.state.height}
+                            userConfig={this.state.userConfig}
+                            environment={this.props.environment}
+                            targetX={this.state.targetX}
+                            targetY={this.state.targetY}
+                        />
                     )
                 ) : (
                     <div className="Error">
