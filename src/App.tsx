@@ -47,7 +47,7 @@ const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     };
 };
 
-class App extends React.Component<AppProps, IAppState> {
+export class App extends React.Component<AppProps, IAppState> {
     begunLoadingModel: boolean = false;
     private model: IObjectDetector | null;
     private captureInterval: number;
