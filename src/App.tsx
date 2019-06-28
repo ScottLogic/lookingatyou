@@ -204,7 +204,7 @@ export class App extends React.Component<AppProps, IAppState> {
     async detectionHandler(image: DetectionImage) {
         if (this.model) {
             const detections = await this.model.detect(image);
-            const selection = selectFirst(detections, 'person');
+            const selection = selectFirst(detections);
             const coords = calculateFocus(selection);
             if (coords) {
                 this.setState({
