@@ -70,6 +70,7 @@ export class App extends React.Component<AppProps, IAppState> {
         this.updateDimensions = this.updateDimensions.bind(this);
         this.onUserMedia = this.onUserMedia.bind(this);
         this.onUserMediaError = this.onUserMediaError.bind(this);
+        this.detectionHandler = this.detectionHandler.bind(this);
         this.store = this.store.bind(this);
 
         this.props.environment.addEventListener('storage', () =>
@@ -206,6 +207,15 @@ export class App extends React.Component<AppProps, IAppState> {
             const selection = selectFirst(detections, 'person');
             const coords = calculateFocus(selection);
             if (coords) {
+                console.log(coords);
+                console.log(image.width);
+                console.log(image.height);
+                console.log(
+                    'x: ' +
+                        normalize(coords.x, image.width) +
+                        ' y: ' +
+                        normalize(coords.y, image.height),
+                );
                 this.setState({
                     targetX: normalize(coords.x, image.width),
                     targetY: normalize(coords.y, image.height),
