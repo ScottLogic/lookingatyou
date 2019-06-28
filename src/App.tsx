@@ -3,35 +3,28 @@ import React from 'react';
 import { connect } from 'react-redux';
 import './App.css';
 import {
-    blinkFrequency,
-    buffer,
-    colours,
     configStorageKey,
     defaultConfigValues,
-    dilationMultipler,
-    dilationOffset,
     eyelidPosition,
-    eyes,
     FPS,
-    maxBrightness,
     middleX,
     middleY,
-    moveSize,
     pupilSizes,
-    transitionTime,
-    xIncrement,
 } from './AppConstants';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import InterfaceUserConfig from './components/configMenu/InterfaceUserConfig';
-import Eye from './components/eye/Eye';
+import EyeController from './components/eye/EyeController';
+import {
+    analyseLight,
+    checkLight,
+    naturalMovement,
+} from './components/eye/EyeUtils';
 import Video from './components/video/Video';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds, getVideos } from './store/selectors/videoSelectors';
 interface IAppState {
     width: number;
     height: number;
-    eyesDilatedCoefficient: number;
-    eyesOpenCoefficient: number;
     webcamAvailable: boolean;
     isBlinking: boolean;
     isSquinting: boolean;
@@ -43,6 +36,7 @@ interface IAppState {
     dilationCoefficient: number;
     modelLoaded: boolean;
     personDetected: boolean;
+    eyesOpenCoefficient: number;
 }
 
 interface IAppProps {
@@ -72,8 +66,6 @@ export class App extends React.Component<AppProps, IAppState> {
     begunLoadingModel: boolean = false;
     private model: cocoSSD.ObjectDetection | null;
     private frameCapture: number;
-    private blink: number = 0;
-    private dilate: number = 0;
 
     constructor(props: AppProps) {
         super(props);
@@ -81,8 +73,6 @@ export class App extends React.Component<AppProps, IAppState> {
         this.state = {
             width: this.props.environment.innerWidth,
             height: this.props.environment.innerHeight,
-            eyesDilatedCoefficient: 1,
-            eyesOpenCoefficient: eyelidPosition.OPEN,
             webcamAvailable: false,
             isBlinking: false,
             isSquinting: false,
@@ -91,6 +81,7 @@ export class App extends React.Component<AppProps, IAppState> {
             tooBright: false,
             direction: true,
             dilationCoefficient: pupilSizes.neutral,
+            eyesOpenCoefficient: eyelidPosition.OPEN,
             modelLoaded: false,
             personDetected: false,
             userConfig: this.readConfig() || defaultConfigValues,
@@ -100,14 +91,9 @@ export class App extends React.Component<AppProps, IAppState> {
         this.onUserMedia = this.onUserMedia.bind(this);
         this.onUserMediaError = this.onUserMediaError.bind(this);
         this.detectImage = this.detectImage.bind(this);
-        this.checkLight = this.checkLight.bind(this);
+        this.setDilation = this.setDilation.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
         this.hasTargetLeft = this.hasTargetLeft.bind(this);
-        this.moveEye = this.moveEye.bind(this);
-        this.moveLeft = this.moveLeft.bind(this);
-        this.moveRight = this.moveRight.bind(this);
-        this.setDilation = this.setDilation.bind(this);
-        this.analyseLight = this.analyseLight.bind(this);
         this.store = this.store.bind(this);
 
         this.props.environment.addEventListener('storage', () =>
@@ -127,15 +113,6 @@ export class App extends React.Component<AppProps, IAppState> {
             this.onUserMedia,
             this.onUserMediaError,
         );
-
-        // Sets up random blinking animation
-        this.blink = window.setInterval(() => {
-            this.setState(state => ({
-                isBlinking: state.isBlinking
-                    ? false
-                    : Math.random() < blinkFrequency / (1000 / transitionTime),
-            }));
-        }, transitionTime);
     }
 
     async componentDidUpdate() {
@@ -160,8 +137,6 @@ export class App extends React.Component<AppProps, IAppState> {
             this.updateDimensions,
         );
         clearInterval(this.frameCapture);
-        clearInterval(this.blink);
-        clearInterval(this.dilate);
     }
 
     updateDimensions() {
@@ -193,7 +168,25 @@ export class App extends React.Component<AppProps, IAppState> {
     ) {
         if (img !== null) {
             if (Math.random() < 0.05) {
-                this.checkLight(img, this.analyseLight);
+                const [isBright, pupilSize] = checkLight(
+                    this.state.tooBright,
+                    img,
+                    analyseLight,
+                );
+
+                this.setDilation(pupilSize);
+
+                if (isBright) {
+                    this.setState({
+                        tooBright: true,
+                        eyesOpenCoefficient: eyelidPosition.CLOSED,
+                    });
+                } else if (this.state.tooBright) {
+                    this.setState({
+                        tooBright: false,
+                        eyesOpenCoefficient: eyelidPosition.OPEN,
+                    });
+                }
             }
 
             if (this.model) {
@@ -213,25 +206,11 @@ export class App extends React.Component<AppProps, IAppState> {
             this.isNewTarget();
         } else {
             this.hasTargetLeft();
-            this.naturalMovement();
-        }
-    }
-
-    calculateEyePos(bbox: number[]) {
-        const [x, y, width, height] = bbox;
-        this.setState({
-            targetX: x + width / 2,
-            targetY: y + height / 2,
-        });
-    }
-
-    naturalMovement() {
-        if (this.state.targetX === middleX) {
-            if (Math.random() < 0.01) {
-                this.moveEye();
-            }
-        } else {
-            this.moveEye();
+            const [newX, newDirection] = naturalMovement(
+                this.state.targetX,
+                this.state.direction,
+            );
+            this.setState({ targetX: newX, direction: newDirection });
         }
     }
 
@@ -263,108 +242,19 @@ export class App extends React.Component<AppProps, IAppState> {
         }
     }
 
+    calculateEyePos(bbox: number[]) {
+        const [x, y, width, height] = bbox;
+        this.setState({
+            targetX: 2 * ((x + width / 2) / this.props.videos[0]!.width - 0.5), // scaled to value between -1 and 1
+            targetY:
+                2 * ((y + height / 2) / this.props.videos[0]!.height - 0.5), // scaled to value between -1 and 1
+        });
+    }
+
     setDilation(pupilSize: number) {
         this.setState(() => ({
             dilationCoefficient: pupilSize,
         }));
-    }
-
-    moveEye() {
-        if (this.state.direction) {
-            this.moveLeft();
-        } else {
-            this.moveRight();
-        }
-    }
-
-    moveLeft() {
-        if (this.state.targetX > middleX - xIncrement + buffer) {
-            this.setState({ targetX: this.state.targetX - moveSize });
-        } else if (Math.random() < 0.1) {
-            this.setState({ direction: !this.state.direction });
-        }
-    }
-
-    moveRight() {
-        if (this.state.targetX < middleX + xIncrement - buffer) {
-            this.setState({ targetX: this.state.targetX + moveSize });
-        } else if (Math.random() < 0.1) {
-            this.setState({ direction: !this.state.direction });
-        }
-    }
-
-    checkLight(
-        video:
-            | ImageData
-            | HTMLImageElement
-            | HTMLCanvasElement
-            | HTMLVideoElement
-            | null,
-        callback: (
-            canvas: HTMLCanvasElement,
-            callback: (n: number) => void,
-        ) => void,
-    ) {
-        if (video && video instanceof HTMLVideoElement) {
-            const canvas = document.createElement('canvas');
-            canvas.height = video.height;
-            canvas.width = video.width;
-            const canvasCtx = canvas.getContext('2d');
-
-            if (canvasCtx) {
-                canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                callback.call(this, canvas, this.setDilation);
-            }
-        }
-    }
-
-    analyseLight(canvas: HTMLCanvasElement, callback: (n: number) => void) {
-        const ctx = canvas.getContext('2d');
-
-        if (ctx && canvas.width > 0) {
-            const imageData = ctx.getImageData(
-                0,
-                0,
-                canvas.width,
-                canvas.height,
-            );
-
-            const data = imageData.data;
-
-            let colorSum = 0;
-
-            for (let i = 0; i < data.length; i += 4) {
-                const avg = Math.floor(
-                    (data[i] + data[i + 1] + data[i + 2]) / 3,
-                );
-
-                colorSum += avg;
-            }
-
-            let brightness = Math.floor(
-                colorSum / (canvas.width * canvas.height),
-            );
-
-            if (brightness > maxBrightness) {
-                this.setState({
-                    eyesOpenCoefficient: eyelidPosition.CLOSED,
-                    tooBright: true,
-                });
-                brightness = maxBrightness;
-            } else if (this.state.tooBright) {
-                this.setState({
-                    eyesOpenCoefficient: eyelidPosition.OPEN,
-                    tooBright: false,
-                });
-            }
-
-            const scaledPupilSize =
-                ((maxBrightness - brightness) / maxBrightness) *
-                    dilationMultipler +
-                dilationOffset;
-
-            callback(scaledPupilSize);
-        }
     }
 
     render() {
@@ -376,42 +266,18 @@ export class App extends React.Component<AppProps, IAppState> {
                     ))}
                 </div>
 
-                {this.props.deviceIds.length > 0 ? (
-                    !(this.state.webcamAvailable && this.state.modelLoaded) ? (
+                {this.state.webcamAvailable ? (
+                    !this.state.modelLoaded ? (
                         <div className="loading-spinner" />
                     ) : (
-                        <div className="container">
-                            {Object.values(eyes).map((eye, key) => {
-                                return (
-                                    <Eye
-                                        class={eye}
-                                        key={key}
-                                        width={this.state.width / 2}
-                                        height={this.state.height}
-                                        scleraColor={colours.scleraColor}
-                                        irisColor={
-                                            this.state.userConfig.irisColor
-                                        }
-                                        pupilColor={colours.pupilColor}
-                                        scleraRadius={this.state.width / 5}
-                                        irisRadius={this.state.width / 10}
-                                        pupilRadius={this.state.width / 24}
-                                        isBlinking={this.state.isBlinking}
-                                        // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
-                                        openCoefficient={
-                                            this.state.eyesOpenCoefficient
-                                        }
-                                        // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
-                                        dilatedCoefficient={
-                                            this.state.dilationCoefficient
-                                        }
-                                        transitionTime={transitionTime.toString()}
-                                        innerX={this.state.targetX}
-                                        innerY={this.state.targetY}
-                                    />
-                                );
-                            })}
-                        </div>
+                        <EyeController
+                            width={this.state.width}
+                            height={this.state.height}
+                            userConfig={this.state.userConfig}
+                            environment={this.props.environment}
+                            targetX={this.state.targetX}
+                            targetY={this.state.targetY}
+                        />
                     )
                 ) : (
                     <div className="Error">

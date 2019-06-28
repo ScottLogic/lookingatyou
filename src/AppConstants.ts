@@ -30,9 +30,7 @@ export const pupilSizes = {
     neutral: 1.0,
     constricted: 0.8,
 };
-export const blinkFrequency = 0.25;
 export const pupilSizeChangeInterval = 2500;
-export const transitionTime = 100; // for animating eyelids and pupils
 export const middleX = window.innerWidth / 4;
 export const middleY = window.innerHeight / 2;
 export const xIncrement = window.innerWidth / 14;
@@ -41,3 +39,8 @@ export const buffer = 12;
 export const maxBrightness = 220;
 export const dilationMultipler = 0.7;
 export const dilationOffset = 0.8;
+export const transitionTime = {
+    blink: 200,
+    dilate: 750,
+};
+export const neutralBlinkFrequency = 0.25;

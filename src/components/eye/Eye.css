@@ -1,11 +1,3 @@
-path {
-    transition: 50ms;
-}
-
-circle {
-    transition: 500ms;
-}
-
 .Eyelids path {
     fill: black;
     stroke: black;
