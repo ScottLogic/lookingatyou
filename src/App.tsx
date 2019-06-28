@@ -90,32 +90,21 @@ export class App extends React.Component<AppProps, IAppState> {
         );
     }
 
-    async componentDidUpdate() {
+    async componentDidUpdate(previousProps: AppProps) {
+        if (previousProps.config !== this.props.config) {
+            clearInterval(this.captureInterval);
+            this.captureInterval = setInterval(
+                this.detectionHandler,
+                1000 / this.props.config.fps,
+                this.props.videos[0],
+            );
+        }
         if (!this.begunLoadingModel && this.props.deviceIds.length > 0) {
             this.begunLoadingModel = true;
             await this.setState({ webcamAvailable: true });
             this.model = await CocoSSD.init();
             this.setState({ modelLoaded: true });
-            if (this.props.videos[0]) {
-                this.setFrameCaptureInterval(
-                    store.getState().configStore.config.fps,
-                );
-                this.unsubscribe = store.subscribe(() => {
-                    this.setFrameCaptureInterval(
-                        store.getState().configStore.config.fps,
-                    );
-                });
-            }
         }
-    }
-
-    setFrameCaptureInterval(fps: number) {
-        clearInterval(this.captureInterval);
-        this.captureInterval = setInterval(
-            this.detectionHandler,
-            1000 / fps,
-            this.props.videos[0],
-        );
     }
 
     componentWillUnmount() {
