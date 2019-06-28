@@ -10,11 +10,7 @@ export default class CocoSSD implements IObjectDetector {
         return new CocoSSD(model);
     }
 
-    private model: ssd.ObjectDetection;
-
-    private constructor(model: ssd.ObjectDetection) {
-        this.model = model;
-    }
+    private constructor(private model: ssd.ObjectDetection) {}
 
     async detect(
         image: DetectionImage,
