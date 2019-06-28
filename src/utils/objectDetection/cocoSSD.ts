@@ -1,5 +1,5 @@
 import * as ssd from '@tensorflow-models/coco-ssd';
-import { IDetection, IObjectDetector } from '../interfaces';
+import { IDetection, IObjectDetector } from '../../models/objectDetection';
 import { DetectionImage } from '../types';
 
 export default class CocoSSD implements IObjectDetector {

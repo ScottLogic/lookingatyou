@@ -1,5 +1,5 @@
-import { IDetection } from '../interfaces';
-import selectFirstOfType from './selectFirst';
+import { IDetection } from '../../models/objectDetection';
+import selectFirst from './selectFirst';
 
 const notPerson: IDetection = {
     bbox: [0, 0, 0, 0],
@@ -19,15 +19,15 @@ const person: IDetection = {
 
 describe('selectFirstOfType should return', () => {
     it('undefined when arg:detections is empty', () => {
-        expect(selectFirstOfType([])).toBeUndefined();
+        expect(selectFirst([])).toBeUndefined();
     });
     it('undefined when arg:detections does not contain detection of arg:type', () => {
-        expect(selectFirstOfType([notPerson]));
+        expect(selectFirst([notPerson]));
     });
     it('Bbox of detection if arg:detections contains an detection of arg:type', () => {
-        expect(selectFirstOfType([person])).toBe(person.bbox);
+        expect(selectFirst([person])).toBe(person.bbox);
         expect(
-            selectFirstOfType([
+            selectFirst([
                 { ...notPerson },
                 { ...person },
                 {
@@ -39,7 +39,7 @@ describe('selectFirstOfType should return', () => {
     });
     it('Bbox of first detection if arg:detections contains multiple detections of arg:type', () => {
         expect(
-            selectFirstOfType([
+            selectFirst([
                 { ...person },
                 { ...person, bbox: [2, 2, 2, 2] },
                 { ...person, bbox: [3, 3, 3, 3] },

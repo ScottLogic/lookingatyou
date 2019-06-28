@@ -1,5 +1,4 @@
-import { ICoords } from '../interfaces';
-import { Bbox } from '../types';
+import { Bbox, ICoords } from '../types';
 
 export default function calculateTargetPos(bbox: Bbox): ICoords | undefined {
     if (bbox) {

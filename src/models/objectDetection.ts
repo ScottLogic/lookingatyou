@@ -1,4 +1,5 @@
-import { Bbox, DetectionConfig, DetectionImage } from './types';
+import * as ssd from '@tensorflow-models/coco-ssd';
+import { Bbox, DetectionImage } from '../utils/types';
 
 export interface IObjectDetector {
     detect(
@@ -17,7 +18,6 @@ export interface ICocoInfo {
     type: string;
 }
 
-export interface ICoords {
-    x: number;
-    y: number;
-}
+export type ModelConfig = ssd.ObjectDetectionBaseModel;
+
+export type DetectionConfig = number;

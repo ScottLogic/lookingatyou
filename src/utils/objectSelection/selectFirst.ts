@@ -1,4 +1,4 @@
-import { IDetection } from '../interfaces';
+import { IDetection } from '../../models/objectDetection';
 import { Bbox } from '../types';
 
 export default function selectFirst(detections: IDetection[]): Bbox {

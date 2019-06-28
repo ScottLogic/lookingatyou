@@ -1,5 +1,4 @@
-import { ICoords } from '../interfaces';
-import { Bbox } from '../types';
+import { Bbox, ICoords } from '../types';
 import calculateTargetPos, { normalise } from './calculateFocus';
 
 describe('normalise should return', () => {

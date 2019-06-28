@@ -6,9 +6,9 @@ import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import InterfaceUserConfig from './components/configMenu/InterfaceUserConfig';
 import EyeController from './components/eye/EyeController';
 import Video from './components/video/Video';
+import { IObjectDetector } from './models/objectDetection';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds, getVideos } from './store/selectors/videoSelectors';
-import { IObjectDetector } from './utils/interfaces';
 import CocoSSD from './utils/objectDetection/cocoSSD';
 import selectFirst from './utils/objectSelection/selectFirst';
 import calculateFocus, {
