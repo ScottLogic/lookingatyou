@@ -2,7 +2,8 @@ import { colours } from '../../AppConstants';
 import {
     ConfigActionTypes,
     IConfigState,
-    SET_CONFIG,
+    RESET_CONFIG,
+    UPDATE_CONFIG,
 } from '../actions/config/types';
 
 export const initialState: IConfigState = {
@@ -21,14 +22,16 @@ const configStore = (
     action: ConfigActionTypes,
 ): IConfigState => {
     switch (action.type) {
-        case SET_CONFIG:
+        case UPDATE_CONFIG:
             return {
                 ...state,
-                ...(state.config = {
+                config: {
                     ...state.config,
                     ...action.payload.partialConfig,
-                }),
+                },
             };
+        case RESET_CONFIG:
+            return initialState;
         default:
             return state;
     }

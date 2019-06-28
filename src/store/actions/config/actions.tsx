@@ -1,8 +1,19 @@
-import IUserConfig from '../../../components/configMenu/IUserConfig';
-import { ConfigActionTypes, ISetConfigPayload, SET_CONFIG } from './types';
-export function setConfigAction(payload: ISetConfigPayload): ConfigActionTypes {
+import {
+    ConfigActionTypes,
+    ISetConfigPayload,
+    RESET_CONFIG,
+    UPDATE_CONFIG,
+} from './types';
+export function updateConfigAction(
+    payload: ISetConfigPayload,
+): ConfigActionTypes {
     return {
-        type: SET_CONFIG,
+        type: UPDATE_CONFIG,
         payload,
+    };
+}
+export function resetConfigAction(): ConfigActionTypes {
+    return {
+        type: RESET_CONFIG,
     };
 }
