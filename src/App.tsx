@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import './App.css';
 import { configStorageKey, defaultConfigValues, FPS } from './AppConstants';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
-import InterfaceUserConfig from './components/configMenu/InterfaceUserConfig';
+import IUserConfig from './components/configMenu/IUserConfig';
 import EyeController from './components/eye/EyeController';
 import Video from './components/video/Video';
 import { IObjectDetector } from './models/objectDetection';
@@ -20,7 +20,7 @@ interface IAppState {
     width: number;
     height: number;
     webcamAvailable: boolean;
-    userConfig: InterfaceUserConfig;
+    userConfig: IUserConfig;
     targetX: number;
     targetY: number;
     modelLoaded: boolean;
@@ -171,8 +171,8 @@ export class App extends React.Component<AppProps, IAppState> {
         );
     }
 
-    store(partialState: Partial<InterfaceUserConfig>) {
-        const newUserConfig: InterfaceUserConfig = {
+    store(partialState: Partial<IUserConfig>) {
+        const newUserConfig: IUserConfig = {
             ...this.state.userConfig,
             ...partialState,
         };

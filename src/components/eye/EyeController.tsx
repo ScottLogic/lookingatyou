@@ -7,12 +7,12 @@ import {
     pupilSizes,
     transitionTime,
 } from '../../AppConstants';
-import InterfaceUserConfig from '../configMenu/InterfaceUserConfig';
+import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
 interface IEyeControllerProps {
     width: number;
     height: number;
-    userConfig: InterfaceUserConfig;
+    userConfig: IUserConfig;
     environment: Window;
     targetX: number;
     targetY: number;

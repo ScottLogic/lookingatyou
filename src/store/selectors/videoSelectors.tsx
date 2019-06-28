@@ -16,7 +16,9 @@ export function getStreamForDevice(
         .map((key: string) => state.videoStore.videos[key])[0];
 }
 
-export function getVideos(state: IRootStore): Array<HTMLVideoElement | undefined> {
+export function getVideos(
+    state: IRootStore,
+): Array<HTMLVideoElement | undefined> {
     return Object.values(state.videoStore.videos).map(
         (item: IVideo) => item.video,
     );

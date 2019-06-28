@@ -1,4 +1,4 @@
-import IUserConfig from './components/configMenu/InterfaceUserConfig';
+import IUserConfig from './components/configMenu/IUserConfig';
 
 export const FPS = 2;
 export const eyes = {

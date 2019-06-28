@@ -1,13 +1,13 @@
 import React from 'react';
 import ConfigMenu from './ConfigMenu';
-import InterfaceUserConfig from './InterfaceUserConfig';
+import IUserConfig from './IUserConfig';
 import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
 import TextBoxMenuItem from './menuItems/TextBoxMenuItem';
 interface ILookingAtYouConfig {
-    config: InterfaceUserConfig;
-    store: (partialState: Partial<InterfaceUserConfig>) => void;
+    config: IUserConfig;
+    store: (partialState: Partial<IUserConfig>) => void;
 }
 export default function LookingAtYouConfig(props: ILookingAtYouConfig) {
     function parseAndStoreXSensitivity(xSensitivity: string) {
