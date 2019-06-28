@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { configStorageKey } from '../../AppConstants';
 import { updateConfigAction } from '../../store/actions/config/actions';
@@ -13,6 +13,7 @@ import ColorMenuItem from './menuItems/ColorMenuItem';
 import TextBoxMenuItem from './menuItems/TextBoxMenuItem';
 interface IConfigMenuElementProps {
     storage: Storage;
+    config: IUserConfig;
 }
 interface IConfigMenuElementMapStateToProps {
     config: IUserConfig;
@@ -27,22 +28,11 @@ const mapStateToProps = (
     };
 };
 
-function ConfigMenuElement(props: ConfigMenuElementProps) {
-    const unsubscribe = store.subscribe(() => {
-        props.storage.setItem(
-            configStorageKey,
-            JSON.stringify(store.getState().configStore.config),
-        );
-    });
-    useState(() => {
-        const json = props.storage.getItem(configStorageKey);
-        if (json != null) {
-            store.dispatch(
-                updateConfigAction({ partialConfig: JSON.parse(json) }),
-            );
-        }
-        return () => unsubscribe();
-    });
+export default function ConfigMenuElement(props: IConfigMenuElementProps) {
+    useEffect(() => {
+        const json = JSON.stringify(props.config);
+        props.storage.setItem(configStorageKey, json);
+    }, [props.config, props.storage]);
     function parseAndStoreXSensitivity(xSensitivity: string) {
         store.dispatch(
             updateConfigAction({
@@ -137,4 +127,4 @@ function ConfigMenuElement(props: ConfigMenuElementProps) {
     );
 }
 
-export default connect(mapStateToProps)(ConfigMenuElement);
+connect(mapStateToProps)(ConfigMenuElement);

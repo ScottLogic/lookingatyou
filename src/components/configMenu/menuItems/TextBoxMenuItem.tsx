@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface ITextBoxMenuItemProps {
     name: string;
@@ -11,6 +11,9 @@ export default function TextBoxMenuItem(props: ITextBoxMenuItemProps) {
     const [isValid, setIsValid] = useState(true);
     const [value, setValue] = useState(props.defaultValue);
     const [lastValidValue, setLastValidValue] = useState(props.defaultValue);
+    useEffect(() => {
+        setValue(props.defaultValue);
+    }, [props.defaultValue, setValue]);
     function onBlur(event: React.FocusEvent<HTMLInputElement>) {
         setValue(props.parse(lastValidValue));
         setIsValid(true);
