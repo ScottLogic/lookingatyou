@@ -1,32 +1,84 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { updateConfigAction } from '../../store/actions/config/actions';
+import { IRootStore } from '../../store/reducers/rootReducer';
+import { getConfig } from '../../store/selectors/configSelectors';
+import store from '../../store/store';
 import ConfigMenu from './ConfigMenu';
 import IUserConfig from './IUserConfig';
 import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
 import TextBoxMenuItem from './menuItems/TextBoxMenuItem';
-interface ILookingAtYouConfig {
-    config: IUserConfig;
-    store: (partialState: Partial<IUserConfig>) => void;
+interface IConfigMenuElementProps {
+    storage: Storage;
 }
-export default function LookingAtYouConfig(props: ILookingAtYouConfig) {
+interface IConfigMenuElementMapStateToProps {
+    config: IUserConfig;
+}
+type ConfigMenuElementProps = IConfigMenuElementProps &
+    IConfigMenuElementMapStateToProps;
+const mapStateToProps = (
+    state: IRootStore,
+): IConfigMenuElementMapStateToProps => {
+    return {
+        config: getConfig(state),
+    };
+};
+
+function ConfigMenuElement(props: ConfigMenuElementProps) {
+    const unsubscribe = store.subscribe(() => {
+        props.storage.setItem(
+            'config',
+            JSON.stringify(store.getState().configStore.config),
+        );
+    });
+    useState(() => {
+        const json = props.storage.getItem('config');
+        if (json != null) {
+            store.dispatch(
+                updateConfigAction({ partialConfig: JSON.parse(json) }),
+            );
+        }
+        return () => unsubscribe();
+    });
     function parseAndStoreXSensitivity(xSensitivity: string) {
-        props.store({ xSensitivity: parseFloat(xSensitivity) });
+        store.dispatch(
+            updateConfigAction({
+                partialConfig: {
+                    xSensitivity: parseFloat(xSensitivity),
+                },
+            }),
+        );
     }
     function parseAndStoreYSensitivity(ySensitivity: string) {
-        props.store({ ySensitivity: parseFloat(ySensitivity) });
+        store.dispatch(
+            updateConfigAction({
+                partialConfig: {
+                    ySensitivity: parseFloat(ySensitivity),
+                },
+            }),
+        );
     }
     function parseAndStoreFPS(fps: string) {
-        props.store({ fps: parseInt(fps, 10) });
+        store.dispatch(
+            updateConfigAction({
+                partialConfig: { fps: parseInt(fps, 10) },
+            }),
+        );
     }
     function storeSwapEyes(swapEyes: boolean) {
-        props.store({ swapEyes });
+        store.dispatch(updateConfigAction({ partialConfig: { swapEyes } }));
     }
     function storeToggleDebug(toggleDebug: boolean) {
-        props.store({ toggleDebug });
+        store.dispatch(
+            updateConfigAction({
+                partialConfig: { toggleDebug },
+            }),
+        );
     }
     function storeIrisColor(irisColor: string) {
-        props.store({ irisColor });
+        store.dispatch(updateConfigAction({ partialConfig: { irisColor } }));
     }
     function extractFloatToString(floatString: string): string {
         return `${parseFloat(floatString)}`;
@@ -83,3 +135,5 @@ export default function LookingAtYouConfig(props: ILookingAtYouConfig) {
         </ConfigMenu>
     );
 }
+
+export default connect(mapStateToProps)(ConfigMenuElement);

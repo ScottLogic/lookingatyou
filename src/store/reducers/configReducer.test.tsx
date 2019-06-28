@@ -2,7 +2,7 @@ import {
     resetConfigAction,
     updateConfigAction,
 } from '../actions/config/actions';
-import { IConfigState, RESET_CONFIG } from '../actions/config/types';
+import { IConfigState } from '../actions/config/types';
 import configStore, { initialState } from './configReducer';
 
 describe('Config Reducer tests', () => {

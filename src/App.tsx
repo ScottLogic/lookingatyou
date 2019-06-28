@@ -1,9 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import './App.css';
-import { configStorageKey, defaultConfigValues, FPS } from './AppConstants';
+import { FPS } from './AppConstants';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
-import IUserConfig from './components/configMenu/IUserConfig';
 import EyeController from './components/eye/EyeController';
 import Video from './components/video/Video';
 import { IObjectDetector } from './models/objectDetection';
@@ -20,7 +19,6 @@ interface IAppState {
     width: number;
     height: number;
     webcamAvailable: boolean;
-    userConfig: IUserConfig;
     targetX: number;
     targetY: number;
     modelLoaded: boolean;
@@ -42,14 +40,14 @@ interface IAppMapStateToProps {
 
 type AppProps = IAppProps & IAppMapStateToProps;
 
-const mapStateToProps = (state: IRootStore) => {
+const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     return {
         deviceIds: getDeviceIds(state),
         videos: getVideos(state),
     };
 };
 
-export class App extends React.Component<AppProps, IAppState> {
+class App extends React.Component<AppProps, IAppState> {
     begunLoadingModel: boolean = false;
     private model: IObjectDetector | null;
     private captureInterval: number;
@@ -63,7 +61,6 @@ export class App extends React.Component<AppProps, IAppState> {
             webcamAvailable: false,
             targetX: this.props.environment.innerWidth / 4,
             targetY: this.props.environment.innerHeight / 2,
-            userConfig: this.readConfig() || defaultConfigValues,
             modelLoaded: false,
         };
 
@@ -71,11 +68,6 @@ export class App extends React.Component<AppProps, IAppState> {
         this.onUserMedia = this.onUserMedia.bind(this);
         this.onUserMediaError = this.onUserMediaError.bind(this);
         this.detectionHandler = this.detectionHandler.bind(this);
-        this.store = this.store.bind(this);
-
-        this.props.environment.addEventListener('storage', () =>
-            this.readConfig(),
-        );
         this.model = null;
         this.captureInterval = 0;
     }
@@ -151,7 +143,6 @@ export class App extends React.Component<AppProps, IAppState> {
                         <EyeController
                             width={this.state.width}
                             height={this.state.height}
-                            userConfig={this.state.userConfig}
                             environment={this.props.environment}
                             targetX={this.state.targetX}
                             targetY={this.state.targetY}
@@ -164,41 +155,10 @@ export class App extends React.Component<AppProps, IAppState> {
                 )}
 
                 <ConfigMenuElement
-                    config={this.state.userConfig}
-                    store={this.store}
+                    storage={this.props.environment.localStorage}
                 />
             </div>
         );
-    }
-
-    store(partialState: Partial<IUserConfig>) {
-        const newUserConfig: IUserConfig = {
-            ...this.state.userConfig,
-            ...partialState,
-        };
-        this.setState(
-            {
-                userConfig: newUserConfig,
-            },
-            () => {
-                const json = JSON.stringify(this.state.userConfig);
-                this.props.environment.localStorage.setItem(
-                    configStorageKey,
-                    json,
-                );
-            },
-        );
-    }
-
-    readConfig() {
-        const json = this.props.environment.localStorage.getItem(
-            configStorageKey,
-        );
-        if (json != null) {
-            return JSON.parse(json);
-        } else {
-            return null;
-        }
     }
 
     async detectionHandler(image: DetectionImage) {
