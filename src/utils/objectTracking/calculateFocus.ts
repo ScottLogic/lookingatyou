@@ -12,8 +12,8 @@ export function normalise(
     val: number,
     max: number,
     min: number = 0,
-    newMin: number = -1,
     newMax: number = 1,
+    newMin: number = -1,
 ): number {
     const normalised = (val - min) / (max - min);
     return normalised * (newMax - newMin) + newMin;
