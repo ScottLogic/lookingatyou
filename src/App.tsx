@@ -207,15 +207,6 @@ export class App extends React.Component<AppProps, IAppState> {
             const selection = selectFirst(detections, 'person');
             const coords = calculateFocus(selection);
             if (coords) {
-                console.log(coords);
-                console.log(image.width);
-                console.log(image.height);
-                console.log(
-                    'x: ' +
-                        normalize(coords.x, image.width) +
-                        ' y: ' +
-                        normalize(coords.y, image.height),
-                );
                 this.setState({
                     targetX: normalize(coords.x, image.width),
                     targetY: normalize(coords.y, image.height),
