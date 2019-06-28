@@ -74,8 +74,8 @@ export default function EyeController(props: IEyeControllerProps) {
                         pupilRadius={pupilRadius}
                         // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
                         openCoefficient={
-                            props.openCoefficient === eyelidPosition.SQUINT
-                                ? eyelidPosition.SQUINT
+                            props.openCoefficient !== eyesOpenCoefficient
+                                ? props.openCoefficient
                                 : isBlinking
                                 ? 0
                                 : eyesOpenCoefficient
