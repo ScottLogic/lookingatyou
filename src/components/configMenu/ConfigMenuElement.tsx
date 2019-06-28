@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { configStorageKey } from '../../AppConstants';
 import { updateConfigAction } from '../../store/actions/config/actions';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
@@ -29,12 +30,12 @@ const mapStateToProps = (
 function ConfigMenuElement(props: ConfigMenuElementProps) {
     const unsubscribe = store.subscribe(() => {
         props.storage.setItem(
-            'config',
+            configStorageKey,
             JSON.stringify(store.getState().configStore.config),
         );
     });
     useState(() => {
-        const json = props.storage.getItem('config');
+        const json = props.storage.getItem(configStorageKey);
         if (json != null) {
             store.dispatch(
                 updateConfigAction({ partialConfig: JSON.parse(json) }),
@@ -86,32 +87,32 @@ function ConfigMenuElement(props: ConfigMenuElementProps) {
     function extractIntToString(intString: string): string {
         return `${parseInt(intString, 10)}`;
     }
-    function validFloatString(floatString: string): boolean {
-        return !isNaN(parseFloat(floatString));
+    function validSensitivityString(sensitivity: string): boolean {
+        return !isNaN(parseFloat(sensitivity)) && parseFloat(sensitivity) >= 0;
     }
-    function validIntString(intString: string): boolean {
-        return !isNaN(parseInt(intString, 10));
+    function validFPSString(fps: string): boolean {
+        return !isNaN(parseInt(fps, 10)) && parseInt(fps, 10) > 0;
     }
     return (
         <ConfigMenu width="14em" timerLength={1000}>
             <TextBoxMenuItem
                 name={'X Sensitivity'}
                 defaultValue={`${props.config.xSensitivity}`}
-                isValidInput={validFloatString}
+                isValidInput={validSensitivityString}
                 onValidInput={parseAndStoreXSensitivity}
                 parse={extractFloatToString}
             />
             <TextBoxMenuItem
                 name={'Y Sensitivity'}
                 defaultValue={`${props.config.ySensitivity}`}
-                isValidInput={validFloatString}
+                isValidInput={validSensitivityString}
                 onValidInput={parseAndStoreYSensitivity}
                 parse={extractFloatToString}
             />
             <TextBoxMenuItem
                 name={'FPS'}
                 defaultValue={`${props.config.fps}`}
-                isValidInput={validIntString}
+                isValidInput={validFPSString}
                 onValidInput={parseAndStoreFPS}
                 parse={extractIntToString}
             />

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import {
-    colours,
     eyelidPosition,
     eyes,
     neutralBlinkFrequency,
@@ -91,9 +90,7 @@ export function EyeController(props: EyeControllerProps) {
                         key={key}
                         width={props.width / 2}
                         height={props.height}
-                        scleraColor={colours.scleraColor}
                         irisColor={props.config.irisColor}
-                        pupilColor={colours.pupilColor}
                         scleraRadius={scleraRadius}
                         irisRadius={irisRadius}
                         pupilRadius={pupilRadius}
@@ -103,6 +100,7 @@ export function EyeController(props: EyeControllerProps) {
                         dilatedCoefficient={dilationCoefficient}
                         innerX={innerX}
                         innerY={innerY}
+                        fps={props.config.fps}
                     />
                 );
             })}

@@ -1,4 +1,3 @@
-import { colours } from '../../AppConstants';
 import {
     ConfigActionTypes,
     IConfigState,
@@ -10,10 +9,10 @@ export const initialState: IConfigState = {
     config: {
         xSensitivity: 1,
         ySensitivity: 1,
-        fps: 5,
+        fps: 2,
         swapEyes: false,
         toggleDebug: false,
-        irisColor: colours.irisColor,
+        irisColor: '#ff8080', // must be hex value, as this is passed to colour picker input,
     },
 };
 

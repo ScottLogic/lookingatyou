@@ -1,13 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Unsubscribe } from 'redux';
 import './App.css';
-import { FPS } from './AppConstants';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
+import IUserConfig from './components/configMenu/IUserConfig';
 import EyeController from './components/eye/EyeController';
 import Video from './components/video/Video';
 import { IObjectDetector } from './models/objectDetection';
 import { IRootStore } from './store/reducers/rootReducer';
+import { getConfig } from './store/selectors/configSelectors';
 import { getDeviceIds, getVideos } from './store/selectors/videoSelectors';
+import store from './store/store';
 import CocoSSD from './utils/objectDetection/cocoSSD';
 import selectFirst from './utils/objectSelection/selectFirst';
 import calculateFocus, {
@@ -36,6 +39,7 @@ interface IAppProps {
 interface IAppMapStateToProps {
     deviceIds: string[];
     videos: Array<HTMLVideoElement | undefined>;
+    config: IUserConfig;
 }
 
 type AppProps = IAppProps & IAppMapStateToProps;
@@ -44,6 +48,7 @@ const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     return {
         deviceIds: getDeviceIds(state),
         videos: getVideos(state),
+        config: getConfig(state),
     };
 };
 
@@ -51,6 +56,7 @@ export class App extends React.Component<AppProps, IAppState> {
     begunLoadingModel: boolean = false;
     private model: IObjectDetector | null;
     private captureInterval: number;
+    private unsubscribe: Unsubscribe | null = null;
 
     constructor(props: AppProps) {
         super(props);
@@ -91,13 +97,25 @@ export class App extends React.Component<AppProps, IAppState> {
             this.model = await CocoSSD.init();
             this.setState({ modelLoaded: true });
             if (this.props.videos[0]) {
-                this.captureInterval = setInterval(
-                    this.detectionHandler,
-                    1000 / FPS,
-                    this.props.videos[0],
+                this.setFrameCaptureInterval(
+                    store.getState().configStore.config.fps,
                 );
+                this.unsubscribe = store.subscribe(() => {
+                    this.setFrameCaptureInterval(
+                        store.getState().configStore.config.fps,
+                    );
+                });
             }
         }
+    }
+
+    setFrameCaptureInterval(fps: number) {
+        clearInterval(this.captureInterval);
+        this.captureInterval = setInterval(
+            this.detectionHandler,
+            1000 / fps,
+            this.props.videos[0],
+        );
     }
 
     componentWillUnmount() {
@@ -105,6 +123,9 @@ export class App extends React.Component<AppProps, IAppState> {
             'resize',
             this.updateDimensions,
         );
+        if (this.unsubscribe !== null) {
+            this.unsubscribe();
+        }
         clearInterval(this.captureInterval);
     }
 
