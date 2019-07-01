@@ -1,6 +1,6 @@
 export const SET_VIDEO = 'SET_VIDEO';
 export const SET_VIDEO_STREAMS = 'SET_VIDEO_STREAMS';
-export const SET_DIMENSIONS = 'SET_DIMENSIONS';
+export const CLEAR_STATE = 'CLEAR_STATE';
 
 export interface IVideo {
     deviceId: string;
