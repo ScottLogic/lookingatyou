@@ -1,5 +1,6 @@
 import React from 'react';
 import tinycolor from 'tinycolor2';
+import './Gradients.css';
 
 interface IGradientsProps {
     pupilColor: string;
@@ -17,7 +18,7 @@ export function Gradients(props: IGradientsProps) {
         .toHexString();
 
     return (
-        <React.Fragment>
+        <svg className={'collapse'}>
             <defs>
                 <linearGradient id="lgrad" x1="0%" y1="50%" x2="100%" y2="50%">
                     <stop offset="35%" stopColor={props.irisColor} />
@@ -25,15 +26,20 @@ export function Gradients(props: IGradientsProps) {
                     <stop offset="100%" stopColor={darkIrisColor} />
                 </linearGradient>
 
-                <radialGradient id={'pupilGradient'} cx={'70%'} cy={'35%'}>
-                    <stop offset={'0%'} stopColor={'white'} />
-                    <stop offset={'50%'} stopColor={props.pupilColor} />
-                </radialGradient>
-
                 <radialGradient id={'scleraGradient'} cx={'50%'} cy={'50%'}>
-                    <stop offset={'40%'} stopColor={'white'} />
-                    <stop offset={'80%'} stopColor={'#F5F5F5'} />
-                    <stop offset={'100%'} stopColor={'#DCDCDC'} />
+                    <stop offset={'0%'} stopColor={'white'} />
+                    <stop
+                        offset={'85%'}
+                        stopColor={tinycolor('white')
+                            .darken(10)
+                            .toHexString()}
+                    />
+                    <stop
+                        offset={'100%'}
+                        stopColor={tinycolor('white')
+                            .darken(30)
+                            .toHexString()}
+                    />
                 </radialGradient>
 
                 <radialGradient
@@ -43,15 +49,14 @@ export function Gradients(props: IGradientsProps) {
                     href={'#lgrad'}
                 />
 
-                <radialGradient id="reflection" cx={'70%'} cy={'35%'}>
-                    <stop offset={'0%'} stopColor={'white'} opacity={0} />
-                    <stop
-                        offset={'50%'}
-                        stopColor={props.pupilColor}
-                        opacity={1}
-                    />
+                <radialGradient id="reflectionGradient">
+                    {/* <stop offset={'0%'} stopColor={'white'} opacity={1} />
+                    <stop offset={'100%'} stopColor={'white'} opacity={0} /> */}
+                    <stop offset="0%" stopColor={'white'} stopOpacity={1} />
+                    <stop offset="20%" stopColor={'white'} stopOpacity={0.7} />
+                    <stop offset="40%" stopColor={'white'} stopOpacity={0.05} />
                 </radialGradient>
             </defs>
-        </React.Fragment>
+        </svg>
     );
 }

@@ -12,6 +12,7 @@ import { getConfig } from '../../store/selectors/configSelectors';
 import { ICoords } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
+import { Gradients } from './Gradients';
 interface IEyeControllerProps {
     width: number;
     height: number;
@@ -103,6 +104,10 @@ export function EyeController(props: EyeControllerProps) {
                     />
                 );
             })}
+            <Gradients
+                irisColor={props.userConfig.irisColor}
+                pupilColor={colours.pupilColor}
+            />
         </div>
     );
 }

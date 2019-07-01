@@ -1,7 +1,11 @@
 import React from 'react';
+<<<<<<< HEAD
 import { eyes, transitionTime } from '../../AppConstants';
+=======
+import tinycolor from 'tinycolor2';
+import { FPS, transitionTime } from '../../AppConstants';
+>>>>>>> added gradients to the iris, inner lines and reflections
 import './Eye.css';
-import { Gradients } from './Gradients';
 
 interface IEyeProps {
     class: string;
@@ -19,6 +23,13 @@ interface IEyeProps {
 }
 
 export default class Eye extends React.Component<IEyeProps> {
+    elements: number;
+    r1: number;
+    r2: number;
+    circ1DistRadians: number;
+    circ2DistRadians: number;
+    startX: number;
+    startY: number;
     private circleTransitionStyle: { transition: string };
     private eyelidTransitionStyle: { transition: string };
     constructor(props: IEyeProps) {
@@ -30,12 +41,23 @@ export default class Eye extends React.Component<IEyeProps> {
         this.eyelidTransitionStyle = {
             transition: `d ${transitionTime.blink}ms`,
         };
+        this.elements = 10;
+        this.r1 = this.props.irisRadius * 0.1;
+        this.r2 = this.props.irisRadius * 0.9;
+        this.circ1DistRadians = ((360 / this.elements) * Math.PI) / 180;
+        this.circ2DistRadians = ((360 / this.elements) * Math.PI) / 180;
+        this.startX = this.props.innerX;
+        this.startY = this.props.innerY;
+    }
+
+    componentDidUpdate() {
+        this.startX = this.props.innerX;
+        this.startY = this.props.innerY;
     }
 
     renderCircle(
         radius: number,
         name: string,
-        colour: string,
         centerX: number = this.props.width / 2,
         centerY: number = this.props.height / 2,
     ) {
@@ -49,6 +71,24 @@ export default class Eye extends React.Component<IEyeProps> {
                 cy={centerY}
             />
         );
+    }
+
+    renderInside() {
+        let myInside = `M ${this.startX} ${this.startY}, `;
+
+        for (let i = 0; i <= this.elements; i++) {
+            const out = `L ${this.r2 * Math.cos(this.circ2DistRadians * i) +
+                this.startX} ${this.r2 * Math.sin(this.circ2DistRadians * i) +
+                this.startY},`;
+
+            const inLine = `L ${this.r1 * Math.cos(this.circ1DistRadians * i) +
+                this.startX} ${this.r1 * Math.sin(this.circ1DistRadians * i) +
+                this.startY}, `;
+
+            myInside += out;
+            myInside += inLine;
+        }
+        return myInside;
     }
 
     render() {
@@ -94,23 +134,44 @@ export default class Eye extends React.Component<IEyeProps> {
                 width={this.props.width}
                 height={this.props.height}
             >
-                {this.renderCircle(this.props.scleraRadius, 'sclera', 'white')}
+                {this.renderCircle(this.props.scleraRadius, 'sclera')}
                 <g className="inner">
                     {this.renderCircle(
                         this.props.irisRadius,
                         'iris',
-                        this.props.irisColor,
                         this.props.innerX,
                         this.props.innerY,
                     )}
+                    {/* <path
+                        d={this.renderInside()}
+                        fill={tinycolor(this.props.irisColor)
+                            .darken(5)
+                            .toHexString()}
+                    /> */}
                     {this.renderCircle(
                         this.props.pupilRadius * this.props.dilatedCoefficient,
                         'pupil',
-                        'black',
                         this.props.innerX,
                         this.props.innerY,
                     )}
+                    <circle
+                        r={this.props.pupilRadius}
+                        className={'reflection'}
+                        // fill={colour}
+                        cx={this.props.innerX + this.props.pupilRadius * 0.4}
+                        cy={this.props.innerY - this.props.pupilRadius * 0.4}
+                        transform="skewX(20) translate(-165, 0) "
+                    />
+                    <circle
+                        r={this.props.pupilRadius}
+                        className={'reflection'}
+                        // fill={colour}
+                        cx={this.props.innerX + this.props.scleraRadius * 0.3}
+                        cy={this.props.innerY - this.props.scleraRadius * 0.3}
+                        transform="skewX(20) translate(-165, 5) "
+                    />
                 </g>
+                <svg />
                 <svg className="Eyelids">
                     <path
                         style={this.eyelidTransitionStyle}
@@ -123,7 +184,7 @@ export default class Eye extends React.Component<IEyeProps> {
                          C ${eyeRight -
                              rightTopCoefficient *
                                  scaledXBezierControlOffset} ${eyeMiddleY -
-                                scaledYBezierControlOffset}, 
+                                scaledYBezierControlOffset},
                          ${eyeMiddleX +
                              bezierControlOffset} ${topEyelidY}, ${eyeMiddleX} ${topEyelidY}
                          C ${eyeMiddleX -
@@ -144,7 +205,7 @@ export default class Eye extends React.Component<IEyeProps> {
                          C ${eyeRight -
                              rightBottomCoefficient *
                                  scaledXBezierControlOffset} ${eyeMiddleY +
-                                scaledYBezierControlOffset}, 
+                                scaledYBezierControlOffset},
                          ${eyeMiddleX +
                              bezierControlOffset} ${bottomEyelidY}, ${eyeMiddleX} ${bottomEyelidY}
                          C ${eyeMiddleX -
@@ -183,10 +244,6 @@ export default class Eye extends React.Component<IEyeProps> {
                         }
                     />
                 </svg>
-                <Gradients
-                    pupilColor={this.props.pupilColor}
-                    irisColor={this.props.irisColor}
-                />
             </svg>
         );
     }

@@ -10,14 +10,14 @@
     stroke-width: 2;
 }
 
-.pupil {
-    fill: url(#pupilGradient);
-}
-
 .sclera {
     fill: url(#scleraGradient);
 }
 
 .iris {
     fill: url(#irisGradient);
+}
+
+.reflection {
+    fill: url(#reflectionGradient);
 }
