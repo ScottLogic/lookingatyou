@@ -23,6 +23,13 @@ export interface IEyeProps {
 const pupilColor = 'black';
 
 export default class Eye extends React.Component<IEyeProps> {
+    elements: number;
+    r1: number;
+    r2: number;
+    circ1DistRadians: number;
+    circ2DistRadians: number;
+    startX: number;
+    startY: number;
     private circleTransitionStyle: { transition: string };
     private eyelidTransitionStyle: { transition: string };
     private lineTransitionStyle: { transition: string };
@@ -162,6 +169,7 @@ export default class Eye extends React.Component<IEyeProps> {
                         'skewX(20) translate(-165, 5)',
                     )}
                 </g>
+                <svg />
                 <svg className="Eyelids">
                     <path
                         style={this.eyelidTransitionStyle}
@@ -234,10 +242,6 @@ export default class Eye extends React.Component<IEyeProps> {
                         }
                     />
                 </svg>
-                <Gradients
-                    pupilColor={this.props.pupilColor}
-                    irisColor={this.props.irisColor}
-                />
             </svg>
         );
     }
