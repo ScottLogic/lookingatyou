@@ -68,10 +68,10 @@ export default class Eye extends React.Component<IEyeProps> {
             bezierControlOffset * this.props.openCoefficient;
         const scaledXBezierControlOffset =
             bezierControlOffset - scaledYBezierControlOffset;
-        const innerTopCoefficient = 1.25;
+        const innerTopCoefficient = 1.45;
         const innerBottomCoefficient = 1.1;
-        const outerTopCoefficient = 0.85;
-        const outerBottomCoefficient = 0.9;
+        const outerTopCoefficient = 0.7;
+        const outerBottomCoefficient = 0.5;
         let leftTopCoefficient;
         let rightTopCoefficient;
         let leftBottomCoefficient;
