@@ -1,14 +1,12 @@
 import React from 'react';
-import { FPS, transitionTime } from '../../AppConstants';
+import { transitionTime } from '../../AppConstants';
 import './Eye.css';
 
 interface IEyeProps {
     class: string;
     width: number;
     height: number;
-    scleraColor: string;
     irisColor: string;
-    pupilColor: string;
     scleraRadius: number;
     irisRadius: number;
     pupilRadius: number;
@@ -16,6 +14,7 @@ interface IEyeProps {
     dilatedCoefficient: number;
     innerX: number;
     innerY: number;
+    fps: number;
 }
 
 export default class Eye extends React.Component<IEyeProps> {
@@ -24,7 +23,8 @@ export default class Eye extends React.Component<IEyeProps> {
     constructor(props: IEyeProps) {
         super(props);
         this.circleTransitionStyle = {
-            transition: `r ${transitionTime.dilate}ms, cx ${1000 / FPS}ms`, // cx and cy transitions based on FPS
+            transition: `r ${transitionTime.dilate}ms, cx ${1000 /
+                props.fps}ms`, // cx and cy transitions based on FPS
         };
         this.eyelidTransitionStyle = {
             transition: `d ${transitionTime.blink}ms`,
@@ -72,11 +72,7 @@ export default class Eye extends React.Component<IEyeProps> {
                 width={this.props.width}
                 height={this.props.height}
             >
-                {this.renderCircle(
-                    this.props.scleraRadius,
-                    'sclera',
-                    this.props.scleraColor,
-                )}
+                {this.renderCircle(this.props.scleraRadius, 'sclera', 'white')}
                 <g className="inner">
                     {this.renderCircle(
                         this.props.irisRadius,
@@ -88,7 +84,7 @@ export default class Eye extends React.Component<IEyeProps> {
                     {this.renderCircle(
                         this.props.pupilRadius * this.props.dilatedCoefficient,
                         'pupil',
-                        this.props.pupilColor,
+                        'black',
                         this.props.innerX,
                         this.props.innerY,
                     )}
