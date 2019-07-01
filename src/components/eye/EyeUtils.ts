@@ -16,7 +16,7 @@ export function checkLight(
         | HTMLCanvasElement
         | HTMLVideoElement
         | null,
-    callback: (
+    analyse: (
         canvas: HTMLCanvasElement,
         tooBright: boolean,
     ) => [boolean, number],
@@ -30,7 +30,7 @@ export function checkLight(
         if (canvasCtx) {
             canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
         }
-        return callback(canvas, tooBright);
+        return analyse(canvas, tooBright);
     }
     return [false, 0];
 }
