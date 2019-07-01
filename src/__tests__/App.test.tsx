@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { AnyAction, Store } from 'redux';
 import configureStore from 'redux-mock-store';
-import App, { App as App_ } from '../App';
+import ConnectedApp, { App as WrappedApp } from '../App';
 import { initialState as initialConfigState } from '../store/reducers/configReducer';
 import { IRootStore } from '../store/reducers/rootReducer';
 import { initialState as initialVideoState } from '../store/reducers/videoReducer';
@@ -32,7 +32,10 @@ describe('App', () => {
         configureStream = jest.fn();
         ReactDOM.render(
             <Provider store={store}>
-                <App environment={window} configureStream={configureStream} />
+                <ConnectedApp
+                    environment={window}
+                    configureStream={configureStream}
+                />
             </Provider>,
             div,
         );
@@ -41,7 +44,7 @@ describe('App', () => {
 
     it('should render 2 video components when 2 devices are detected', () => {
         const wrapper = shallow(
-            <App_
+            <WrappedApp
                 deviceIds={[testDevice1, testDevice2]}
                 environment={window}
                 configureStream={configureStream}
