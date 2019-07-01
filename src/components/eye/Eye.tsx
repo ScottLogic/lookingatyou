@@ -183,11 +183,6 @@ export default class Eye extends React.Component<IEyeProps> {
                         }
                     />
                 </svg>
-                {/* {this.renderCircle(
-                    this.props.scleraRadius,
-                    'reflection',
-                    this.props.scleraColor,
-                )} */}
                 <Gradients
                     pupilColor={this.props.pupilColor}
                     irisColor={this.props.irisColor}

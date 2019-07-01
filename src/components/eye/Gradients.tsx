@@ -1,23 +1,28 @@
 import React from 'react';
+import tinycolor from 'tinycolor2';
 
 interface IGradientsProps {
     pupilColor: string;
     irisColor: string;
 }
 
+const irisColorFactor = 30;
+
 export function Gradients(props: IGradientsProps) {
+    const darkIrisColor = tinycolor(props.irisColor)
+        .darken(irisColorFactor)
+        .toHexString();
+    const lightIrisColor = tinycolor(props.irisColor)
+        .brighten(irisColorFactor)
+        .toHexString();
+
     return (
         <React.Fragment>
             <defs>
-                <linearGradient id="prefix__a">
-                    <stop offset={'0'} stopColor={props.irisColor} />
-                    <stop offset={'1'} stopColor="#79dfee" />
-                </linearGradient>
-
                 <linearGradient id="lgrad" x1="0%" y1="50%" x2="100%" y2="50%">
                     <stop offset="35%" stopColor={props.irisColor} />
-                    <stop offset="75%" stopColor={props.irisColor} />
-                    <stop offset="100%" stopColor={'#6d6d6d'} />
+                    <stop offset="70%" stopColor={lightIrisColor} />
+                    <stop offset="100%" stopColor={darkIrisColor} />
                 </linearGradient>
 
                 <radialGradient id={'pupilGradient'} cx={'70%'} cy={'35%'}>
@@ -35,8 +40,6 @@ export function Gradients(props: IGradientsProps) {
                     id="irisGradient"
                     cx={'50%'}
                     cy={'50%'}
-                    gradientUnits="objectBoundingBox"
-                    spreadMethod="reflect"
                     href={'#lgrad'}
                 />
 
