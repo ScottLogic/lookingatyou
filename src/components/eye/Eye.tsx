@@ -23,6 +23,13 @@ export interface IEyeProps {
 const pupilColor = 'black';
 
 export default class Eye extends React.Component<IEyeProps> {
+    elements: number;
+    r1: number;
+    r2: number;
+    circ1DistRadians: number;
+    circ2DistRadians: number;
+    startX: number;
+    startY: number;
     private circleTransitionStyle: { transition: string };
     private eyelidTransitionStyle: { transition: string };
     private lineTransitionStyle: { transition: string };
@@ -39,6 +46,18 @@ export default class Eye extends React.Component<IEyeProps> {
         this.lineTransitionStyle = {
             transition: `d ${1000 / props.fps}ms`,
         };
+        this.elements = 10;
+        this.r1 = this.props.irisRadius * 0.1;
+        this.r2 = this.props.irisRadius * 0.9;
+        this.circ1DistRadians = ((360 / this.elements) * Math.PI) / 180;
+        this.circ2DistRadians = ((360 / this.elements) * Math.PI) / 180;
+        this.startX = this.props.innerX;
+        this.startY = this.props.innerY;
+    }
+
+    componentDidUpdate() {
+        this.startX = this.props.innerX;
+        this.startY = this.props.innerY;
     }
 
     renderCircle(
@@ -79,6 +98,23 @@ export default class Eye extends React.Component<IEyeProps> {
                 />
             </g>
         );
+    }
+    renderInside() {
+        let myInside = `M ${this.startX} ${this.startY}, `;
+
+        for (let i = 0; i <= this.elements; i++) {
+            const out = `L ${this.r2 * Math.cos(this.circ2DistRadians * i) +
+                this.startX} ${this.r2 * Math.sin(this.circ2DistRadians * i) +
+                this.startY},`;
+
+            const inLine = `L ${this.r1 * Math.cos(this.circ1DistRadians * i) +
+                this.startX} ${this.r1 * Math.sin(this.circ1DistRadians * i) +
+                this.startY}, `;
+
+            myInside += out;
+            myInside += inLine;
+        }
+        return myInside;
     }
 
     render() {
@@ -162,6 +198,7 @@ export default class Eye extends React.Component<IEyeProps> {
                         'skewX(20) translate(-165, 5)',
                     )}
                 </g>
+                <svg />
                 <svg className="Eyelids">
                     <path
                         style={this.eyelidTransitionStyle}
@@ -234,10 +271,6 @@ export default class Eye extends React.Component<IEyeProps> {
                         }
                     />
                 </svg>
-                <Gradients
-                    pupilColor={this.props.pupilColor}
-                    irisColor={this.props.irisColor}
-                />
             </svg>
         );
     }
