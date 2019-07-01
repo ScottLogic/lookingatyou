@@ -2,7 +2,7 @@ import React from 'react';
 interface ICanvasMenuItemProps {
     name: string;
 }
-export default class CanvasMenuItem extends React.Component<
+export default class CanvasMenuItem extends React.PureComponent<
     ICanvasMenuItemProps
 > {
     private canvasRef: React.RefObject<HTMLCanvasElement>;
