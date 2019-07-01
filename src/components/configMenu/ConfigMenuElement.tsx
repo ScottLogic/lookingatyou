@@ -41,7 +41,7 @@ export default function LookingAtYouConfig(props: ILookingAtYouConfig) {
         return !isNaN(parseInt(intString, 10));
     }
     return (
-        <ConfigMenu width="14em" timerLength={1000}>
+        <ConfigMenu width="320px" timerLength={1000}>
             <TextBoxMenuItem
                 name={'X Sensitivity'}
                 defaultValue={`${props.config.xSensitivity}`}
@@ -78,8 +78,7 @@ export default function LookingAtYouConfig(props: ILookingAtYouConfig) {
                 color={props.config.irisColor}
                 onInputChange={storeIrisColor}
             />
-            <CanvasMenuItem name={'Left Camera'} />
-            <CanvasMenuItem name={'Right Camera'} />
+            <CanvasMenuItem name={'Camera Feed'} bbox={props.config.bbox} />
         </ConfigMenu>
     );
 }

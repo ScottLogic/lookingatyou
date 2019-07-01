@@ -17,6 +17,7 @@ export const defaultConfigValues: IUserConfig = {
     swapEyes: false,
     toggleDebug: false,
     irisColor: colours.irisColor,
+    bbox: [0, 0, 0, 0],
 };
 export const configStorageKey = 'config';
 export const eyelidPosition = {

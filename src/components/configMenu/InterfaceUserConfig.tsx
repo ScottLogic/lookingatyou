@@ -5,4 +5,5 @@ export default interface IUserConfig {
     swapEyes: boolean;
     toggleDebug: boolean;
     irisColor: string;
+    bbox: number[];
 }

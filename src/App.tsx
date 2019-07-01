@@ -153,6 +153,7 @@ export class App extends React.Component<AppProps, IAppState> {
     }
 
     calculateEyePos(bbox: number[]) {
+        this.store({ bbox });
         const [x, y, width, height] = bbox;
         this.setState({
             targetX: 2 * ((x + width / 2) / this.props.videos[0]!.width - 0.5), // scaled to value between -1 and 1
@@ -164,12 +165,6 @@ export class App extends React.Component<AppProps, IAppState> {
     render() {
         return (
             <div className="App">
-                <div className="webcam-feed">
-                    {this.props.deviceIds.map((device, key) => (
-                        <Video key={key} deviceId={device} />
-                    ))}
-                </div>
-
                 {this.state.webcamAvailable ? (
                     !this.state.modelLoaded ? (
                         <div className="loading-spinner" />
