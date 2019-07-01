@@ -4,7 +4,7 @@ export const eyes = {
     RIGHT: 'right',
 };
 export const eyelidPosition = {
-    OPEN: 0.5,
+    OPEN: 0.45,
     CLOSED: 0,
     SHOCKED: 0.75,
 };

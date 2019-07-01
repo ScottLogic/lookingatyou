@@ -1,5 +1,5 @@
 import React from 'react';
-import { transitionTime } from '../../AppConstants';
+import { eyes, transitionTime } from '../../AppConstants';
 import './Eye.css';
 
 interface IEyeProps {
@@ -24,7 +24,7 @@ export default class Eye extends React.Component<IEyeProps> {
         super(props);
         this.circleTransitionStyle = {
             transition: `r ${transitionTime.dilate}ms, cx ${1000 /
-                props.fps}ms`, // cx and cy transitions based on FPS
+                props.fps}ms, cy ${1000 / props.fps}ms`, // cx and cy transitions based on FPS
         };
         this.eyelidTransitionStyle = {
             transition: `d ${transitionTime.blink}ms`,
@@ -63,9 +63,30 @@ export default class Eye extends React.Component<IEyeProps> {
 
         const bezierCurveConstant = 0.55228474983; // (4/3)tan(pi/8)
         const bezierControlOffset =
-            this.props.scleraRadius *
-            bezierCurveConstant *
-            this.props.openCoefficient;
+            this.props.scleraRadius * bezierCurveConstant;
+        const scaledYBezierControlOffset =
+            bezierControlOffset * this.props.openCoefficient;
+        const scaledXBezierControlOffset =
+            bezierControlOffset - scaledYBezierControlOffset;
+        const innerTopCoefficient = 1.25;
+        const innerBottomCoefficient = 1.1;
+        const outerTopCoefficient = 0.85;
+        const outerBottomCoefficient = 0.9;
+        let leftTopCoefficient;
+        let rightTopCoefficient;
+        let leftBottomCoefficient;
+        let rightBottomCoefficient;
+        if (this.props.class === eyes.RIGHT) {
+            leftTopCoefficient = innerTopCoefficient;
+            rightTopCoefficient = outerTopCoefficient;
+            leftBottomCoefficient = innerBottomCoefficient;
+            rightBottomCoefficient = outerBottomCoefficient;
+        } else {
+            leftTopCoefficient = outerTopCoefficient;
+            rightTopCoefficient = innerTopCoefficient;
+            leftBottomCoefficient = outerBottomCoefficient;
+            rightBottomCoefficient = innerBottomCoefficient;
+        }
         return (
             <svg
                 className={this.props.class}
@@ -98,12 +119,17 @@ export default class Eye extends React.Component<IEyeProps> {
                          A ${this.props.scleraRadius} ${
                                 this.props.scleraRadius
                             } 0 0 1 ${eyeRight} ${eyeMiddleY}
-                         C ${eyeRight} ${eyeMiddleY -
-                                bezierControlOffset}, ${eyeMiddleX +
-                                bezierControlOffset} ${topEyelidY}, ${eyeMiddleX} ${topEyelidY}
+                         C ${eyeRight -
+                             rightTopCoefficient *
+                                 scaledXBezierControlOffset} ${eyeMiddleY -
+                                scaledYBezierControlOffset}, 
+                         ${eyeMiddleX +
+                             bezierControlOffset} ${topEyelidY}, ${eyeMiddleX} ${topEyelidY}
                          C ${eyeMiddleX -
-                             bezierControlOffset} ${topEyelidY}, ${eyeLeft} ${eyeMiddleY -
-                                bezierControlOffset}, ${eyeLeft} ${eyeMiddleY}`
+                             bezierControlOffset} ${topEyelidY}, ${eyeLeft +
+                                leftTopCoefficient *
+                                    scaledXBezierControlOffset} ${eyeMiddleY -
+                                scaledYBezierControlOffset}, ${eyeLeft} ${eyeMiddleY}`
                         }
                     />
                     <path
@@ -114,12 +140,17 @@ export default class Eye extends React.Component<IEyeProps> {
                          A ${this.props.scleraRadius} ${
                                 this.props.scleraRadius
                             } 0 0 0 ${eyeRight} ${eyeMiddleY}
-                         C ${eyeRight} ${eyeMiddleY +
-                                bezierControlOffset}, ${eyeMiddleX +
-                                bezierControlOffset} ${bottomEyelidY}, ${eyeMiddleX} ${bottomEyelidY}
+                         C ${eyeRight -
+                             rightBottomCoefficient *
+                                 scaledXBezierControlOffset} ${eyeMiddleY +
+                                scaledYBezierControlOffset}, 
+                         ${eyeMiddleX +
+                             bezierControlOffset} ${bottomEyelidY}, ${eyeMiddleX} ${bottomEyelidY}
                          C ${eyeMiddleX -
-                             bezierControlOffset} ${bottomEyelidY}, ${eyeLeft} ${eyeMiddleY +
-                                bezierControlOffset}, ${eyeLeft} ${eyeMiddleY}`
+                             bezierControlOffset} ${bottomEyelidY}, ${eyeLeft +
+                                leftBottomCoefficient *
+                                    scaledXBezierControlOffset} ${eyeMiddleY +
+                                scaledYBezierControlOffset}, ${eyeLeft} ${eyeMiddleY}`
                         }
                     />
                 </svg>
