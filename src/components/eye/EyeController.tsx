@@ -73,13 +73,7 @@ export default function EyeController(props: IEyeControllerProps) {
                         irisRadius={irisRadius}
                         pupilRadius={pupilRadius}
                         // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
-                        openCoefficient={
-                            props.openCoefficient !== eyesOpenCoefficient
-                                ? props.openCoefficient
-                                : isBlinking
-                                ? 0
-                                : eyesOpenCoefficient
-                        }
+                        openCoefficient={getEyesOpenCoefficient()}
                         // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
                         dilatedCoefficient={props.dilationCoefficient}
                         innerX={innerX}
@@ -89,4 +83,14 @@ export default function EyeController(props: IEyeControllerProps) {
             })}
         </div>
     );
+
+    function getEyesOpenCoefficient(): number {
+        if (props.openCoefficient !== eyesOpenCoefficient) {
+            return props.openCoefficient;
+        } else if (isBlinking) {
+            return 0;
+        } else {
+            return eyesOpenCoefficient;
+        }
+    }
 }
