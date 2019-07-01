@@ -13,6 +13,7 @@ export default function TextBoxMenuItem(props: ITextBoxMenuItemProps) {
     const [lastValidValue, setLastValidValue] = useState(props.defaultValue);
     useEffect(() => {
         setValue(props.defaultValue);
+        setLastValidValue(props.defaultValue);
     }, [props.defaultValue, setValue]);
     function onBlur(event: React.FocusEvent<HTMLInputElement>) {
         setValue(props.parse(lastValidValue));
