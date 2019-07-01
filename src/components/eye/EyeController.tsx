@@ -1,23 +1,31 @@
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import {
-    colours,
     eyelidPosition,
     eyes,
     neutralBlinkFrequency,
     pupilSizes,
     transitionTime,
 } from '../../AppConstants';
-import InterfaceUserConfig from '../configMenu/InterfaceUserConfig';
+import { IRootStore } from '../../store/reducers/rootReducer';
+import { getConfig } from '../../store/selectors/configSelectors';
+import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
 interface IEyeControllerProps {
     width: number;
     height: number;
-    userConfig: InterfaceUserConfig;
     environment: Window;
     targetX: number;
     targetY: number;
 }
-export default function EyeController(props: IEyeControllerProps) {
+interface IEyeControllerMapStateToProps {
+    config: IUserConfig;
+}
+type EyeControllerProps = IEyeControllerProps & IEyeControllerMapStateToProps;
+const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
+    config: getConfig(state),
+});
+export function EyeController(props: EyeControllerProps) {
     const [blinkFrequencyCoefficient] = useState(1); // Will change based on camera feed e.g. lower coefficient when object in frame
     const [isBlinking, setIsBlinking] = useState(false); // Will change based on camera feed e.g. blink less when object in frame
     const [eyesOpenCoefficient] = useState(eyelidPosition.OPEN); // Will change based on camera feed e.g. higher coefficient to show surprise
@@ -63,8 +71,8 @@ export default function EyeController(props: IEyeControllerProps) {
     const irisRadius = props.width / 10;
     const pupilRadius = props.width / 24;
     const maxDisplacement = scleraRadius - irisRadius;
-    const targetY = props.targetY * props.userConfig.ySensitivity;
-    const targetX = -props.targetX * props.userConfig.xSensitivity; // mirrored
+    const targetY = props.targetY * props.config.ySensitivity;
+    const targetX = -props.targetX * props.config.xSensitivity; // mirrored
     const polarDistance = Math.hypot(targetY, targetX);
     const polarAngle = Math.atan2(targetY, targetX);
     const displacement = Math.min(1, polarDistance) * maxDisplacement;
@@ -80,9 +88,7 @@ export default function EyeController(props: IEyeControllerProps) {
                         key={key}
                         width={props.width / 2}
                         height={props.height}
-                        scleraColor={colours.scleraColor}
-                        irisColor={props.userConfig.irisColor}
-                        pupilColor={colours.pupilColor}
+                        irisColor={props.config.irisColor}
                         scleraRadius={scleraRadius}
                         irisRadius={irisRadius}
                         pupilRadius={pupilRadius}
@@ -92,9 +98,12 @@ export default function EyeController(props: IEyeControllerProps) {
                         dilatedCoefficient={dilationCoefficient}
                         innerX={innerX}
                         innerY={innerY}
+                        fps={props.config.fps}
                     />
                 );
             })}
         </div>
     );
 }
+
+export default connect(mapStateToProps)(EyeController);
