@@ -1,4 +1,5 @@
 import {
+    CLEAR_STATE,
     ISetVideoPayload,
     IVideo,
     SET_VIDEO,
