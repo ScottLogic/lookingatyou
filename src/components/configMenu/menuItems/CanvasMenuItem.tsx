@@ -5,7 +5,6 @@ import {
     getDeviceIds,
     getVideos,
 } from '../../../store/selectors/videoSelectors';
-import Video from '../../video/Video';
 interface ICanvasMenuItemProps {
     name: string;
     bbox: number[];
@@ -39,32 +38,11 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         this.getStream = this.getStream.bind(this);
     }
 
-    componentDidMount() {
-        const video = this.props.videos[0] as HTMLVideoElement;
-        // this.canvasRef = video;
-    }
-
     componentDidUpdate() {
         this.getStream();
     }
 
     getStream() {
-        /*if (this.props.videos[0] instanceof HTMLVideoElement) {
-            const img = new Image();
-
-            const canvas = document.createElement('canvas');
-            const canvasContext = canvas.getContext('2d');
-
-            const video = this.props.videos[0] as HTMLVideoElement;
-
-            if (canvasContext) {
-                canvasContext.drawImage(video, 0, 0, video.height, video.width);
-
-                img.src = canvas.toDataURL();
-
-                setStream.call(this, img);
-            }
-        }*/
         const video = this.props.videos[0] as HTMLVideoElement;
         const [x, y, width, height] = this.props.bbox;
         const bbox = { x, y, width, height };
@@ -76,11 +54,6 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
             <div>
                 <label>{this.props.name}</label>
                 <br />
-                <div className="webcam-feed">
-                    {this.props.deviceIds.map((device, key) => (
-                        <Video key={key} deviceId={device} />
-                    ))}
-                </div>
                 <canvas id="canvas" width="320" height="240" />
             </div>
         );

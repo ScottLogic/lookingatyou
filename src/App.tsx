@@ -169,14 +169,21 @@ export class App extends React.Component<AppProps, IAppState> {
                     !this.state.modelLoaded ? (
                         <div className="loading-spinner" />
                     ) : (
-                        <EyeController
-                            width={this.state.width}
-                            height={this.state.height}
-                            userConfig={this.state.userConfig}
-                            environment={this.props.environment}
-                            targetX={this.state.targetX}
-                            targetY={this.state.targetY}
-                        />
+                        <div>
+                            <EyeController
+                                width={this.state.width}
+                                height={this.state.height}
+                                userConfig={this.state.userConfig}
+                                environment={this.props.environment}
+                                targetX={this.state.targetX}
+                                targetY={this.state.targetY}
+                            />
+                            <div className="webcam-feed">
+                                {this.props.deviceIds.map((device, key) => (
+                                    <Video key={key} deviceId={device} />
+                                ))}
+                            </div>
+                        </div>
                     )
                 ) : (
                     <div className="Error">
