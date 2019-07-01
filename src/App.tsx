@@ -37,7 +37,7 @@ const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     };
 };
 
-export class App extends React.Component<AppProps, IAppState> {
+export class App extends React.PureComponent<AppProps, IAppState> {
     constructor(props: AppProps) {
         super(props);
 
