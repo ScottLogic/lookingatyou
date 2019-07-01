@@ -7,9 +7,9 @@ export default function selectMatching(
     let best = 0;
     for (let i = 1; i < rightEyeCoords.length && i < maxIndex; i++) {
         if (
-            isLeftOf(rightEyeCoords[i], leftEyeCoord) &&
             yDifference(rightEyeCoords[i], leftEyeCoord) <
-                yDifference(rightEyeCoords[best], leftEyeCoord)
+                yDifference(rightEyeCoords[best], leftEyeCoord) &&
+            isLeftOf(rightEyeCoords[i], leftEyeCoord)
         ) {
             best = i;
         }
