@@ -44,7 +44,6 @@ export function Video(props: VideoProps) {
 
     return (
         <video
-            className={'hidden'}
             autoPlay={true}
             height={props.height}
             width={props.width}
