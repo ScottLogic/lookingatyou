@@ -80,30 +80,6 @@ export default class Eye extends React.Component<IEyeProps> {
         );
     }
 
-    renderInside2() {
-        console.log(this.props.width);
-        const scale = this.props.width / 960;
-        const radius = this.props.irisRadius;
-        return (
-            <g
-                // transform={`scale(${scale}px) translate(${this.props.width / 2 -
-                //     (this.props.width / 2) * scale}px, ${this.props.width / 2 -
-                //     (this.props.width / 2) * scale}px)`}
-                transform={`
-                scale(${scale})`}
-            >
-                <path
-                    d={`M ${this.props.innerX / scale} ${this.props.innerY /
-                        scale} ${innerPath}`}
-                    fill={tinycolor(this.props.irisColor)
-                        .darken(10)
-                        .toHexString()}
-                    style={{ transition: `d ${1000 / this.props.fps}ms` }}
-                />
-            </g>
-        );
-    }
-
     render() {
         const eyeMiddleX = this.props.width / 2;
         const eyeLeft = eyeMiddleX - this.props.scleraRadius;
@@ -167,6 +143,9 @@ export default class Eye extends React.Component<IEyeProps> {
                         pupilColor,
                         this.props.innerX,
                         this.props.innerY,
+                    )}
+                    {console.log(
+                        this.props.innerX + this.props.pupilRadius * 0.4,
                     )}
                     {this.renderCircle(
                         this.props.pupilRadius,
