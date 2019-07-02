@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Eye Controller should render correctly 1`] = `
+"<svg>
+  <defs>
+    <filter id=\\"shadowTop\\">
+      <feDropShadow dx=\\"0\\" dy=\\"20\\" stdDeviation=\\"20\\" floodColor=\\"#333333\\" />
+    </filter>
+    <filter id=\\"shadowBottom\\">
+      <feDropShadow dx=\\"0\\" dy={-5} stdDeviation=\\"15\\" floodColor=\\"#333333\\" />
+    </filter>
+  </defs>
+</svg>"
+`;

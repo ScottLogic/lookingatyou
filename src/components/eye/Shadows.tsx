@@ -1,7 +1,7 @@
 import React from 'react';
 import { eyelidPosition } from '../../AppConstants';
 
-interface IShadowsProps {
+export interface IShadowsProps {
     openCoefficient: number;
 }
 
