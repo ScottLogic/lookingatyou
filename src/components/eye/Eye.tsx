@@ -2,7 +2,6 @@ import React from 'react';
 import tinycolor from 'tinycolor2';
 import { eyes, transitionTime } from '../../AppConstants';
 import './Eye.css';
-import { Gradients } from './Gradients';
 import { innerPath } from './innerPath';
 
 export interface IEyeProps {
@@ -23,13 +22,13 @@ export interface IEyeProps {
 const pupilColor = 'black';
 
 export default class Eye extends React.Component<IEyeProps> {
-    elements: number;
-    r1: number;
-    r2: number;
-    circ1DistRadians: number;
-    circ2DistRadians: number;
-    startX: number;
-    startY: number;
+    // startX: any;
+    // startY: any;
+    // elements: number;
+    // r2: number;
+    // circ2DistRadians: number;
+    // r1: number;
+    // circ1DistRadians: number;
     private circleTransitionStyle: { transition: string };
     private eyelidTransitionStyle: { transition: string };
     private lineTransitionStyle: { transition: string };
@@ -46,18 +45,19 @@ export default class Eye extends React.Component<IEyeProps> {
         this.lineTransitionStyle = {
             transition: `d ${1000 / props.fps}ms`,
         };
-        this.elements = 10;
-        this.r1 = this.props.irisRadius * 0.1;
-        this.r2 = this.props.irisRadius * 0.9;
-        this.circ1DistRadians = ((360 / this.elements) * Math.PI) / 180;
-        this.circ2DistRadians = ((360 / this.elements) * Math.PI) / 180;
-        this.startX = this.props.innerX;
-        this.startY = this.props.innerY;
-    }
 
-    componentDidUpdate() {
-        this.startX = this.props.innerX;
-        this.startY = this.props.innerY;
+        //     this.startX = this.props.innerX;
+        //     this.startY = this.props.innerY;
+        //     this.elements = 100;
+        //     this.r1 = this.props.irisRadius * 0.1;
+        //     this.r2 = this.props.irisRadius * 0.9;
+        //     this.circ1DistRadians = ((360 / this.elements) * Math.PI) / 180;
+        //     this.circ2DistRadians = ((360 / this.elements) * Math.PI) / 180;
+        // }
+
+        // componentDidUpdate() {
+        //     this.startX = this.props.innerX;
+        //     this.startY = this.props.innerY;
     }
 
     renderCircle(
@@ -81,10 +81,33 @@ export default class Eye extends React.Component<IEyeProps> {
         );
     }
 
-    renderIrisStyling() {
-        const scale = this.props.width / 960; // component width divided by the width the styling was created at
+    // renderInside() {
+    //     let myInside = `M ${this.startX} ${this.startY}, `;
+
+    //     for (let i = 0; i <= this.elements; i++) {
+    //         const out = `L ${this.r2 * Math.cos(this.circ2DistRadians * i) +
+    //             this.startX} ${this.r2 * Math.sin(this.circ2DistRadians * i) +
+    //             this.startY},`;
+
+    //         const inLine = `L ${this.r1 * Math.cos(this.circ1DistRadians * i) +
+    //             this.startX} ${this.r1 * Math.sin(this.circ1DistRadians * i) +
+    //             this.startY}, `;
+
+    //         myInside += out;
+    //         myInside += inLine;
+    //     }
+    //     return myInside;
+    // }
+
+    renderInside2() {
+        console.log(this.props.width);
+        const scale = this.props.width / 960;
+        const radius = this.props.irisRadius;
         return (
             <g
+                // transform={`scale(${scale}px) translate(${this.props.width / 2 -
+                //     (this.props.width / 2) * scale}px, ${this.props.width / 2 -
+                //     (this.props.width / 2) * scale}px)`}
                 transform={`
                 scale(${scale})`}
             >
@@ -94,27 +117,10 @@ export default class Eye extends React.Component<IEyeProps> {
                     fill={tinycolor(this.props.irisColor)
                         .darken(10)
                         .toHexString()}
-                    style={this.lineTransitionStyle}
+                    style={{ transition: `d ${1000 / this.props.fps}ms` }}
                 />
             </g>
         );
-    }
-    renderInside() {
-        let myInside = `M ${this.startX} ${this.startY}, `;
-
-        for (let i = 0; i <= this.elements; i++) {
-            const out = `L ${this.r2 * Math.cos(this.circ2DistRadians * i) +
-                this.startX} ${this.r2 * Math.sin(this.circ2DistRadians * i) +
-                this.startY},`;
-
-            const inLine = `L ${this.r1 * Math.cos(this.circ1DistRadians * i) +
-                this.startX} ${this.r1 * Math.sin(this.circ1DistRadians * i) +
-                this.startY}, `;
-
-            myInside += out;
-            myInside += inLine;
-        }
-        return myInside;
     }
 
     render() {
