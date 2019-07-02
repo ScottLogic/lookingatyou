@@ -144,9 +144,6 @@ export default class Eye extends React.Component<IEyeProps> {
                         this.props.innerX,
                         this.props.innerY,
                     )}
-                    {console.log(
-                        this.props.innerX + this.props.pupilRadius * 0.4,
-                    )}
                     {this.renderCircle(
                         this.props.pupilRadius,
                         'reflection',
