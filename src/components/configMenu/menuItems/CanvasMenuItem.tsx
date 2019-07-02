@@ -1,18 +1,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { IRootStore } from '../../../store/reducers/rootReducer';
+import { getBbox } from '../../../store/selectors/detectionSelectors';
 import {
     getDeviceIds,
     getVideos,
 } from '../../../store/selectors/videoSelectors';
+import { Bbox } from '../../../utils/types';
 interface ICanvasMenuItemProps {
     name: string;
-    bbox: number[];
 }
 
 interface IAppMapStateToProps {
     deviceIds: string[];
     videos: Array<HTMLVideoElement | undefined>;
+    bbox: Bbox;
 }
 
 type CanvasMenuItemProps = ICanvasMenuItemProps & IAppMapStateToProps;
@@ -21,6 +23,7 @@ const mapStateToProps = (state: IRootStore) => {
     return {
         deviceIds: getDeviceIds(state),
         videos: getVideos(state),
+        bbox: getBbox(state),
     };
 };
 
@@ -41,9 +44,11 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
 
     getStream() {
         const video = this.props.videos[0] as HTMLVideoElement;
+        if (this.props.bbox) {
         const [x, y, width, height] = this.props.bbox;
         const bbox = { x, y, width, height };
         this.drawImage(video, bbox);
+        }
     }
 
     render() {
@@ -61,7 +66,6 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         bbox?: { x: number; y: number; width: number; height: number },
     ) {
         if (image instanceof HTMLVideoElement) {
-            console.log(image);
             const canvas = document.getElementById(
                 'canvas',
             ) as HTMLCanvasElement;
