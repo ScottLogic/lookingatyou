@@ -7,14 +7,15 @@ interface IGradientsProps {
     irisColor: string;
 }
 
-const irisColorFactor = 30;
+const lighterFactor = 30;
+const darkerFactor = 13;
 
 export function Gradients(props: IGradientsProps) {
     const darkIrisColor = tinycolor(props.irisColor)
-        .darken(irisColorFactor)
+        .darken(darkerFactor)
         .toHexString();
     const lightIrisColor = tinycolor(props.irisColor)
-        .brighten(irisColorFactor)
+        .brighten(lighterFactor)
         .toHexString();
 
     return (
@@ -50,8 +51,6 @@ export function Gradients(props: IGradientsProps) {
                 />
 
                 <radialGradient id="reflectionGradient">
-                    {/* <stop offset={'0%'} stopColor={'white'} opacity={1} />
-                    <stop offset={'100%'} stopColor={'white'} opacity={0} /> */}
                     <stop offset="0%" stopColor={'white'} stopOpacity={1} />
                     <stop offset="20%" stopColor={'white'} stopOpacity={0.7} />
                     <stop offset="40%" stopColor={'white'} stopOpacity={0.05} />

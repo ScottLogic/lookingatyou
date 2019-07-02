@@ -105,8 +105,8 @@ export function EyeController(props: EyeControllerProps) {
                 );
             })}
             <Gradients
-                irisColor={props.userConfig.irisColor}
-                pupilColor={colours.pupilColor}
+                irisColor={props.config.irisColor}
+                pupilColor={'black'}
             />
         </div>
     );
