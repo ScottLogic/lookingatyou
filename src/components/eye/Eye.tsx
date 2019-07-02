@@ -81,28 +81,8 @@ export default class Eye extends React.Component<IEyeProps> {
         );
     }
 
-    // renderInside() {
-    //     let myInside = `M ${this.startX} ${this.startY}, `;
-
-    //     for (let i = 0; i <= this.elements; i++) {
-    //         const out = `L ${this.r2 * Math.cos(this.circ2DistRadians * i) +
-    //             this.startX} ${this.r2 * Math.sin(this.circ2DistRadians * i) +
-    //             this.startY},`;
-
-    //         const inLine = `L ${this.r1 * Math.cos(this.circ1DistRadians * i) +
-    //             this.startX} ${this.r1 * Math.sin(this.circ1DistRadians * i) +
-    //             this.startY}, `;
-
-    //         myInside += out;
-    //         myInside += inLine;
-    //     }
-    //     return myInside;
-    // }
-
-    renderInside2() {
-        console.log(this.props.width);
-        const scale = this.props.width / 960;
-        const radius = this.props.irisRadius;
+    renderIrisStyling() {
+        const scale = this.props.width / 960; // component width divided by the width the styling was created at
         return (
             <g
                 // transform={`scale(${scale}px) translate(${this.props.width / 2 -
