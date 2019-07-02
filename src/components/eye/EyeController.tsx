@@ -16,22 +16,19 @@ interface IEyeControllerProps {
     width: number;
     height: number;
     environment: Window;
-<<<<<<< HEAD
-    targetX: number;
-    targetY: number;
-    openCoefficient: number;
-    dilationCoefficient: number;
-=======
->>>>>>> refactor/102-object-detection-handler
 }
 interface IEyeControllerMapStateToProps {
     config: IUserConfig;
     target: ICoords;
+    dilation: number;
+    openCoefficient: number;
 }
 type EyeControllerProps = IEyeControllerProps & IEyeControllerMapStateToProps;
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     config: getConfig(state),
     target: state.detectionStore.target,
+    dilation: state.detectionStore.dilationCoefficient,
+    openCoefficient: state.detectionStore.eyesOpenCoefficient,
 });
 export function EyeController(props: EyeControllerProps) {
     const [blinkFrequencyCoefficient] = useState(1); // Will change based on camera feed e.g. lower coefficient when object in frame
@@ -87,7 +84,7 @@ export function EyeController(props: EyeControllerProps) {
                         // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
                         openCoefficient={getEyesOpenCoefficient()}
                         // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
-                        dilatedCoefficient={props.dilationCoefficient}
+                        dilatedCoefficient={props.dilation}
                         innerX={innerX}
                         innerY={innerY}
                         fps={props.config.fps}

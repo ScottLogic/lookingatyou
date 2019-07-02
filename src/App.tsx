@@ -1,21 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import './App.css';
-import {
-    configStorageKey,
-    eyelidPosition,
-    middleX,
-    middleY,
-    pupilSizes,
-} from './AppConstants';
+import { configStorageKey } from './AppConstants';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import DetectionHandler from './components/detectionHandler/DetectionHandler';
 import EyeController from './components/eye/EyeController';
-import {
-    analyseLight,
-    checkLight,
-    naturalMovement,
-} from './components/eye/EyeUtils';
 import Video from './components/video/Video';
 import { updateConfigAction } from './store/actions/config/actions';
 import { IRootStore } from './store/reducers/rootReducer';
