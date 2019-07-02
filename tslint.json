@@ -6,6 +6,7 @@
     "rules": {
         "no-implicit-dependencies": [true, "dev"],
         "object-literal-sort-keys": false,
-        "member-access": [true, "no-public"]
+        "member-access": [true, "no-public"],
+        "no-bitwise": false
     }
 }

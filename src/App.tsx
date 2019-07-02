@@ -1,18 +1,15 @@
-import * as cocoSSD from '@tensorflow-models/coco-ssd';
 import React from 'react';
 import { connect } from 'react-redux';
 import './App.css';
 import {
     configStorageKey,
-    defaultConfigValues,
     eyelidPosition,
-    FPS,
     middleX,
     middleY,
     pupilSizes,
 } from './AppConstants';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
-import InterfaceUserConfig from './components/configMenu/InterfaceUserConfig';
+import IUserConfig from './components/configMenu/IUserConfig';
 import EyeController from './components/eye/EyeController';
 import {
     analyseLight,
@@ -20,15 +17,25 @@ import {
     naturalMovement,
 } from './components/eye/EyeUtils';
 import Video from './components/video/Video';
+import { IObjectDetector } from './models/objectDetection';
+import { updateConfigAction } from './store/actions/config/actions';
 import { IRootStore } from './store/reducers/rootReducer';
+import { getConfig } from './store/selectors/configSelectors';
 import { getDeviceIds, getVideos } from './store/selectors/videoSelectors';
+import store from './store/store';
+import CocoSSD from './utils/objectDetection/cocoSSD';
+import selectFirst from './utils/objectSelection/selectFirst';
+import calculateFocus, {
+    normalise,
+} from './utils/objectTracking/calculateFocus';
+import { DetectionImage } from './utils/types';
+
 interface IAppState {
     width: number;
     height: number;
     webcamAvailable: boolean;
     isBlinking: boolean;
     isSquinting: boolean;
-    userConfig: InterfaceUserConfig;
     targetX: number;
     targetY: number;
     tooBright: boolean;
@@ -51,21 +58,23 @@ interface IAppProps {
 interface IAppMapStateToProps {
     deviceIds: string[];
     videos: Array<HTMLVideoElement | undefined>;
+    config: IUserConfig;
 }
 
 type AppProps = IAppProps & IAppMapStateToProps;
 
-const mapStateToProps = (state: IRootStore) => {
+const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     return {
         deviceIds: getDeviceIds(state),
         videos: getVideos(state),
+        config: getConfig(state),
     };
 };
 
 export class App extends React.Component<AppProps, IAppState> {
     begunLoadingModel: boolean = false;
-    private model: cocoSSD.ObjectDetection | null;
-    private frameCapture: number;
+    private model: IObjectDetector | null;
+    private captureInterval: number;
 
     constructor(props: AppProps) {
         super(props);
@@ -84,23 +93,13 @@ export class App extends React.Component<AppProps, IAppState> {
             eyesOpenCoefficient: eyelidPosition.OPEN,
             modelLoaded: false,
             personDetected: false,
-            userConfig: this.readConfig() || defaultConfigValues,
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);
         this.onUserMedia = this.onUserMedia.bind(this);
         this.onUserMediaError = this.onUserMediaError.bind(this);
-        this.detectImage = this.detectImage.bind(this);
-        this.setDilation = this.setDilation.bind(this);
-        this.isNewTarget = this.isNewTarget.bind(this);
-        this.hasTargetLeft = this.hasTargetLeft.bind(this);
-        this.store = this.store.bind(this);
-
-        this.props.environment.addEventListener('storage', () =>
-            this.readConfig(),
-        );
         this.model = null;
-        this.frameCapture = 0;
+        this.captureInterval = 0;
     }
 
     async componentDidMount() {
@@ -113,21 +112,30 @@ export class App extends React.Component<AppProps, IAppState> {
             this.onUserMedia,
             this.onUserMediaError,
         );
+        const json = this.props.environment.localStorage.getItem(
+            configStorageKey,
+        );
+        if (json != null) {
+            store.dispatch(
+                updateConfigAction({ partialConfig: JSON.parse(json) }),
+            );
+        }
     }
 
-    async componentDidUpdate() {
+    async componentDidUpdate(previousProps: AppProps) {
+        if (previousProps.config !== this.props.config) {
+            clearInterval(this.captureInterval);
+            this.captureInterval = setInterval(
+                this.detectionHandler,
+                1000 / this.props.config.fps,
+                this.props.videos[0],
+            );
+        }
         if (!this.begunLoadingModel && this.props.deviceIds.length > 0) {
             this.begunLoadingModel = true;
             await this.setState({ webcamAvailable: true });
-            this.model = await cocoSSD.load();
+            this.model = await CocoSSD.init();
             this.setState({ modelLoaded: true });
-            if (this.props.videos[0]) {
-                this.frameCapture = setInterval(
-                    this.detectImage,
-                    1000 / FPS,
-                    this.props.videos[0],
-                );
-            }
         }
     }
 
@@ -136,7 +144,7 @@ export class App extends React.Component<AppProps, IAppState> {
             'resize',
             this.updateDimensions,
         );
-        clearInterval(this.frameCapture);
+        clearInterval(this.captureInterval);
     }
 
     updateDimensions() {
@@ -158,112 +166,6 @@ export class App extends React.Component<AppProps, IAppState> {
         this.setState({ webcamAvailable: false });
     }
 
-    async detectImage(
-        img:
-            | ImageData
-            | HTMLImageElement
-            | HTMLCanvasElement
-            | HTMLVideoElement
-            | null,
-    ) {
-        if (img !== null) {
-            const [isBright, pupilSize] = checkLight(
-                this.state.tooBright,
-                img,
-                analyseLight,
-            );
-
-            this.setDilation(pupilSize);
-
-            if (isBright) {
-                this.setState({
-                    tooBright: true,
-                    eyesOpenCoefficient: eyelidPosition.CLOSED,
-                });
-            } else if (this.state.tooBright) {
-                this.setState({
-                    tooBright: false,
-                    eyesOpenCoefficient: eyelidPosition.OPEN,
-                });
-            }
-
-            this.setState({ dilationCoefficient: pupilSize });
-
-            if (this.model) {
-                const detections = await this.model.detect(img);
-                this.selectTarget(detections);
-            }
-        }
-    }
-
-    selectTarget(detections: cocoSSD.DetectedObject[]) {
-        const target = detections.find(
-            detection => detection.class === 'person',
-        );
-
-        if (target !== undefined) {
-            this.calculateEyePos(target.bbox);
-            this.isNewTarget();
-        } else {
-            if (Math.abs(this.state.targetX) > 1) {
-                this.setState({ targetX: 0 });
-            }
-            this.hasTargetLeft();
-            const [newX, newDirection] = naturalMovement(
-                this.state.targetX,
-                this.state.direction,
-            );
-            this.setState({
-                targetY: 0,
-                targetX: newX,
-                direction: newDirection,
-            });
-        }
-    }
-
-    isNewTarget() {
-        if (!this.state.personDetected) {
-            this.setState({
-                personDetected: true,
-                targetX: middleX,
-                targetY: middleY,
-            });
-            this.setDilation(pupilSizes.dilated);
-            this.setDilation(pupilSizes.neutral);
-        }
-    }
-
-    hasTargetLeft() {
-        if (this.state.personDetected) {
-            this.setState({ personDetected: false, isSquinting: true });
-            this.setDilation(pupilSizes.constricted);
-            this.setDilation(pupilSizes.neutral);
-            this.setState({ eyesOpenCoefficient: eyelidPosition.SQUINT });
-        }
-
-        if (this.state.isSquinting && Math.random() < 0.1) {
-            this.setState({
-                eyesOpenCoefficient: eyelidPosition.OPEN,
-                isSquinting: false,
-            });
-        }
-    }
-
-    calculateEyePos(bbox: number[]) {
-        const [x, y, width, height] = bbox;
-        this.setState({
-            targetX: 2 * ((x + width / 2) / this.props.videos[0]!.width - 0.5), // scaled to value between -1 and 1
-            targetY:
-                2 * ((y + height / 2) / this.props.videos[0]!.height - 0.5), // scaled to value between -1 and 1
-        });
-    }
-
-    setDilation(pupilSize: number) {
-        this.setState(() => ({
-            dilationCoefficient: pupilSize,
-        }));
-    }
-
     render() {
         return (
             <div className="App">
@@ -280,7 +182,6 @@ export class App extends React.Component<AppProps, IAppState> {
                         <EyeController
                             width={this.state.width}
                             height={this.state.height}
-                            userConfig={this.state.userConfig}
                             environment={this.props.environment}
                             targetX={this.state.targetX}
                             targetY={this.state.targetY}
@@ -295,40 +196,23 @@ export class App extends React.Component<AppProps, IAppState> {
                 )}
 
                 <ConfigMenuElement
-                    config={this.state.userConfig}
-                    store={this.store}
+                    storage={this.props.environment.localStorage}
                 />
             </div>
         );
     }
 
-    store(partialState: Partial<InterfaceUserConfig>) {
-        const newUserConfig: InterfaceUserConfig = {
-            ...this.state.userConfig,
-            ...partialState,
-        };
-        this.setState(
-            {
-                userConfig: newUserConfig,
-            },
-            () => {
-                const json = JSON.stringify(this.state.userConfig);
-                this.props.environment.localStorage.setItem(
-                    configStorageKey,
-                    json,
-                );
-            },
-        );
-    }
-
-    readConfig() {
-        const json = this.props.environment.localStorage.getItem(
-            configStorageKey,
-        );
-        if (json != null) {
-            return JSON.parse(json);
-        } else {
-            return null;
+    async detectionHandler(image: DetectionImage) {
+        if (this.model) {
+            const detections = await this.model.detect(image);
+            const selection = selectFirst(detections);
+            const coords = calculateFocus(selection);
+            if (coords) {
+                this.setState({
+                    targetX: normalise(coords.x, image.width),
+                    targetY: normalise(coords.y, image.height),
+                });
+            }
         }
     }
 }

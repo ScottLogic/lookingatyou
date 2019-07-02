@@ -1,32 +1,75 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { configStorageKey } from '../../AppConstants';
+import { updateConfigAction } from '../../store/actions/config/actions';
+import { IRootStore } from '../../store/reducers/rootReducer';
+import { getConfig } from '../../store/selectors/configSelectors';
+import store from '../../store/store';
 import ConfigMenu from './ConfigMenu';
-import InterfaceUserConfig from './InterfaceUserConfig';
+import IUserConfig from './IUserConfig';
 import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
 import TextBoxMenuItem from './menuItems/TextBoxMenuItem';
-interface ILookingAtYouConfig {
-    config: InterfaceUserConfig;
-    store: (partialState: Partial<InterfaceUserConfig>) => void;
+interface IConfigMenuElementProps {
+    storage: Storage;
+    config: IUserConfig;
 }
-export default function LookingAtYouConfig(props: ILookingAtYouConfig) {
+interface IConfigMenuElementMapStateToProps {
+    config: IUserConfig;
+}
+type ConfigMenuElementProps = IConfigMenuElementProps &
+    IConfigMenuElementMapStateToProps;
+const mapStateToProps = (
+    state: IRootStore,
+): IConfigMenuElementMapStateToProps => {
+    return {
+        config: getConfig(state),
+    };
+};
+
+function ConfigMenuElement(props: ConfigMenuElementProps) {
+    useEffect(() => {
+        const json = JSON.stringify(props.config);
+        props.storage.setItem(configStorageKey, json);
+    }, [props.config, props.storage]);
     function parseAndStoreXSensitivity(xSensitivity: string) {
-        props.store({ xSensitivity: parseFloat(xSensitivity) });
+        store.dispatch(
+            updateConfigAction({
+                partialConfig: {
+                    xSensitivity: parseFloat(xSensitivity),
+                },
+            }),
+        );
     }
     function parseAndStoreYSensitivity(ySensitivity: string) {
-        props.store({ ySensitivity: parseFloat(ySensitivity) });
+        store.dispatch(
+            updateConfigAction({
+                partialConfig: {
+                    ySensitivity: parseFloat(ySensitivity),
+                },
+            }),
+        );
     }
     function parseAndStoreFPS(fps: string) {
-        props.store({ fps: parseInt(fps, 10) });
+        store.dispatch(
+            updateConfigAction({
+                partialConfig: { fps: parseInt(fps, 10) },
+            }),
+        );
     }
     function storeSwapEyes(swapEyes: boolean) {
-        props.store({ swapEyes });
+        store.dispatch(updateConfigAction({ partialConfig: { swapEyes } }));
     }
     function storeToggleDebug(toggleDebug: boolean) {
-        props.store({ toggleDebug });
+        store.dispatch(
+            updateConfigAction({
+                partialConfig: { toggleDebug },
+            }),
+        );
     }
     function storeIrisColor(irisColor: string) {
-        props.store({ irisColor });
+        store.dispatch(updateConfigAction({ partialConfig: { irisColor } }));
     }
     function extractFloatToString(floatString: string): string {
         return `${parseFloat(floatString)}`;
@@ -34,32 +77,32 @@ export default function LookingAtYouConfig(props: ILookingAtYouConfig) {
     function extractIntToString(intString: string): string {
         return `${parseInt(intString, 10)}`;
     }
-    function validFloatString(floatString: string): boolean {
-        return !isNaN(parseFloat(floatString));
+    function isValidSensitivity(sensitivity: string): boolean {
+        return !isNaN(parseFloat(sensitivity)) && parseFloat(sensitivity) >= 0;
     }
-    function validIntString(intString: string): boolean {
-        return !isNaN(parseInt(intString, 10));
+    function isValidFPS(fps: string): boolean {
+        return !isNaN(parseInt(fps, 10)) && parseInt(fps, 10) > 0;
     }
     return (
         <ConfigMenu width="14em" timerLength={1000}>
             <TextBoxMenuItem
                 name={'X Sensitivity'}
                 defaultValue={`${props.config.xSensitivity}`}
-                isValidInput={validFloatString}
+                isValidInput={isValidSensitivity}
                 onValidInput={parseAndStoreXSensitivity}
                 parse={extractFloatToString}
             />
             <TextBoxMenuItem
                 name={'Y Sensitivity'}
                 defaultValue={`${props.config.ySensitivity}`}
-                isValidInput={validFloatString}
+                isValidInput={isValidSensitivity}
                 onValidInput={parseAndStoreYSensitivity}
                 parse={extractFloatToString}
             />
             <TextBoxMenuItem
                 name={'FPS'}
                 defaultValue={`${props.config.fps}`}
-                isValidInput={validIntString}
+                isValidInput={isValidFPS}
                 onValidInput={parseAndStoreFPS}
                 parse={extractIntToString}
             />
@@ -83,3 +126,5 @@ export default function LookingAtYouConfig(props: ILookingAtYouConfig) {
         </ConfigMenu>
     );
 }
+
+export default connect(mapStateToProps)(ConfigMenuElement);

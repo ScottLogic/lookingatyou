@@ -19,8 +19,8 @@ export function checkLight(
     analyse: (
         canvas: HTMLCanvasElement,
         tooBright: boolean,
-    ) => [boolean, number],
-): [boolean, number] {
+    ) => { tooBright: boolean; scaledPupilSize: number },
+): { tooBright: boolean; scaledPupilSize: number } {
     if (video && video instanceof HTMLVideoElement) {
         const canvas = document.createElement('canvas');
         canvas.height = video.height;
@@ -32,13 +32,13 @@ export function checkLight(
         }
         return analyse(canvas, tooBright);
     }
-    return [false, 0];
+    return { tooBright: false, scaledPupilSize: 0 };
 }
 
 export function analyseLight(
     canvas: HTMLCanvasElement,
     tooBright: boolean,
-): [boolean, number] {
+): { tooBright: boolean; scaledPupilSize: number } {
     const ctx = canvas.getContext('2d');
 
     if (ctx && canvas.width > 0) {
@@ -67,47 +67,56 @@ export function analyseLight(
             ((maxBrightness - brightness) / maxBrightness) * dilationMultipler +
             dilationOffset;
 
-        return [tooBright, scaledPupilSize];
+        return { tooBright, scaledPupilSize };
     }
-    return [false, 0];
+    return { tooBright: false, scaledPupilSize: 0 };
 }
 
 export function naturalMovement(
     currentX: number,
-    direction: boolean,
-): [number, boolean] {
+    left: boolean,
+): { newX: number; left: boolean } {
     if (currentX === middleX) {
         if (Math.random() < 0.1) {
-            return moveEye(currentX, direction);
+            return moveEye(currentX, left);
         }
-        return [0, direction];
+        return { newX: 0, left };
     } else {
-        return moveEye(currentX, direction);
+        return moveEye(currentX, left);
     }
 }
 
-function moveEye(currentX: number, direction: boolean): [number, boolean] {
-    if (direction) {
-        return moveLeft(currentX, direction);
+function moveEye(
+    currentX: number,
+    left: boolean,
+): { newX: number; left: boolean } {
+    if (left) {
+        return moveLeft(currentX, left);
     } else {
-        return moveRight(currentX, direction);
+        return moveRight(currentX, left);
     }
 }
 
-function moveLeft(currentX: number, direction: boolean): [number, boolean] {
+function moveLeft(
+    currentX: number,
+    left: boolean,
+): { newX: number; left: boolean } {
     if (currentX > middleX - xIncrement + buffer) {
-        return [currentX - moveSize, direction];
+        return { newX: currentX - moveSize, left };
     } else if (Math.random() < 0.5) {
-        return [currentX + moveSize, !direction];
+        return { newX: currentX + moveSize, left: !left };
     }
-    return [currentX, direction];
+    return { newX: currentX, left };
 }
 
-function moveRight(currentX: number, direction: boolean): [number, boolean] {
+function moveRight(
+    currentX: number,
+    left: boolean,
+): { newX: number; left: boolean } {
     if (currentX < middleX + xIncrement - buffer) {
-        return [currentX + moveSize, direction];
+        return { newX: currentX + moveSize, left };
     } else if (Math.random() < 0.5) {
-        return [currentX - moveSize, !direction];
+        return { newX: currentX - moveSize, left: !left };
     }
-    return [currentX, direction];
+    return { newX: currentX, left };
 }

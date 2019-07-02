@@ -51,5 +51,7 @@ async function enumerateDevices(mediaDevices: MediaDevices) {
 }
 
 async function getStream(mediaDevices: MediaDevices, deviceId: string) {
-    return mediaDevices.getUserMedia({ video: { deviceId } });
+    return mediaDevices.getUserMedia({
+        video: { deviceId, width: { exact: 320 }, height: { exact: 240 } },
+    });
 }
