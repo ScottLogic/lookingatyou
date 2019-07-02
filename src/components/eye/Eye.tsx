@@ -41,6 +41,7 @@ export default class Eye extends React.Component<IEyeProps> {
     renderCircle(
         radius: number,
         name: string,
+        color: string,
         centerX: number = this.props.width / 2,
         centerY: number = this.props.height / 2,
         transform: string = '',
@@ -50,6 +51,7 @@ export default class Eye extends React.Component<IEyeProps> {
                 style={this.circleTransitionStyle}
                 r={radius}
                 className={name}
+                fill={color}
                 cx={centerX}
                 cy={centerY}
                 transform={transform}
@@ -119,11 +121,16 @@ export default class Eye extends React.Component<IEyeProps> {
                 width={this.props.width}
                 height={this.props.height}
             >
-                {this.renderCircle(this.props.scleraRadius, 'sclera')}
+                {this.renderCircle(
+                    this.props.scleraRadius,
+                    'sclera',
+                    'url(#scleraGradient)',
+                )}
                 <g className="inner">
                     {this.renderCircle(
                         this.props.irisRadius,
                         'iris',
+                        'url(#irisGradient)',
                         this.props.innerX,
                         this.props.innerY,
                     )}
@@ -131,15 +138,14 @@ export default class Eye extends React.Component<IEyeProps> {
                     {this.renderCircle(
                         this.props.pupilRadius * this.props.dilatedCoefficient,
                         'pupil',
+                        'black',
                         this.props.innerX,
                         this.props.innerY,
-                    )}
-                    {console.log(
-                        this.props.innerX + this.props.pupilRadius * 0.4,
                     )}
                     {this.renderCircle(
                         this.props.pupilRadius,
                         'reflection',
+                        'url(#reflectionGradient)',
                         this.props.innerX + this.props.pupilRadius * 0.4,
                         this.props.innerY - this.props.pupilRadius * 0.4,
                         `skewX(20) translate(-165, 0)`,
@@ -147,6 +153,7 @@ export default class Eye extends React.Component<IEyeProps> {
                     {this.renderCircle(
                         this.props.pupilRadius,
                         'reflection',
+                        'url(#reflectionGradient)',
                         this.props.innerX + this.props.scleraRadius * 0.3,
                         this.props.innerY - this.props.scleraRadius * 0.3,
                         'skewX(20) translate(-165, 5)',
