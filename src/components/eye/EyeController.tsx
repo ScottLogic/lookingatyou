@@ -22,7 +22,8 @@ interface IEyeControllerMapStateToProps {
     config: IUserConfig;
     target: ICoords;
 }
-type EyeControllerProps = IEyeControllerProps & IEyeControllerMapStateToProps;
+export type EyeControllerProps = IEyeControllerProps &
+    IEyeControllerMapStateToProps;
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     config: getConfig(state),
     target: state.detectionStore.target,
@@ -104,10 +105,7 @@ export function EyeController(props: EyeControllerProps) {
                     />
                 );
             })}
-            <Gradients
-                irisColor={props.config.irisColor}
-                pupilColor={'black'}
-            />
+            <Gradients irisColor={props.config.irisColor} />
         </div>
     );
 }

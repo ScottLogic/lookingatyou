@@ -4,7 +4,7 @@ import { eyes, transitionTime } from '../../AppConstants';
 import './Eye.css';
 import { innerPath } from './innerPath';
 
-interface IEyeProps {
+export interface IEyeProps {
     class: string;
     width: number;
     height: number;
@@ -18,6 +18,8 @@ interface IEyeProps {
     innerY: number;
     fps: number;
 }
+
+const pupilColor = 'black';
 
 export default class Eye extends React.Component<IEyeProps> {
     private circleTransitionStyle: { transition: string };
@@ -34,7 +36,7 @@ export default class Eye extends React.Component<IEyeProps> {
             transition: `d ${transitionTime.blink}ms`,
         };
         this.lineTransitionStyle = {
-            transition: `d ${1000 / props.fps}`,
+            transition: `d ${1000 / props.fps}ms`,
         };
     }
 
@@ -60,7 +62,7 @@ export default class Eye extends React.Component<IEyeProps> {
     }
 
     renderIrisStyling() {
-        const scale = this.props.width / 960;
+        const scale = this.props.width / 960; // component width divided by the width the styling was created at
         return (
             <g
                 transform={`
@@ -138,7 +140,7 @@ export default class Eye extends React.Component<IEyeProps> {
                     {this.renderCircle(
                         this.props.pupilRadius * this.props.dilatedCoefficient,
                         'pupil',
-                        'black',
+                        pupilColor,
                         this.props.innerX,
                         this.props.innerY,
                     )}

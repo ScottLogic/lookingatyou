@@ -2,8 +2,7 @@ import React from 'react';
 import tinycolor from 'tinycolor2';
 import './Gradients.css';
 
-interface IGradientsProps {
-    pupilColor: string;
+export interface IGradientsProps {
     irisColor: string;
 }
 
