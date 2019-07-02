@@ -9,23 +9,29 @@ import {
 } from '../../AppConstants';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
+import { ICoords } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
 interface IEyeControllerProps {
     width: number;
     height: number;
     environment: Window;
+<<<<<<< HEAD
     targetX: number;
     targetY: number;
     openCoefficient: number;
     dilationCoefficient: number;
+=======
+>>>>>>> refactor/102-object-detection-handler
 }
 interface IEyeControllerMapStateToProps {
     config: IUserConfig;
+    target: ICoords;
 }
 type EyeControllerProps = IEyeControllerProps & IEyeControllerMapStateToProps;
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     config: getConfig(state),
+    target: state.detectionStore.target,
 });
 export function EyeController(props: EyeControllerProps) {
     const [blinkFrequencyCoefficient] = useState(1); // Will change based on camera feed e.g. lower coefficient when object in frame
@@ -57,8 +63,8 @@ export function EyeController(props: EyeControllerProps) {
     const irisRadius = props.width / 10;
     const pupilRadius = props.width / 24;
     const maxDisplacement = scleraRadius - irisRadius;
-    const targetY = props.targetY * props.config.ySensitivity;
-    const targetX = -props.targetX * props.config.xSensitivity; // mirrored
+    const targetY = props.target.y * props.config.ySensitivity;
+    const targetX = -props.target.x * props.config.xSensitivity; // mirrored
     const polarDistance = Math.hypot(targetY, targetX);
     const polarAngle = Math.atan2(targetY, targetX);
     const displacement = Math.min(1, polarDistance) * maxDisplacement;

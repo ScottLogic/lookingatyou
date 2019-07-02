@@ -15,5 +15,6 @@ export function normalise(
     newMin: number = -1,
 ): number {
     const normalised = (val - min) / (max - min);
-    return normalised * (newMax - newMin) + newMin;
+    const test = normalised * (newMax - newMin) + newMin;
+    return test;
 }
