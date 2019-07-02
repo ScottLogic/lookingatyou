@@ -20,13 +20,6 @@ interface IEyeProps {
 }
 
 export default class Eye extends React.Component<IEyeProps> {
-    // startX: any;
-    // startY: any;
-    // elements: number;
-    // r2: number;
-    // circ2DistRadians: number;
-    // r1: number;
-    // circ1DistRadians: number;
     private circleTransitionStyle: { transition: string };
     private eyelidTransitionStyle: { transition: string };
     private lineTransitionStyle: { transition: string };
@@ -43,19 +36,6 @@ export default class Eye extends React.Component<IEyeProps> {
         this.lineTransitionStyle = {
             transition: `d ${1000 / props.fps}`,
         };
-
-        //     this.startX = this.props.innerX;
-        //     this.startY = this.props.innerY;
-        //     this.elements = 100;
-        //     this.r1 = this.props.irisRadius * 0.1;
-        //     this.r2 = this.props.irisRadius * 0.9;
-        //     this.circ1DistRadians = ((360 / this.elements) * Math.PI) / 180;
-        //     this.circ2DistRadians = ((360 / this.elements) * Math.PI) / 180;
-        // }
-
-        // componentDidUpdate() {
-        //     this.startX = this.props.innerX;
-        //     this.startY = this.props.innerY;
     }
 
     renderCircle(
@@ -77,33 +57,10 @@ export default class Eye extends React.Component<IEyeProps> {
         );
     }
 
-    // renderInside() {
-    //     let myInside = `M ${this.startX} ${this.startY}, `;
-
-    //     for (let i = 0; i <= this.elements; i++) {
-    //         const out = `L ${this.r2 * Math.cos(this.circ2DistRadians * i) +
-    //             this.startX} ${this.r2 * Math.sin(this.circ2DistRadians * i) +
-    //             this.startY},`;
-
-    //         const inLine = `L ${this.r1 * Math.cos(this.circ1DistRadians * i) +
-    //             this.startX} ${this.r1 * Math.sin(this.circ1DistRadians * i) +
-    //             this.startY}, `;
-
-    //         myInside += out;
-    //         myInside += inLine;
-    //     }
-    //     return myInside;
-    // }
-
-    renderInside2() {
-        console.log(this.props.width);
+    renderIrisStyling() {
         const scale = this.props.width / 960;
-        const radius = this.props.irisRadius;
         return (
             <g
-                // transform={`scale(${scale}px) translate(${this.props.width / 2 -
-                //     (this.props.width / 2) * scale}px, ${this.props.width / 2 -
-                //     (this.props.width / 2) * scale}px)`}
                 transform={`
                 scale(${scale})`}
             >
@@ -113,7 +70,7 @@ export default class Eye extends React.Component<IEyeProps> {
                     fill={tinycolor(this.props.irisColor)
                         .darken(10)
                         .toHexString()}
-                    style={{ transition: `d ${1000 / this.props.fps}ms` }}
+                    style={this.lineTransitionStyle}
                 />
             </g>
         );
@@ -170,19 +127,22 @@ export default class Eye extends React.Component<IEyeProps> {
                         this.props.innerX,
                         this.props.innerY,
                     )}
-                    {this.renderInside2()}
+                    {this.renderIrisStyling()}
                     {this.renderCircle(
                         this.props.pupilRadius * this.props.dilatedCoefficient,
                         'pupil',
                         this.props.innerX,
                         this.props.innerY,
                     )}
+                    {console.log(
+                        this.props.innerX + this.props.pupilRadius * 0.4,
+                    )}
                     {this.renderCircle(
                         this.props.pupilRadius,
                         'reflection',
                         this.props.innerX + this.props.pupilRadius * 0.4,
                         this.props.innerY - this.props.pupilRadius * 0.4,
-                        'skewX(20) translate(-165, 0)',
+                        `skewX(20) translate(-165, 0)`,
                     )}
                     {this.renderCircle(
                         this.props.pupilRadius,
