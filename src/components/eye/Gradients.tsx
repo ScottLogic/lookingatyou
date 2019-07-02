@@ -28,18 +28,11 @@ export function Gradients(props: IGradientsProps) {
 
                 <radialGradient id={'scleraGradient'} cx={'50%'} cy={'50%'}>
                     <stop offset={'0%'} stopColor={'white'} />
-                    <stop
-                        offset={'85%'}
-                        stopColor={tinycolor('white')
-                            .darken(10)
-                            .toHexString()}
-                    />
-                    <stop
-                        offset={'100%'}
-                        stopColor={tinycolor('white')
-                            .darken(30)
-                            .toHexString()}
-                    />
+                    <stop offset={'20%'} stopColor="#f7f7f7" />
+                    <stop offset={'40%'} stopColor="#ebebeb" />
+                    <stop offset={'60%'} stopColor="#e0e0e0" />
+                    <stop offset={'80%'} stopColor="#b3b3b3" />
+                    <stop offset={'100%'} stopColor="#333333" />
                 </radialGradient>
 
                 <radialGradient

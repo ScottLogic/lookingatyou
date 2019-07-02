@@ -3,6 +3,7 @@ import tinycolor from 'tinycolor2';
 import { eyes, transitionTime } from '../../AppConstants';
 import './Eye.css';
 import { innerPath } from './innerPath';
+import { Shadows } from './Shadows';
 
 export interface IEyeProps {
     class: string;
@@ -188,6 +189,7 @@ export default class Eye extends React.Component<IEyeProps> {
                 <svg className="Eyelids">
                     <path
                         style={this.eyelidTransitionStyle}
+                        filter="url(#shadowTop)"
                         d={
                             // upper eyelid
                             `M ${eyeLeft} ${eyeMiddleY},
@@ -209,6 +211,7 @@ export default class Eye extends React.Component<IEyeProps> {
                     />
                     <path
                         style={this.eyelidTransitionStyle}
+                        filter="url(#shadowBottom)"
                         d={
                             // lower eyelid
                             `M ${eyeLeft} ${eyeMiddleY},
@@ -257,6 +260,7 @@ export default class Eye extends React.Component<IEyeProps> {
                         }
                     />
                 </svg>
+                <Shadows openCoefficient={this.props.openCoefficient} />
             </svg>
         );
     }
