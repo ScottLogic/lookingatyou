@@ -5,10 +5,10 @@ export default function selectMatching(
     maxIndex = rightEyeCoords.length,
 ) {
     let best = 0;
+    const lowestYDifference = yDifference(rightEyeCoords[best], leftEyeCoord);
     for (let i = 1; i < rightEyeCoords.length && i < maxIndex; i++) {
         if (
-            yDifference(rightEyeCoords[i], leftEyeCoord) <
-                yDifference(rightEyeCoords[best], leftEyeCoord) &&
+            yDifference(rightEyeCoords[i], leftEyeCoord) < lowestYDifference &&
             isLeftOf(rightEyeCoords[i], leftEyeCoord)
         ) {
             best = i;
