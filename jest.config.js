@@ -6,4 +6,18 @@ module.exports = {
     },
     setupFilesAfterEnv: ['<rootDir>/src/setupTests.tsx'],
     snapshotSerializers: ['enzyme-to-json/serializer'],
+    collectCoverageFrom: [
+        'src/**/*.tsx',
+        '!<rootDir>/src/index.tsx',
+        '!<rootDir>/node_modules/',
+    ],
+    coverageThreshold: {
+        global: {
+            branches: 80,
+            functions: 80,
+            lines: 80,
+            statements: 80,
+        },
+    },
+    coverageReporters: ['text', 'html'],
 };

@@ -53,7 +53,7 @@ export function EyeController(props: EyeControllerProps) {
         blinkFrequencyCoefficient,
         dilationCoefficient,
     ]);
-    const scleraRadius = props.width / 5;
+    const scleraRadius = props.width / 4.5;
     const irisRadius = props.width / 10;
     const pupilRadius = props.width / 24;
     const maxDisplacement = scleraRadius - irisRadius;
