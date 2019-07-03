@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TextBoxMenuItem tests should render correctly 1`] = `
+"<div>
+  <label>
+    test
+  </label>
+  <input type=\\"checkbox\\" checked={false} onChange={[Function: onChange]} />
+</div>"
+`;

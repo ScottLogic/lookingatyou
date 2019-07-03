@@ -1,6 +1,4 @@
 import { mount, shallow } from 'enzyme';
-import jsdom from 'jsdom';
-import { wrap } from 'module';
 import React from 'react';
 import TextBoxMenuItem, {
     ITextBoxMenuItemProps,
