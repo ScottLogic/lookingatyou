@@ -2,27 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import './App.css';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
-import IUserConfig from './components/configMenu/IUserConfig';
+import DetectionHandler from './components/detectionHandler/DetectionHandler';
 import EyeController from './components/eye/EyeController';
 import Video from './components/video/Video';
-import { IObjectDetector } from './models/objectDetection';
 import { IRootStore } from './store/reducers/rootReducer';
-import { getConfig } from './store/selectors/configSelectors';
-import { getDeviceIds, getVideos } from './store/selectors/videoSelectors';
-import CocoSSD from './utils/objectDetection/cocoSSD';
-import selectFirst from './utils/objectSelection/selectFirst';
-import calculateFocus, {
-    normalise,
-} from './utils/objectTracking/calculateFocus';
-import { DetectionImage } from './utils/types';
+import { getDeviceIds } from './store/selectors/videoSelectors';
 
 interface IAppState {
     width: number;
     height: number;
     webcamAvailable: boolean;
-    targetX: number;
-    targetY: number;
-    modelLoaded: boolean;
 }
 
 interface IAppProps {
@@ -36,8 +25,7 @@ interface IAppProps {
 
 interface IAppMapStateToProps {
     deviceIds: string[];
-    videos: Array<HTMLVideoElement | undefined>;
-    config: IUserConfig;
+    isModelLoaded: boolean;
 }
 
 type AppProps = IAppProps & IAppMapStateToProps;
@@ -45,16 +33,11 @@ type AppProps = IAppProps & IAppMapStateToProps;
 const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     return {
         deviceIds: getDeviceIds(state),
-        videos: getVideos(state),
-        config: getConfig(state),
+        isModelLoaded: state.detectionStore.isModelLoaded,
     };
 };
 
 export class App extends React.Component<AppProps, IAppState> {
-    begunLoadingModel: boolean = false;
-    private model: IObjectDetector | null;
-    private captureInterval: number;
-
     constructor(props: AppProps) {
         super(props);
 
@@ -62,17 +45,11 @@ export class App extends React.Component<AppProps, IAppState> {
             width: this.props.environment.innerWidth,
             height: this.props.environment.innerHeight,
             webcamAvailable: false,
-            targetX: this.props.environment.innerWidth / 4,
-            targetY: this.props.environment.innerHeight / 2,
-            modelLoaded: false,
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);
         this.onUserMedia = this.onUserMedia.bind(this);
         this.onUserMediaError = this.onUserMediaError.bind(this);
-        this.detectionHandler = this.detectionHandler.bind(this);
-        this.model = null;
-        this.captureInterval = 0;
     }
 
     async componentDidMount() {
@@ -87,37 +64,17 @@ export class App extends React.Component<AppProps, IAppState> {
         );
     }
 
-    async componentDidUpdate(previousProps: AppProps) {
-        if (previousProps.config !== this.props.config) {
-            clearInterval(this.captureInterval);
-            this.captureInterval = setInterval(
-                this.detectionHandler,
-                1000 / this.props.config.fps,
-                this.props.videos[0],
-            );
-        }
-        if (!this.begunLoadingModel && this.props.deviceIds.length > 0) {
-            this.begunLoadingModel = true;
-            await this.setState({ webcamAvailable: true });
-            this.model = await CocoSSD.init();
-            this.setState({ modelLoaded: true });
-        }
-    }
-
     componentWillUnmount() {
         this.props.environment.removeEventListener(
             'resize',
             this.updateDimensions,
         );
-        clearInterval(this.captureInterval);
     }
 
     updateDimensions() {
         this.setState({
             height: this.props.environment.innerHeight,
             width: this.props.environment.innerWidth,
-            targetX: this.props.environment.innerWidth / 4,
-            targetY: this.props.environment.innerHeight / 2,
         });
     }
 
@@ -140,16 +97,21 @@ export class App extends React.Component<AppProps, IAppState> {
                     ))}
                 </div>
 
+                {this.state.webcamAvailable && (
+                    <DetectionHandler
+                        modelConfig={'lite_mobilenet_v2'}
+                        detectionConfig={5}
+                    />
+                )}
+
                 {this.state.webcamAvailable ? (
-                    !this.state.modelLoaded ? (
+                    !this.props.isModelLoaded ? (
                         <div className="loading-spinner" />
                     ) : (
                         <EyeController
                             width={this.state.width}
                             height={this.state.height}
                             environment={this.props.environment}
-                            targetX={this.state.targetX}
-                            targetY={this.state.targetY}
                         />
                     )
                 ) : (
@@ -163,20 +125,6 @@ export class App extends React.Component<AppProps, IAppState> {
                 />
             </div>
         );
-    }
-
-    async detectionHandler(image: DetectionImage) {
-        if (this.model) {
-            const detections = await this.model.detect(image);
-            const selection = selectFirst(detections);
-            const coords = calculateFocus(selection);
-            if (coords) {
-                this.setState({
-                    targetX: normalise(coords.x, image.width),
-                    targetY: normalise(coords.y, image.height),
-                });
-            }
-        }
     }
 }
 

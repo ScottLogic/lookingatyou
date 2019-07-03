@@ -1,9 +1,11 @@
 import {
     resetConfigAction,
     updateConfigAction,
-} from '../actions/config/actions';
-import { IConfigState } from '../actions/config/types';
-import configStore, { initialState } from './configReducer';
+} from '../../../store/actions/config/actions';
+import { IConfigState } from '../../../store/actions/config/types';
+import configStore, {
+    initialState,
+} from '../../../store/reducers/configReducer';
 
 describe('Config Reducer tests', () => {
     const testState: IConfigState = {
