@@ -66,12 +66,12 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
     }
 
     async componentDidMount() {
-        this.movementInterval = window.setInterval(this.movementHandler, 50);
+        this.movementInterval = window.setInterval(this.movementHandler, 200);
     }
 
     componentDidUpdate() {
         clearInterval(this.movementInterval);
-        this.movementInterval = window.setInterval(this.movementHandler, 50);
+        this.movementInterval = window.setInterval(this.movementHandler, 200);
     }
 
     componentWillUnmount() {
@@ -87,6 +87,11 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
         const selection = this.props.detections.find(detection => {
             return detection.info.type === 'person';
         });
+
+        if (this.props.squinting && Math.random() < 0.1) {
+            this.props.setOpen(eyelidPosition.OPEN);
+            this.props.setSquinting(false);
+        }
 
         if (selection) {
             this.isNewTarget();
@@ -148,11 +153,6 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             this.props.setDilation(pupilSizes.neutral);
             this.props.setTarget({ x: 0, y: 0 });
             this.props.setOpen(eyelidPosition.SQUINT);
-        }
-
-        if (this.props.squinting && Math.random() < 0.1) {
-            this.props.setOpen(eyelidPosition.OPEN);
-            this.props.setSquinting(false);
         }
     }
 
