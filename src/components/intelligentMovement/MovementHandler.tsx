@@ -1,12 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import {
-    eyelidPosition,
-    middleX,
-    middleY,
-    pupilSizes,
-} from '../../AppConstants';
+import { eyelidPosition, pupilSizes } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 import {
     setBright,
@@ -19,7 +14,6 @@ import {
 } from '../../store/actions/detections/actions';
 import {
     ISetBrightAction,
-    ISetDetectionsAction,
     ISetDilationAction,
     ISetLeftAction,
     ISetOpenAction,
@@ -28,6 +22,7 @@ import {
     ISetTargetAction,
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
+import { getVideos } from '../../store/selectors/videoSelectors';
 import { ICoords } from '../../utils/types';
 import { analyseLight, checkLight, naturalMovement } from '../eye/EyeUtils';
 
@@ -40,6 +35,7 @@ interface IStateProps {
     squinting: boolean;
     openCoefficient: number;
     dilationCoefficient: number;
+    videos: Array<HTMLVideoElement | undefined>;
 }
 
 interface IDispatchProps {
@@ -55,12 +51,36 @@ interface IDispatchProps {
 export type MovementHandlerProps = IDispatchProps & IStateProps;
 
 export class MovementHandler extends React.Component<MovementHandlerProps> {
+    private movementInterval: number;
+
     constructor(props: MovementHandlerProps) {
         super(props);
+
+        this.movementInterval = 0;
 
         this.calculateBrightness = this.calculateBrightness.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
         this.hasTargetLeft = this.hasTargetLeft.bind(this);
+        this.checkSelection = this.checkSelection.bind(this);
+        this.movementHandler = this.movementHandler.bind(this);
+    }
+
+    async componentDidMount() {
+        this.movementInterval = window.setInterval(this.movementHandler, 50);
+    }
+
+    componentDidUpdate() {
+        clearInterval(this.movementInterval);
+        this.movementInterval = window.setInterval(this.movementHandler, 50);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.movementInterval);
+    }
+
+    movementHandler() {
+        this.checkSelection();
+        this.calculateBrightness();
     }
 
     checkSelection() {
@@ -74,7 +94,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             this.hasTargetLeft();
 
             if (Math.abs(this.props.target.x) > 1) {
-                setTarget({
+                this.props.setTarget({
                     x: 0,
                     y: this.props.target.y,
                 });
@@ -85,51 +105,59 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
                 this.props.left,
             );
 
-            setTarget({ x: newX, y: 0 });
-            setLeft(left);
+            console.log(this.props.target);
+
+            this.props.setTarget({ x: newX, y: 0 });
+            this.props.setLeft(left);
         }
     }
 
     calculateBrightness() {
-        const { tooBright, scaledPupilSize } = checkLight(
-            this.props.tooBright,
-            null, // image,
-            analyseLight,
-        );
+        if (this.props.videos[0]) {
+            const { tooBright, scaledPupilSize } = checkLight(
+                this.props.tooBright,
+                this.props.videos[0] as HTMLVideoElement,
+                analyseLight,
+            );
 
-        if (tooBright) {
-            setBright(true);
-            setOpen(eyelidPosition.CLOSED);
-        } else if (this.props.tooBright) {
-            setBright(false);
-            setOpen(eyelidPosition.OPEN);
+            if (tooBright) {
+                this.props.setBright(true);
+                this.props.setOpen(eyelidPosition.CLOSED);
+            } else if (this.props.tooBright) {
+                this.props.setBright(false);
+                this.props.setOpen(eyelidPosition.OPEN);
+            }
+
+            this.props.setDilation(scaledPupilSize);
         }
-
-        setDilation(scaledPupilSize);
     }
 
     isNewTarget() {
         if (!this.props.personDetected) {
-            setDetected(true);
-            setTarget({ x: middleX, y: middleY });
-            setDilation(pupilSizes.dilated);
-            setDilation(pupilSizes.neutral);
+            this.props.setDetected(true);
+            this.props.setDilation(pupilSizes.dilated);
+            this.props.setDilation(pupilSizes.neutral);
         }
     }
 
     hasTargetLeft() {
         if (this.props.personDetected) {
-            setDetected(false);
-            setSquinting(true);
-            setDilation(pupilSizes.constricted);
-            setDilation(pupilSizes.neutral);
-            setOpen(eyelidPosition.SQUINT);
+            this.props.setDetected(false);
+            this.props.setSquinting(true);
+            this.props.setDilation(pupilSizes.constricted);
+            this.props.setDilation(pupilSizes.neutral);
+            this.props.setTarget({ x: 0, y: 0 });
+            this.props.setOpen(eyelidPosition.SQUINT);
         }
 
         if (this.props.squinting && Math.random() < 0.1) {
-            setOpen(eyelidPosition.OPEN);
-            setSquinting(false);
+            this.props.setOpen(eyelidPosition.OPEN);
+            this.props.setSquinting(false);
         }
+    }
+
+    render() {
+        return null;
     }
 }
 
@@ -142,6 +170,8 @@ const mergeStateToProps = (state: IRootStore) => {
         squinting: state.detectionStore.isSquinting,
         openCoefficient: state.detectionStore.eyesOpenCoefficient,
         dilationCoefficient: state.detectionStore.dilationCoefficient,
+        personDetected: state.detectionStore.personDetected,
+        videos: getVideos(state),
     };
 };
 

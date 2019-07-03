@@ -5,6 +5,7 @@ import { configStorageKey } from './AppConstants';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import DetectionHandler from './components/detectionHandler/DetectionHandler';
 import EyeController from './components/eye/EyeController';
+import MovementHandler from './components/intelligentMovement/MovementHandler';
 import Video from './components/video/Video';
 import { updateConfigAction } from './store/actions/config/actions';
 import { IRootStore } from './store/reducers/rootReducer';
@@ -119,11 +120,14 @@ export class App extends React.Component<AppProps, IAppState> {
                     !this.props.isModelLoaded ? (
                         <div className="loading-spinner" />
                     ) : (
-                        <EyeController
-                            width={this.state.width}
-                            height={this.state.height}
-                            environment={this.props.environment}
-                        />
+                        <div>
+                            <EyeController
+                                width={this.state.width}
+                                height={this.state.height}
+                                environment={this.props.environment}
+                            />
+                            <MovementHandler />
+                        </div>
                     )
                 ) : (
                     <div className="Error">
