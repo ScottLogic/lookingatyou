@@ -1,4 +1,3 @@
-import { exp } from '@tensorflow/tfjs-core';
 import { mount, shallow } from 'enzyme';
 import jsdom from 'jsdom';
 import React from 'react';
