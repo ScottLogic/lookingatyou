@@ -1,6 +1,12 @@
-import { createStore } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
+import { load, save } from 'redux-localstorage-simple';
 import reducer from './reducers/rootReducer';
 
-const store = createStore(reducer);
+const states = ['configStore'];
+const store = createStore(
+    reducer,
+    load({ states }),
+    applyMiddleware(save({ states })),
+);
 
 export default store;

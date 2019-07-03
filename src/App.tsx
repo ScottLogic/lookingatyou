@@ -1,17 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import './App.css';
-import { configStorageKey } from './AppConstants';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import IUserConfig from './components/configMenu/IUserConfig';
 import EyeController from './components/eye/EyeController';
 import Video from './components/video/Video';
 import { IObjectDetector } from './models/objectDetection';
-import { updateConfigAction } from './store/actions/config/actions';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getConfig } from './store/selectors/configSelectors';
 import { getDeviceIds, getVideos } from './store/selectors/videoSelectors';
-import store from './store/store';
 import CocoSSD from './utils/objectDetection/cocoSSD';
 import selectFirst from './utils/objectSelection/selectFirst';
 import calculateFocus, {
@@ -88,14 +85,6 @@ export class App extends React.Component<AppProps, IAppState> {
             this.onUserMedia,
             this.onUserMediaError,
         );
-        const json = this.props.environment.localStorage.getItem(
-            configStorageKey,
-        );
-        if (json != null) {
-            store.dispatch(
-                updateConfigAction({ partialConfig: JSON.parse(json) }),
-            );
-        }
     }
 
     async componentDidUpdate(previousProps: AppProps) {
