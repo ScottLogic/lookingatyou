@@ -110,8 +110,6 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
                 this.props.left,
             );
 
-            console.log(this.props.target);
-
             this.props.setTarget({ x: newX, y: 0 });
             this.props.setLeft(left);
         }
