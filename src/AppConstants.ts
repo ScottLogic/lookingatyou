@@ -1,4 +1,3 @@
-export const configStorageKey = 'config';
 export const eyes = {
     LEFT: 'left',
     RIGHT: 'right',

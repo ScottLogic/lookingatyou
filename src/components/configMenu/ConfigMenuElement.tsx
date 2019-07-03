@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { configStorageKey } from '../../AppConstants';
 import { updateConfigAction } from '../../store/actions/config/actions';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
@@ -29,10 +28,6 @@ const mapStateToProps = (
 };
 
 function ConfigMenuElement(props: ConfigMenuElementProps) {
-    useEffect(() => {
-        const json = JSON.stringify(props.config);
-        props.storage.setItem(configStorageKey, json);
-    }, [props.config, props.storage]);
     function parseAndStoreXSensitivity(xSensitivity: string) {
         store.dispatch(
             updateConfigAction({
