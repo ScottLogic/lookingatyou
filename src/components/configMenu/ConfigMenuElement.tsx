@@ -1,10 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-<<<<<<< HEAD
-=======
-import { configStorageKey } from '../../AppConstants';
->>>>>>> removed direct store.dispatch() calls
 import {
     ISetConfigPayload,
     UPDATE_CONFIG,
