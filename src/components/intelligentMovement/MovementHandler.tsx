@@ -95,7 +95,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             return detection.info.type === 'person';
         });
 
-        if (this.props.squinting && Math.random() < 0.25) {
+        if (this.props.squinting && Math.random() < 0.1) {
             this.props.setOpen(eyelidPosition.OPEN);
             this.props.setSquinting(false);
         }
