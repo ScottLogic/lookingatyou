@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfigMenu should render correctly 1`] = `
+"<div style={{...}} className=\\"ConfigMenu\\" onMouseMove={[Function: bound onMouseMove]} onMouseLeave={[Function: bound onMouseLeave]}>
+  <h1>
+    Config
+  </h1>
+  <TextBoxMenuItem name=\\"textBox\\" defaultValue=\\"test\\" isValidInput={[Function: mockConstructor]} onValidInput={[Function: mockConstructor]} parse={[Function: mockConstructor]} />
+</div>"
+`;

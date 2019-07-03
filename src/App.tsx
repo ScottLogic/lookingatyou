@@ -122,6 +122,7 @@ export class App extends React.Component<AppProps, IAppState> {
 
                 <ConfigMenuElement
                     storage={this.props.environment.localStorage}
+                    window={this.props.environment.window}
                 />
             </div>
         );
