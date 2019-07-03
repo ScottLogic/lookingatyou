@@ -4,7 +4,7 @@ import { IShadowsProps, Shadows } from '../../components/eye/Shadows';
 
 let props: IShadowsProps;
 
-describe('Eye Controller', () => {
+describe('Shadows', () => {
     beforeEach(() => {
         props = {
             openCoefficient: 1,

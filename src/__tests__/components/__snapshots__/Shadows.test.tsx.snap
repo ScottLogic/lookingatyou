@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Eye Controller should render correctly 1`] = `
+exports[`Shadows should render correctly 1`] = `
 "<svg>
   <defs>
     <filter id=\\"shadowTop\\">
