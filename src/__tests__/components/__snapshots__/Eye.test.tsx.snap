@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Eye Controller should render correctly 1`] = `
+exports[`Eye should render correctly 1`] = `
 "<svg className=\\"eye\\" width={500} height={500}>
   <circle style={{...}} r={100} className=\\"sclera\\" fill=\\"url(#scleraGradient)\\" cx={250} cy={250} transform=\\"\\" />
   <g className=\\"inner\\">
@@ -12,7 +12,6 @@ exports[`Eye Controller should render correctly 1`] = `
     <circle style={{...}} r={20} className=\\"reflection\\" fill=\\"url(#reflectionGradient)\\" cx={258} cy={242} transform=\\"skewX(20) translate(-165, 0)\\" />
     <circle style={{...}} r={20} className=\\"reflection\\" fill=\\"url(#reflectionGradient)\\" cx={280} cy={220} transform=\\"skewX(20) translate(-165, 5)\\" />
   </g>
-  <svg />
   <svg className=\\"Eyelids\\">
     <path style={{...}} d=\\"M 150 250,\\\\n                         A 100 100 0 0 1 350 250\\\\n                         C 309.959355637325 222.3857625085,\\\\n                         305.228474983 200, 250 200\\\\n                         C 194.771525017 200, 169.32996624405 222.3857625085, 150 250\\" />
     <path style={{...}} d=\\"M 150 250,\\\\n                         A 100 100 0 0 0 350 250\\\\n                         C 319.62433875935 277.6142374915,\\\\n                         305.228474983 300, 250 300\\\\n                         C 194.771525017 300, 163.80711874575 277.6142374915, 150 250\\" />

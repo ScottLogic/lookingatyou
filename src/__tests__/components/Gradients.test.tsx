@@ -4,7 +4,7 @@ import { Gradients, IGradientsProps } from '../../components/eye/Gradients';
 
 let props: IGradientsProps;
 
-describe('Eye Controller', () => {
+describe('Gradients', () => {
     beforeEach(() => {
         props = {
             irisColor: 'blue',

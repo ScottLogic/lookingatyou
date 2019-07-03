@@ -4,7 +4,7 @@ import Eye, { IEyeProps } from '../../components/eye/Eye';
 
 let props: IEyeProps;
 
-describe('Eye Controller', () => {
+describe('Eye', () => {
     beforeEach(() => {
         props = {
             class: 'eye',
