@@ -26,8 +26,7 @@ describe('Eye Controller', () => {
             width: 500,
             height: 500,
             environment: new jsdom.JSDOM().window,
-            targetX: 250,
-            targetY: 250,
+            target: { x: 250, y: 250 },
             config: configState.config,
         };
     });
