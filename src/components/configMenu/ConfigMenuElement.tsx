@@ -32,7 +32,7 @@ const mapStateToProps = (
     };
 };
 
-function ConfigMenuElement(props: ConfigMenuElementProps) {
+export function ConfigMenuElement(props: ConfigMenuElementProps) {
     function parseAndStoreXSensitivity(xSensitivity: string) {
         store.dispatch(
             updateConfigAction({
