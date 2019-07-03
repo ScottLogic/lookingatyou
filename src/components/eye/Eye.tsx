@@ -85,13 +85,7 @@ export default class Eye extends React.Component<IEyeProps> {
     renderIrisStyling() {
         const scale = this.props.width / 960; // component width divided by the width the styling was created at
         return (
-            <g
-                // transform={`scale(${scale}px) translate(${this.props.width / 2 -
-                //     (this.props.width / 2) * scale}px, ${this.props.width / 2 -
-                //     (this.props.width / 2) * scale}px)`}
-                transform={`
-                scale(${scale})`}
-            >
+            <g transform={`scale(${scale})`}>
                 <path
                     d={`M ${this.props.innerX / scale} ${this.props.innerY /
                         scale} ${innerPath}`}
@@ -185,7 +179,6 @@ export default class Eye extends React.Component<IEyeProps> {
                         'skewX(20) translate(-165, 5)',
                     )}
                 </g>
-                <svg />
                 <svg className="Eyelids">
                     <path
                         style={this.eyelidTransitionStyle}
