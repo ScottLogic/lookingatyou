@@ -27,6 +27,7 @@ import { ICoords } from '../../utils/types';
 import { analyseLight, checkLight, naturalMovement } from '../eye/EyeUtils';
 
 interface IStateProps {
+    fps: number;
     detections: IDetection[];
     target: ICoords;
     tooBright: boolean;
@@ -65,13 +66,19 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
         this.movementHandler = this.movementHandler.bind(this);
     }
 
-    async componentDidMount() {
-        this.movementInterval = window.setInterval(this.movementHandler, 200);
+    componentDidMount() {
+        this.movementInterval = window.setInterval(
+            this.movementHandler,
+            1000 / (2 * this.props.fps),
+        );
     }
 
     componentDidUpdate() {
         clearInterval(this.movementInterval);
-        this.movementInterval = window.setInterval(this.movementHandler, 200);
+        this.movementInterval = window.setInterval(
+            this.movementHandler,
+            1000 / (2 * this.props.fps),
+        );
     }
 
     componentWillUnmount() {
@@ -88,7 +95,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             return detection.info.type === 'person';
         });
 
-        if (this.props.squinting && Math.random() < 0.1) {
+        if (this.props.squinting && Math.random() < 0.25) {
             this.props.setOpen(eyelidPosition.OPEN);
             this.props.setSquinting(false);
         }
@@ -161,6 +168,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
 
 const mergeStateToProps = (state: IRootStore) => {
     return {
+        fps: state.configStore.config.fps,
         detections: state.detectionStore.detections,
         target: state.detectionStore.target,
         tooBright: state.detectionStore.tooBright,
