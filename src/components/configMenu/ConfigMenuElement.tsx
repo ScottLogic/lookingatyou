@@ -17,7 +17,7 @@ interface IConfigMenuElementProps {
 interface IConfigMenuElementMapStateToProps {
     config: IUserConfig;
 }
-type ConfigMenuElementProps = IConfigMenuElementProps &
+export type ConfigMenuElementProps = IConfigMenuElementProps &
     IConfigMenuElementMapStateToProps;
 const mapStateToProps = (
     state: IRootStore,

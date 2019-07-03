@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-interface ITextBoxMenuItemProps {
+export interface ITextBoxMenuItemProps {
     name: string;
     isValidInput: (text: string) => boolean;
     onValidInput: (text: string) => void;
@@ -15,14 +15,14 @@ export default function TextBoxMenuItem(props: ITextBoxMenuItemProps) {
         setValue(props.defaultValue);
         setLastValidValue(props.defaultValue);
     }, [props.defaultValue, setValue]);
-    function onBlur(event: React.FocusEvent<HTMLInputElement>) {
+    function onBlur() {
         setValue(props.parse(lastValidValue));
         setIsValid(true);
     }
     function onChange(event: React.ChangeEvent<HTMLInputElement>) {
         const newValue = event.target.value;
-        setValue(newValue);
         const newIsValid = props.isValidInput(event.target.value);
+        setValue(newValue);
         setIsValid(newIsValid);
         if (newIsValid) {
             setLastValidValue(newValue);
@@ -34,7 +34,7 @@ export default function TextBoxMenuItem(props: ITextBoxMenuItemProps) {
             <label>{props.name}</label>
             <input
                 type="textbox"
-                value={value}
+                value={value || ''}
                 style={{
                     color: isValid ? 'black' : 'red',
                 }}
