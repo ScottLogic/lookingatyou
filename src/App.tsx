@@ -85,6 +85,20 @@ export class App extends React.Component<AppProps, IAppState> {
             this.onUserMedia,
             this.onUserMediaError,
         );
+<<<<<<< HEAD
+=======
+        const json = this.props.environment.localStorage.getItem(
+            configStorageKey,
+        );
+        if (json != null) {
+            // this dispatch call is removed in PR #138
+            store.dispatch(
+                updateConfigAction({
+                    partialConfig: JSON.parse(json),
+                }),
+            );
+        }
+>>>>>>> removed direct store.dispatch() calls
     }
 
     async componentDidUpdate(previousProps: AppProps) {

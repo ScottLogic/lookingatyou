@@ -1,9 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { updateConfigAction } from '../../store/actions/config/actions';
+import { Dispatch } from 'redux';
+import {
+    ISetConfigPayload,
+    UPDATE_CONFIG,
+} from '../../store/actions/config/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
-import store from '../../store/store';
 import ConfigMenu from './ConfigMenu';
 import IUserConfig from './IUserConfig';
 import CanvasMenuItem from './menuItems/CanvasMenuItem';
@@ -14,11 +17,10 @@ interface IConfigMenuElementProps {
     storage: Storage;
     config: IUserConfig;
 }
+
 interface IConfigMenuElementMapStateToProps {
     config: IUserConfig;
 }
-type ConfigMenuElementProps = IConfigMenuElementProps &
-    IConfigMenuElementMapStateToProps;
 const mapStateToProps = (
     state: IRootStore,
 ): IConfigMenuElementMapStateToProps => {
@@ -27,44 +29,42 @@ const mapStateToProps = (
     };
 };
 
+interface IConfigMenuElementMapDispatchToProps {
+    setConfig: (payload: ISetConfigPayload) => void;
+}
+const mapDispatchToProps = (dispatch: Dispatch) => {
+    return {
+        setConfig: (payload: ISetConfigPayload) =>
+            dispatch({ type: UPDATE_CONFIG, payload }),
+    };
+};
+
+type ConfigMenuElementProps = IConfigMenuElementProps &
+    IConfigMenuElementMapStateToProps &
+    IConfigMenuElementMapDispatchToProps;
+
 function ConfigMenuElement(props: ConfigMenuElementProps) {
     function parseAndStoreXSensitivity(xSensitivity: string) {
-        store.dispatch(
-            updateConfigAction({
-                partialConfig: {
-                    xSensitivity: parseFloat(xSensitivity),
-                },
-            }),
-        );
+        props.setConfig({
+            partialConfig: { xSensitivity: parseFloat(xSensitivity) },
+        });
     }
     function parseAndStoreYSensitivity(ySensitivity: string) {
-        store.dispatch(
-            updateConfigAction({
-                partialConfig: {
-                    ySensitivity: parseFloat(ySensitivity),
-                },
-            }),
-        );
+        props.setConfig({
+            partialConfig: { ySensitivity: parseFloat(ySensitivity) },
+        });
     }
     function parseAndStoreFPS(fps: string) {
-        store.dispatch(
-            updateConfigAction({
-                partialConfig: { fps: parseInt(fps, 10) },
-            }),
-        );
+        props.setConfig({ partialConfig: { fps: parseInt(fps, 10) } });
     }
     function storeSwapEyes(swapEyes: boolean) {
-        store.dispatch(updateConfigAction({ partialConfig: { swapEyes } }));
+        props.setConfig({ partialConfig: { swapEyes } });
     }
     function storeToggleDebug(toggleDebug: boolean) {
-        store.dispatch(
-            updateConfigAction({
-                partialConfig: { toggleDebug },
-            }),
-        );
+        props.setConfig({ partialConfig: { toggleDebug } });
     }
     function storeIrisColor(irisColor: string) {
-        store.dispatch(updateConfigAction({ partialConfig: { irisColor } }));
+        props.setConfig({ partialConfig: { irisColor } });
     }
     function extractFloatToString(floatString: string): string {
         return `${parseFloat(floatString)}`;
@@ -122,4 +122,7 @@ function ConfigMenuElement(props: ConfigMenuElementProps) {
     );
 }
 
-export default connect(mapStateToProps)(ConfigMenuElement);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(ConfigMenuElement);
