@@ -7,7 +7,7 @@ import CheckBoxMenuItem, {
 let props: ICheckBoxMenuItemProps;
 let mockOnInputChange: jest.Mock;
 
-describe('TextBoxMenuItem tests', () => {
+describe('CheckBoxMenuItem tests', () => {
     beforeEach(() => {
         mockOnInputChange = jest.fn();
         props = {
