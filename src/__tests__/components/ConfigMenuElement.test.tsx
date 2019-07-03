@@ -24,9 +24,9 @@ describe('ConfigMenuElement tests', () => {
         window = new jsdom.JSDOM(`...`, { url: 'http://localhost' }).window;
 
         props = {
-            storage: window.localStorage,
             config,
             window,
+            setConfig: jest.fn(),
         };
     });
 

@@ -120,10 +120,7 @@ export class App extends React.PureComponent<AppProps, IAppState> {
                     </div>
                 )}
 
-                <ConfigMenuElement
-                    storage={this.props.environment.localStorage}
-                    window={this.props.environment.window}
-                />
+                <ConfigMenuElement window={this.props.environment.window} />
             </div>
         );
     }

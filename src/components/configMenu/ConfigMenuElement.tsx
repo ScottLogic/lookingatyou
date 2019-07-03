@@ -14,8 +14,7 @@ import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
 import TextBoxMenuItem from './menuItems/TextBoxMenuItem';
 
-interface IConfigMenuElementProps {
-    storage: Storage;
+export interface IConfigMenuElementProps {
     window: Window;
 }
 
@@ -40,11 +39,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     };
 };
 
-type ConfigMenuElementProps = IConfigMenuElementProps &
+export type ConfigMenuElementProps = IConfigMenuElementProps &
     IConfigMenuElementMapStateToProps &
     IConfigMenuElementMapDispatchToProps;
 
-const ConfigMenuElement = React.memo(
+export const ConfigMenuElement = React.memo(
     (props: ConfigMenuElementProps) => {
         function parseAndStoreXSensitivity(xSensitivity: string) {
             props.setConfig({

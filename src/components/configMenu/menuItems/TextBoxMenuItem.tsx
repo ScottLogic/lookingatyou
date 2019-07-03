@@ -36,7 +36,7 @@ const TextBoxMenuItem = React.memo(
                 <label>{props.name}</label>
                 <input
                     type="textbox"
-                    value={value}
+                    value={value || ''}
                     style={{
                         color: isValid ? 'black' : 'red',
                     }}
