@@ -25,6 +25,6 @@ describe('TextBoxMenuItem tests', () => {
     it('should call onInputChange on change event', () => {
         const wrapper = mount(<CheckBoxMenuItem {...props} />);
         wrapper.find('input').simulate('change', { target: { value: true } });
-        expect(mockOnInputChange).toBeCalledTimes(1);
+        expect(mockOnInputChange).toHaveBeenCalledTimes(1);
     });
 });

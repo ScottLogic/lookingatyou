@@ -9,6 +9,7 @@ import IUserConfig from '../../components/configMenu/IUserConfig';
 
 let props: ConfigMenuElementProps;
 let config: IUserConfig;
+let window: Window;
 
 describe('ConfigMenuElement tests', () => {
     beforeEach(() => {
@@ -20,10 +21,12 @@ describe('ConfigMenuElement tests', () => {
             toggleDebug: false,
             irisColor: 'blue',
         };
+        window = new jsdom.JSDOM(`...`, { url: 'http://localhost' }).window;
+
         props = {
-            storage: new jsdom.JSDOM(`...`, { url: 'http://localhost' }).window
-                .localStorage,
+            storage: window.localStorage,
             config,
+            window,
         };
     });
 

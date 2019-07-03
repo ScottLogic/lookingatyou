@@ -27,6 +27,6 @@ describe('TextBoxMenuItem tests', () => {
         wrapper
             .find('input')
             .simulate('change', { target: { value: '#ABABAB' } });
-        expect(mockOnInputChange).toBeCalledTimes(1);
+        expect(mockOnInputChange).toHaveBeenCalledTimes(1);
     });
 });

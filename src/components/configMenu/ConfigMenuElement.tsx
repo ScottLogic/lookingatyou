@@ -10,15 +10,20 @@ import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
 import TextBoxMenuItem from './menuItems/TextBoxMenuItem';
+
 interface IConfigMenuElementProps {
     storage: Storage;
     config: IUserConfig;
+    window: Window;
 }
+
 interface IConfigMenuElementMapStateToProps {
     config: IUserConfig;
 }
+
 export type ConfigMenuElementProps = IConfigMenuElementProps &
     IConfigMenuElementMapStateToProps;
+
 const mapStateToProps = (
     state: IRootStore,
 ): IConfigMenuElementMapStateToProps => {
@@ -37,6 +42,7 @@ function ConfigMenuElement(props: ConfigMenuElementProps) {
             }),
         );
     }
+
     function parseAndStoreYSensitivity(ySensitivity: string) {
         store.dispatch(
             updateConfigAction({
@@ -46,6 +52,7 @@ function ConfigMenuElement(props: ConfigMenuElementProps) {
             }),
         );
     }
+
     function parseAndStoreFPS(fps: string) {
         store.dispatch(
             updateConfigAction({
@@ -53,9 +60,11 @@ function ConfigMenuElement(props: ConfigMenuElementProps) {
             }),
         );
     }
+
     function storeSwapEyes(swapEyes: boolean) {
         store.dispatch(updateConfigAction({ partialConfig: { swapEyes } }));
     }
+
     function storeToggleDebug(toggleDebug: boolean) {
         store.dispatch(
             updateConfigAction({
@@ -63,23 +72,29 @@ function ConfigMenuElement(props: ConfigMenuElementProps) {
             }),
         );
     }
+
     function storeIrisColor(irisColor: string) {
         store.dispatch(updateConfigAction({ partialConfig: { irisColor } }));
     }
+
     function extractFloatToString(floatString: string): string {
         return `${parseFloat(floatString)}`;
     }
+
     function extractIntToString(intString: string): string {
         return `${parseInt(intString, 10)}`;
     }
+
     function isValidSensitivity(sensitivity: string): boolean {
         return !isNaN(parseFloat(sensitivity)) && parseFloat(sensitivity) >= 0;
     }
+
     function isValidFPS(fps: string): boolean {
         return !isNaN(parseInt(fps, 10)) && parseInt(fps, 10) > 0;
     }
+
     return (
-        <ConfigMenu width="14em" timerLength={1000}>
+        <ConfigMenu width="14em" timerLength={1000} window={props.window}>
             <TextBoxMenuItem
                 name={'X Sensitivity'}
                 defaultValue={`${props.config.xSensitivity}`}

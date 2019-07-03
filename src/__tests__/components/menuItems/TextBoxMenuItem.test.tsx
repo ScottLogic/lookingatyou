@@ -31,7 +31,7 @@ describe('TextBoxMenuItem tests', () => {
         mockIsValidInput.mockReturnValue(false);
         const wrapper = mount(<TextBoxMenuItem {...props} />);
         wrapper.find('input').simulate('change', { target: value });
-        expect(wrapper.get(0).props.isValidInput).toBeCalled();
+        expect(wrapper.get(0).props.isValidInput).toHaveBeenCalled();
     });
 
     it('should call onValidInput when input is valid', () => {
@@ -39,7 +39,7 @@ describe('TextBoxMenuItem tests', () => {
         mockIsValidInput.mockReturnValue(true);
         const wrapper = mount(<TextBoxMenuItem {...props} />);
         wrapper.find('input').simulate('change', { target: value });
-        expect(wrapper.get(0).props.onValidInput).toBeCalled();
+        expect(wrapper.get(0).props.onValidInput).toHaveBeenCalled();
     });
 
     it('onBlur should reset input to last valid value when invalid value has been entered', () => {
