@@ -161,7 +161,6 @@ export default class Eye extends React.Component<IEyeProps> {
                         'skewX(20) translate(-165, 5)',
                     )}
                 </g>
-                <svg />
                 <svg className="Eyelids">
                     <path
                         style={this.eyelidTransitionStyle}
