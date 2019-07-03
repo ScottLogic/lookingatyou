@@ -101,6 +101,9 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
         }
 
         if (selection) {
+            if (this.props.squinting) {
+                this.props.setOpen(eyelidPosition.OPEN);
+            }
             this.isNewTarget();
         } else {
             this.hasTargetLeft();
