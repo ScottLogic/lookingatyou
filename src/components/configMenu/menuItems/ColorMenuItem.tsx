@@ -6,15 +6,19 @@ export interface IColorMenuItemProps {
     color: string;
 }
 
-export default function ColorMenuItem(props: IColorMenuItemProps) {
-    function onChange(event: React.ChangeEvent<HTMLInputElement>) {
-        props.onInputChange(event.target.value);
-    }
-
-    return (
-        <div>
-            <label>{props.name}</label>
-            <input type="color" value={props.color} onChange={onChange} />
-        </div>
-    );
-}
+const ColorMenuItem = React.memo(
+    (props: IColorMenuItemProps) => {
+        function onChange(event: React.ChangeEvent<HTMLInputElement>) {
+            props.onInputChange(event.target.value);
+        }
+        return (
+            <div>
+                <label>{props.name}</label>
+                <input type="color" value={props.color} onChange={onChange} />
+            </div>
+        );
+    },
+    (previous, next) =>
+        previous.color === next.color && previous.name === next.name,
+);
+export default ColorMenuItem;
