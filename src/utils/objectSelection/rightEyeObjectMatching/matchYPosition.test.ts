@@ -34,4 +34,9 @@ describe('selectMatching should return', () => {
             y: 40,
         });
     });
+
+    it('return null when there are no detections', () => {
+        const leftEyeCoord: ICoords = { x: 50, y: 325 };
+        expect(matchYPosition(leftEyeCoord, [])).toBe(null);
+    });
 });
