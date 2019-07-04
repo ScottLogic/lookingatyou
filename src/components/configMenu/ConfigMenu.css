@@ -29,6 +29,8 @@
     font-size: 1.2em;
 
     transition: 500ms;
+
+    overflow: hidden;
 }
 
 .ConfigMenu a,
