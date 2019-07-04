@@ -37,7 +37,7 @@ const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     };
 };
 
-export class App extends React.Component<AppProps, IAppState> {
+export class App extends React.PureComponent<AppProps, IAppState> {
     constructor(props: AppProps) {
         super(props);
 
@@ -120,10 +120,7 @@ export class App extends React.Component<AppProps, IAppState> {
                     </div>
                 )}
 
-                <ConfigMenuElement
-                    storage={this.props.environment.localStorage}
-                    window={this.props.environment.window}
-                />
+                <ConfigMenuElement window={this.props.environment.window} />
             </div>
         );
     }
