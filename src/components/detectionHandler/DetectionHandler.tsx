@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
     DetectionConfig,
-    IDetection,
+    IDetections,
     IObjectDetector,
     ModelConfig,
 } from '../../models/objectDetection';
@@ -20,11 +20,12 @@ import {
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import CocoSSD from '../../utils/objectDetection/cocoSSD';
+import matchYPosition from '../../utils/objectSelection/rightEyeObjectMatching/matchYPosition';
 import selectFirst from '../../utils/objectSelection/selectFirst';
 import calculateTargetPos, {
     normalise,
 } from '../../utils/objectTracking/calculateFocus';
-import { DetectionImage, ICoords } from '../../utils/types';
+import { DetectionImage, ITargets } from '../../utils/types';
 
 interface IDetectionHandlerProps {
     modelConfig: ModelConfig;
@@ -38,8 +39,8 @@ interface IStateProps {
 
 interface IDispatchProps {
     setModelLoaded: (hasLoaded: boolean) => ISetLoadedAction;
-    setTarget: (target: ICoords) => ISetTargetAction;
-    setDetections: (detections: IDetection[]) => ISetDetectionsAction;
+    setTarget: (target: ITargets) => ISetTargetAction;
+    setDetections: (detections: IDetections) => ISetDetectionsAction;
 }
 
 export type DetectionHandlerProps = IDetectionHandlerProps &
@@ -79,7 +80,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
         this.detectionInterval = setInterval(
             this.detectionHandler,
             1000 / this.props.FPS,
-            this.props.videos[0],
+            this.props.videos,
         );
     }
 
@@ -91,18 +92,43 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
         return null;
     }
 
-    async detectionHandler(image: DetectionImage) {
+    async detectionHandler(images: DetectionImage[]) {
         if (this.model) {
-            const detections = await this.model.detect(image);
-            this.props.setDetections(detections);
-            const selection = selectFirst(detections);
-            const coords = calculateTargetPos(selection);
-            if (coords) {
+            const leftEyeDetections = await this.model.detect(images[0]);
+            const leftEyeSelection = selectFirst(leftEyeDetections);
+            const leftEyeCoords = calculateTargetPos(leftEyeSelection);
+            let rightEyeDetections = null;
+            if (leftEyeCoords) {
+                const leftTarget = {
+                    x: normalise(leftEyeCoords.x, images[0]!.width),
+                    y: normalise(leftEyeCoords.y, images[0]!.height),
+                };
+                let rightTarget = null;
+                if (images.length >= 2) {
+                    rightEyeDetections = await this.model.detect(images[1]);
+                    const rightEyeCoords = matchYPosition(
+                        leftEyeCoords,
+                        rightEyeDetections,
+                    );
+                    if (rightEyeCoords) {
+                        rightTarget = {
+                            x: normalise(rightEyeCoords.x, images[1]!.width),
+                            y: normalise(rightEyeCoords.y, images[1]!.height),
+                        };
+                        const averageY = rightTarget.y + leftTarget.y;
+                        rightTarget.y = averageY;
+                        leftTarget.y = averageY;
+                    }
+                }
                 this.props.setTarget({
-                    x: normalise(coords.x, image!.width),
-                    y: normalise(coords.y, image!.height),
+                    left: leftTarget,
+                    right: rightTarget,
                 });
             }
+            this.props.setDetections({
+                left: leftEyeDetections,
+                right: rightEyeDetections,
+            });
         }
     }
 }
@@ -115,8 +141,8 @@ const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
     return {
         setModelLoaded: (hasLoaded: boolean) =>
             dispatch(setModelLoaded(hasLoaded)),
-        setTarget: (target: ICoords) => dispatch(setTarget(target)),
-        setDetections: (detections: IDetection[]) =>
+        setTarget: (target: ITargets) => dispatch(setTarget(target)),
+        setDetections: (detections: IDetections) =>
             dispatch(setDetections(detections)),
     };
 };

@@ -1,6 +1,6 @@
 import { eyelidPosition } from '../../AppConstants';
-import { IDetection } from '../../models/objectDetection';
-import { ICoords } from '../../utils/types';
+import { IDetections } from '../../models/objectDetection';
+import { ITargets } from '../../utils/types';
 import {
     DetectionActionType,
     IDetectionState,
@@ -12,24 +12,24 @@ import {
     SET_OPEN,
     SET_PERSON,
     SET_SQUINT,
-    SET_TARGET,
+    SET_TARGETS,
 } from '../actions/detections/types';
 
 export const initialState: IDetectionState = {
     isModelLoaded: false,
-    target: { x: 0, y: 0 },
-    detections: [],
     tooBright: false,
     left: false,
     personDetected: false,
     isSquinting: false,
     eyesOpenCoefficient: eyelidPosition.OPEN,
     dilationCoefficient: 1,
+    target: { left: { x: 0, y: 0 }, right: null },
+    detections: { left: [], right: null },
 };
 
 const detectionActionMapping = {
     [SET_MODEL_LOADED]: setModelLoaded,
-    [SET_TARGET]: setTarget,
+    [SET_TARGETS]: setTarget,
     [SET_DETECTIONS]: setDetections,
     [SET_BRIGHT]: setBright,
     [SET_DILATION]: setDilation,
@@ -61,7 +61,7 @@ function setTarget(
 ): IDetectionState {
     return {
         ...state,
-        target: { ...(action.payload as ICoords) },
+        target: { ...(action.payload as ITargets) },
     };
 }
 
@@ -69,7 +69,7 @@ function setDetections(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    return { ...state, detections: action.payload as IDetection[] };
+    return { ...state, detections: action.payload as IDetections };
 }
 
 function setBright(

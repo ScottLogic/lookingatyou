@@ -14,6 +14,11 @@ export interface IDetection {
     info: ICocoInfo;
 }
 
+export interface IDetections {
+    left: IDetection[];
+    right: IDetection[] | null;
+}
+
 export interface ICocoInfo {
     certainty: number;
     type: string;

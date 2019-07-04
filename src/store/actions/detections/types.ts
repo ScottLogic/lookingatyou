@@ -1,8 +1,8 @@
-import { IDetection } from '../../../models/objectDetection';
-import { ICoords } from '../../../utils/types';
+import { IDetections } from '../../../models/objectDetection';
+import { ITargets } from '../../../utils/types';
 
 export const SET_MODEL_LOADED = 'SET_MODEL_LOADED';
-export const SET_TARGET = 'SET_TARGET';
+export const SET_TARGETS = 'SET_TARGETS';
 export const SET_DETECTIONS = 'SET_DETECTIONS';
 export const SET_BRIGHT = 'SET_BRIGHT';
 export const SET_DILATION = 'SET_DILATION';
@@ -13,14 +13,14 @@ export const SET_SQUINT = 'SET_SQUINT';
 
 export interface IDetectionState {
     isModelLoaded: boolean;
-    target: ICoords;
-    detections: IDetection[];
     tooBright: boolean;
     left: boolean;
     dilationCoefficient: number;
     eyesOpenCoefficient: number;
     personDetected: boolean;
     isSquinting: boolean;
+    target: ITargets;
+    detections: IDetections;
 }
 
 export interface ISetLoadedAction {
@@ -29,13 +29,13 @@ export interface ISetLoadedAction {
 }
 
 export interface ISetTargetAction {
-    type: 'SET_TARGET';
-    payload: ICoords;
+    type: 'SET_TARGETS';
+    payload: ITargets;
 }
 
 export interface ISetDetectionsAction {
     type: 'SET_DETECTIONS';
-    payload: IDetection[];
+    payload: IDetections;
 }
 
 export interface ISetBrightAction {
