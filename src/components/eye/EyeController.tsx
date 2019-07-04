@@ -23,6 +23,7 @@ interface IEyeControllerMapStateToProps {
     target: ICoords;
     dilation: number;
     openCoefficient: number;
+    detected: boolean;
 }
 export type EyeControllerProps = IEyeControllerProps &
     IEyeControllerMapStateToProps;
@@ -31,6 +32,7 @@ const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     target: state.detectionStore.target,
     dilation: state.detectionStore.dilationCoefficient,
     openCoefficient: state.detectionStore.eyesOpenCoefficient,
+    detected: state.detectionStore.personDetected,
 });
 export const EyeController = React.memo(
     (props: EyeControllerProps) => {
@@ -38,14 +40,18 @@ export const EyeController = React.memo(
         const [isBlinking, setIsBlinking] = useState(false); // Will change based on camera feed e.g. blink less when object in frame
         const [eyesOpenCoefficient] = useState(eyelidPosition.OPEN); // Will change based on camera feed e.g. higher coefficient to show surprise
         const [dilationCoefficient] = useState(pupilSizes.neutral); // Will change based on camera feed e.g. briefly increase coefficient (dilate) when object enters frame then reset to 1 (neutral)
+        const [detected] = useState(props.detected);
 
         useEffect(() => {
             const blink = props.environment.setInterval(() => {
                 if (isBlinking) {
                     setIsBlinking(false);
                 } else {
+                    const blinkFrequency = detected
+                        ? neutralBlinkFrequency / 4
+                        : neutralBlinkFrequency;
                     const blinkProbability =
-                        (neutralBlinkFrequency * blinkFrequencyCoefficient) /
+                        (blinkFrequency * blinkFrequencyCoefficient) /
                         (1000 / transitionTime.blink);
                     setIsBlinking(Math.random() < blinkProbability);
                 }
