@@ -1,10 +1,11 @@
 import React from 'react';
 import './ConfigMenu.css';
 
-interface IConfigMenuProps {
+export interface IConfigMenuProps {
     width: string;
     timerLength: number;
     children: React.ReactNode;
+    window: Window;
 }
 interface IConfigMenuState {
     leftPosition: string;
@@ -16,28 +17,44 @@ export default class ConfigMenu extends React.Component<
     IConfigMenuState
 > {
     private hideTimeout: number = 0;
+
     constructor(props: IConfigMenuProps) {
         super(props);
         this.state = { leftPosition: '0px', isUnderMouse: false };
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
-        window.addEventListener('mousemove', () => {
-            this.setState({ leftPosition: '0px' });
-            clearInterval(this.hideTimeout);
-            if (!this.state.isUnderMouse) {
-                this.hideTimeout = window.setTimeout(
-                    () => this.setState({ leftPosition: '-' + props.width }),
-                    props.timerLength,
-                );
-            }
-        });
+        this.mouseMoveHandler = this.mouseMoveHandler.bind(this);
+        this.props.window.addEventListener('mousemove', this.mouseMoveHandler);
     }
-    onMouseMove(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+
+    mouseMoveHandler() {
+        this.setState({ leftPosition: '0px' });
+        clearInterval(this.hideTimeout);
+        if (!this.state.isUnderMouse) {
+            this.hideTimeout = window.setTimeout(
+                () => this.setState({ leftPosition: '-' + this.props.width }),
+                this.props.timerLength,
+            );
+        }
+    }
+
+    onMouseMove() {
         clearInterval(this.hideTimeout);
         this.setState({ isUnderMouse: true });
     }
-    onMouseLeave(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+
+    onMouseLeave() {
         this.setState({ isUnderMouse: false });
+    }
+    shouldComponentUpdate(
+        nextProps: IConfigMenuProps,
+        nextState: IConfigMenuState,
+    ) {
+        return (
+            nextState.leftPosition !== this.state.leftPosition ||
+            nextProps.children !== this.props.children ||
+            nextProps.width !== this.props.width
+        );
     }
     render() {
         return (
@@ -50,7 +67,6 @@ export default class ConfigMenu extends React.Component<
                 onMouseMove={this.onMouseMove}
                 onMouseLeave={this.onMouseLeave}
             >
-                {' '}
                 <h1>Config</h1>
                 {this.props.children}
             </div>

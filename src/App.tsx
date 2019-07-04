@@ -1,16 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import './App.css';
-import { configStorageKey } from './AppConstants';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import DetectionHandler from './components/detectionHandler/DetectionHandler';
 import EyeController from './components/eye/EyeController';
 import MovementHandler from './components/intelligentMovement/MovementHandler';
 import Video from './components/video/Video';
-import { updateConfigAction } from './store/actions/config/actions';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds } from './store/selectors/videoSelectors';
-import store from './store/store';
 
 interface IAppState {
     width: number;
@@ -41,7 +38,7 @@ const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     };
 };
 
-export class App extends React.Component<AppProps, IAppState> {
+export class App extends React.PureComponent<AppProps, IAppState> {
     constructor(props: AppProps) {
         super(props);
 
@@ -66,14 +63,6 @@ export class App extends React.Component<AppProps, IAppState> {
             this.onUserMedia,
             this.onUserMediaError,
         );
-        const json = this.props.environment.localStorage.getItem(
-            configStorageKey,
-        );
-        if (json != null) {
-            store.dispatch(
-                updateConfigAction({ partialConfig: JSON.parse(json) }),
-            );
-        }
     }
 
     componentWillUnmount() {
@@ -135,9 +124,7 @@ export class App extends React.Component<AppProps, IAppState> {
                     </div>
                 )}
 
-                <ConfigMenuElement
-                    storage={this.props.environment.localStorage}
-                />
+                <ConfigMenuElement window={this.props.environment.window} />
             </div>
         );
     }

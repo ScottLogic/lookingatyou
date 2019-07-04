@@ -3,5 +3,5 @@
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
     "editor.tabSize": 4,
-    "editor.cursorBlinking": "expand"
+    "editor.detectIndentation": false
 }
