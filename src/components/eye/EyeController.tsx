@@ -28,7 +28,7 @@ const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     config: getConfig(state),
     target: state.detectionStore.target,
 });
-const EyeController = React.memo(
+export const EyeController = React.memo(
     (props: EyeControllerProps) => {
         const [blinkFrequencyCoefficient] = useState(1); // Will change based on camera feed e.g. lower coefficient when object in frame
         const [isBlinking, setIsBlinking] = useState(false); // Will change based on camera feed e.g. blink less when object in frame
