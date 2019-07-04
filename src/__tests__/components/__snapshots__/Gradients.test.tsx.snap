@@ -10,8 +10,11 @@ exports[`Gradients should render correctly 1`] = `
     </linearGradient>
     <radialGradient id=\\"scleraGradient\\" cx=\\"50%\\" cy=\\"50%\\">
       <stop offset=\\"0%\\" stopColor=\\"white\\" />
-      <stop offset=\\"85%\\" stopColor=\\"#e6e6e6\\" />
-      <stop offset=\\"100%\\" stopColor=\\"#b3b3b3\\" />
+      <stop offset=\\"20%\\" stopColor=\\"#f7f7f7\\" />
+      <stop offset=\\"40%\\" stopColor=\\"#ebebeb\\" />
+      <stop offset=\\"60%\\" stopColor=\\"#e0e0e0\\" />
+      <stop offset=\\"80%\\" stopColor=\\"#b3b3b3\\" />
+      <stop offset=\\"100%\\" stopColor=\\"#333333\\" />
     </radialGradient>
     <radialGradient id=\\"irisGradient\\" cx=\\"50%\\" cy=\\"50%\\" href=\\"#lgrad\\" />
     <radialGradient id=\\"reflectionGradient\\">
