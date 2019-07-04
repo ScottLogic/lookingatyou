@@ -12,6 +12,7 @@ import { getConfig } from '../../store/selectors/configSelectors';
 import { ICoords } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
+import { Gradients } from './Gradients';
 interface IEyeControllerProps {
     width: number;
     height: number;
@@ -23,15 +24,15 @@ interface IEyeControllerMapStateToProps {
     dilation: number;
     openCoefficient: number;
 }
-type EyeControllerProps = IEyeControllerProps & IEyeControllerMapStateToProps;
+export type EyeControllerProps = IEyeControllerProps &
+    IEyeControllerMapStateToProps;
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     config: getConfig(state),
     target: state.detectionStore.target,
     dilation: state.detectionStore.dilationCoefficient,
     openCoefficient: state.detectionStore.eyesOpenCoefficient,
 });
-
-const EyeController = React.memo(
+export const EyeController = React.memo(
     (props: EyeControllerProps) => {
         const [blinkFrequencyCoefficient] = useState(1); // Will change based on camera feed e.g. lower coefficient when object in frame
         const [isBlinking, setIsBlinking] = useState(false); // Will change based on camera feed e.g. blink less when object in frame
@@ -103,6 +104,7 @@ const EyeController = React.memo(
                         />
                     );
                 })}
+                <Gradients irisColor={props.config.irisColor} />
             </div>
         );
     },

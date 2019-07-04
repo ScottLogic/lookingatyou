@@ -1,8 +1,10 @@
 import React from 'react';
+import tinycolor from 'tinycolor2';
 import { eyes, transitionTime } from '../../AppConstants';
 import './Eye.css';
+import { innerPath } from './innerPath';
 
-interface IEyeProps {
+export interface IEyeProps {
     class: string;
     width: number;
     height: number;
@@ -17,9 +19,13 @@ interface IEyeProps {
     fps: number;
 }
 
+const pupilColor = 'black';
+
 export default class Eye extends React.Component<IEyeProps> {
     private circleTransitionStyle: { transition: string };
     private eyelidTransitionStyle: { transition: string };
+    private lineTransitionStyle: { transition: string };
+
     constructor(props: IEyeProps) {
         super(props);
         this.circleTransitionStyle = {
@@ -29,24 +35,48 @@ export default class Eye extends React.Component<IEyeProps> {
         this.eyelidTransitionStyle = {
             transition: `d ${transitionTime.blink}ms`,
         };
+        this.lineTransitionStyle = {
+            transition: `d ${1000 / props.fps}ms`,
+        };
     }
 
     renderCircle(
         radius: number,
         name: string,
-        colour: string,
+        color: string,
         centerX: number = this.props.width / 2,
         centerY: number = this.props.height / 2,
+        transform: string = '',
     ) {
         return (
             <circle
                 style={this.circleTransitionStyle}
                 r={radius}
                 className={name}
-                fill={colour}
+                fill={color}
                 cx={centerX}
                 cy={centerY}
+                transform={transform}
             />
+        );
+    }
+
+    renderIrisStyling() {
+        const scale = this.props.width / 960; // component width divided by the width the styling was created at
+        return (
+            <g
+                transform={`
+                scale(${scale})`}
+            >
+                <path
+                    d={`M ${this.props.innerX / scale} ${this.props.innerY /
+                        scale} ${innerPath}`}
+                    fill={tinycolor(this.props.irisColor)
+                        .darken(10)
+                        .toHexString()}
+                    style={this.lineTransitionStyle}
+                />
+            </g>
         );
     }
 
@@ -93,21 +123,42 @@ export default class Eye extends React.Component<IEyeProps> {
                 width={this.props.width}
                 height={this.props.height}
             >
-                {this.renderCircle(this.props.scleraRadius, 'sclera', 'white')}
+                {this.renderCircle(
+                    this.props.scleraRadius,
+                    'sclera',
+                    'url(#scleraGradient)',
+                )}
                 <g className="inner">
                     {this.renderCircle(
                         this.props.irisRadius,
                         'iris',
-                        this.props.irisColor,
+                        'url(#irisGradient)',
+                        this.props.innerX,
+                        this.props.innerY,
+                    )}
+                    {this.renderIrisStyling()}
+                    {this.renderCircle(
+                        this.props.pupilRadius * this.props.dilatedCoefficient,
+                        'pupil',
+                        pupilColor,
                         this.props.innerX,
                         this.props.innerY,
                     )}
                     {this.renderCircle(
-                        this.props.pupilRadius * this.props.dilatedCoefficient,
-                        'pupil',
-                        'black',
-                        this.props.innerX,
-                        this.props.innerY,
+                        this.props.pupilRadius,
+                        'reflection',
+                        'url(#reflectionGradient)',
+                        this.props.innerX + this.props.pupilRadius * 0.4,
+                        this.props.innerY - this.props.pupilRadius * 0.4,
+                        `skewX(20) translate(-165, 0)`,
+                    )}
+                    {this.renderCircle(
+                        this.props.pupilRadius,
+                        'reflection',
+                        'url(#reflectionGradient)',
+                        this.props.innerX + this.props.scleraRadius * 0.3,
+                        this.props.innerY - this.props.scleraRadius * 0.3,
+                        'skewX(20) translate(-165, 5)',
                     )}
                 </g>
                 <svg className="Eyelids">
@@ -122,7 +173,7 @@ export default class Eye extends React.Component<IEyeProps> {
                          C ${eyeRight -
                              rightTopCoefficient *
                                  scaledXBezierControlOffset} ${eyeMiddleY -
-                                scaledYBezierControlOffset}, 
+                                scaledYBezierControlOffset},
                          ${eyeMiddleX +
                              bezierControlOffset} ${topEyelidY}, ${eyeMiddleX} ${topEyelidY}
                          C ${eyeMiddleX -
@@ -143,7 +194,7 @@ export default class Eye extends React.Component<IEyeProps> {
                          C ${eyeRight -
                              rightBottomCoefficient *
                                  scaledXBezierControlOffset} ${eyeMiddleY +
-                                scaledYBezierControlOffset}, 
+                                scaledYBezierControlOffset},
                          ${eyeMiddleX +
                              bezierControlOffset} ${bottomEyelidY}, ${eyeMiddleX} ${bottomEyelidY}
                          C ${eyeMiddleX -
