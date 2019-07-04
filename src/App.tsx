@@ -115,7 +115,9 @@ export class App extends React.PureComponent<AppProps, IAppState> {
                                 height={this.state.height}
                                 environment={this.props.environment}
                             />
-                            <MovementHandler />
+                            <MovementHandler
+                                document={this.props.environment.document}
+                            />
                         </div>
                     )
                 ) : (

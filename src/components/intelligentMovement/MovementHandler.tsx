@@ -26,6 +26,10 @@ import { getVideos } from '../../store/selectors/videoSelectors';
 import { ICoords } from '../../utils/types';
 import { analyseLight, checkLight, naturalMovement } from '../eye/EyeUtils';
 
+interface IMovementProps {
+    document: Document;
+}
+
 interface IStateProps {
     fps: number;
     detections: IDetection[];
@@ -49,7 +53,9 @@ interface IDispatchProps {
     setTarget: (targer: ICoords) => ISetTargetAction;
 }
 
-export type MovementHandlerProps = IDispatchProps & IStateProps;
+export type MovementHandlerProps = IMovementProps &
+    IDispatchProps &
+    IStateProps;
 
 export class MovementHandler extends React.Component<MovementHandlerProps> {
     private movementInterval: number;
@@ -128,6 +134,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
     calculateBrightness() {
         if (this.props.videos[0]) {
             const { tooBright, scaledPupilSize } = checkLight(
+                this.props.document,
                 this.props.tooBright,
                 this.props.videos[0] as HTMLVideoElement,
                 analyseLight,

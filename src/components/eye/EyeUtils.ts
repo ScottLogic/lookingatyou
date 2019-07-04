@@ -9,6 +9,7 @@ import {
 } from '../../AppConstants';
 
 export function checkLight(
+    doc: Document,
     tooBright: boolean,
     video:
         | ImageData
@@ -22,7 +23,7 @@ export function checkLight(
     ) => { tooBright: boolean; scaledPupilSize: number },
 ): { tooBright: boolean; scaledPupilSize: number } {
     if (video && video instanceof HTMLVideoElement) {
-        const canvas = document.createElement('canvas');
+        const canvas = doc.createElement('canvas');
         canvas.height = video.height;
         canvas.width = video.width;
         const canvasCtx = canvas.getContext('2d');
