@@ -17,6 +17,10 @@ export default class CocoSSD implements IObjectDetector {
         maxDetections: number = 5,
     ): Promise<IDetection[]> {
         const detections = await this.model.detect(image, maxDetections);
+        return this.reshapeDetections(detections);
+    }
+
+    reshapeDetections(detections: ssd.DetectedObject[]): IDetection[] {
         return detections.map(detection => {
             return {
                 bbox: detection.bbox,
