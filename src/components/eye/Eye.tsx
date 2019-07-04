@@ -23,13 +23,6 @@ export interface IEyeProps {
 const pupilColor = 'black';
 
 export default class Eye extends React.Component<IEyeProps> {
-    // startX: any;
-    // startY: any;
-    // elements: number;
-    // r2: number;
-    // circ2DistRadians: number;
-    // r1: number;
-    // circ1DistRadians: number;
     private circleTransitionStyle: { transition: string };
     private eyelidTransitionStyle: { transition: string };
     private lineTransitionStyle: { transition: string };
@@ -46,19 +39,6 @@ export default class Eye extends React.Component<IEyeProps> {
         this.lineTransitionStyle = {
             transition: `d ${1000 / props.fps}ms`,
         };
-
-        //     this.startX = this.props.innerX;
-        //     this.startY = this.props.innerY;
-        //     this.elements = 100;
-        //     this.r1 = this.props.irisRadius * 0.1;
-        //     this.r2 = this.props.irisRadius * 0.9;
-        //     this.circ1DistRadians = ((360 / this.elements) * Math.PI) / 180;
-        //     this.circ2DistRadians = ((360 / this.elements) * Math.PI) / 180;
-        // }
-
-        // componentDidUpdate() {
-        //     this.startX = this.props.innerX;
-        //     this.startY = this.props.innerY;
     }
 
     renderCircle(
@@ -92,7 +72,7 @@ export default class Eye extends React.Component<IEyeProps> {
                     fill={tinycolor(this.props.irisColor)
                         .darken(10)
                         .toHexString()}
-                    style={{ transition: `d ${1000 / this.props.fps}ms` }}
+                    style={this.lineTransitionStyle}
                 />
             </g>
         );
