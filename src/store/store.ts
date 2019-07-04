@@ -7,7 +7,7 @@ import { load, save } from 'redux-localstorage-simple';
 import reducer from './reducers/rootReducer';
 
 const states = ['configStore'];
-const middleware: Middleware[] = [];
+const middleware: Middleware[] = [save({ states })];
 
 export function createStore() {
     return createReduxStore(
