@@ -28,6 +28,7 @@
     "dependencies": {
         "@tensorflow-models/coco-ssd": "^1.0.2",
         "@tensorflow/tfjs": "^1.2.1",
+        "@types/tinycolor2": "^1.4.2",
         "react": "^16.8.6",
         "react-dom": "^16.8.6",
         "react-redux": "^7.1.0",
@@ -35,7 +36,8 @@
         "redux": "^4.0.1",
         "redux-localstorage-simple": "^2.1.6",
         "redux-mock-store": "^1.5.3",
-        "reselect": "^4.0.0"
+        "reselect": "^4.0.0",
+        "tinycolor2": "^1.4.1"
     },
     "scripts": {
         "start": "react-scripts start",
