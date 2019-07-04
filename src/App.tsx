@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Store } from 'redux';
 import './App.css';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import DetectionHandler from './components/detectionHandler/DetectionHandler';
@@ -20,7 +21,9 @@ interface IAppProps {
         mediaDevices: MediaDevices,
         onUserMedia: () => void,
         onUserMediaError: () => void,
+        store: Store<IRootStore>,
     ) => void;
+    store: Store<IRootStore>;
 }
 
 interface IAppMapStateToProps {
@@ -61,6 +64,7 @@ export class App extends React.PureComponent<AppProps, IAppState> {
             this.props.environment.navigator.mediaDevices,
             this.onUserMedia,
             this.onUserMediaError,
+            this.props.store,
         );
     }
 

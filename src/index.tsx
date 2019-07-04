@@ -15,7 +15,11 @@ const store = createStore();
 
 ReactDOM.render(
     <Provider store={store}>
-        <App environment={getEnvironment()} configureStream={configureStream} />
+        <App
+            environment={getEnvironment()}
+            configureStream={configureStream}
+            store={store}
+        />
     </Provider>,
     document.getElementById('root'),
 );

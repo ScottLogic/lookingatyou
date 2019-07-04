@@ -1,5 +1,6 @@
+import { Store } from 'redux';
 import { SET_VIDEO_STREAMS } from '../../store/actions/video/types';
-import store from '../../store/store';
+import { IRootStore } from '../../store/reducers/rootReducer';
 
 const videoinput = 'videoinput';
 
@@ -7,6 +8,7 @@ export default async function configureStream(
     mediaDevices: MediaDevices,
     onUserMedia: () => void,
     onUserMediaError: () => void,
+    store: Store<IRootStore>,
 ) {
     try {
         const devices = await enumerateDevices(mediaDevices);
