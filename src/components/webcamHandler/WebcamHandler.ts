@@ -1,6 +1,4 @@
-import { Store } from 'redux';
 import { SET_VIDEO_STREAMS } from '../../store/actions/video/types';
-import { IRootStore } from '../../store/reducers/rootReducer';
 import { AppStore } from '../../store/store';
 
 const videoinput = 'videoinput';
