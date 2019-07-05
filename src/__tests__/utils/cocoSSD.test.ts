@@ -17,6 +17,7 @@ const testInput: ssd.DetectedObject[] = [
 
 const testOutput: IDetection[] = [
     {
+        model: 'CocoSSD',
         bbox: testBbox,
         info: { type: testType, certainty: testScore },
     },

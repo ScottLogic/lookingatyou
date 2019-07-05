@@ -2,6 +2,7 @@ import { IDetection } from '../../../models/objectDetection';
 import select, { first } from '../../../utils/objectSelection/select';
 
 const notPerson: IDetection = {
+    model: 'CocoSSD',
     bbox: [0, 0, 0, 0],
     info: {
         certainty: 100,
@@ -10,6 +11,7 @@ const notPerson: IDetection = {
 };
 
 const person: IDetection = {
+    model: 'CocoSSD',
     bbox: [1, 1, 1, 1],
     info: {
         certainty: 50,
