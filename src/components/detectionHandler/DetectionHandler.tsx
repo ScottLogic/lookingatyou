@@ -25,7 +25,7 @@ import selectFirst from '../../utils/objectSelection/selectFirst';
 import calculateTargetPos, {
     normalise,
 } from '../../utils/objectTracking/calculateFocus';
-import { DetectionImage, ICoords, ITargets } from '../../utils/types';
+import { DetectionImage, ITargets } from '../../utils/types';
 
 interface IDetectionHandlerProps {
     modelConfig: ModelConfig;

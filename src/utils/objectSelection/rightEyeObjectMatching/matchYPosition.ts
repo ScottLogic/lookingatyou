@@ -19,11 +19,11 @@ export default function matchYPosition(
     let best: number | null = null;
     let lowestYDifference = Number.MAX_SAFE_INTEGER;
     for (let i = 0; i < rightEyePersonCoords.length && i < maxIndex; i++) {
-        if (
+        const isClosestYValue =
             yDifference(rightEyePersonCoords[i], leftEyeCoord) <
-                lowestYDifference &&
-            isRightOf(rightEyePersonCoords[i], leftEyeCoord)
-        ) {
+            lowestYDifference;
+        const isOnRight = isRightOf(rightEyePersonCoords[i], leftEyeCoord);
+        if (isClosestYValue && isOnRight) {
             best = i;
             lowestYDifference = yDifference(
                 rightEyePersonCoords[best],
@@ -31,11 +31,7 @@ export default function matchYPosition(
             );
         }
     }
-    if (best !== null) {
-        return rightEyePersonBboxes[best];
-    } else {
-        return undefined;
-    }
+    return best !== null ? rightEyePersonBboxes[best] : undefined;
 }
 function isRightOf(coords1: ICoords, coords2: ICoords) {
     return coords1.x > coords2.x;

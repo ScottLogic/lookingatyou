@@ -84,10 +84,9 @@ export const EyeController = React.memo(
 
         const eyeCoords: { [key: string]: ICoords } = {};
         eyeCoords[eyes.LEFT] = getEyeCoords(props.target.left);
+        const right = props.target.right;
         eyeCoords[eyes.RIGHT] =
-            props.target.right === null
-                ? eyeCoords[eyes.LEFT]
-                : getEyeCoords(props.target.right);
+            right === null ? eyeCoords[eyes.LEFT] : getEyeCoords(right);
 
         function getEyesOpenCoefficient(): number {
             if (props.openCoefficient !== eyesOpenCoefficient) {
