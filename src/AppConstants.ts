@@ -22,6 +22,7 @@ export const buffer = 0.2;
 export const maxBrightness = 220;
 export const dilationMultipler = 0.8;
 export const dilationOffset = 0.7;
+export const sleepDelay = 40000;
 export const transitionTime = {
     blink: 200,
     dilate: 750,
