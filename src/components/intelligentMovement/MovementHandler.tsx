@@ -59,7 +59,7 @@ export type MovementHandlerProps = IMovementProps &
 
 export class MovementHandler extends React.Component<MovementHandlerProps> {
     private movementInterval: number;
-    private sleepTimeout: number;
+    private sleepTimeout: number | null;
 
     constructor(props: MovementHandlerProps) {
         super(props);
@@ -180,13 +180,16 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             this.props.setDilation(pupilSizes.neutral);
             this.props.setTarget({ left: { x: 0, y: 0 }, right: null });
             this.props.setOpen(eyelidPosition.SQUINT);
-            setTimeout(this.sleep, sleepDelay);
+            this.sleep();
         }
     }
 
     wake() {
-        clearTimeout(this.sleepTimeout);
-        this.props.setOpen(eyelidPosition.OPEN);
+        if (this.sleepTimeout) {
+            clearTimeout(this.sleepTimeout);
+            this.sleepTimeout = null;
+            this.props.setOpen(eyelidPosition.OPEN);
+        }
     }
 
     sleep() {
