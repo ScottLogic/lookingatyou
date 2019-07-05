@@ -33,7 +33,7 @@ describe('selectLargest', () => {
                 info: { type: 'person', certainty: 100 },
             },
             {
-                bbox: [0, 20, 30, 13],
+                bbox: [0, 20, 3000, 3000],
                 info: { type: 'giraffe', certainty: 100 },
             },
             {
