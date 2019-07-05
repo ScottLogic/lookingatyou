@@ -12,7 +12,7 @@ import {
     SET_OPEN,
     SET_PERSON,
     SET_SQUINT,
-    SET_TARGETS,
+    SET_TARGET,
 } from '../actions/detections/types';
 
 export const initialState: IDetectionState = {
@@ -29,7 +29,7 @@ export const initialState: IDetectionState = {
 
 const detectionActionMapping = {
     [SET_MODEL_LOADED]: setModelLoaded,
-    [SET_TARGETS]: setTarget,
+    [SET_TARGET]: setTarget,
     [SET_DETECTIONS]: setDetections,
     [SET_BRIGHT]: setBright,
     [SET_DILATION]: setDilation,

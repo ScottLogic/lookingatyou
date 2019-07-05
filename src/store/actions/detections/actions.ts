@@ -18,7 +18,7 @@ import {
     SET_OPEN,
     SET_PERSON,
     SET_SQUINT,
-    SET_TARGETS,
+    SET_TARGET,
 } from './types';
 
 export function setModelLoaded(hasLoaded: boolean): ISetLoadedAction {
@@ -30,7 +30,7 @@ export function setModelLoaded(hasLoaded: boolean): ISetLoadedAction {
 
 export function setTarget(target: ITargets): ISetTargetAction {
     return {
-        type: SET_TARGETS,
+        type: SET_TARGET,
         payload: target,
     };
 }

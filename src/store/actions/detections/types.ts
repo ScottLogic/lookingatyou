@@ -2,7 +2,7 @@ import { IDetections } from '../../../models/objectDetection';
 import { ITargets } from '../../../utils/types';
 
 export const SET_MODEL_LOADED = 'SET_MODEL_LOADED';
-export const SET_TARGETS = 'SET_TARGETS';
+export const SET_TARGET = 'SET_TARGET';
 export const SET_DETECTIONS = 'SET_DETECTIONS';
 export const SET_BRIGHT = 'SET_BRIGHT';
 export const SET_DILATION = 'SET_DILATION';
@@ -29,7 +29,7 @@ export interface ISetLoadedAction {
 }
 
 export interface ISetTargetAction {
-    type: 'SET_TARGETS';
+    type: 'SET_TARGET';
     payload: ITargets;
 }
 
