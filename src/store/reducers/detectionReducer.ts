@@ -1,6 +1,6 @@
 import { eyelidPosition } from '../../AppConstants';
-import { IDetection } from '../../models/objectDetection';
-import { ICoords } from '../../utils/types';
+import { IDetections } from '../../models/objectDetection';
+import { ITargets } from '../../utils/types';
 import {
     DetectionActionType,
     IDetectionState,
@@ -17,14 +17,14 @@ import {
 
 export const initialState: IDetectionState = {
     isModelLoaded: false,
-    target: { x: 0, y: 0 },
-    detections: [],
     tooBright: false,
     left: false,
     personDetected: false,
     isSquinting: false,
     eyesOpenCoefficient: eyelidPosition.OPEN,
     dilationCoefficient: 1,
+    target: { left: { x: 0, y: 0 }, right: null },
+    detections: { left: [], right: null },
 };
 
 const detectionActionMapping = {
@@ -61,7 +61,7 @@ function setTarget(
 ): IDetectionState {
     return {
         ...state,
-        target: { ...(action.payload as ICoords) },
+        target: { ...(action.payload as ITargets) },
     };
 }
 
@@ -69,7 +69,7 @@ function setDetections(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    return { ...state, detections: action.payload as IDetection[] };
+    return { ...state, detections: action.payload as IDetections };
 }
 
 function setBright(

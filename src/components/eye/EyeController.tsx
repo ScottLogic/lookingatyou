@@ -9,7 +9,7 @@ import {
 } from '../../AppConstants';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
-import { ICoords } from '../../utils/types';
+import { ICoords, ITargets } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
 import { Gradients } from './Gradients';
@@ -20,10 +20,10 @@ interface IEyeControllerProps {
 }
 interface IEyeControllerMapStateToProps {
     config: IUserConfig;
-    target: ICoords;
     dilation: number;
     openCoefficient: number;
     detected: boolean;
+    target: ITargets;
 }
 export type EyeControllerProps = IEyeControllerProps &
     IEyeControllerMapStateToProps;
@@ -63,18 +63,30 @@ export const EyeController = React.memo(
             isBlinking,
             blinkFrequencyCoefficient,
             dilationCoefficient,
+            props.detected,
         ]);
+
         const scleraRadius = props.width / 4.5;
         const irisRadius = props.width / 10;
         const pupilRadius = props.width / 24;
-        const maxDisplacement = scleraRadius - irisRadius;
-        const targetY = props.target.y * props.config.ySensitivity;
-        const targetX = -props.target.x * props.config.xSensitivity; // mirrored
-        const polarDistance = Math.hypot(targetY, targetX);
-        const polarAngle = Math.atan2(targetY, targetX);
-        const displacement = Math.min(1, polarDistance) * maxDisplacement;
-        const innerX = props.width / 4 + displacement * Math.cos(polarAngle);
-        const innerY = props.height / 2 + displacement * Math.sin(polarAngle);
+
+        const getEyeCoords = (target: ICoords): ICoords => {
+            const maxDisplacement = scleraRadius - irisRadius;
+            const targetY = target.y * props.config.ySensitivity;
+            const targetX = -target.x * props.config.xSensitivity; // mirrored
+            const polarDistance = Math.hypot(targetY, targetX);
+            const polarAngle = Math.atan2(targetY, targetX);
+            const displacement = Math.min(1, polarDistance) * maxDisplacement;
+            const x = props.width / 4 + displacement * Math.cos(polarAngle);
+            const y = props.height / 2 + displacement * Math.sin(polarAngle);
+            return { x, y };
+        };
+
+        const eyeCoords: { [key: string]: ICoords } = {};
+        eyeCoords[eyes.LEFT] = getEyeCoords(props.target.left);
+        const right = props.target.right;
+        eyeCoords[eyes.RIGHT] =
+            right === null ? eyeCoords[eyes.LEFT] : getEyeCoords(right);
 
         function getEyesOpenCoefficient(): number {
             if (props.openCoefficient !== eyesOpenCoefficient) {
@@ -103,8 +115,8 @@ export const EyeController = React.memo(
                             openCoefficient={getEyesOpenCoefficient()}
                             // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
                             dilatedCoefficient={props.dilation}
-                            innerX={innerX}
-                            innerY={innerY}
+                            innerX={eyeCoords[eye].x}
+                            innerY={eyeCoords[eye].y}
                             fps={props.config.fps}
                         />
                     );
@@ -114,8 +126,12 @@ export const EyeController = React.memo(
         );
     },
     (previous, next) =>
-        previous.target.x === next.target.x &&
-        previous.target.y === next.target.y,
+        previous.target.left.x === next.target.left.x &&
+        previous.target.left.y === next.target.left.y &&
+        previous.target.right === next.target.right &&
+        (previous.target.right === null ||
+            (previous.target.right.x === next.target.right!.x &&
+                previous.target.right.y === next.target.right!.y)),
 );
 
 export default connect(mapStateToProps)(EyeController);

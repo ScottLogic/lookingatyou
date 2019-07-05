@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { eyelidPosition, pupilSizes } from '../../AppConstants';
-import { IDetection } from '../../models/objectDetection';
+import { IDetections } from '../../models/objectDetection';
 import {
     setBright,
     setDetected,
@@ -23,7 +23,7 @@ import {
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getVideos } from '../../store/selectors/videoSelectors';
-import { ICoords } from '../../utils/types';
+import { ITargets } from '../../utils/types';
 import { analyseLight, checkLight, naturalMovement } from '../eye/EyeUtils';
 
 interface IMovementProps {
@@ -32,8 +32,8 @@ interface IMovementProps {
 
 interface IStateProps {
     fps: number;
-    detections: IDetection[];
-    target: ICoords;
+    detections: IDetections;
+    target: ITargets;
     tooBright: boolean;
     left: boolean;
     personDetected: boolean;
@@ -50,7 +50,7 @@ interface IDispatchProps {
     setOpen: (openCoefficient: number) => ISetOpenAction;
     setDilation: (dilation: number) => ISetDilationAction;
     setDetected: (detected: boolean) => ISetPersonAction;
-    setTarget: (targer: ICoords) => ISetTargetAction;
+    setTarget: (target: ITargets) => ISetTargetAction;
 }
 
 export type MovementHandlerProps = IMovementProps &
@@ -97,7 +97,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
     }
 
     checkSelection() {
-        const selection = this.props.detections.find(detection => {
+        const selection = this.props.detections.left.find(detection => {
             return detection.info.type === 'person';
         });
 
@@ -114,19 +114,22 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
         } else {
             this.hasTargetLeft();
 
-            if (Math.abs(this.props.target.x) > 1) {
+            if (Math.abs(this.props.target.left.x) > 1) {
                 this.props.setTarget({
-                    x: 0,
-                    y: this.props.target.y,
+                    left: {
+                        x: 0,
+                        y: this.props.target.left.y,
+                    },
+                    right: null,
                 });
             }
 
             const { newX, left } = naturalMovement(
-                this.props.target.x,
+                this.props.target.left.x,
                 this.props.left,
             );
 
-            this.props.setTarget({ x: newX, y: 0 });
+            this.props.setTarget({ left: { x: newX, y: 0 }, right: null });
             this.props.setLeft(left);
         }
     }
@@ -166,7 +169,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             this.props.setSquinting(true);
             this.props.setDilation(pupilSizes.constricted);
             this.props.setDilation(pupilSizes.neutral);
-            this.props.setTarget({ x: 0, y: 0 });
+            this.props.setTarget({ left: { x: 0, y: 0 }, right: null });
             this.props.setOpen(eyelidPosition.SQUINT);
         }
     }
@@ -201,7 +204,7 @@ const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
         setOpen: (openCoefficient: number) =>
             dispatch(setOpen(openCoefficient)),
         setDetected: (detected: boolean) => dispatch(setDetected(detected)),
-        setTarget: (target: ICoords) => dispatch(setTarget(target)),
+        setTarget: (target: ITargets) => dispatch(setTarget(target)),
     };
 };
 

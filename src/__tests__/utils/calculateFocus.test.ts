@@ -54,7 +54,4 @@ describe('calculateTargetPos should return', () => {
             }
         },
     );
-    it('undefined if bbox is undefined', () => {
-        expect(calculateTargetPos(undefined)).toBeUndefined();
-    });
 });

@@ -1,5 +1,5 @@
-import { IDetection } from '../../../models/objectDetection';
-import { ICoords } from '../../../utils/types';
+import { IDetections } from '../../../models/objectDetection';
+import { ITargets } from '../../../utils/types';
 import {
     ISetBrightAction,
     ISetDetectionsAction,
@@ -28,14 +28,14 @@ export function setModelLoaded(hasLoaded: boolean): ISetLoadedAction {
     };
 }
 
-export function setTarget(target: ICoords): ISetTargetAction {
+export function setTarget(target: ITargets): ISetTargetAction {
     return {
         type: SET_TARGET,
         payload: target,
     };
 }
 
-export function setDetections(detections: IDetection[]): ISetDetectionsAction {
+export function setDetections(detections: IDetections): ISetDetectionsAction {
     return {
         type: SET_DETECTIONS,
         payload: detections,
