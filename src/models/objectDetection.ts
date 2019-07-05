@@ -3,10 +3,7 @@ import { Bbox, DetectionImage } from '../utils/types';
 
 export interface IObjectDetector {
     reshapeDetections(testInput: ssd.DetectedObject[]): IDetection[];
-    detect(
-        image: DetectionImage,
-        detectionConfig?: DetectionConfig,
-    ): Promise<IDetection[]>;
+    detect(image: DetectionImage): Promise<IDetection[]>;
 }
 
 export interface IDetection {
@@ -28,7 +25,3 @@ export interface ICocoInfo {
     certainty: number;
     type: string;
 }
-
-export type ModelConfig = ssd.ObjectDetectionBaseModel;
-
-export type DetectionConfig = number;
