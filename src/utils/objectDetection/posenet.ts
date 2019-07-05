@@ -16,7 +16,12 @@ export default class Posenet {
     private constructor(private model: posenet.PoseNet) {}
 
     async detect(image: DetectionImage): Promise<IDetection[]> {
-        const detections = await this.model.estimateMultiplePoses(image);
+        const detections = await this.model.estimateMultiplePoses(image, {
+            flipHorizontal: false,
+            maxDetections: 5,
+            scoreThreshold: 0.5,
+            nmsRadius: 20,
+        });
         return this.reshapeDetections(detections);
     }
 
