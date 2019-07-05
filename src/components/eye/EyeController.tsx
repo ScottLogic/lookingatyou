@@ -59,6 +59,7 @@ export const EyeController = React.memo(
                 props.environment.clearInterval(blink);
             };
         }, [
+            props.detected,
             props.environment,
             isBlinking,
             blinkFrequencyCoefficient,

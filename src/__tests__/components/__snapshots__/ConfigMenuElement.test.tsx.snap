@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ConfigMenuElement tests should render correctly 1`] = `
-"<ConfigMenu width=\\"320px\\" timerLength={1000} window={{...}}>
+"<ConfigMenu width=\\"14em\\" timerLength={1000} window={{...}}>
   <Memo() name=\\"X Sensitivity\\" defaultValue=\\"1\\" isValidInput={[Function: isValidSensitivity]} onValidInput={[Function: parseAndStoreXSensitivity]} parse={[Function: extractFloatToString]} />
   <Memo() name=\\"Y Sensitivity\\" defaultValue=\\"1\\" isValidInput={[Function: isValidSensitivity]} onValidInput={[Function: parseAndStoreYSensitivity]} parse={[Function: extractFloatToString]} />
   <Memo() name=\\"FPS\\" defaultValue=\\"30\\" isValidInput={[Function: isValidFPS]} onValidInput={[Function: parseAndStoreFPS]} parse={[Function: extractIntToString]} />

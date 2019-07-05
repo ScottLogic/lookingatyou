@@ -29,8 +29,6 @@
     font-size: 1.2em;
 
     transition: 500ms;
-
-    overflow: hidden;
 }
 
 .ConfigMenu a,
@@ -44,4 +42,8 @@
 
 .ConfigMenu input {
     width: 25%;
+}
+
+.ConfigMenu #canvas {
+    width: 100%;
 }

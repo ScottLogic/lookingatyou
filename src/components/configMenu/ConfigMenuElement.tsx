@@ -119,7 +119,7 @@ export const ConfigMenuElement = React.memo(
                     color={props.config.irisColor}
                     onInputChange={storeIrisColor}
                 />
-                <CanvasMenuItem name={'Camera Feed'} bbox={props.config.bbox} />
+                <CanvasMenuItem name={'Camera Feed'} />
             </ConfigMenu>
         );
     },
