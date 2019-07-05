@@ -6,7 +6,7 @@ deleteBranch() {
 REGEX="\([Ff]eature\)\/[0-9a-zA-Z\-]*"
 
 # get all remote feature branches
-ALL_BRANCHES="$(git branch -r | grep $REGEX | cut -d'/' -f 3)"
+ALL_BRANCHES="$(git branch --list 'feature*' | cut -d'/' -f 2)"
 MY_BRANCHES=($ALL_BRANCHES)
 
 # get all merged feature branches from the git log
