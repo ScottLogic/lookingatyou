@@ -8,6 +8,7 @@ import MovementHandler from './components/intelligentMovement/MovementHandler';
 import Video from './components/video/Video';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds } from './store/selectors/videoSelectors';
+import { AppStore } from './store/store';
 
 interface IAppState {
     width: number;
@@ -21,7 +22,9 @@ interface IAppProps {
         mediaDevices: MediaDevices,
         onUserMedia: () => void,
         onUserMediaError: () => void,
+        store: AppStore,
     ) => void;
+    store: AppStore;
 }
 
 interface IAppMapStateToProps {
@@ -62,6 +65,7 @@ export class App extends React.PureComponent<AppProps, IAppState> {
             this.props.environment.navigator.mediaDevices,
             this.onUserMedia,
             this.onUserMediaError,
+            this.props.store,
         );
     }
 

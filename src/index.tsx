@@ -5,15 +5,21 @@ import App from './App';
 import configureStream from './components/webcamHandler/WebcamHandler';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import store from './store/store';
+import { createStore } from './store/store';
 
 const getEnvironment = () => {
     return window;
 };
 
+const store = createStore();
+
 ReactDOM.render(
     <Provider store={store}>
-        <App environment={getEnvironment()} configureStream={configureStream} />
+        <App
+            environment={getEnvironment()}
+            configureStream={configureStream}
+            store={store}
+        />
     </Provider>,
     document.getElementById('root'),
 );
