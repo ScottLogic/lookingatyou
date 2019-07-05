@@ -24,12 +24,15 @@ const mapStateToProps = (state: IRootStore) => {
 };
 
 export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
+    canvasRef: React.RefObject<HTMLCanvasElement>;
     constructor(props: CanvasMenuItemProps) {
         super(props);
 
         this.state = {
             canvas: HTMLCanvasElement,
         };
+
+        this.canvasRef = React.createRef();
 
         this.getStream = this.getStream.bind(this);
     }
@@ -52,7 +55,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
             <div>
                 <label>{this.props.name}</label>
                 <br />
-                <canvas id="canvas" />
+                <canvas id="canvas" ref={this.canvasRef} />
             </div>
         );
     }
@@ -62,9 +65,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         bbox?: { x: number; y: number; width: number; height: number },
     ) {
         if (image instanceof HTMLVideoElement) {
-            const canvas = document.getElementById(
-                'canvas',
-            ) as HTMLCanvasElement;
+            const canvas = this.canvasRef.current;
             if (canvas) {
                 canvas.height = image.height;
                 canvas.width = image.width;
