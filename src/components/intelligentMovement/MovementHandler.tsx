@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { eyelidPosition, pupilSizes, sleepDelay } from '../../AppConstants';
-import { IDetections } from '../../models/objectDetection';
+import { ICocoInfo, IDetections } from '../../models/objectDetection';
 import {
     setBright,
     setDetected,
@@ -106,7 +106,14 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
 
     checkSelection() {
         const selection = this.props.detections.left.find(detection => {
-            return detection.info.type === 'person';
+            switch (detection.model) {
+                case 'CocoSSD':
+                    return (detection.info as ICocoInfo).type === 'person';
+                case 'Posenet':
+                    return true;
+                default:
+                    return false;
+            }
         });
 
         if (this.props.squinting && Math.random() < 0.1) {

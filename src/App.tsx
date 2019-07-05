@@ -102,12 +102,7 @@ export class App extends React.PureComponent<AppProps, IAppState> {
                     ))}
                 </div>
 
-                {this.state.webcamAvailable && (
-                    <DetectionHandler
-                        modelConfig={'lite_mobilenet_v2'}
-                        detectionConfig={5}
-                    />
-                )}
+                {this.state.webcamAvailable && <DetectionHandler />}
 
                 {this.state.webcamAvailable ? (
                     !this.props.isModelLoaded ? (

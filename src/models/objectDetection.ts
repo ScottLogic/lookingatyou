@@ -9,7 +9,10 @@ export interface IObjectDetector {
 
 export type DetectedObject = ssd.DetectedObject | posenet.Pose;
 
+export type SupportedModels = 'CocoSSD' | 'Posenet';
+
 export interface IDetection {
+    model: SupportedModels;
     bbox: Bbox;
     info: ICocoInfo | posenet.Pose;
 }

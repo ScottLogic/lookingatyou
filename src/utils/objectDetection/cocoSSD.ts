@@ -21,6 +21,7 @@ export default class CocoSSD implements IObjectDetector {
     reshapeDetections(detections: ssd.DetectedObject[]): IDetection[] {
         return detections.map(detection => {
             return {
+                model: 'CocoSSD',
                 bbox: detection.bbox,
                 info: {
                     certainty: detection.score,

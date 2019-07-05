@@ -29,6 +29,7 @@ export default class Posenet {
         return detections.map(detection => {
             const box = posenet.getBoundingBox(detection.keypoints);
             return {
+                model: 'Posenet',
                 bbox: [
                     box.minX,
                     box.minY,

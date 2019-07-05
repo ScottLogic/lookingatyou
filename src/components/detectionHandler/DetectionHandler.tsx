@@ -3,11 +3,9 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { eyelidPosition, maxMoveWithoutBlink } from '../../AppConstants';
 import {
-    DetectionConfig,
     IDetections,
     IObjectDetector,
     ISelections,
-    ModelConfig,
 } from '../../models/objectDetection';
 import {
     setDetections,
@@ -38,11 +36,6 @@ import calculateTargetPos, {
 } from '../../utils/objectTracking/calculateFocus';
 import { DetectionImage, ICoords, ITargets } from '../../utils/types';
 
-interface IDetectionHandlerProps {
-    modelConfig: ModelConfig;
-    detectionConfig: DetectionConfig;
-}
-
 interface IStateProps {
     FPS: number;
     videos: Array<HTMLVideoElement | undefined>;
@@ -57,9 +50,7 @@ interface IDispatchProps {
     setOpenCoefficient: (openCoefficient: number) => ISetOpenAction;
 }
 
-export type DetectionHandlerProps = IDetectionHandlerProps &
-    IStateProps &
-    IDispatchProps;
+export type DetectionHandlerProps = IStateProps & IDispatchProps;
 
 export class DetectionHandler extends React.Component<DetectionHandlerProps> {
     private model: IObjectDetector | null;
@@ -74,7 +65,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
     }
 
     async componentDidMount() {
-        this.model = await CocoSSD.init(this.props.modelConfig);
+        this.model = await CocoSSD.init();
         this.props.setModelLoaded(true);
         this.detectionInterval = setInterval(
             this.detectionHandler,
