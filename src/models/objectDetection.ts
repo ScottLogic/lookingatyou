@@ -2,6 +2,7 @@ import * as ssd from '@tensorflow-models/coco-ssd';
 import { Bbox, DetectionImage } from '../utils/types';
 
 export interface IObjectDetector {
+    reshapeDetections(testInput: ssd.DetectedObject[]): IDetection[];
     detect(
         image: DetectionImage,
         detectionConfig?: DetectionConfig,
