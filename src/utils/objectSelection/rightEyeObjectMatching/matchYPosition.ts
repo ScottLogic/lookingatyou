@@ -1,33 +1,40 @@
 import { IDetection } from '../../../models/objectDetection';
 import calculateTargetPos from '../../objectTracking/calculateFocus';
-import { ICoords } from '../../types';
+import { Bbox, ICoords } from '../../types';
 export default function matchYPosition(
-    leftEyeCoord: ICoords,
+    leftEyeSelection: Bbox,
     rightEyeDetections: IDetection[],
     maxIndex = rightEyeDetections.length,
-) {
-    const rightEyeCoords: ICoords[] = rightEyeDetections
+): Bbox | undefined {
+    const rightEyePersonBboxes: Bbox[] = rightEyeDetections
         .filter(detection => detection.info.type === 'person')
-        .map(detection => calculateTargetPos(detection.bbox))
-        .filter(coords => coords !== undefined) as ICoords[];
-    if (rightEyeCoords.length === 0) {
-        return null;
+        .map(detection => detection.bbox);
+    if (rightEyePersonBboxes.length === 0) {
+        return undefined;
     }
+    const leftEyeCoord = calculateTargetPos(leftEyeSelection);
+    const rightEyePersonCoords: ICoords[] = rightEyePersonBboxes.map(bbox =>
+        calculateTargetPos(bbox),
+    );
     let best: number | null = null;
     let lowestYDifference = Number.MAX_SAFE_INTEGER;
-    for (let i = 0; i < rightEyeCoords.length && i < maxIndex; i++) {
+    for (let i = 0; i < rightEyePersonCoords.length && i < maxIndex; i++) {
         if (
-            yDifference(rightEyeCoords[i], leftEyeCoord) < lowestYDifference &&
-            isRightOf(rightEyeCoords[i], leftEyeCoord)
+            yDifference(rightEyePersonCoords[i], leftEyeCoord) <
+                lowestYDifference &&
+            isRightOf(rightEyePersonCoords[i], leftEyeCoord)
         ) {
             best = i;
-            lowestYDifference = yDifference(rightEyeCoords[best], leftEyeCoord);
+            lowestYDifference = yDifference(
+                rightEyePersonCoords[best],
+                leftEyeCoord,
+            );
         }
     }
     if (best !== null) {
-        return rightEyeCoords[best];
+        return rightEyePersonBboxes[best];
     } else {
-        return null;
+        return undefined;
     }
 }
 function isRightOf(coords1: ICoords, coords2: ICoords) {

@@ -1,7 +1,9 @@
 import { IDetection } from '../../models/objectDetection';
 import { Bbox } from '../types';
 
-export default function selectFirst(detections: IDetection[]): Bbox {
+export default function selectFirst(
+    detections: IDetection[],
+): Bbox | undefined {
     const selection = detections.find(detection => {
         return detection.info.type === 'person';
     });

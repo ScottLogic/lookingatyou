@@ -1,10 +1,8 @@
 import { Bbox, ICoords } from '../types';
 
-export default function calculateTargetPos(bbox: Bbox): ICoords | undefined {
-    if (bbox) {
-        const [x, y, width, height] = bbox;
-        return { x: x + width / 2, y: y + (height * 3) / 4 };
-    }
+export default function calculateTargetPos(bbox: Bbox): ICoords {
+    const [x, y, width, height] = bbox;
+    return { x: x + width / 2, y: y + (height * 3) / 4 };
 }
 
 export function normalise(

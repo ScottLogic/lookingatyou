@@ -96,9 +96,9 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
         if (this.model) {
             const leftEyeDetections = await this.model.detect(images[0]);
             const leftEyeSelection = selectFirst(leftEyeDetections);
-            const leftEyeCoords = calculateTargetPos(leftEyeSelection);
-            let rightEyeDetections = null;
-            if (leftEyeCoords) {
+            if (leftEyeSelection) {
+                const leftEyeCoords = calculateTargetPos(leftEyeSelection);
+                let rightEyeDetections = null;
                 const leftTarget = {
                     x: normalise(leftEyeCoords.x, images[0]!.width),
                     y: normalise(leftEyeCoords.y, images[0]!.height),
@@ -106,11 +106,14 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                 let rightTarget = null;
                 if (images.length >= 2) {
                     rightEyeDetections = await this.model.detect(images[1]);
-                    const rightEyeCoords = matchYPosition(
-                        leftEyeCoords,
+                    const rightEyeSelection = matchYPosition(
+                        leftEyeSelection,
                         rightEyeDetections,
                     );
-                    if (rightEyeCoords) {
+                    if (rightEyeSelection) {
+                        const rightEyeCoords = calculateTargetPos(
+                            rightEyeSelection,
+                        );
                         rightTarget = {
                             x: normalise(rightEyeCoords.x, images[1]!.width),
                             y: normalise(rightEyeCoords.y, images[1]!.height),
@@ -124,11 +127,11 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                     left: leftTarget,
                     right: rightTarget,
                 });
+                this.props.setDetections({
+                    left: leftEyeDetections,
+                    right: rightEyeDetections,
+                });
             }
-            this.props.setDetections({
-                left: leftEyeDetections,
-                right: rightEyeDetections,
-            });
         }
     }
 }
