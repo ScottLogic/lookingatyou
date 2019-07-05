@@ -93,6 +93,9 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
     }
 
     async detectionHandler(images: DetectionImage[]) {
+        if (images.length === 0) {
+            return;
+        }
         if (this.model) {
             const leftEyeDetections = await this.model.detect(images[0]);
             const leftEyeSelection = selectFirst(leftEyeDetections);
