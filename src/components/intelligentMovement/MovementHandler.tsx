@@ -83,6 +83,10 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
         );
     }
 
+    componentShouldUpdate(nextProps: MovementHandlerProps) {
+        return this.props.fps !== nextProps.fps;
+    }
+
     componentDidUpdate() {
         clearInterval(this.movementInterval);
         this.movementInterval = window.setInterval(
