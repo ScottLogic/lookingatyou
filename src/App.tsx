@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Store } from 'redux';
 import './App.css';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import DetectionHandler from './components/detectionHandler/DetectionHandler';
@@ -8,6 +7,7 @@ import EyeController from './components/eye/EyeController';
 import Video from './components/video/Video';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds } from './store/selectors/videoSelectors';
+import { AppStore } from './store/store';
 
 interface IAppState {
     width: number;
@@ -21,9 +21,9 @@ interface IAppProps {
         mediaDevices: MediaDevices,
         onUserMedia: () => void,
         onUserMediaError: () => void,
-        store: Store<IRootStore>,
+        store: AppStore,
     ) => void;
-    store: Store<IRootStore>;
+    store: AppStore;
 }
 
 interface IAppMapStateToProps {
