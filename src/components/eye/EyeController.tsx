@@ -23,6 +23,7 @@ interface IEyeControllerMapStateToProps {
     target: ICoords;
     dilation: number;
     openCoefficient: number;
+    detected: boolean;
 }
 export type EyeControllerProps = IEyeControllerProps &
     IEyeControllerMapStateToProps;
@@ -31,6 +32,7 @@ const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     target: state.detectionStore.target,
     dilation: state.detectionStore.dilationCoefficient,
     openCoefficient: state.detectionStore.eyesOpenCoefficient,
+    detected: state.detectionStore.personDetected,
 });
 export const EyeController = React.memo(
     (props: EyeControllerProps) => {
@@ -44,8 +46,11 @@ export const EyeController = React.memo(
                 if (isBlinking) {
                     setIsBlinking(false);
                 } else {
+                    const blinkFrequency = props.detected
+                        ? neutralBlinkFrequency / 4
+                        : neutralBlinkFrequency;
                     const blinkProbability =
-                        (neutralBlinkFrequency * blinkFrequencyCoefficient) /
+                        (blinkFrequency * blinkFrequencyCoefficient) /
                         (1000 / transitionTime.blink);
                     setIsBlinking(Math.random() < blinkProbability);
                 }
