@@ -115,6 +115,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
         }
 
         if (selection) {
+            this.wake();
             if (this.props.squinting) {
                 this.props.setOpen(eyelidPosition.OPEN);
             }
@@ -166,7 +167,6 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
     isNewTarget() {
         if (!this.props.personDetected) {
             this.props.setDetected(true);
-            this.wake();
             this.props.setDilation(pupilSizes.dilated);
             this.props.setDilation(pupilSizes.neutral);
         }
@@ -193,7 +193,9 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
     }
 
     sleep() {
-        this.props.setOpen(eyelidPosition.CLOSED);
+        setTimeout(() => {
+            this.props.setOpen(eyelidPosition.CLOSED);
+        }, sleepDelay);
     }
 
     render() {
