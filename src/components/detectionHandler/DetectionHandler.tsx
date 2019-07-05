@@ -25,7 +25,7 @@ import selectFirst from '../../utils/objectSelection/selectFirst';
 import calculateTargetPos, {
     normalise,
 } from '../../utils/objectTracking/calculateFocus';
-import { DetectionImage, ITargets } from '../../utils/types';
+import { DetectionImage, ICoords, ITargets } from '../../utils/types';
 
 interface IDetectionHandlerProps {
     modelConfig: ModelConfig;
@@ -35,6 +35,7 @@ interface IDetectionHandlerProps {
 interface IStateProps {
     FPS: number;
     videos: Array<HTMLVideoElement | undefined>;
+    target: ITargets;
 }
 
 interface IDispatchProps {
@@ -140,7 +141,11 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
 }
 
 const mergeStateToProps = (state: IRootStore) => {
-    return { videos: getVideos(state), FPS: state.configStore.config.fps };
+    return {
+        videos: getVideos(state),
+        FPS: state.configStore.config.fps,
+        target: state.detectionStore.target,
+    };
 };
 
 const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
