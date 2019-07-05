@@ -21,7 +21,7 @@ export default function selectClosest(
             calculateTargetPos(personBboxes[i]),
             coords,
         );
-        if (distance > bestDistance) {
+        if (distance < bestDistance) {
             best = i;
             bestDistance = distance;
         }
