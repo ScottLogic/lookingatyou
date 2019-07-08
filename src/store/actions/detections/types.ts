@@ -10,6 +10,7 @@ export const SET_PERSON = 'SET_PERSON';
 export const SET_LEFT = 'SET_LEFT';
 export const SET_OPEN = 'SET_OPEN';
 export const SET_SQUINT = 'SET_SQUINT';
+export const SET_SELECTIONS = 'SET_SELECTIONS';
 
 export interface IDetectionState {
     isModelLoaded: boolean;
@@ -69,6 +70,11 @@ export interface ISetSquintAction {
     payload: boolean;
 }
 
+export interface ISetSelectionsAction {
+    type: 'SET_SELECTIONS';
+    payload: ISelections;
+}
+
 export type DetectionActionType =
     | ISetLoadedAction
     | ISetTargetAction
@@ -78,4 +84,5 @@ export type DetectionActionType =
     | ISetLeftAction
     | ISetOpenAction
     | ISetPersonAction
-    | ISetSquintAction;
+    | ISetSquintAction
+    | ISetSelectionsAction;

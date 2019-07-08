@@ -1,5 +1,5 @@
 import { eyelidPosition } from '../../AppConstants';
-import { IDetections } from '../../models/objectDetection';
+import { IDetections, ISelections } from '../../models/objectDetection';
 import { ITargets } from '../../utils/types';
 import {
     DetectionActionType,
@@ -11,6 +11,7 @@ import {
     SET_MODEL_LOADED,
     SET_OPEN,
     SET_PERSON,
+    SET_SELECTIONS,
     SET_SQUINT,
     SET_TARGET,
 } from '../actions/detections/types';
@@ -38,6 +39,7 @@ const detectionActionMapping = {
     [SET_PERSON]: setPerson,
     [SET_OPEN]: setOpen,
     [SET_SQUINT]: setSquinting,
+    [SET_SELECTIONS]: setSelections,
 };
 
 const detectionStore = (
@@ -113,6 +115,13 @@ function setPerson(
     action: DetectionActionType,
 ): IDetectionState {
     return { ...state, personDetected: action.payload as boolean };
+}
+
+function setSelections(
+    state: IDetectionState,
+    action: DetectionActionType,
+): IDetectionState {
+    return { ...state, selections: action.payload as ISelections };
 }
 
 export default detectionStore;
