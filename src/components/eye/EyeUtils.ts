@@ -133,7 +133,7 @@ export function getFatigueMultiplier(): number {
         return 1;
     }
 
-    const dayProgress = (currentTime - startOfDay) / (wholeDay - startOfDay);
+    const dayProgress = (wholeDay - currentTime) / (wholeDay - startOfDay);
 
-    return dayProgress * scale + 0.5;
+    return dayProgress * scale + scale;
 }
