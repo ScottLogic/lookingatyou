@@ -1,5 +1,5 @@
 import { IDetections } from '../../../models/objectDetection';
-import { ITargets } from '../../../utils/types';
+import { ISelections, ITargets } from '../../../utils/types';
 import {
     ISetBrightAction,
     ISetDetectionsAction,
@@ -8,6 +8,7 @@ import {
     ISetLoadedAction,
     ISetOpenAction,
     ISetPersonAction,
+    ISetSelectionsAction,
     ISetSquintAction,
     ISetTargetAction,
     SET_BRIGHT,
@@ -17,6 +18,7 @@ import {
     SET_MODEL_LOADED,
     SET_OPEN,
     SET_PERSON,
+    SET_SELECTIONS,
     SET_SQUINT,
     SET_TARGET,
 } from './types';
@@ -81,5 +83,12 @@ export function setBright(isBright: boolean): ISetBrightAction {
     return {
         type: SET_BRIGHT,
         payload: isBright,
+    };
+}
+
+export function setSelections(selections: ISelections): ISetSelectionsAction {
+    return {
+        type: SET_SELECTIONS,
+        payload: selections,
     };
 }

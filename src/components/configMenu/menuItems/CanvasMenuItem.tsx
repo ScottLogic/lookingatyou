@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { IRootStore } from '../../../store/reducers/rootReducer';
-import { getBbox } from '../../../store/selectors/detectionSelectors';
+import { getSelections } from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
 import { Bbox } from '../../../utils/types';
 
@@ -19,7 +19,7 @@ type CanvasMenuItemProps = ICanvasMenuItemProps & IAppMapStateToProps;
 const mapStateToProps = (state: IRootStore) => {
     return {
         videos: getVideos(state),
-        bbox: getBbox(state),
+        bbox: getSelections(state).left,
     };
 };
 

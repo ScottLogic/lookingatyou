@@ -64,7 +64,6 @@ export const EyeController = React.memo(
             isBlinking,
             blinkFrequencyCoefficient,
             dilationCoefficient,
-            props.detected,
         ]);
 
         const scleraRadius = props.width / 4.5;
@@ -87,7 +86,7 @@ export const EyeController = React.memo(
         eyeCoords[eyes.LEFT] = getEyeCoords(props.target.left);
         const right = props.target.right;
         eyeCoords[eyes.RIGHT] =
-            right === null ? eyeCoords[eyes.LEFT] : getEyeCoords(right);
+            right === undefined ? eyeCoords[eyes.LEFT] : getEyeCoords(right);
 
         function getEyesOpenCoefficient(): number {
             if (props.openCoefficient !== eyesOpenCoefficient) {
@@ -130,7 +129,7 @@ export const EyeController = React.memo(
         previous.target.left.x === next.target.left.x &&
         previous.target.left.y === next.target.left.y &&
         previous.target.right === next.target.right &&
-        (previous.target.right === null ||
+        (previous.target.right === undefined ||
             (previous.target.right.x === next.target.right!.x &&
                 previous.target.right.y === next.target.right!.y)),
 );

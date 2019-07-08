@@ -7,7 +7,12 @@ export interface ICoords {
 
 export interface ITargets {
     left: ICoords;
-    right: ICoords | null;
+    right: ICoords | undefined;
+}
+
+export interface ISelections {
+    left: Bbox;
+    right: Bbox | undefined;
 }
 
 export type DetectionImage =

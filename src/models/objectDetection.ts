@@ -16,7 +16,7 @@ export interface IDetection {
 
 export interface IDetections {
     left: IDetection[];
-    right: IDetection[] | null;
+    right: IDetection[] | undefined;
 }
 
 export interface ICocoInfo {

@@ -120,7 +120,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
                         x: 0,
                         y: this.props.target.left.y,
                     },
-                    right: null,
+                    right: undefined,
                 });
             }
 
@@ -129,7 +129,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
                 this.props.left,
             );
 
-            this.props.setTarget({ left: { x: newX, y: 0 }, right: null });
+            this.props.setTarget({ left: { x: newX, y: 0 }, right: undefined });
             this.props.setLeft(left);
         }
     }
@@ -169,7 +169,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             this.props.setSquinting(true);
             this.props.setDilation(pupilSizes.constricted);
             this.props.setDilation(pupilSizes.neutral);
-            this.props.setTarget({ left: { x: 0, y: 0 }, right: null });
+            this.props.setTarget({ left: { x: 0, y: 0 }, right: undefined });
             this.props.setOpen(eyelidPosition.SQUINT);
         }
     }
