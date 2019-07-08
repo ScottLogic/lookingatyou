@@ -3,38 +3,33 @@ import { Bbox, ICoords } from '../types';
 
 export default function select(
     detections: IDetection[],
-    compare: (x: Bbox, y: Bbox) => boolean,
+    compare: (x: Bbox, y: Bbox) => number,
 ): Bbox | undefined {
-    const personBboxes = detections
+    const personBboxes: Bbox[] = detections
         .filter(detection => detection.info.type === 'person')
         .map(detection => detection.bbox);
-    if (personBboxes.length === 0) {
-        return undefined;
-    }
-    let best = 0;
-    for (let i = 1; i < personBboxes.length; i++) {
-        if (compare(personBboxes[i], personBboxes[best])) {
-            best = i;
-        }
-    }
-    return personBboxes[best];
+    return personBboxes.reduce<Bbox | undefined>(
+        (best, current) =>
+            best === undefined || compare(current, best) > 0 ? current : best,
+        undefined,
+    );
 }
 
-export function largerThan(bbox1: Bbox, bbox2: Bbox): boolean {
-    return bbox1[2] * bbox1[3] > bbox2[2] * bbox2[3];
+export function largerThan(bbox1: Bbox, bbox2: Bbox): number {
+    return bbox1[2] * bbox1[3] - bbox2[2] * bbox2[3];
 }
 
 export function closerTo(
     coords: ICoords,
-): (bbox1: Bbox, bbox2: Bbox) => boolean {
+): (bbox1: Bbox, bbox2: Bbox) => number {
     return function closerToCoords(bbox1: Bbox, bbox2: Bbox) {
         return (
-            Math.hypot(bbox1[0] - coords.x, bbox1[1] - coords.y) <
-            Math.hypot(bbox2[0] - coords.x, bbox2[1] - coords.y)
+            Math.hypot(bbox2[0] - coords.x, bbox2[1] - coords.y) -
+            Math.hypot(bbox1[0] - coords.x, bbox1[1] - coords.y)
         );
     };
 }
 
-export function first(bbox1: Bbox, bbox2: Bbox): boolean {
-    return false;
+export function first(bbox1: Bbox, bbox2: Bbox): number {
+    return -1;
 }
