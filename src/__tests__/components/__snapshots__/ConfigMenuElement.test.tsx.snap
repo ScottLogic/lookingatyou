@@ -20,11 +20,18 @@ exports[`ConfigMenuElement tests should render correctly 1`] = `
   <p data-tip={true} data-for=\\"VIDEO_STREAM\\">
     <Connect(CanvasMenuItem) name=\\"Camera Feed\\" />
   </p>
+  <br />
+  <p data-tip={true} data-for=\\"APP\\">
+    <h2>
+      Help
+    </h2>
+  </p>
   <Help problemWith={0} />
   <Help problemWith={3} />
   <Help problemWith={1} />
   <Help problemWith={2} />
   <Help problemWith={4} />
   <Help problemWith={5} />
+  <Help problemWith={6} />
 </ConfigMenu>"
 `;
