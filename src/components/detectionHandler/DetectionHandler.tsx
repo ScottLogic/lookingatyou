@@ -26,7 +26,7 @@ import CocoSSD from '../../utils/objectDetection/cocoSSD';
 import select, {
     closerTo,
     closerYTo,
-    rightOf,
+    leftOf,
 } from '../../utils/objectSelection/select';
 import calculateTargetPos, {
     normalise,
@@ -124,7 +124,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                     rightEyeSelection = select(
                         rightEyeDetections,
                         closerYTo(leftEyeSelection[1]),
-                        rightOf(leftEyeSelection[0]),
+                        leftOf(leftEyeSelection[0]),
                     );
                     if (rightEyeSelection) {
                         const rightEyeCoords = calculateTargetPos(
