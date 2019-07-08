@@ -57,9 +57,10 @@ const text = (section: HelpWith) => {
         case HelpWith.APP:
             return (
                 <Fragment>
-                    This is an app designed to track users using a webcam. The
-                    eyes will follow you around and react differently depending
-                    on what they see. Hover over any of the menu items for more
+                    This is an app designed to track users using a webcam.
+                    <br /> The eyes will follow you around and react differently
+                    depending on what they see.
+                    <br /> Hover over any of the menu items for more
                     information.
                 </Fragment>
             );
