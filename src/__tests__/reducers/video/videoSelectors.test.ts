@@ -4,6 +4,8 @@ import {
     SET_VIDEO_STREAMS,
     VideoActionTypes,
 } from '../../../store/actions/video/types';
+import { initialState as initialConfigStore } from '../../../store/reducers/configReducer';
+import { initialState as initialDetectionStore } from '../../../store/reducers/detectionReducer';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import videoStore from '../../../store/reducers/videoReducer';
 import * as selectors from '../../../store/selectors/videoSelectors';
@@ -33,7 +35,12 @@ describe('Video Selectors', () => {
             { videos: {} },
             { type: SET_VIDEO_STREAMS, videos: mockInitialActionPayload },
         );
-        mockRootStore = { videoStore: mockVideoStore };
+
+        mockRootStore = {
+            videoStore: mockVideoStore,
+            configStore: initialConfigStore,
+            detectionStore: initialDetectionStore,
+        };
     });
 
     it('should return deviceIds from the store', () => {
