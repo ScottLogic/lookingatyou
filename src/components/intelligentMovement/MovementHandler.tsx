@@ -186,7 +186,6 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
 
     wake() {
         if (this.sleepTimeout !== null) {
-            console.log('wake');
             clearTimeout(this.sleepTimeout);
             this.sleepTimeout = null;
             this.props.setOpen(eyelidPosition.OPEN);
@@ -195,7 +194,6 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
 
     sleep() {
         if (this.sleepTimeout === null) {
-            console.log('sleep');
             this.sleepTimeout = setTimeout(() => {
                 this.props.setOpen(eyelidPosition.CLOSED);
             }, sleepDelay);
