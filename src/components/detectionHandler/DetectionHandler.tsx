@@ -23,8 +23,11 @@ import {
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import CocoSSD from '../../utils/objectDetection/cocoSSD';
-import matchYPosition from '../../utils/objectSelection/rightEyeObjectMatching/matchYPosition';
-import select, { closerTo } from '../../utils/objectSelection/select';
+import select, {
+    closerTo,
+    closerYTo,
+    rightOf,
+} from '../../utils/objectSelection/select';
 import calculateTargetPos, {
     normalise,
 } from '../../utils/objectTracking/calculateFocus';
@@ -121,6 +124,11 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                     rightEyeSelection = matchYPosition(
                         leftEyeSelection,
                         rightEyeDetections,
+                    );
+                    rightEyeSelection = select(
+                        rightEyeDetections,
+                        closerYTo(leftEyeSelection[1]),
+                        rightOf(leftEyeSelection[0]),
                     );
                     if (rightEyeSelection) {
                         const rightEyeCoords = calculateTargetPos(
