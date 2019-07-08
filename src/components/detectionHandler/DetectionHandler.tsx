@@ -134,6 +134,8 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                     left: leftEyeDetections,
                     right: rightEyeDetections,
                 });
+            } else {
+                this.props.setDetections({ left: [], right: [] });
             }
         }
     }
