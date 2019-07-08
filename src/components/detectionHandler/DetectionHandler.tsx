@@ -16,7 +16,7 @@ import {
 } from '../../store/actions/detections/actions';
 import {
     ISetDetectionsAction,
-    ISetLoadedAction,
+    ISetModelAction,
     ISetOpenAction,
     ISetSelectionsAction,
     ISetTargetAction,
@@ -43,7 +43,7 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-    setModelLoaded: (hasLoaded: boolean) => ISetLoadedAction;
+    setModel: (model: IObjectDetector) => ISetModelAction;
     setTarget: (target: ITargets) => ISetTargetAction;
     setDetections: (detections: IDetections) => ISetDetectionsAction;
     setSelections: (selections: ISelections) => ISetSelectionsAction;
@@ -66,7 +66,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
 
     async componentDidMount() {
         this.model = await Posenet.init();
-        this.props.setModelLoaded(true);
+        this.props.setModel(this.model);
         this.detectionInterval = setInterval(
             this.detectionHandler,
             1000 / this.props.FPS,
@@ -197,8 +197,7 @@ const mergeStateToProps = (state: IRootStore) => {
 
 const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
     return {
-        setModelLoaded: (hasLoaded: boolean) =>
-            dispatch(setModelLoaded(hasLoaded)),
+        setModel: (model: IObjectDetector) => dispatch(setModelLoaded(model)),
         setTarget: (target: ITargets) => dispatch(setTarget(target)),
         setDetections: (detections: IDetections) =>
             dispatch(setDetections(detections)),

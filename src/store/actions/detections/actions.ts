@@ -1,11 +1,15 @@
-import { IDetections, ISelections } from '../../../models/objectDetection';
+import {
+    IDetections,
+    IObjectDetector,
+    ISelections,
+} from '../../../models/objectDetection';
 import { ITargets } from '../../../utils/types';
 import {
     ISetBrightAction,
     ISetDetectionsAction,
     ISetDilationAction,
     ISetLeftAction,
-    ISetLoadedAction,
+    ISetModelAction,
     ISetOpenAction,
     ISetPersonAction,
     ISetSelectionsAction,
@@ -15,7 +19,7 @@ import {
     SET_DETECTIONS,
     SET_DILATION,
     SET_LEFT,
-    SET_MODEL_LOADED,
+    SET_MODEL,
     SET_OPEN,
     SET_PERSON,
     SET_SELECTIONS,
@@ -23,10 +27,10 @@ import {
     SET_TARGET,
 } from './types';
 
-export function setModelLoaded(hasLoaded: boolean): ISetLoadedAction {
+export function setModelLoaded(model: IObjectDetector): ISetModelAction {
     return {
-        type: SET_MODEL_LOADED,
-        payload: hasLoaded,
+        type: SET_MODEL,
+        payload: model,
     };
 }
 

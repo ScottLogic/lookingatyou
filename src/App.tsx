@@ -6,6 +6,7 @@ import DetectionHandler from './components/detectionHandler/DetectionHandler';
 import EyeController from './components/eye/EyeController';
 import MovementHandler from './components/intelligentMovement/MovementHandler';
 import Video from './components/video/Video';
+import { IObjectDetector } from './models/objectDetection';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds } from './store/selectors/videoSelectors';
 import { AppStore } from './store/store';
@@ -29,7 +30,7 @@ interface IAppProps {
 
 interface IAppMapStateToProps {
     deviceIds: string[];
-    isModelLoaded: boolean;
+    model: IObjectDetector | null;
 }
 
 type AppProps = IAppProps & IAppMapStateToProps;
@@ -37,7 +38,7 @@ type AppProps = IAppProps & IAppMapStateToProps;
 const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     return {
         deviceIds: getDeviceIds(state),
-        isModelLoaded: state.detectionStore.isModelLoaded,
+        model: state.detectionStore.model,
     };
 };
 
@@ -105,7 +106,7 @@ export class App extends React.PureComponent<AppProps, IAppState> {
                 {this.state.webcamAvailable && <DetectionHandler />}
 
                 {this.state.webcamAvailable ? (
-                    !this.props.isModelLoaded ? (
+                    !this.props.model ? (
                         <div className="loading-spinner" />
                     ) : (
                         <div>
