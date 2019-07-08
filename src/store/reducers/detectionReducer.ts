@@ -25,6 +25,7 @@ export const initialState: IDetectionState = {
     dilationCoefficient: 1,
     target: { left: { x: 0, y: 0 }, right: null },
     detections: { left: [], right: null },
+    selections: { left: [0, 0, 0, 0], right: null },
 };
 
 const detectionActionMapping = {

@@ -1,4 +1,4 @@
-import { IDetections } from '../../../models/objectDetection';
+import { IDetections, ISelections } from '../../../models/objectDetection';
 import { ITargets } from '../../../utils/types';
 
 export const SET_MODEL_LOADED = 'SET_MODEL_LOADED';
@@ -21,6 +21,7 @@ export interface IDetectionState {
     isSquinting: boolean;
     target: ITargets;
     detections: IDetections;
+    selections: ISelections;
 }
 
 export interface ISetLoadedAction {
