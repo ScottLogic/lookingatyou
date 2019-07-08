@@ -121,10 +121,6 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                 let rightTarget = null;
                 if (images.length >= 2) {
                     rightEyeDetections = await this.model.detect(images[1]);
-                    rightEyeSelection = matchYPosition(
-                        leftEyeSelection,
-                        rightEyeDetections,
-                    );
                     rightEyeSelection = select(
                         rightEyeDetections,
                         closerYTo(leftEyeSelection[1]),
