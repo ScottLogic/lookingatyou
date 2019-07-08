@@ -19,6 +19,11 @@ export interface IDetections {
     right: IDetection[] | null;
 }
 
+export interface ISelections {
+    left: Bbox;
+    right: Bbox | null;
+}
+
 export interface ICocoInfo {
     certainty: number;
     type: string;

@@ -20,7 +20,6 @@ describe('ConfigMenuElement tests', () => {
             swapEyes: false,
             toggleDebug: false,
             irisColor: 'blue',
-            bbox: [0, 0, 0, 0],
         };
         window = new jsdom.JSDOM(`...`, { url: 'http://localhost' }).window;
 

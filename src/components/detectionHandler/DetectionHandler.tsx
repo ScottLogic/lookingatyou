@@ -5,16 +5,19 @@ import {
     DetectionConfig,
     IDetections,
     IObjectDetector,
+    ISelections,
     ModelConfig,
 } from '../../models/objectDetection';
 import {
     setDetections,
     setModelLoaded,
+    setSelections,
     setTarget,
 } from '../../store/actions/detections/actions';
 import {
     ISetDetectionsAction,
     ISetLoadedAction,
+    ISetSelectionsAction,
     ISetTargetAction,
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
@@ -41,6 +44,7 @@ interface IDispatchProps {
     setModelLoaded: (hasLoaded: boolean) => ISetLoadedAction;
     setTarget: (target: ITargets) => ISetTargetAction;
     setDetections: (detections: IDetections) => ISetDetectionsAction;
+    setSelections: (selections: ISelections) => ISetSelectionsAction;
 }
 
 export type DetectionHandlerProps = IDetectionHandlerProps &
@@ -102,6 +106,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
             if (leftEyeSelection) {
                 const leftEyeCoords = calculateTargetPos(leftEyeSelection);
                 let rightEyeDetections = null;
+                let rightEyeSelection = null;
                 const leftTarget = {
                     x: normalise(leftEyeCoords.x, images[0]!.width),
                     y: normalise(leftEyeCoords.y, images[0]!.height),
@@ -109,7 +114,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                 let rightTarget = null;
                 if (images.length >= 2) {
                     rightEyeDetections = await this.model.detect(images[1]);
-                    const rightEyeSelection = matchYPosition(
+                    rightEyeSelection = matchYPosition(
                         leftEyeSelection,
                         rightEyeDetections,
                     );
@@ -134,6 +139,13 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                     left: leftEyeDetections,
                     right: rightEyeDetections,
                 });
+                this.props.setSelections({
+                    left: leftEyeSelection,
+                    right:
+                        rightEyeSelection === undefined
+                            ? null
+                            : rightEyeSelection,
+                });
             } else {
                 this.props.setDetections({ left: [], right: [] });
             }
@@ -152,6 +164,8 @@ const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
         setTarget: (target: ITargets) => dispatch(setTarget(target)),
         setDetections: (detections: IDetections) =>
             dispatch(setDetections(detections)),
+        setSelections: (selections: ISelections) =>
+            dispatch(setSelections(selections)),
     };
 };
 

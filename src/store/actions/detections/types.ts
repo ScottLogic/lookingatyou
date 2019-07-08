@@ -1,4 +1,4 @@
-import { IDetections } from '../../../models/objectDetection';
+import { IDetections, ISelections } from '../../../models/objectDetection';
 import { ITargets } from '../../../utils/types';
 
 export const SET_MODEL_LOADED = 'SET_MODEL_LOADED';
@@ -10,6 +10,7 @@ export const SET_PERSON = 'SET_PERSON';
 export const SET_LEFT = 'SET_LEFT';
 export const SET_OPEN = 'SET_OPEN';
 export const SET_SQUINT = 'SET_SQUINT';
+export const SET_SELECTIONS = 'SET_SELECTIONS';
 
 export interface IDetectionState {
     isModelLoaded: boolean;
@@ -21,6 +22,7 @@ export interface IDetectionState {
     isSquinting: boolean;
     target: ITargets;
     detections: IDetections;
+    selections: ISelections;
 }
 
 export interface ISetLoadedAction {
@@ -68,6 +70,11 @@ export interface ISetSquintAction {
     payload: boolean;
 }
 
+export interface ISetSelectionsAction {
+    type: 'SET_SELECTIONS';
+    payload: ISelections;
+}
+
 export type DetectionActionType =
     | ISetLoadedAction
     | ISetTargetAction
@@ -77,4 +84,5 @@ export type DetectionActionType =
     | ISetLeftAction
     | ISetOpenAction
     | ISetPersonAction
-    | ISetSquintAction;
+    | ISetSquintAction
+    | ISetSelectionsAction;

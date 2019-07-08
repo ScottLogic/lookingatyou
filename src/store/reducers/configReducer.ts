@@ -13,7 +13,6 @@ export const initialState: IConfigState = {
         swapEyes: false,
         toggleDebug: false,
         irisColor: '#ff8080', // must be hex value, as this is passed to colour picker input,
-        bbox: [0, 0, 0, 0],
     },
 };
 

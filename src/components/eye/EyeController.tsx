@@ -64,7 +64,6 @@ export const EyeController = React.memo(
             isBlinking,
             blinkFrequencyCoefficient,
             dilationCoefficient,
-            props.detected,
         ]);
 
         const scleraRadius = props.width / 4.5;
