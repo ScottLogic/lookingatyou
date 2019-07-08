@@ -2,6 +2,7 @@ import React from 'react';
 import tinycolor from 'tinycolor2';
 import { eyes, transitionTime } from '../../AppConstants';
 import './Eye.css';
+import { getFatigueMultiplier } from './EyeUtils';
 import { innerPath } from './innerPath';
 import { Shadows } from './Shadows';
 
@@ -37,7 +38,7 @@ export default class Eye extends React.Component<IEyeProps> {
             transition: `d ${transitionTime.blink}ms`,
         };
         this.lineTransitionStyle = {
-            transition: `d ${1000 / props.fps}ms`,
+            transition: `d ${1000 / (props.fps * getFatigueMultiplier())}ms`,
         };
     }
 

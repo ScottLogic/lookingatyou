@@ -58,7 +58,7 @@ export const EyeController = React.memo(
                         Math.random() * fatigueMultiplier < blinkProbability,
                     );
                 }
-            }, transitionTime.blink);
+            }, transitionTime.blink * fatigueMultiplier);
             return () => {
                 props.environment.clearInterval(blink);
             };
