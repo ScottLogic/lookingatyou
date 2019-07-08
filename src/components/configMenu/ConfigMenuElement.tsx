@@ -8,6 +8,7 @@ import {
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
 import ConfigMenu from './ConfigMenu';
+import Help, { HelpWith } from './Help';
 import IUserConfig from './IUserConfig';
 import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
@@ -61,9 +62,6 @@ export const ConfigMenuElement = React.memo(
         function storeSwapEyes(swapEyes: boolean) {
             props.setConfig({ partialConfig: { swapEyes } });
         }
-        function storeToggleDebug(toggleDebug: boolean) {
-            props.setConfig({ partialConfig: { toggleDebug } });
-        }
         function storeIrisColor(irisColor: string) {
             props.setConfig({ partialConfig: { irisColor } });
         }
@@ -83,43 +81,62 @@ export const ConfigMenuElement = React.memo(
         }
         return (
             <ConfigMenu width="14em" timerLength={1000} window={props.window}>
-                <TextBoxMenuItem
-                    name={'X Sensitivity'}
-                    defaultValue={`${props.config.xSensitivity}`}
-                    isValidInput={isValidSensitivity}
-                    onValidInput={parseAndStoreXSensitivity}
-                    parse={extractFloatToString}
-                />
-                <TextBoxMenuItem
-                    name={'Y Sensitivity'}
-                    defaultValue={`${props.config.ySensitivity}`}
-                    isValidInput={isValidSensitivity}
-                    onValidInput={parseAndStoreYSensitivity}
-                    parse={extractFloatToString}
-                />
-                <TextBoxMenuItem
-                    name={'FPS'}
-                    defaultValue={`${props.config.fps}`}
-                    isValidInput={isValidFPS}
-                    onValidInput={parseAndStoreFPS}
-                    parse={extractIntToString}
-                />
-                <CheckBoxMenuItem
-                    name={'Swap Eyes'}
-                    checked={props.config.swapEyes}
-                    onInputChange={storeSwapEyes}
-                />
-                <CheckBoxMenuItem
-                    name={'Toggle Debug'}
-                    checked={props.config.toggleDebug}
-                    onInputChange={storeToggleDebug}
-                />
-                <ColorMenuItem
-                    name={'Iris Color'}
-                    color={props.config.irisColor}
-                    onInputChange={storeIrisColor}
-                />
-                <CanvasMenuItem name={'Camera Feed'} />
+                <p data-tip={true} data-for={HelpWith[HelpWith.X_SENSITIVITY]}>
+                    <TextBoxMenuItem
+                        name={'X Sensitivity'}
+                        defaultValue={`${props.config.xSensitivity}`}
+                        isValidInput={isValidSensitivity}
+                        onValidInput={parseAndStoreXSensitivity}
+                        parse={extractFloatToString}
+                    />
+                </p>
+
+                <p data-tip={true} data-for={HelpWith[HelpWith.Y_SENSITIVITY]}>
+                    <TextBoxMenuItem
+                        name={'Y Sensitivity'}
+                        defaultValue={`${props.config.ySensitivity}`}
+                        isValidInput={isValidSensitivity}
+                        onValidInput={parseAndStoreYSensitivity}
+                        parse={extractFloatToString}
+                    />
+                </p>
+
+                <p data-tip={true} data-for={HelpWith[HelpWith.FPS]}>
+                    <TextBoxMenuItem
+                        name={'FPS'}
+                        defaultValue={`${props.config.fps}`}
+                        isValidInput={isValidFPS}
+                        onValidInput={parseAndStoreFPS}
+                        parse={extractIntToString}
+                    />
+                </p>
+
+                <p data-tip={true} data-for={HelpWith[HelpWith.SWAP_EYES]}>
+                    <CheckBoxMenuItem
+                        name={'Swap Eyes'}
+                        checked={props.config.swapEyes}
+                        onInputChange={storeSwapEyes}
+                    />
+                </p>
+
+                <p data-tip={true} data-for={HelpWith[HelpWith.IRIS_COLOUR]}>
+                    <ColorMenuItem
+                        name={'Iris Colour'}
+                        color={props.config.irisColor}
+                        onInputChange={storeIrisColor}
+                    />
+                </p>
+
+                <p data-tip={true} data-for={HelpWith[HelpWith.VIDEO_STREAM]}>
+                    <CanvasMenuItem name={'Camera Feed'} />
+                </p>
+
+                <Help problemWith={HelpWith.FPS} />
+                <Help problemWith={HelpWith.VIDEO_STREAM} />
+                <Help problemWith={HelpWith.X_SENSITIVITY} />
+                <Help problemWith={HelpWith.Y_SENSITIVITY} />
+                <Help problemWith={HelpWith.SWAP_EYES} />
+                <Help problemWith={HelpWith.IRIS_COLOUR} />
             </ConfigMenu>
         );
     },
