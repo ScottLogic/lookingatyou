@@ -27,6 +27,7 @@ import select, {
     closerTo,
     closerYTo,
     leftOf,
+    rightOf,
 } from '../../utils/objectSelection/select';
 import calculateTargetPos, {
     normalise,
@@ -124,7 +125,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                     rightEyeSelection = select(
                         rightEyeDetections,
                         closerYTo(leftEyeSelection[1]),
-                        leftOf(leftEyeSelection[0]),
+                        rightOf(leftEyeSelection[0]),
                     );
                     if (rightEyeSelection) {
                         const rightEyeCoords = calculateTargetPos(
