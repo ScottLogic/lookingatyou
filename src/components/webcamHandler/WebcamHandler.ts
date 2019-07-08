@@ -1,50 +1,50 @@
-import { SET_VIDEO_STREAMS } from '../../store/actions/video/types';
-import { AppStore } from '../../store/store';
-
 const videoinput = 'videoinput';
 
 export default async function configureStream(
     mediaDevices: MediaDevices,
-    onUserMedia: () => void,
-    onUserMediaError: () => void,
-    store: AppStore,
+    devices: string[],
 ) {
-    try {
-        const devices = await enumerateDevices(mediaDevices);
-        const streams = await Promise.all(
-            devices.map(async deviceId => {
-                const stream = await getStream(mediaDevices, deviceId);
-                return {
-                    deviceId,
-                    stream,
-                };
-            }),
-        );
-        const videos = streams.map(item => {
-            const streamSettings = item.stream
-                .getVideoTracks()[0]
-                .getSettings();
-            if (streamSettings.width && streamSettings.height) {
-                return {
-                    width: streamSettings.width,
-                    height: streamSettings.height,
-                    ...item,
-                };
-            }
-            return [];
-        });
-        store.dispatch({ type: SET_VIDEO_STREAMS, videos });
-        if (videos.length > 0) {
-            onUserMedia();
-        } else {
-            onUserMediaError();
+    const streams = await Promise.all(
+        devices.map(async deviceId => {
+            const stream = await getStream(mediaDevices, deviceId);
+            return {
+                deviceId,
+                stream,
+            };
+        }),
+    );
+    const videos = streams.map(item => {
+        const streamSettings = item.stream.getVideoTracks()[0].getSettings();
+        if (streamSettings.width && streamSettings.height) {
+            return {
+                width: streamSettings.width,
+                height: streamSettings.height,
+                ...item,
+            };
         }
-    } catch (error) {
-        onUserMediaError();
+        return null;
+    });
+    return videos;
+}
+
+export async function getStreamForDevice(
+    mediaDevices: MediaDevices,
+    deviceId: string,
+) {
+    console.log(deviceId);
+    const stream = await getStream(mediaDevices, deviceId);
+    const streamSettings = stream.getVideoTracks()[0].getSettings();
+    if (streamSettings.width && streamSettings.height) {
+        return {
+            width: streamSettings.width,
+            height: streamSettings.height,
+            deviceId,
+            stream,
+        };
     }
 }
 
-async function enumerateDevices(mediaDevices: MediaDevices) {
+export async function enumerateDevices(mediaDevices: MediaDevices) {
     const devices = await mediaDevices.enumerateDevices();
     return devices
         .filter(device => device.kind === videoinput)
@@ -53,6 +53,6 @@ async function enumerateDevices(mediaDevices: MediaDevices) {
 
 async function getStream(mediaDevices: MediaDevices, deviceId: string) {
     return mediaDevices.getUserMedia({
-        video: { deviceId, width: { exact: 320 }, height: { exact: 240 } },
+        video: { deviceId },
     });
 }

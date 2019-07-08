@@ -9,10 +9,10 @@ describe('Video Actions', () => {
     it('should create an action to add a video stream', () => {
         const expectedAction = {
             type: SET_VIDEO_STREAMS,
-            videos: [mockSetVideoStreamsPayload],
+            videos: mockSetVideoStreamsPayload,
         };
         expect(
-            actions.setVideoStreamsAction([mockSetVideoStreamsPayload]),
+            actions.setVideoStreamAction(mockSetVideoStreamsPayload),
         ).toEqual(expectedAction);
     });
 

@@ -6,13 +6,12 @@ import './App.css';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import EyeController from './components/eye/EyeController';
 import MovementHandler from './components/intelligentMovement/MovementHandler';
-import Video from './components/video/Video';
+import VideoHandler from './components/video/VideoHandler';
 import { IObjectDetector } from './models/objectDetection';
 import { loadModel } from './store/actions/detections/actions';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds } from './store/selectors/videoSelectors';
 import { AppStore } from './store/store';
-import CocoSSD from './utils/objectDetection/cocoSSD';
 
 interface IAppState {
     width: number;
@@ -22,18 +21,13 @@ interface IAppState {
 
 interface IAppProps {
     environment: Window;
-    configureStream: (
-        mediaDevices: MediaDevices,
-        onUserMedia: () => void,
-        onUserMediaError: () => void,
-        store: AppStore,
-    ) => void;
     store: AppStore;
 }
 
 interface IAppMapStateToProps {
     deviceIds: string[];
     model: IObjectDetector | null;
+    webcamAvailable: boolean;
 }
 
 interface IAppMapDispatchToProps {
@@ -46,6 +40,7 @@ const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     return {
         deviceIds: getDeviceIds(state),
         model: state.detectionStore.model,
+        webcamAvailable: state.videoStore.webcamAvailable,
     };
 };
 
@@ -69,20 +64,12 @@ export class App extends React.PureComponent<AppProps, IAppState> {
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);
-        this.onUserMedia = this.onUserMedia.bind(this);
-        this.onUserMediaError = this.onUserMediaError.bind(this);
     }
 
     async componentDidMount() {
         this.props.environment.addEventListener(
             'resize',
             this.updateDimensions,
-        );
-        this.props.configureStream(
-            this.props.environment.navigator.mediaDevices,
-            this.onUserMedia,
-            this.onUserMediaError,
-            this.props.store,
         );
     }
 
@@ -100,27 +87,14 @@ export class App extends React.PureComponent<AppProps, IAppState> {
         });
     }
 
-    onUserMedia() {
-        this.setState({
-            webcamAvailable: true,
-        });
-        this.props.loadModel(CocoSSD.init);
-    }
-
-    onUserMediaError() {
-        this.setState({ webcamAvailable: false });
-    }
-
     render() {
         return (
             <div className="App">
-                <div className="webcam-feed">
-                    {this.props.deviceIds.map((device, key) => (
-                        <Video key={key} deviceId={device} />
-                    ))}
-                </div>
+                <VideoHandler
+                    mediaDevices={this.props.environment.navigator.mediaDevices}
+                />
 
-                {this.state.webcamAvailable ? (
+                {this.props.webcamAvailable ? (
                     !this.props.model ? (
                         <div className="loading-spinner" />
                     ) : (

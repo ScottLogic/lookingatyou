@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import App from './App';
-import configureStream from './components/webcamHandler/WebcamHandler';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import { createStore } from './store/store';
@@ -15,11 +14,7 @@ const store = createStore();
 
 ReactDOM.render(
     <Provider store={store}>
-        <App
-            environment={getEnvironment()}
-            configureStream={configureStream}
-            store={store}
-        />
+        <App environment={getEnvironment()} store={store} />
     </Provider>,
     document.getElementById('root'),
 );
