@@ -1,4 +1,5 @@
-deleteBranch() {
+deleteFeatureBranch() {
+    echo "Deleting branch" $1
     aws s3 rm s3://looking-at-you/feature/$1 --recursive
 }
 
@@ -22,12 +23,12 @@ for DEPLOYED_BRANCH in $DEPLOYED_BRANCHES; do
         FORMATED_BRANCH_NAME=$(echo ${DEPLOYED_BRANCH} | tr - ' ')
 
         if [[ "${MERGED_BRANCHES}" =~ "${FORMATED_BRANCH_NAME::-1}" ]]; then
-            deleteBranch $DEPLOYED_BRANCH
+            deleteFeatureBranch $DEPLOYED_BRANCH
         fi
 
         # check for deleted and not merged branches
         if [[ ! "${MY_BRANCHES[@]}" =~ "${DEPLOYED_BRANCH::-1}" ]]; then
-            deleteBranch $DEPLOYED_BRANCH
+            deleteFeatureBranch $DEPLOYED_BRANCH
         fi
     fi
 done

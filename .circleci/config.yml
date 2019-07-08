@@ -56,6 +56,7 @@ jobs:
             - run:
                   name: 'Deploy to S3'
                   command: |
+                      ./cleanup.sh
                       if [ $CIRCLE_BRANCH = 'master' ]; then
                         aws s3 rm s3://looking-at-you/ --recursive --exclude "feature/"
                         aws s3 cp ./build/ s3://looking-at-you/ --recursive
@@ -77,5 +78,8 @@ workflows:
                           only:
                               - master
                               - /feature.*/
+                  requires:
+                      - test
+            - cleanup:
                   requires:
                       - test
