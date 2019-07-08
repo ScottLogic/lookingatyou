@@ -31,5 +31,5 @@ export function closerTo(
 }
 
 export function first(bbox1: Bbox, bbox2: Bbox): number {
-    return -1;
+    return 0;
 }
