@@ -1,5 +1,5 @@
 import { IDetection } from '../../models/objectDetection';
-import selectFirst from '../../utils/objectSelection/selectFirst';
+import select, { first } from '../../utils/objectSelection/select';
 
 const notPerson: IDetection = {
     bbox: [0, 0, 0, 0],
@@ -18,6 +18,8 @@ const person: IDetection = {
 };
 
 describe('selectFirstOfType should return', () => {
+    const selectFirst = (detections: IDetection[]) => select(detections, first);
+
     it('undefined when arg:detections is empty', () => {
         expect(selectFirst([])).toBeUndefined();
     });
