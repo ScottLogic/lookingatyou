@@ -1,3 +1,5 @@
+#!/bin/bash
+
 deleteFeatureBranch() {
     echo "Deleting branch" $1
     aws s3 rm s3://looking-at-you/feature/$1 --recursive

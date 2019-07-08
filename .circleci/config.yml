@@ -57,9 +57,11 @@ jobs:
                   name: Build project
                   command: npm run build
             - run:
+                  name: Clean up the feature branches on AWS
+                  command: ./cleanup.sh
+            - run:
                   name: 'Deploy to S3'
                   command: |
-                      ./cleanup.sh
                       if [ $CIRCLE_BRANCH = 'master' ]; then
                         aws s3 rm s3://looking-at-you/ --recursive --exclude "feature/"
                         aws s3 cp ./build/ s3://looking-at-you/ --recursive
