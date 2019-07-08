@@ -14,7 +14,10 @@ const store = createStore();
 
 ReactDOM.render(
     <Provider store={store}>
-        <App environment={getEnvironment()} store={store} />
+        <App
+            environment={getEnvironment()}
+            mediaDevices={getEnvironment().navigator.mediaDevices}
+        />
     </Provider>,
     document.getElementById('root'),
 );

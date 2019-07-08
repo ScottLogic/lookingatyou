@@ -21,11 +21,10 @@ interface IAppState {
 
 interface IAppProps {
     environment: Window;
-    store: AppStore;
+    mediaDevices: MediaDevices;
 }
 
 interface IAppMapStateToProps {
-    deviceIds: string[];
     model: IObjectDetector | null;
     webcamAvailable: boolean;
 }
@@ -38,7 +37,6 @@ type AppProps = IAppProps & IAppMapStateToProps & IAppMapDispatchToProps;
 
 const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     return {
-        deviceIds: getDeviceIds(state),
         model: state.detectionStore.model,
         webcamAvailable: state.videoStore.webcamAvailable,
     };
@@ -90,9 +88,7 @@ export class App extends React.PureComponent<AppProps, IAppState> {
     render() {
         return (
             <div className="App">
-                <VideoHandler
-                    mediaDevices={this.props.environment.navigator.mediaDevices}
-                />
+                <VideoHandler mediaDevices={this.props.mediaDevices} />
 
                 {this.props.webcamAvailable ? (
                     !this.props.model ? (
