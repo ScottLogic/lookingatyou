@@ -1,6 +1,11 @@
 import { IDetection } from '../../models/objectDetection';
-import selectLargest from './selectLargest';
+import select, { largerThan } from '../../utils/objectSelection/select';
+import { Bbox } from '../../utils/types';
 describe('selectLargest', () => {
+    const selectLargest: (
+        detections: IDetection[],
+    ) => Bbox | undefined = detections => select(detections, largerThan);
+
     it('return undefined for no  detections', () => {
         const detections: IDetection[] = [];
         expect(selectLargest(detections)).toBe(undefined);

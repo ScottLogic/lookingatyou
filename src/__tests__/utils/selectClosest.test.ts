@@ -1,19 +1,23 @@
 import { IDetection } from '../../models/objectDetection';
-import { ICoords } from '../types';
-import selectClosest from './selectClosest';
+import select, { closerTo } from '../../utils/objectSelection/select';
+import { Bbox } from '../../utils/types';
 describe('selectClosest', () => {
     it('return undefined for no  detections', () => {
+        const selectClosest: (ds: IDetection[]) => Bbox | undefined = ds =>
+            select(ds, closerTo({ x: 0, y: 0 }));
         const detections: IDetection[] = [];
-        expect(selectClosest(detections, { x: 0, y: 0 })).toBe(undefined);
+        expect(selectClosest(detections)).toBe(undefined);
     });
     it('return undefined for no person detections', () => {
+        const selectClosest: (ds: IDetection[]) => Bbox | undefined = ds =>
+            select(ds, closerTo({ x: 0, y: 0 }));
         const detections: IDetection[] = [
             {
                 bbox: [10, 20, 30, 400],
                 info: { type: 'giraffe', certainty: 100 },
             },
         ];
-        expect(selectClosest(detections, { x: 0, y: 0 })).toBe(undefined);
+        expect(selectClosest(detections)).toBe(undefined);
     });
     it('return bounding box closest to point', () => {
         const detections: IDetection[] = [
@@ -54,11 +58,8 @@ describe('selectClosest', () => {
                 info: { type: 'person', certainty: 100 },
             },
         ];
-        expect(selectClosest(detections, { x: 300, y: 290 })).toStrictEqual([
-            305,
-            295,
-            5,
-            5,
-        ]);
+        const selectClosest: (ds: IDetection[]) => Bbox | undefined = ds =>
+            select(ds, closerTo({ x: 300, y: 290 }));
+        expect(selectClosest(detections)).toStrictEqual([305, 295, 5, 5]);
     });
 });
