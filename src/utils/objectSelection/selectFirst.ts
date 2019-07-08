@@ -1,21 +1,20 @@
-import { ICocoInfo, IDetection } from '../../models/objectDetection';
-import { Bbox } from '../types';
+import {
+    DetectionModelType,
+    ICocoSSDDetection,
+    IDetection,
+} from '../../models/objectDetection';
 
 export default function selectFirst(
     detections: IDetection[],
-): Bbox | undefined {
-    const selection = detections.find(detection => {
+): IDetection | undefined {
+    return detections.find(detection => {
         switch (detection.model) {
-            case 'CocoSSD':
-                return (detection.info as ICocoInfo).type === 'person';
-            case 'Posenet':
+            case DetectionModelType.CocoSSD:
+                return (detection as ICocoSSDDetection).info.type === 'person';
+            case DetectionModelType.Posenet:
                 return true;
             default:
                 return false;
         }
     });
-
-    if (selection) {
-        return selection.bbox;
-    }
 }

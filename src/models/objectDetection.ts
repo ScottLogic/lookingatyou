@@ -9,12 +9,14 @@ export interface IObjectDetector {
 
 export type DetectedObject = ssd.DetectedObject | posenet.Pose;
 
-export type SupportedModels = 'CocoSSD' | 'Posenet';
+export enum DetectionModelType {
+    CocoSSD = 'CocoSSD',
+    Posenet = 'Posenet',
+}
 
 export interface IDetection {
-    model: SupportedModels;
+    model: DetectionModelType;
     bbox: Bbox;
-    info: ICocoInfo | posenet.Pose;
 }
 
 export interface IDetections {
@@ -25,6 +27,16 @@ export interface IDetections {
 export interface ISelections {
     left: Bbox;
     right: Bbox | null;
+}
+
+export interface ICocoSSDDetection extends IDetection {
+    model: DetectionModelType.CocoSSD;
+    info: ICocoInfo;
+}
+
+export interface IPosenetDetection extends IDetection {
+    model: DetectionModelType.Posenet;
+    info: posenet.Pose;
 }
 
 export interface ICocoInfo {

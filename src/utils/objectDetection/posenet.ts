@@ -1,5 +1,9 @@
 import * as posenet from '@tensorflow-models/posenet';
-import { IDetection, IObjectDetector } from '../../models/objectDetection';
+import {
+    DetectionModelType,
+    IDetection,
+    IObjectDetector,
+} from '../../models/objectDetection';
 import { DetectionImage } from '../types';
 
 export default class Posenet {
@@ -29,7 +33,7 @@ export default class Posenet {
         return detections.map(detection => {
             const box = posenet.getBoundingBox(detection.keypoints);
             return {
-                model: 'Posenet',
+                model: DetectionModelType.Posenet,
                 bbox: [
                     box.minX,
                     box.minY,

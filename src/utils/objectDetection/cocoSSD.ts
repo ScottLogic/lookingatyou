@@ -1,5 +1,9 @@
 import * as ssd from '@tensorflow-models/coco-ssd';
-import { IDetection, IObjectDetector } from '../../models/objectDetection';
+import {
+    DetectionModelType,
+    IDetection,
+    IObjectDetector,
+} from '../../models/objectDetection';
 import { DetectionImage } from '../types';
 
 const maxDetections = 5;
@@ -21,7 +25,7 @@ export default class CocoSSD implements IObjectDetector {
     reshapeDetections(detections: ssd.DetectedObject[]): IDetection[] {
         return detections.map(detection => {
             return {
-                model: 'CocoSSD',
+                model: DetectionModelType.CocoSSD,
                 bbox: detection.bbox,
                 info: {
                     certainty: detection.score,
