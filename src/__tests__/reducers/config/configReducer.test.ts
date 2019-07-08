@@ -16,6 +16,7 @@ describe('Config Reducer tests', () => {
             irisColor: '#252525',
             swapEyes: true,
             toggleDebug: false,
+            bbox: [],
         },
     };
     it('reset config, so state is equivelant to initial state', () => {
@@ -33,6 +34,7 @@ describe('Config Reducer tests', () => {
                 irisColor: 'red',
                 swapEyes: true,
                 toggleDebug: true,
+                bbox: [],
             },
         };
         expect(configStore(testState, updateAction)).toStrictEqual(
