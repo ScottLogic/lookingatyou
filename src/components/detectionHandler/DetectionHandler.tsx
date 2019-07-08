@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { eyelidPosition } from '../../AppConstants';
 import {
     DetectionConfig,
     IDetections,
@@ -11,12 +12,14 @@ import {
 import {
     setDetections,
     setModelLoaded,
+    setOpen,
     setSelections,
     setTarget,
 } from '../../store/actions/detections/actions';
 import {
     ISetDetectionsAction,
     ISetLoadedAction,
+    ISetOpenAction,
     ISetSelectionsAction,
     ISetTargetAction,
 } from '../../store/actions/detections/types';
@@ -28,7 +31,7 @@ import selectFirst from '../../utils/objectSelection/selectFirst';
 import calculateTargetPos, {
     normalise,
 } from '../../utils/objectTracking/calculateFocus';
-import { DetectionImage, ITargets } from '../../utils/types';
+import { DetectionImage, ICoords, ITargets } from '../../utils/types';
 
 interface IDetectionHandlerProps {
     modelConfig: ModelConfig;
@@ -38,6 +41,7 @@ interface IDetectionHandlerProps {
 interface IStateProps {
     FPS: number;
     videos: Array<HTMLVideoElement | undefined>;
+    targets: ITargets;
 }
 
 interface IDispatchProps {
@@ -45,6 +49,7 @@ interface IDispatchProps {
     setTarget: (target: ITargets) => ISetTargetAction;
     setDetections: (detections: IDetections) => ISetDetectionsAction;
     setSelections: (selections: ISelections) => ISetSelectionsAction;
+    setOpenCoefficient: (openCoefficient: number) => ISetOpenAction;
 }
 
 export type DetectionHandlerProps = IDetectionHandlerProps &
@@ -60,6 +65,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
         this.detectionInterval = 0;
 
         this.detectionHandler = this.detectionHandler.bind(this);
+        this.calculateMoveDistance = this.calculateMoveDistance.bind(this);
     }
 
     async componentDidMount() {
@@ -131,10 +137,9 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                         leftTarget.y = averageY;
                     }
                 }
-                this.props.setTarget({
-                    left: leftTarget,
-                    right: rightTarget,
-                });
+                const newTargets = { left: leftTarget, right: rightTarget };
+                this.calculateMoveDistance(newTargets);
+                this.props.setTarget(newTargets);
                 this.props.setDetections({
                     left: leftEyeDetections,
                     right: rightEyeDetections,
@@ -151,10 +156,43 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
             }
         }
     }
+
+    calculateMoveDistance(newTargets: ITargets) {
+        const leftEyeDist = getDistance(
+            this.props.targets.left,
+            newTargets.left,
+        );
+
+        if (leftEyeDist > 0.5) {
+            this.props.setOpenCoefficient(eyelidPosition.CLOSED);
+        }
+
+        if (this.props.targets.right && newTargets.right) {
+            const rightEyeDist = getDistance(
+                this.props.targets.right,
+                newTargets.right,
+            );
+
+            if (rightEyeDist > 0.5) {
+                this.props.setOpenCoefficient(eyelidPosition.CLOSED);
+            }
+        }
+    }
+}
+
+export function getDistance(old: ICoords, newCoords: ICoords): number {
+    return Math.max(
+        Math.abs(old.x - newCoords.x),
+        Math.abs(old.y - newCoords.y),
+    );
 }
 
 const mergeStateToProps = (state: IRootStore) => {
-    return { videos: getVideos(state), FPS: state.configStore.config.fps };
+    return {
+        videos: getVideos(state),
+        FPS: state.configStore.config.fps,
+        targets: state.detectionStore.target,
+    };
 };
 
 const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
@@ -166,6 +204,8 @@ const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
             dispatch(setDetections(detections)),
         setSelections: (selections: ISelections) =>
             dispatch(setSelections(selections)),
+        setOpenCoefficient: (openCoefficient: number) =>
+            dispatch(setOpen(openCoefficient)),
     };
 };
 

@@ -106,6 +106,13 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             this.props.setSquinting(false);
         }
 
+        if (
+            this.props.openCoefficient === eyelidPosition.CLOSED &&
+            Math.random() < 0.5
+        ) {
+            this.props.setOpen(eyelidPosition.OPEN);
+        }
+
         if (selection) {
             if (this.props.squinting) {
                 this.props.setOpen(eyelidPosition.OPEN);
