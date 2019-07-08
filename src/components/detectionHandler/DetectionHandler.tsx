@@ -125,7 +125,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                     rightEyeSelection = select(
                         rightEyeDetections,
                         closerYTo(leftEyeSelection[1]),
-                        rightOf(leftEyeSelection[0]),
+                        leftOf(leftEyeSelection[0]),
                     );
                     if (rightEyeSelection) {
                         const rightEyeCoords = calculateTargetPos(
