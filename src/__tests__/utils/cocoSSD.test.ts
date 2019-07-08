@@ -1,5 +1,9 @@
 import * as ssd from '@tensorflow-models/coco-ssd';
-import { IDetection, IObjectDetector } from '../../models/objectDetection';
+import {
+    DetectionModelType,
+    ICocoSSDDetection,
+    IObjectDetector,
+} from '../../models/objectDetection';
 import CocoSSD from '../../utils/objectDetection/cocoSSD';
 import { Bbox } from '../../utils/types';
 
@@ -15,9 +19,9 @@ const testInput: ssd.DetectedObject[] = [
     },
 ];
 
-const testOutput: IDetection[] = [
+const testOutput: ICocoSSDDetection[] = [
     {
-        model: 'CocoSSD',
+        model: DetectionModelType.CocoSSD,
         bbox: testBbox,
         info: { type: testType, certainty: testScore },
     },
