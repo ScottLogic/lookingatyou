@@ -15,6 +15,9 @@ jobs:
                   paths:
                       - node_modules
             - run:
+                  name: Build project
+                  command: npm run build
+            - run:
                   name: Check Linting
                   command: npm run lint
 
@@ -78,8 +81,5 @@ workflows:
                           only:
                               - master
                               - /feature.*/
-                  requires:
-                      - test
-            - cleanup:
                   requires:
                       - test
