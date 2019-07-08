@@ -12,6 +12,7 @@ import { getConfig } from '../../store/selectors/configSelectors';
 import { ICoords, ITargets } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
+import { getFatigueMultiplier } from './EyeUtils';
 import { Gradients } from './Gradients';
 interface IEyeControllerProps {
     width: number;
@@ -52,7 +53,10 @@ export const EyeController = React.memo(
                     const blinkProbability =
                         (blinkFrequency * blinkFrequencyCoefficient) /
                         (1000 / transitionTime.blink);
-                    setIsBlinking(Math.random() < blinkProbability);
+                    setIsBlinking(
+                        Math.random() <
+                            blinkProbability * getFatigueMultiplier(),
+                    );
                 }
             }, transitionTime.blink);
             return () => {

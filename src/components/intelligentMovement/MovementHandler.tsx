@@ -24,7 +24,12 @@ import {
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import { ITargets } from '../../utils/types';
-import { analyseLight, checkLight, naturalMovement } from '../eye/EyeUtils';
+import {
+    analyseLight,
+    checkLight,
+    getFatigueMultiplier,
+    naturalMovement,
+} from '../eye/EyeUtils';
 
 interface IMovementProps {
     document: Document;
@@ -102,13 +107,15 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
         });
 
         if (this.props.squinting && Math.random() < 0.1) {
-            this.props.setOpen(eyelidPosition.OPEN);
+            this.props.setOpen(eyelidPosition.OPEN * getFatigueMultiplier());
             this.props.setSquinting(false);
         }
 
         if (selection) {
             if (this.props.squinting) {
-                this.props.setOpen(eyelidPosition.OPEN);
+                this.props.setOpen(
+                    eyelidPosition.OPEN * getFatigueMultiplier(),
+                );
             }
             this.isNewTarget();
         } else {
@@ -148,7 +155,9 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
                 this.props.setOpen(eyelidPosition.CLOSED);
             } else if (this.props.tooBright) {
                 this.props.setBright(false);
-                this.props.setOpen(eyelidPosition.OPEN);
+                this.props.setOpen(
+                    eyelidPosition.OPEN * getFatigueMultiplier(),
+                );
             }
 
             this.props.setDilation(scaledPupilSize);

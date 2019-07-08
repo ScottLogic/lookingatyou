@@ -121,3 +121,19 @@ function moveRight(
     }
     return { newX: currentX, left };
 }
+
+export function getFatigueMultiplier(): number {
+    const today = new Date();
+    const startOfDay = 9 * 60;
+    const currentTime = today.getHours() * 60 + today.getMinutes();
+    const wholeDay = 24 * 60;
+    const scale = 0.5;
+
+    if (currentTime < startOfDay) {
+        return 1;
+    }
+
+    const dayProgress = (currentTime - startOfDay) / (wholeDay - startOfDay);
+
+    return dayProgress * scale + 0.5;
+}
