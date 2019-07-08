@@ -33,7 +33,7 @@ describe('selectMatching should return', () => {
         ];
         expect(
             matchYPosition(leftEyeSelection, rightEyeDetections),
-        ).toStrictEqual([55, 40, 15, 320]);
+        ).toStrictEqual([15, 320, 0, 0]);
     });
 
     it('undefined when there are no detections', () => {
