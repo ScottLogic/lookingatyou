@@ -1,8 +1,12 @@
-import { IDetection } from '../../../models/objectDetection';
-import select, { first } from '../../../utils/objectSelection/select';
+import {
+    DetectionModelType,
+    ICocoSSDDetection,
+    IDetection,
+} from '../../models/objectDetection';
+import select, { first } from '../../utils/objectSelection/select';
 
-const notPerson: IDetection = {
-    model: 'CocoSSD',
+const notPerson: ICocoSSDDetection = {
+    model: DetectionModelType.CocoSSD,
     bbox: [0, 0, 0, 0],
     info: {
         certainty: 100,
@@ -10,8 +14,8 @@ const notPerson: IDetection = {
     },
 };
 
-const person: IDetection = {
-    model: 'CocoSSD',
+const person: ICocoSSDDetection = {
+    model: DetectionModelType.CocoSSD,
     bbox: [1, 1, 1, 1],
     info: {
         certainty: 50,
@@ -28,7 +32,7 @@ describe('selectFirstOfType should return', () => {
     it('undefined when arg:detections does not contain detection of arg:type', () => {
         expect(selectFirst([notPerson]));
     });
-    it('Bbox of detection if arg:detections contains an detection of arg:type', () => {
+    it('Bbox of detection if arg:detections contains a detection of arg:type', () => {
         expect(selectFirst([person])).toBe(person.bbox);
         expect(
             selectFirst([

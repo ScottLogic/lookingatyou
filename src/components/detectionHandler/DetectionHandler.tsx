@@ -81,7 +81,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
         );
     }
 
-    componentDidUpdate(previousProps: DetectionHandlerProps) {
+    componentDidUpdate() {
         clearInterval(this.detectionInterval);
         this.detectionInterval = setInterval(
             this.detectionHandler,
@@ -109,7 +109,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                 closerTo(this.props.targets.left),
             );
             if (leftEyeSelection) {
-                const leftEyeCoords = calculateTargetPos(leftEyeSelection);
+                const leftEyeCoords = calculateTargetPos(leftEyeSelection.bbox);
                 let rightEyeDetections = null;
                 let rightEyeSelection = null;
                 const leftTarget = {
@@ -145,7 +145,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                     right: rightEyeDetections,
                 });
                 this.props.setSelections({
-                    left: leftEyeSelection,
+                    left: leftEyeSelection.bbox,
                     right:
                         rightEyeSelection === undefined
                             ? null

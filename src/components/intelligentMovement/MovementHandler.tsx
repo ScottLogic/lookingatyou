@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { eyelidPosition, pupilSizes, sleepDelay } from '../../AppConstants';
-import { ICocoInfo, IDetections } from '../../models/objectDetection';
+import { IDetection } from '../../models/objectDetection';
 import {
     setBright,
     setDetected,
@@ -23,6 +23,7 @@ import {
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getVideos } from '../../store/selectors/videoSelectors';
+import selectFirst from '../../utils/objectSelection/selectFirst';
 import { ITargets } from '../../utils/types';
 import { analyseLight, checkLight, naturalMovement } from '../eye/EyeUtils';
 
@@ -32,7 +33,7 @@ interface IMovementProps {
 
 interface IStateProps {
     fps: number;
-    detections: IDetections;
+    detections: IDetection[];
     target: ITargets;
     tooBright: boolean;
     left: boolean;
@@ -105,16 +106,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
     }
 
     checkSelection() {
-        const selection = this.props.detections.left.find(detection => {
-            switch (detection.model) {
-                case 'CocoSSD':
-                    return (detection.info as ICocoInfo).type === 'person';
-                case 'Posenet':
-                    return true;
-                default:
-                    return false;
-            }
-        });
+        const selection = selectFirst(this.props.detections);
 
         if (this.props.squinting && Math.random() < 0.1) {
             this.props.setOpen(eyelidPosition.OPEN);
@@ -222,7 +214,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
 const mergeStateToProps = (state: IRootStore) => {
     return {
         fps: state.configStore.config.fps,
-        detections: state.detectionStore.detections,
+        detections: state.detectionStore.detections.left,
         target: state.detectionStore.target,
         tooBright: state.detectionStore.tooBright,
         left: state.detectionStore.left,
