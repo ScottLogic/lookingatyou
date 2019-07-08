@@ -119,8 +119,7 @@ export const ConfigMenuElement = React.memo(
                     color={props.config.irisColor}
                     onInputChange={storeIrisColor}
                 />
-                <CanvasMenuItem name={'Left Camera'} />
-                <CanvasMenuItem name={'Right Camera'} />
+                <CanvasMenuItem name={'Camera Feed'} />
             </ConfigMenu>
         );
     },

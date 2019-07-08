@@ -43,3 +43,7 @@
 .ConfigMenu input {
     width: 25%;
 }
+
+.ConfigMenu #canvas {
+    width: 100%;
+}
