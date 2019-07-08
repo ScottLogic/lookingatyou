@@ -41,6 +41,7 @@ export const EyeController = React.memo(
         const [isBlinking, setIsBlinking] = useState(false); // Will change based on camera feed e.g. blink less when object in frame
         const [eyesOpenCoefficient] = useState(eyelidPosition.OPEN); // Will change based on camera feed e.g. higher coefficient to show surprise
         const [dilationCoefficient] = useState(pupilSizes.neutral); // Will change based on camera feed e.g. briefly increase coefficient (dilate) when object enters frame then reset to 1 (neutral)
+        const [fatigueMultiplier] = useState(getFatigueMultiplier());
 
         useEffect(() => {
             const blink = props.environment.setInterval(() => {
@@ -52,10 +53,9 @@ export const EyeController = React.memo(
                         : neutralBlinkFrequency;
                     const blinkProbability =
                         (blinkFrequency * blinkFrequencyCoefficient) /
-                        (1000 / transitionTime.blink);
+                        (1000 / (transitionTime.blink * fatigueMultiplier));
                     setIsBlinking(
-                        Math.random() <
-                            blinkProbability * getFatigueMultiplier(),
+                        Math.random() * fatigueMultiplier < blinkProbability,
                     );
                 }
             }, transitionTime.blink);
