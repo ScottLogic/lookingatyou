@@ -1,18 +1,15 @@
 import { IDetection } from '../../models/objectDetection';
 import calculateTargetPos from '../objectTracking/calculateFocus';
 import { Bbox, ICoords } from '../types';
+import { isPerson } from './detectionSelector';
 
 export default function select(
     detections: IDetection[],
     compare: (x: Bbox, y: Bbox) => number,
     filter?: (d: IDetection) => boolean,
 ): Bbox | undefined {
-    const personBboxes = detections
-        .filter(
-            detection =>
-                detection.info.type === 'person' &&
-                (!filter || filter(detection)),
-        )
+    const personBboxes: Bbox[] = detections
+        .filter(detection => isPerson(detection))
         .map(detection => detection.bbox);
     return personBboxes.reduce<Bbox | undefined>(
         (best, current) =>

@@ -109,7 +109,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                 closerTo(this.props.targets.left),
             );
             if (leftEyeSelection) {
-                const leftEyeCoords = calculateTargetPos(leftEyeSelection.bbox);
+                const leftEyeCoords = calculateTargetPos(leftEyeSelection);
                 let rightEyeDetections = null;
                 let rightEyeSelection = null;
                 const leftTarget = {
@@ -145,7 +145,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                     right: rightEyeDetections,
                 });
                 this.props.setSelections({
-                    left: leftEyeSelection.bbox,
+                    left: leftEyeSelection,
                     right:
                         rightEyeSelection === undefined
                             ? null

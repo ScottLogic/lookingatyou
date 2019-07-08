@@ -23,7 +23,7 @@ import {
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getVideos } from '../../store/selectors/videoSelectors';
-import selectFirst from '../../utils/objectSelection/selectFirst';
+import select, { first } from '../../utils/objectSelection/select';
 import { ITargets } from '../../utils/types';
 import { analyseLight, checkLight, naturalMovement } from '../eye/EyeUtils';
 
@@ -106,7 +106,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
     }
 
     checkSelection() {
-        const selection = selectFirst(this.props.detections);
+        const selection = select(this.props.detections, first);
 
         if (this.props.squinting && Math.random() < 0.1) {
             this.props.setOpen(eyelidPosition.OPEN);
