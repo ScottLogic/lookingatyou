@@ -63,10 +63,10 @@ jobs:
                   name: 'Deploy to S3'
                   command: |
                       if [ $CIRCLE_BRANCH = 'master' ]; then
-                        aws s3 rm s3://looking-at-you/ --recursive --exclude "feature/"
-                        aws s3 cp ./build/ s3://looking-at-you/ --recursive
+                      aws s3 rm s3://looking-at-you/ --recursive --exclude "feature/"
+                      aws s3 cp ./build/ s3://looking-at-you/ --recursive
                       else
-                        aws s3 sync ./build/ s3://looking-at-you/$CIRCLE_BRANCH --delete
+                      aws s3 sync ./build/ s3://looking-at-you/$CIRCLE_BRANCH --delete
                       fi
 
 workflows:
