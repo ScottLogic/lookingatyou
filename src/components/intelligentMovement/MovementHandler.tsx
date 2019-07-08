@@ -64,11 +64,13 @@ export type MovementHandlerProps = IMovementProps &
 
 export class MovementHandler extends React.Component<MovementHandlerProps> {
     private movementInterval: number;
+    private fatigueMultiplier: number;
 
     constructor(props: MovementHandlerProps) {
         super(props);
 
         this.movementInterval = 0;
+        this.fatigueMultiplier = getFatigueMultiplier();
 
         this.calculateBrightness = this.calculateBrightness.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
@@ -107,14 +109,14 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
         });
 
         if (this.props.squinting && Math.random() < 0.1) {
-            this.props.setOpen(eyelidPosition.OPEN * getFatigueMultiplier());
+            this.props.setOpen(eyelidPosition.OPEN * this.fatigueMultiplier);
             this.props.setSquinting(false);
         }
 
         if (selection) {
             if (this.props.squinting) {
                 this.props.setOpen(
-                    eyelidPosition.OPEN * getFatigueMultiplier(),
+                    eyelidPosition.OPEN * this.fatigueMultiplier,
                 );
             }
             this.isNewTarget();
@@ -156,7 +158,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             } else if (this.props.tooBright) {
                 this.props.setBright(false);
                 this.props.setOpen(
-                    eyelidPosition.OPEN * getFatigueMultiplier(),
+                    eyelidPosition.OPEN * this.fatigueMultiplier,
                 );
             }
 
