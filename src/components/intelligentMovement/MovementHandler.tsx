@@ -59,13 +59,13 @@ export type MovementHandlerProps = IMovementProps &
 
 export class MovementHandler extends React.Component<MovementHandlerProps> {
     private movementInterval: number;
-    private sleepTimeout: number | null;
+    private sleepTimeout: NodeJS.Timeout | null;
 
     constructor(props: MovementHandlerProps) {
         super(props);
 
         this.movementInterval = 0;
-        this.sleepTimeout = 0;
+        this.sleepTimeout = null;
 
         this.calculateBrightness = this.calculateBrightness.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
@@ -83,7 +83,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
         );
     }
 
-    componentShouldUpdate(nextProps: MovementHandlerProps) {
+    shouldComponentUpdate(nextProps: MovementHandlerProps) {
         return this.props.fps !== nextProps.fps;
     }
 
@@ -121,6 +121,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             }
             this.isNewTarget();
         } else {
+            this.sleep();
             this.hasTargetLeft();
 
             if (Math.abs(this.props.target.left.x) > 1) {
@@ -180,12 +181,12 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             this.props.setDilation(pupilSizes.neutral);
             this.props.setTarget({ left: { x: 0, y: 0 }, right: null });
             this.props.setOpen(eyelidPosition.SQUINT);
-            this.sleep();
         }
     }
 
     wake() {
-        if (this.sleepTimeout) {
+        if (this.sleepTimeout !== null) {
+            console.log('wake');
             clearTimeout(this.sleepTimeout);
             this.sleepTimeout = null;
             this.props.setOpen(eyelidPosition.OPEN);
@@ -193,9 +194,12 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
     }
 
     sleep() {
-        setTimeout(() => {
-            this.props.setOpen(eyelidPosition.CLOSED);
-        }, sleepDelay);
+        if (this.sleepTimeout === null) {
+            console.log('sleep');
+            this.sleepTimeout = setTimeout(() => {
+                this.props.setOpen(eyelidPosition.CLOSED);
+            }, sleepDelay);
+        }
     }
 
     render() {
