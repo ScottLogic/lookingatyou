@@ -27,7 +27,6 @@ import select, {
     closerTo,
     closerYTo,
     leftOf,
-    rightOf,
 } from '../../utils/objectSelection/select';
 import calculateTargetPos, {
     normalise,

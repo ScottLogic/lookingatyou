@@ -100,7 +100,7 @@ export const EyeController = React.memo(
 
         return (
             <div className="container">
-                {Object.values(eyes).map((eye, key) => {
+                {Object.values([eyes.RIGHT, eyes.LEFT]).map((eye, key) => {
                     return (
                         <Eye
                             class={eye}
