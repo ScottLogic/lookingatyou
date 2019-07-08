@@ -8,6 +8,7 @@ export enum HelpWith {
     VIDEO_STREAM,
     SWAP_EYES,
     IRIS_COLOUR,
+    APP,
 }
 
 const text = (section: HelpWith) => {
@@ -51,6 +52,15 @@ const text = (section: HelpWith) => {
             return (
                 <Fragment>
                     This button allows you to select the colour of the eyes.
+                </Fragment>
+            );
+        case HelpWith.APP:
+            return (
+                <Fragment>
+                    This is an app designed to track users using a webcam. The
+                    eyes will follow you around and react differently depending
+                    on what they see. Hover over any of the menu items for more
+                    information.
                 </Fragment>
             );
         default:

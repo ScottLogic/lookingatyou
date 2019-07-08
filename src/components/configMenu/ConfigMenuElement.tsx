@@ -131,12 +131,19 @@ export const ConfigMenuElement = React.memo(
                     <CanvasMenuItem name={'Camera Feed'} />
                 </p>
 
+                <br />
+
+                <p data-tip={true} data-for={HelpWith[HelpWith.APP]}>
+                    <h2>Help</h2>
+                </p>
+
                 <Help problemWith={HelpWith.FPS} />
                 <Help problemWith={HelpWith.VIDEO_STREAM} />
                 <Help problemWith={HelpWith.X_SENSITIVITY} />
                 <Help problemWith={HelpWith.Y_SENSITIVITY} />
                 <Help problemWith={HelpWith.SWAP_EYES} />
                 <Help problemWith={HelpWith.IRIS_COLOUR} />
+                <Help problemWith={HelpWith.APP} />
             </ConfigMenu>
         );
     },
