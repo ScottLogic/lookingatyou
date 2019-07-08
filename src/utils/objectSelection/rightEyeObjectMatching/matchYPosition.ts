@@ -22,8 +22,8 @@ export default function matchYPosition(
         const isClosestYValue =
             yDifference(rightEyePersonCoords[i], leftEyeCoord) <
             lowestYDifference;
-        const isOnRight = isRightOf(rightEyePersonCoords[i], leftEyeCoord);
-        if (isClosestYValue && isOnRight) {
+        const isOnLeft = isLeftof(rightEyePersonCoords[i], leftEyeCoord);
+        if (isClosestYValue && isOnLeft) {
             best = i;
             lowestYDifference = yDifference(
                 rightEyePersonCoords[best],
@@ -33,8 +33,8 @@ export default function matchYPosition(
     }
     return best !== null ? rightEyePersonBboxes[best] : undefined;
 }
-function isRightOf(coords1: ICoords, coords2: ICoords) {
-    return coords1.x > coords2.x;
+function isLeftof(coords1: ICoords, coords2: ICoords) {
+    return coords1.x < coords2.x;
 }
 function yDifference(coords1: ICoords, coords2: ICoords) {
     return Math.abs(coords1.y - coords2.y);

@@ -4,8 +4,8 @@ import matchYPosition from './matchYPosition';
 const personInfo = { certainty: 1, type: 'person' };
 const nonPersonInfo = { certainty: 1, type: 'non-person' };
 describe('selectMatching should return', () => {
-    it('undefined when all right-eye coords are to the left of the left-eye coord', () => {
-        const leftEyeSelection: Bbox = [5, 50, 0, 0];
+    it('undefined when all right-eye coords are to the right of the left-eye coord', () => {
+        const leftEyeSelection: Bbox = [-505, 50, 0, 0];
         const rightEyeDetections: IDetection[] = [
             { bbox: [-10, 20, 0, 0], info: personInfo },
             { bbox: [-40, 5, 0, 0], info: personInfo },
@@ -15,7 +15,7 @@ describe('selectMatching should return', () => {
             undefined,
         );
     });
-    it('of all the right-eye coords (that are persons) whose x-value is greater than the x value of the left-eye coord, return that whose y-value is closest the y value of the left-eye coord', () => {
+    it('of all the right-eye coords (that are persons) whose x-value is lesser than the x value of the left-eye coord, return that whose y-value is closest the y value of the left-eye coord', () => {
         const leftEyeSelection: Bbox = [50, 325, 0, 0];
         const rightEyeDetections: IDetection[] = [
             { bbox: [10, 20, 0, 0], info: nonPersonInfo },
@@ -33,7 +33,7 @@ describe('selectMatching should return', () => {
         ];
         expect(
             matchYPosition(leftEyeSelection, rightEyeDetections),
-        ).toStrictEqual([55, 40, 0, 0]);
+        ).toStrictEqual([55, 40, 15, 320]);
     });
 
     it('undefined when there are no detections', () => {
