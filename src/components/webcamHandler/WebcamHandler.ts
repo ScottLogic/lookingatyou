@@ -16,7 +16,7 @@ export async function configureStreams(mediaDevices: MediaDevices) {
     return myStreams;
 }
 
-export async function getStreamForDevice(
+async function getStreamForDevice(
     mediaDevices: MediaDevices,
     deviceId: string,
 ) {
@@ -34,7 +34,7 @@ export async function getStreamForDevice(
     }
 }
 
-export async function enumerateDevices(mediaDevices: MediaDevices) {
+async function enumerateDevices(mediaDevices: MediaDevices) {
     const devices = await mediaDevices.enumerateDevices();
     return devices
         .filter(device => device.kind === videoinput)
