@@ -29,7 +29,7 @@ import { getTargets } from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import CocoSSD from '../../utils/objectDetection/cocoSSD';
 import matchYPosition from '../../utils/objectSelection/rightEyeObjectMatching/matchYPosition';
-import selectFirst from '../../utils/objectSelection/selectFirst';
+import select, { closerTo } from '../../utils/objectSelection/select';
 import calculateTargetPos, {
     normalise,
 } from '../../utils/objectTracking/calculateFocus';
@@ -110,7 +110,10 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
         }
         if (this.model) {
             const leftEyeDetections = await this.model.detect(images[0]);
-            const leftEyeSelection = selectFirst(leftEyeDetections);
+            const leftEyeSelection = select(
+                leftEyeDetections,
+                closerTo(this.props.targets.left),
+            );
             if (leftEyeSelection) {
                 const leftEyeCoords = calculateTargetPos(leftEyeSelection);
                 let rightEyeDetections = null;
