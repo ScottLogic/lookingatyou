@@ -1,19 +1,19 @@
 import * as actions from '../../../store/actions/video/actions';
 import {
     SET_VIDEO,
-    SET_VIDEO_STREAM,
+    SET_VIDEO_STREAMS,
 } from '../../../store/actions/video/types';
-import { mockSetVideoStreamsPayload } from './videoReducer.test';
+import { mockTwoVideoStreams } from './videoReducer.test';
 
 describe('Video Actions', () => {
     it('should create an action to add a video stream', () => {
         const expectedAction = {
-            type: SET_VIDEO_STREAM,
-            video: mockSetVideoStreamsPayload,
+            type: SET_VIDEO_STREAMS,
+            videos: mockTwoVideoStreams,
         };
-        expect(
-            actions.setVideoStreamAction(mockSetVideoStreamsPayload),
-        ).toEqual(expectedAction);
+        expect(actions.setVideoStreamsAction(mockTwoVideoStreams)).toEqual(
+            expectedAction,
+        );
     });
 
     it('should create an action to add a video html element', () => {
