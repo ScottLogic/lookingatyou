@@ -64,13 +64,13 @@ export default class Eye extends React.Component<IEyeProps> {
         );
     }
 
-    renderIrisStyling() {
+    renderIrisStyling(offset: number) {
         const scale = this.props.width / 960; // component width divided by the width the styling was created at
         return (
             <g transform={`scale(${scale})`}>
                 <path
-                    d={`M ${this.props.innerX / scale} ${this.props.innerY /
-                        scale} ${innerPath}`}
+                    d={`M ${this.props.innerX / scale + offset} ${this.props
+                        .innerY / scale} ${innerPath}`}
                     fill={tinycolor(this.props.irisColor)
                         .darken(10)
                         .toHexString()}
@@ -118,21 +118,27 @@ export default class Eye extends React.Component<IEyeProps> {
             rightBottomCoefficient = innerBottomCoefficient;
         }
 
-        const skewAngle =
-            (Math.atan2(
-                this.props.innerY - this.props.height / 2,
-                this.props.innerX - this.props.width / 2,
-            ) *
-                180) /
-            Math.PI;
+        const irisOffset = this.props.innerX - this.props.width / 2;
+        const maxOffset = this.props.scleraRadius - this.props.irisRadius;
+
+        let dir = Math.abs(irisOffset) / irisOffset;
+        if (isNaN(dir)) {
+            dir = 0;
+        }
+
+        const scaleFactor = 1 - Math.abs(0.4 * irisOffset) / maxOffset;
+
         const skewFactor =
-            1 -
-            (0.15 *
-                Math.hypot(
-                    this.props.innerY - this.props.height / 2,
-                    this.props.innerX - this.props.width / 2,
-                )) /
-                Math.hypot(this.props.scleraRadius - this.props.irisRadius);
+            (((scaleFactor - 1) *
+                (90 * (this.props.innerY - this.props.height / 2))) /
+                this.props.scleraRadius) *
+            dir;
+
+        const scaleOffset =
+            dir *
+            this.props.irisRadius *
+            (((1 / scaleFactor) * (1 - scaleFactor)) / 0.4);
+
         return (
             <svg
                 className={this.props.class}
@@ -144,53 +150,46 @@ export default class Eye extends React.Component<IEyeProps> {
                     'sclera',
                     'url(#scleraGradient)',
                 )}
-                <g className="inner" transform={`rotate(${skewAngle})`}>
-                    <g
-                        className="inner"
-                        style={this.innerTransitionStyle}
-                        transform={`scale(${skewFactor},1.0)`}
-                    >
-                        <g
-                            className="inner"
-                            transform={`rotate(${-skewAngle})`}
-                        >
-                            {this.renderCircle(
-                                this.props.irisRadius,
-                                'iris',
-                                'url(#irisGradient)',
-                                this.props.innerX,
-                                this.props.innerY,
-                            )}
-                            {this.renderIrisStyling()}
-                            {this.renderCircle(
-                                this.props.pupilRadius *
-                                    this.props.dilatedCoefficient,
-                                'pupil',
-                                pupilColor,
-                                this.props.innerX,
-                                this.props.innerY,
-                            )}
-                            {this.renderCircle(
-                                this.props.pupilRadius,
-                                'reflection',
-                                'url(#reflectionGradient)',
-                                this.props.innerX +
-                                    this.props.pupilRadius * 0.4,
-                                this.props.innerY -
-                                    this.props.pupilRadius * 0.4,
-                            )}
-                            {this.renderCircle(
-                                this.props.pupilRadius,
-                                'reflection',
-                                'url(#reflectionGradient)',
-                                this.props.innerX +
-                                    this.props.scleraRadius * 0.3,
-                                this.props.innerY -
-                                    this.props.scleraRadius * 0.3,
-                            )}
-                        </g>
-                    </g>
+                <g
+                    className="inner"
+                    style={this.innerTransitionStyle}
+                    transform={`scale(${scaleFactor}, 1) skewX(${skewFactor}) `}
+                >
+                    {this.renderCircle(
+                        this.props.irisRadius,
+                        'iris',
+                        'url(#irisGradient)',
+                        this.props.innerX + scaleOffset,
+                        this.props.innerY,
+                    )}
+                    {this.renderIrisStyling(scaleOffset)}
+                    {this.renderCircle(
+                        this.props.pupilRadius * this.props.dilatedCoefficient,
+                        'pupil',
+                        pupilColor,
+                        this.props.innerX + scaleOffset,
+                        this.props.innerY,
+                    )}
+                    {this.renderCircle(
+                        this.props.pupilRadius,
+                        'reflection',
+                        'url(#reflectionGradient)',
+                        this.props.innerX +
+                            this.props.pupilRadius * 0.4 +
+                            scaleOffset,
+                        this.props.innerY - this.props.pupilRadius * 0.4,
+                    )}
+                    {this.renderCircle(
+                        this.props.pupilRadius,
+                        'reflection',
+                        'url(#reflectionGradient)',
+                        this.props.innerX +
+                            this.props.scleraRadius * 0.3 +
+                            scaleOffset,
+                        this.props.innerY - this.props.scleraRadius * 0.3,
+                    )}
                 </g>
+
                 <svg className="Eyelids">
                     <path
                         style={this.eyelidTransitionStyle}
