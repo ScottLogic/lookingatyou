@@ -132,7 +132,7 @@ export const ConfigMenuElement = React.memo(
                         <CanvasMenuItem name={'Camera'} videoIndex={0} />
                     )
                 ) : (
-                    <></>
+                    null
                 )}
             </ConfigMenu>
         );
