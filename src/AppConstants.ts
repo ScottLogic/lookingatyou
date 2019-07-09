@@ -27,3 +27,6 @@ export const transitionTime = {
     dilate: 750,
 };
 export const neutralBlinkFrequency = 0.25;
+export const dayDurationMinutes = 24 * 60;
+export const minsInHour = 60;
+export const fatigueScale = 0.5;

@@ -1,9 +1,12 @@
 import {
     buffer,
+    dayDurationMinutes,
     dilationMultipler,
     dilationOffset,
+    fatigueScale,
     maxBrightness,
     middleX,
+    minsInHour,
     moveSize,
     xIncrement,
 } from '../../AppConstants';
@@ -123,17 +126,10 @@ function moveRight(
 }
 
 export function getFatigueMultiplier(): number {
-    const today = new Date();
-    const startOfDay = 9 * 60;
-    const currentTime = today.getHours() * 60 + today.getMinutes();
-    const wholeDay = 24 * 60;
-    const scale = 0.5;
+    const now = new Date();
+    const currentTime = now.getHours() * minsInHour + now.getMinutes();
 
-    if (currentTime < startOfDay) {
-        return 1;
-    }
+    const dayProgress = (dayDurationMinutes - currentTime) / dayDurationMinutes;
 
-    const dayProgress = (wholeDay - currentTime) / (wholeDay - startOfDay);
-
-    return dayProgress * scale + scale;
+    return dayProgress * fatigueScale + fatigueScale;
 }
