@@ -24,6 +24,8 @@ import {
     ISetTargetAction,
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
+import { getFPS } from '../../store/selectors/configSelectors';
+import { getTargets } from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import CocoSSD from '../../utils/objectDetection/cocoSSD';
 import matchYPosition from '../../utils/objectSelection/rightEyeObjectMatching/matchYPosition';
@@ -189,9 +191,9 @@ function getLargerDistance(old: ICoords, newCoords: ICoords): number {
 
 const mergeStateToProps = (state: IRootStore) => {
     return {
-        videos: state.videoStore.videos,
-        FPS: state.configStore.config.fps,
-        targets: state.detectionStore.target,
+        videos: getVideos(state),
+        FPS: getFPS(state),
+        targets: getTargets(state),
     };
 };
 
