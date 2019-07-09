@@ -20,6 +20,7 @@ describe('Eye Controller', () => {
                 swapEyes: false,
                 toggleDebug: false,
                 irisColor: '#ff8080',
+                bbox: [0, 0, 0, 0],
             },
         };
         props = {
