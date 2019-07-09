@@ -127,7 +127,7 @@ export default class Eye extends React.Component<IEyeProps> {
             Math.PI;
         const skewFactor =
             1 -
-            (0.25 *
+            (0.15 *
                 Math.hypot(
                     this.props.innerY - this.props.height / 2,
                     this.props.innerX - this.props.width / 2,
