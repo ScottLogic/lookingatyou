@@ -11,7 +11,7 @@ export enum HelpWith {
     APP,
 }
 
-const text = (section: HelpWith) => {
+function text(section: HelpWith) {
     switch (section) {
         case HelpWith.FPS:
             return (
@@ -67,7 +67,7 @@ const text = (section: HelpWith) => {
         default:
             return '';
     }
-};
+}
 
 interface IHelpProps {
     problemWith: HelpWith;
