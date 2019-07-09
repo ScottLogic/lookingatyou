@@ -1,4 +1,3 @@
-import { stat } from 'fs';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Action } from 'redux';
