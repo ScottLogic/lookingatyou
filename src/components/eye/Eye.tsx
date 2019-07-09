@@ -27,9 +27,13 @@ export default class Eye extends React.Component<IEyeProps> {
     private circleTransitionStyle: { transition: string };
     private eyelidTransitionStyle: { transition: string };
     private lineTransitionStyle: { transition: string };
+    private fatigueMultiplier: number;
 
     constructor(props: IEyeProps) {
         super(props);
+
+        this.fatigueMultiplier = getFatigueMultiplier();
+
         this.circleTransitionStyle = {
             transition: `r ${transitionTime.dilate}ms, cx ${1000 /
                 props.fps}ms, cy ${1000 / props.fps}ms`, // cx and cy transitions based on FPS
@@ -38,7 +42,7 @@ export default class Eye extends React.Component<IEyeProps> {
             transition: `d ${transitionTime.blink}ms`,
         };
         this.lineTransitionStyle = {
-            transition: `d ${1000 / (props.fps * getFatigueMultiplier())}ms`,
+            transition: `d ${1000 / (props.fps * this.fatigueMultiplier)}ms`,
         };
     }
 
@@ -77,6 +81,10 @@ export default class Eye extends React.Component<IEyeProps> {
                 />
             </g>
         );
+    }
+
+    componentDidUpdate() {
+        this.fatigueMultiplier = getFatigueMultiplier();
     }
 
     render() {

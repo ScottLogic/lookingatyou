@@ -92,6 +92,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             this.movementHandler,
             1000 / (2 * this.props.fps),
         );
+        this.fatigueMultiplier = getFatigueMultiplier();
     }
 
     componentWillUnmount() {
