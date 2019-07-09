@@ -19,7 +19,7 @@ interface IVideoHandlerProps {
     mediaDevices: MediaDevices | null;
 }
 
-type VideoHandlerProps = IVideoHandlerProps &
+export type VideoHandlerProps = IVideoHandlerProps &
     IVideoHandlerStateToProps &
     IVideoHandlerDispatchProps;
 
@@ -36,7 +36,7 @@ const mapDispatchToProps = (
         dispatch(setStream(mediaDevices)),
 });
 
-function VideoHandler(props: VideoHandlerProps) {
+export function VideoHandler(props: VideoHandlerProps) {
     const { mediaDevices, configureStream } = { ...props };
 
     useEffect(() => {

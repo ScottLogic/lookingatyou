@@ -3,6 +3,7 @@ import {
     IVideoState,
     SET_VIDEO,
     SET_VIDEO_STREAMS,
+    TOGGLE_WEBCAM_AVAILABLE,
     VideoActionTypes,
 } from '../../../store/actions/video/types';
 import videoStore from '../../../store/reducers/videoReducer';
@@ -79,5 +80,12 @@ describe('Video Reducer', () => {
         const expectedState = mockStore;
         expectedState.videos[testDevice1].video = videoElement;
         expect(newState).toEqual(expectedState);
+    });
+
+    it('should toggle webcam available flag', () => {
+        const newState = videoStore(mockStore, {
+            type: TOGGLE_WEBCAM_AVAILABLE,
+        });
+        expect(newState.webcamAvailable).toBeTruthy();
     });
 });
