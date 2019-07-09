@@ -1,3 +1,4 @@
+import { stat } from 'fs';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Action } from 'redux';
@@ -10,6 +11,7 @@ import VideoHandler from './components/video/VideoHandler';
 import { IObjectDetector } from './models/objectDetection';
 import { loadModel } from './store/actions/detections/actions';
 import { IRootStore } from './store/reducers/rootReducer';
+import { getWebcamAvailable } from './store/selectors/videoSelectors';
 
 interface IAppState {
     width: number;
