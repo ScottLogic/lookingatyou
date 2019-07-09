@@ -4,7 +4,6 @@ import './App.css';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import DetectionHandler from './components/detectionHandler/DetectionHandler';
 import EyeController from './components/eye/EyeController';
-import MovementHandler from './components/intelligentMovement/MovementHandler';
 import Video from './components/video/Video';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds } from './store/selectors/videoSelectors';
@@ -106,6 +105,7 @@ export class App extends React.PureComponent<AppProps, IAppState> {
                     <DetectionHandler
                         modelConfig={'lite_mobilenet_v2'}
                         detectionConfig={5}
+                        store={this.props.store}
                     />
                 )}
 
@@ -118,9 +118,6 @@ export class App extends React.PureComponent<AppProps, IAppState> {
                                 width={this.state.width}
                                 height={this.state.height}
                                 environment={this.props.environment}
-                            />
-                            <MovementHandler
-                                document={this.props.environment.document}
                             />
                         </div>
                     )

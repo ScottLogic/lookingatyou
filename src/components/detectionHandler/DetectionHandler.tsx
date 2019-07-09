@@ -22,6 +22,7 @@ import {
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getVideos } from '../../store/selectors/videoSelectors';
+import { AppStore } from '../../store/store';
 import CocoSSD from '../../utils/objectDetection/cocoSSD';
 import matchYPosition from '../../utils/objectSelection/rightEyeObjectMatching/matchYPosition';
 import select, { closerTo } from '../../utils/objectSelection/select';
@@ -29,10 +30,15 @@ import calculateTargetPos, {
     normalise,
 } from '../../utils/objectTracking/calculateFocus';
 import { DetectionImage, ITargets } from '../../utils/types';
+import {
+    calculateBrightness,
+    checkSelection,
+} from '../intelligentMovement/MovementHandler';
 
 interface IDetectionHandlerProps {
     modelConfig: ModelConfig;
     detectionConfig: DetectionConfig;
+    store: AppStore;
 }
 
 interface IStateProps {
@@ -154,6 +160,8 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                 this.props.setDetections({ left: [], right: [] });
             }
         }
+        checkSelection(this.props.store);
+        calculateBrightness(this.props.store);
     }
 }
 
