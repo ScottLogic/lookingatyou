@@ -5,10 +5,11 @@ import {
     Store,
 } from 'redux';
 import { load, save } from 'redux-localstorage-simple';
+import thunk from 'redux-thunk';
 import reducer, { IRootStore } from './reducers/rootReducer';
 
 const states = ['configStore'];
-const middleware: Middleware[] = [save({ states })];
+const middleware: Middleware[] = [thunk, save({ states })];
 
 export function createStore() {
     return createReduxStore(

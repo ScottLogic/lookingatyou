@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { eyelidPosition, pupilSizes } from '../../AppConstants';
+import { eyelidPosition, pupilSizes, sleepDelay } from '../../AppConstants';
 import { IDetections } from '../../models/objectDetection';
 import {
     setBright,
@@ -64,19 +64,29 @@ export type MovementHandlerProps = IMovementProps &
 
 export class MovementHandler extends React.Component<MovementHandlerProps> {
     private movementInterval: number;
+<<<<<<< HEAD
     private fatigueMultiplier: number;
+=======
+    private sleepTimeout: NodeJS.Timeout | null;
+>>>>>>> master
 
     constructor(props: MovementHandlerProps) {
         super(props);
 
         this.movementInterval = 0;
+<<<<<<< HEAD
         this.fatigueMultiplier = getFatigueMultiplier();
+=======
+        this.sleepTimeout = null;
+>>>>>>> master
 
         this.calculateBrightness = this.calculateBrightness.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
         this.hasTargetLeft = this.hasTargetLeft.bind(this);
         this.checkSelection = this.checkSelection.bind(this);
         this.movementHandler = this.movementHandler.bind(this);
+        this.sleep = this.sleep.bind(this);
+        this.wake = this.wake.bind(this);
     }
 
     componentDidMount() {
@@ -84,6 +94,10 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             this.movementHandler,
             1000 / (2 * this.props.fps),
         );
+    }
+
+    shouldComponentUpdate(nextProps: MovementHandlerProps) {
+        return this.props.fps !== nextProps.fps;
     }
 
     componentDidUpdate() {
@@ -115,6 +129,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
         }
 
         if (selection) {
+            this.wake();
             if (this.props.squinting) {
                 this.props.setOpen(
                     eyelidPosition.OPEN * this.fatigueMultiplier,
@@ -122,6 +137,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             }
             this.isNewTarget();
         } else {
+            this.sleep();
             this.hasTargetLeft();
 
             if (Math.abs(this.props.target.left.x) > 1) {
@@ -183,6 +199,22 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             this.props.setDilation(pupilSizes.neutral);
             this.props.setTarget({ left: { x: 0, y: 0 }, right: null });
             this.props.setOpen(eyelidPosition.SQUINT);
+        }
+    }
+
+    wake() {
+        if (this.sleepTimeout !== null) {
+            clearTimeout(this.sleepTimeout);
+            this.sleepTimeout = null;
+            this.props.setOpen(eyelidPosition.OPEN);
+        }
+    }
+
+    sleep() {
+        if (this.sleepTimeout === null) {
+            this.sleepTimeout = setTimeout(() => {
+                this.props.setOpen(eyelidPosition.CLOSED);
+            }, sleepDelay);
         }
     }
 
