@@ -37,16 +37,18 @@ const mapDispatchToProps = (
 });
 
 function VideoHandler(props: VideoHandlerProps) {
+    const { mediaDevices, configureStream } = { ...props };
+
     useEffect(() => {
-        if (props.mediaDevices) {
-            props.configureStream(props.mediaDevices);
-            props.mediaDevices.ondevicechange = () => {
-                if (props.mediaDevices) {
-                    props.configureStream(props.mediaDevices);
+        if (mediaDevices) {
+            configureStream(mediaDevices);
+            mediaDevices.ondevicechange = () => {
+                if (mediaDevices) {
+                    configureStream(mediaDevices);
                 }
             };
         }
-    }, [props]);
+    }, [mediaDevices, configureStream]);
 
     return (
         <div className="webcam-feed">
