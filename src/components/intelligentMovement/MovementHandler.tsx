@@ -64,21 +64,15 @@ export type MovementHandlerProps = IMovementProps &
 
 export class MovementHandler extends React.Component<MovementHandlerProps> {
     private movementInterval: number;
-<<<<<<< HEAD
     private fatigueMultiplier: number;
-=======
     private sleepTimeout: NodeJS.Timeout | null;
->>>>>>> master
 
     constructor(props: MovementHandlerProps) {
         super(props);
 
         this.movementInterval = 0;
-<<<<<<< HEAD
         this.fatigueMultiplier = getFatigueMultiplier();
-=======
         this.sleepTimeout = null;
->>>>>>> master
 
         this.calculateBrightness = this.calculateBrightness.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
