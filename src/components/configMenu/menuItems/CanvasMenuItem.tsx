@@ -4,9 +4,11 @@ import { IRootStore } from '../../../store/reducers/rootReducer';
 import { getSelections } from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
 import { Bbox } from '../../../utils/types';
+import { HelpWith } from '../Help';
 
 interface ICanvasMenuItemProps {
     name: string;
+    helpWith: HelpWith;
 }
 
 interface IAppMapStateToProps {
@@ -52,11 +54,13 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
 
     render() {
         return (
-            <div>
-                <label>{this.props.name}</label>
-                <br />
-                <canvas id="canvas" ref={this.canvasRef} />
-            </div>
+            <p data-tip={true} data-for={HelpWith[this.props.helpWith]}>
+                <div>
+                    <label>{this.props.name}</label>
+                    <br />
+                    <canvas id="canvas" ref={this.canvasRef} />
+                </div>
+            </p>
         );
     }
 

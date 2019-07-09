@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { HelpWith } from '../Help';
 
 export interface ITextBoxMenuItemProps {
     name: string;
@@ -6,6 +7,7 @@ export interface ITextBoxMenuItemProps {
     onValidInput: (text: string) => void;
     defaultValue: string;
     parse: (text: string) => string;
+    helpWith: HelpWith;
 }
 const TextBoxMenuItem = React.memo(
     (props: ITextBoxMenuItemProps) => {
@@ -32,18 +34,20 @@ const TextBoxMenuItem = React.memo(
             }
         }
         return (
-            <div>
-                <label>{props.name}</label>
-                <input
-                    type="textbox"
-                    value={value || ''}
-                    style={{
-                        color: isValid ? 'black' : 'red',
-                    }}
-                    onBlur={onBlur}
-                    onChange={onChange}
-                />
-            </div>
+            <p data-tip={true} data-for={HelpWith[props.helpWith]}>
+                <div>
+                    <label>{props.name}</label>
+                    <input
+                        type="textbox"
+                        value={value || ''}
+                        style={{
+                            color: isValid ? 'black' : 'red',
+                        }}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                    />
+                </div>
+            </p>
         );
     },
     (previous, next) =>

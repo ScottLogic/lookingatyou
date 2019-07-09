@@ -81,55 +81,51 @@ export const ConfigMenuElement = React.memo(
         }
         return (
             <ConfigMenu width="14em" timerLength={1000} window={props.window}>
-                <p data-tip={true} data-for={HelpWith[HelpWith.X_SENSITIVITY]}>
-                    <TextBoxMenuItem
-                        name={'X Sensitivity'}
-                        defaultValue={`${props.config.xSensitivity}`}
-                        isValidInput={isValidSensitivity}
-                        onValidInput={parseAndStoreXSensitivity}
-                        parse={extractFloatToString}
-                    />
-                </p>
+                <TextBoxMenuItem
+                    name={'X Sensitivity'}
+                    defaultValue={`${props.config.xSensitivity}`}
+                    isValidInput={isValidSensitivity}
+                    onValidInput={parseAndStoreXSensitivity}
+                    parse={extractFloatToString}
+                    helpWith={HelpWith.X_SENSITIVITY}
+                />
 
-                <p data-tip={true} data-for={HelpWith[HelpWith.Y_SENSITIVITY]}>
-                    <TextBoxMenuItem
-                        name={'Y Sensitivity'}
-                        defaultValue={`${props.config.ySensitivity}`}
-                        isValidInput={isValidSensitivity}
-                        onValidInput={parseAndStoreYSensitivity}
-                        parse={extractFloatToString}
-                    />
-                </p>
+                <TextBoxMenuItem
+                    name={'Y Sensitivity'}
+                    defaultValue={`${props.config.ySensitivity}`}
+                    isValidInput={isValidSensitivity}
+                    onValidInput={parseAndStoreYSensitivity}
+                    parse={extractFloatToString}
+                    helpWith={HelpWith.Y_SENSITIVITY}
+                />
 
-                <p data-tip={true} data-for={HelpWith[HelpWith.FPS]}>
-                    <TextBoxMenuItem
-                        name={'FPS'}
-                        defaultValue={`${props.config.fps}`}
-                        isValidInput={isValidFPS}
-                        onValidInput={parseAndStoreFPS}
-                        parse={extractIntToString}
-                    />
-                </p>
+                <TextBoxMenuItem
+                    name={'FPS'}
+                    defaultValue={`${props.config.fps}`}
+                    isValidInput={isValidFPS}
+                    onValidInput={parseAndStoreFPS}
+                    parse={extractIntToString}
+                    helpWith={HelpWith.FPS}
+                />
 
-                <p data-tip={true} data-for={HelpWith[HelpWith.SWAP_EYES]}>
-                    <CheckBoxMenuItem
-                        name={'Swap Eyes'}
-                        checked={props.config.swapEyes}
-                        onInputChange={storeSwapEyes}
-                    />
-                </p>
+                <CheckBoxMenuItem
+                    name={'Swap Eyes'}
+                    helpWith={HelpWith.SWAP_EYES}
+                    checked={props.config.swapEyes}
+                    onInputChange={storeSwapEyes}
+                />
 
-                <p data-tip={true} data-for={HelpWith[HelpWith.IRIS_COLOUR]}>
-                    <ColorMenuItem
-                        name={'Iris Colour'}
-                        color={props.config.irisColor}
-                        onInputChange={storeIrisColor}
-                    />
-                </p>
+                <ColorMenuItem
+                    name={'Iris Colour'}
+                    color={props.config.irisColor}
+                    onInputChange={storeIrisColor}
+                    helpWith={HelpWith.IRIS_COLOUR}
+                />
 
-                <p data-tip={true} data-for={HelpWith[HelpWith.VIDEO_STREAM]}>
-                    <CanvasMenuItem name={'Camera Feed'} />
-                </p>
+                <CanvasMenuItem
+                    name={'Camera Feed'}
+                    helpWith={HelpWith.VIDEO_STREAM}
+                />
 
                 <br />
 

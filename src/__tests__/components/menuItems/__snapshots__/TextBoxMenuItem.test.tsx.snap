@@ -1,10 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TextBoxMenuItem tests should render correctly 1`] = `
-"<div>
-  <label>
-    test
-  </label>
-  <input type=\\"textbox\\" value=\\"30\\" style={{...}} onBlur={[Function: onBlur]} onChange={[Function: onChange]} />
-</div>"
+"<p data-tip={true} data-for={[undefined]}>
+  <div>
+    <label>
+      test
+    </label>
+    <input type=\\"textbox\\" value=\\"30\\" style={{...}} onBlur={[Function: onBlur]} onChange={[Function: onChange]} />
+  </div>
+</p>"
 `;
