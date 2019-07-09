@@ -1,6 +1,5 @@
 export const SET_VIDEO = 'SET_VIDEO';
-export const SET_VIDEO_STREAM = 'SET_VIDEO_STREAM';
-export const REMOVE_VIDEO_STREAM = 'REMOVE_VIDEO_STREAM';
+export const SET_VIDEO_STREAMS = 'SET_VIDEO_STREAMS';
 export const CLEAR_STATE = 'CLEAR_STATE';
 export const TOGGLE_WEBCAM_AVAILABLE = 'TOGGLE_WEBCAM_AVAILABLE';
 
@@ -27,14 +26,9 @@ interface ISetVideoAction {
     payload: ISetVideoPayload;
 }
 
-interface ISetVideoStreamAction {
-    type: typeof SET_VIDEO_STREAM;
-    video: IVideo;
-}
-
-interface IRemoveVideoStreamAction {
-    type: typeof REMOVE_VIDEO_STREAM;
-    deviceId: string;
+interface ISetVideoStreamsAction {
+    type: typeof SET_VIDEO_STREAMS;
+    videos: { [deviceId: string]: IVideo };
 }
 
 interface IToggleWebcamAvailable {
@@ -43,6 +37,5 @@ interface IToggleWebcamAvailable {
 
 export type VideoActionTypes =
     | ISetVideoAction
-    | ISetVideoStreamAction
-    | IRemoveVideoStreamAction
+    | ISetVideoStreamsAction
     | IToggleWebcamAvailable;

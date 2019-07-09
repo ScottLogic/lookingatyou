@@ -1,7 +1,9 @@
+import configureStore from 'redux-mock-store';
 import {
     IVideo,
+    IVideoState,
     SET_VIDEO,
-    SET_VIDEO_STREAMS,
+    SET_VIDEO_STREAM,
     VideoActionTypes,
 } from '../../../store/actions/video/types';
 import { initialState as initialConfigStore } from '../../../store/reducers/configReducer';
@@ -25,21 +27,23 @@ const device2 = {
     stream: undefined,
 };
 
-const mockInitialActionPayload: IVideo[] = [device1, device2];
-
 let mockRootStore: IRootStore;
+let mockVideoStore: IVideoState;
 
 describe('Video Selectors', () => {
     beforeEach(() => {
-        const mockVideoStore = videoStore(
-            { videos: {} },
-            { type: SET_VIDEO_STREAMS, videos: mockInitialActionPayload },
+        mockVideoStore = videoStore(
+            { videos: {}, webcamAvailable: false },
+            { type: SET_VIDEO_STREAM, video: device1 },
         );
-
+        mockVideoStore = videoStore(mockVideoStore, {
+            type: SET_VIDEO_STREAM,
+            video: device2,
+        });
         mockRootStore = {
             videoStore: mockVideoStore,
-            configStore: initialConfigStore,
-            detectionStore: initialDetectionStore,
+            configStore: initialConfigState,
+            detectionStore: initialDetectionState,
         };
     });
 

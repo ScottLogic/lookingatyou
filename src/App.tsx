@@ -10,18 +10,15 @@ import VideoHandler from './components/video/VideoHandler';
 import { IObjectDetector } from './models/objectDetection';
 import { loadModel } from './store/actions/detections/actions';
 import { IRootStore } from './store/reducers/rootReducer';
-import { getDeviceIds } from './store/selectors/videoSelectors';
-import { AppStore } from './store/store';
 
 interface IAppState {
     width: number;
     height: number;
-    webcamAvailable: boolean;
 }
 
 interface IAppProps {
     environment: Window;
-    mediaDevices: MediaDevices;
+    mediaDevices: MediaDevices | null;
 }
 
 interface IAppMapStateToProps {
@@ -58,7 +55,6 @@ export class App extends React.PureComponent<AppProps, IAppState> {
         this.state = {
             width: this.props.environment.innerWidth,
             height: this.props.environment.innerHeight,
-            webcamAvailable: false,
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);

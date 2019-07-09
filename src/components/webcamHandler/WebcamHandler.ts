@@ -1,10 +1,11 @@
+import { IVideo } from '../../store/actions/video/types';
+
 const videoinput = 'videoinput';
 
 export async function getStreamForDevice(
     mediaDevices: MediaDevices,
     deviceId: string,
 ) {
-    console.log(deviceId);
     const stream = await mediaDevices.getUserMedia({
         video: { deviceId },
     });
@@ -24,4 +25,18 @@ export async function enumerateDevices(mediaDevices: MediaDevices) {
     return devices
         .filter(device => device.kind === videoinput)
         .map(device => device.deviceId);
+}
+
+export async function configureStreams(mediaDevices: MediaDevices) {
+    const myStreams: { [key: string]: IVideo } = {};
+    const devices = await enumerateDevices(mediaDevices);
+    await Promise.all(
+        devices.map(async deviceId => {
+            const stream = await getStreamForDevice(mediaDevices, deviceId);
+            if (stream) {
+                myStreams[deviceId] = stream;
+            }
+        }),
+    );
+    return myStreams;
 }

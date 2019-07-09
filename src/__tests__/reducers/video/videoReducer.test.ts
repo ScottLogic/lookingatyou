@@ -2,7 +2,7 @@ import {
     IVideo,
     IVideoState,
     SET_VIDEO,
-    SET_VIDEO_STREAMS,
+    SET_VIDEO_STREAM,
     VideoActionTypes,
 } from '../../../store/actions/video/types';
 import videoStore from '../../../store/reducers/videoReducer';
@@ -25,8 +25,8 @@ export const mockSetVideoStreamsPayload: IVideo = {
 };
 
 export const mockSetVideoStreamsAction: VideoActionTypes = {
-    type: SET_VIDEO_STREAMS,
-    videos: [mockSetVideoStreamsPayload],
+    type: SET_VIDEO_STREAM,
+    video: mockSetVideoStreamsPayload,
 };
 
 let mockStore: IVideoState;
@@ -34,8 +34,8 @@ let mockStore: IVideoState;
 describe('Video Reducer', () => {
     beforeEach(() => {
         mockStore = videoStore(
-            { videos: {} },
-            { type: SET_VIDEO_STREAMS, videos: [mockInitialAction] },
+            { videos: {}, webcamAvailable: false },
+            { type: SET_VIDEO_STREAM, video: mockInitialAction },
         );
     });
 
@@ -44,6 +44,7 @@ describe('Video Reducer', () => {
             videos: {
                 testDevice1: mockInitialAction,
             },
+            webcamAvailable: false,
         };
         expect(mockStore).toEqual(expectedState);
     });
@@ -55,6 +56,7 @@ describe('Video Reducer', () => {
                 testDevice1: mockInitialAction,
                 testDevice2: mockSetVideoStreamsPayload,
             },
+            webcamAvailable: false,
         };
         expect(newState).toEqual(expectedState);
     });

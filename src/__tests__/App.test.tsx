@@ -15,12 +15,12 @@ import { initialState as initialVideoState } from '../store/reducers/videoReduce
 let window: Window;
 let div: HTMLElement;
 let store: Store<any, AnyAction>;
-let mediaDevices: MediaDevices;
+let mediaDevices: null;
 
 describe('App', () => {
     beforeEach(() => {
         window = new jsdom.JSDOM(`...`, { url: 'http://localhost' }).window;
-        mediaDevices = new jsdom.JSDOM().window.navigator.mediaDevices;
+        mediaDevices = null;
         div = document.createElement('div');
     });
 

@@ -1,9 +1,8 @@
 import {
     IVideo,
     IVideoState,
-    REMOVE_VIDEO_STREAM,
     SET_VIDEO,
-    SET_VIDEO_STREAM,
+    SET_VIDEO_STREAMS,
     TOGGLE_WEBCAM_AVAILABLE,
     VideoActionTypes,
 } from '../actions/video/types';
@@ -18,14 +17,11 @@ const videoStore = (
     action: VideoActionTypes,
 ): IVideoState => {
     switch (action.type) {
-        case SET_VIDEO_STREAM:
-            const newVideo: { [deviceId: string]: IVideo } = {};
-            newVideo[action.video.deviceId] = action.video;
+        case SET_VIDEO_STREAMS:
             return {
                 ...state,
                 videos: {
-                    ...state.videos,
-                    ...newVideo,
+                    ...action.videos,
                 },
             };
         case SET_VIDEO:
@@ -41,13 +37,6 @@ const videoStore = (
                     ...state.videos,
                     ...updatedObject,
                 },
-            };
-        case REMOVE_VIDEO_STREAM:
-            const newState = state;
-            delete newState.videos[action.deviceId];
-            return {
-                ...state,
-                ...newState,
             };
         case TOGGLE_WEBCAM_AVAILABLE:
             return {
