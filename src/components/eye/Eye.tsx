@@ -26,12 +26,16 @@ export default class Eye extends React.Component<IEyeProps> {
     private circleTransitionStyle: { transition: string };
     private eyelidTransitionStyle: { transition: string };
     private lineTransitionStyle: { transition: string };
+    private innerTransitionStyle: { transition: string };
 
     constructor(props: IEyeProps) {
         super(props);
         this.circleTransitionStyle = {
             transition: `r ${transitionTime.dilate}ms, cx ${1000 /
                 props.fps}ms, cy ${1000 / props.fps}ms`, // cx and cy transitions based on FPS
+        };
+        this.innerTransitionStyle = {
+            transition: `transform ${1000 / props.fps}ms`,
         };
         this.eyelidTransitionStyle = {
             transition: `d ${transitionTime.blink}ms`,
@@ -47,7 +51,6 @@ export default class Eye extends React.Component<IEyeProps> {
         color: string,
         centerX: number = this.props.width / 2,
         centerY: number = this.props.height / 2,
-        transform: string = '',
     ) {
         return (
             <circle
@@ -57,7 +60,6 @@ export default class Eye extends React.Component<IEyeProps> {
                 fill={color}
                 cx={centerX}
                 cy={centerY}
-                transform={transform}
             />
         );
     }
@@ -115,6 +117,22 @@ export default class Eye extends React.Component<IEyeProps> {
             leftBottomCoefficient = outerBottomCoefficient;
             rightBottomCoefficient = innerBottomCoefficient;
         }
+
+        const skewAngle =
+            (Math.atan2(
+                this.props.innerY - this.props.height / 2,
+                this.props.innerX - this.props.width / 2,
+            ) *
+                180) /
+            Math.PI;
+        const skewFactor =
+            1 -
+            (0.25 *
+                Math.hypot(
+                    this.props.innerY - this.props.height / 2,
+                    this.props.innerX - this.props.width / 2,
+                )) /
+                Math.hypot(this.props.scleraRadius - this.props.irisRadius);
         return (
             <svg
                 className={this.props.class}
@@ -126,38 +144,52 @@ export default class Eye extends React.Component<IEyeProps> {
                     'sclera',
                     'url(#scleraGradient)',
                 )}
-                <g className="inner">
-                    {this.renderCircle(
-                        this.props.irisRadius,
-                        'iris',
-                        'url(#irisGradient)',
-                        this.props.innerX,
-                        this.props.innerY,
-                    )}
-                    {this.renderIrisStyling()}
-                    {this.renderCircle(
-                        this.props.pupilRadius * this.props.dilatedCoefficient,
-                        'pupil',
-                        pupilColor,
-                        this.props.innerX,
-                        this.props.innerY,
-                    )}
-                    {this.renderCircle(
-                        this.props.pupilRadius,
-                        'reflection',
-                        'url(#reflectionGradient)',
-                        this.props.innerX + this.props.pupilRadius * 0.4,
-                        this.props.innerY - this.props.pupilRadius * 0.4,
-                        `skewX(20) translate(-165, 0)`,
-                    )}
-                    {this.renderCircle(
-                        this.props.pupilRadius,
-                        'reflection',
-                        'url(#reflectionGradient)',
-                        this.props.innerX + this.props.scleraRadius * 0.3,
-                        this.props.innerY - this.props.scleraRadius * 0.3,
-                        'skewX(20) translate(-165, 5)',
-                    )}
+                <g className="inner" transform={`rotate(${skewAngle})`}>
+                    <g
+                        className="inner"
+                        style={this.innerTransitionStyle}
+                        transform={`scale(${skewFactor},1.0)`}
+                    >
+                        <g
+                            className="inner"
+                            transform={`rotate(${-skewAngle})`}
+                        >
+                            {this.renderCircle(
+                                this.props.irisRadius,
+                                'iris',
+                                'url(#irisGradient)',
+                                this.props.innerX,
+                                this.props.innerY,
+                            )}
+                            {this.renderIrisStyling()}
+                            {this.renderCircle(
+                                this.props.pupilRadius *
+                                    this.props.dilatedCoefficient,
+                                'pupil',
+                                pupilColor,
+                                this.props.innerX,
+                                this.props.innerY,
+                            )}
+                            {this.renderCircle(
+                                this.props.pupilRadius,
+                                'reflection',
+                                'url(#reflectionGradient)',
+                                this.props.innerX +
+                                    this.props.pupilRadius * 0.4,
+                                this.props.innerY -
+                                    this.props.pupilRadius * 0.4,
+                            )}
+                            {this.renderCircle(
+                                this.props.pupilRadius,
+                                'reflection',
+                                'url(#reflectionGradient)',
+                                this.props.innerX +
+                                    this.props.scleraRadius * 0.3,
+                                this.props.innerY -
+                                    this.props.scleraRadius * 0.3,
+                            )}
+                        </g>
+                    </g>
                 </g>
                 <svg className="Eyelids">
                     <path
