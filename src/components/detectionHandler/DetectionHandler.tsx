@@ -158,7 +158,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
     }
 
     blinkOnLargeMove(newTargets: ITargets) {
-        const leftEyeDist = getDistance(
+        const leftEyeDist = getLargerDistance(
             this.props.targets.left,
             newTargets.left,
         );
@@ -168,7 +168,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
         }
 
         if (this.props.targets.right && newTargets.right) {
-            const rightEyeDist = getDistance(
+            const rightEyeDist = getLargerDistance(
                 this.props.targets.right,
                 newTargets.right,
             );
@@ -180,7 +180,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
     }
 }
 
-function getDistance(old: ICoords, newCoords: ICoords): number {
+function getLargerDistance(old: ICoords, newCoords: ICoords): number {
     return Math.max(
         Math.abs(old.x - newCoords.x),
         Math.abs(old.y - newCoords.y),
