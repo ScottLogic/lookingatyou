@@ -65,7 +65,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
         this.detectionInterval = 0;
 
         this.detectionHandler = this.detectionHandler.bind(this);
-        this.calculateMoveDistance = this.calculateMoveDistance.bind(this);
+        this.blinkOnLargeMove = this.blinkOnLargeMove.bind(this);
     }
 
     async componentDidMount() {
@@ -138,7 +138,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                     }
                 }
                 const newTargets = { left: leftTarget, right: rightTarget };
-                this.calculateMoveDistance(newTargets);
+                this.blinkOnLargeMove(newTargets);
                 this.props.setTarget(newTargets);
                 this.props.setDetections({
                     left: leftEyeDetections,
@@ -157,7 +157,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
         }
     }
 
-    calculateMoveDistance(newTargets: ITargets) {
+    blinkOnLargeMove(newTargets: ITargets) {
         const leftEyeDist = getDistance(
             this.props.targets.left,
             newTargets.left,
@@ -180,7 +180,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
     }
 }
 
-export function getDistance(old: ICoords, newCoords: ICoords): number {
+function getDistance(old: ICoords, newCoords: ICoords): number {
     return Math.max(
         Math.abs(old.x - newCoords.x),
         Math.abs(old.y - newCoords.y),
