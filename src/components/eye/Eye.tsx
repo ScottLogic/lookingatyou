@@ -118,26 +118,27 @@ export default class Eye extends React.Component<IEyeProps> {
             rightBottomCoefficient = innerBottomCoefficient;
         }
 
-        const irisOffset = this.props.innerX - this.props.width / 2;
-        const maxOffset = this.props.scleraRadius - this.props.irisRadius;
+        const irisXoffset = this.props.innerX - this.props.width / 2;
+        const maxIrisXOffset = this.props.scleraRadius - this.props.irisRadius;
 
-        let dir = Math.abs(irisOffset) / irisOffset;
-        if (isNaN(dir)) {
-            dir = 0;
+        let irisXDirection = Math.abs(irisXoffset) / irisXoffset;
+        if (isNaN(irisXDirection)) {
+            irisXDirection = 0;
         }
 
-        const scaleFactor = 1 - Math.abs(0.4 * irisOffset) / maxOffset;
+        const irisXScaleFactor =
+            1 - Math.abs(0.4 * irisXoffset) / maxIrisXOffset;
 
-        const skewFactor =
-            (((scaleFactor - 1) *
+        const irisXSkewFactor =
+            (((irisXScaleFactor - 1) *
                 (90 * (this.props.innerY - this.props.height / 2))) /
                 this.props.scleraRadius) *
-            dir;
+            irisXDirection;
 
-        const scaleOffset =
-            dir *
+        const irisXCorrection =
+            irisXDirection *
             this.props.irisRadius *
-            (((1 / scaleFactor) * (1 - scaleFactor)) / 0.4);
+            (((1 / irisXScaleFactor) * (1 - irisXScaleFactor)) / 0.4);
 
         return (
             <svg
@@ -153,21 +154,21 @@ export default class Eye extends React.Component<IEyeProps> {
                 <g
                     className="inner"
                     style={this.innerTransitionStyle}
-                    transform={`scale(${scaleFactor}, 1) skewX(${skewFactor}) `}
+                    transform={`scale(${irisXScaleFactor}, 1) skewX(${irisXSkewFactor}) `}
                 >
                     {this.renderCircle(
                         this.props.irisRadius,
                         'iris',
                         'url(#irisGradient)',
-                        this.props.innerX + scaleOffset,
+                        this.props.innerX + irisXCorrection,
                         this.props.innerY,
                     )}
-                    {this.renderIrisStyling(scaleOffset)}
+                    {this.renderIrisStyling(irisXCorrection)}
                     {this.renderCircle(
                         this.props.pupilRadius * this.props.dilatedCoefficient,
                         'pupil',
                         pupilColor,
-                        this.props.innerX + scaleOffset,
+                        this.props.innerX + irisXCorrection,
                         this.props.innerY,
                     )}
                     {this.renderCircle(
@@ -176,7 +177,7 @@ export default class Eye extends React.Component<IEyeProps> {
                         'url(#reflectionGradient)',
                         this.props.innerX +
                             this.props.pupilRadius * 0.4 +
-                            scaleOffset,
+                            irisXCorrection,
                         this.props.innerY - this.props.pupilRadius * 0.4,
                     )}
                     {this.renderCircle(
@@ -185,7 +186,7 @@ export default class Eye extends React.Component<IEyeProps> {
                         'url(#reflectionGradient)',
                         this.props.innerX +
                             this.props.scleraRadius * 0.3 +
-                            scaleOffset,
+                            irisXCorrection,
                         this.props.innerY - this.props.scleraRadius * 0.3,
                     )}
                 </g>
