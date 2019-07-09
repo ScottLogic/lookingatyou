@@ -189,7 +189,7 @@ function getLargerDistance(old: ICoords, newCoords: ICoords): number {
 
 const mergeStateToProps = (state: IRootStore) => {
     return {
-        videos: getVideos(state),
+        videos: state.videoStore.videos,
         FPS: state.configStore.config.fps,
         targets: state.detectionStore.target,
     };
