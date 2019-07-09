@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { eyelidPosition } from '../../AppConstants';
+import { eyelidPosition, maxMoveWithoutBlink } from '../../AppConstants';
 import {
     DetectionConfig,
     IDetections,
@@ -163,7 +163,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
             newTargets.left,
         );
 
-        if (leftEyeDist > 0.5) {
+        if (leftEyeDist > maxMoveWithoutBlink) {
             this.props.setOpenCoefficient(eyelidPosition.CLOSED);
         }
 
@@ -173,7 +173,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                 newTargets.right,
             );
 
-            if (rightEyeDist > 0.5) {
+            if (rightEyeDist > maxMoveWithoutBlink) {
                 this.props.setOpenCoefficient(eyelidPosition.CLOSED);
             }
         }
