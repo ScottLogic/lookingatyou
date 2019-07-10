@@ -12,7 +12,7 @@ interface IVideoHandlerStateToProps {
 }
 
 interface IVideoHandlerDispatchProps {
-    configureStream: (mediaDevices: MediaDevices) => any;
+    configureStream: (mediaDevices: MediaDevices) => Promise<void>;
 }
 
 interface IVideoHandlerProps {
