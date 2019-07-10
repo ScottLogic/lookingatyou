@@ -4,13 +4,18 @@ import { Bbox, ICoords } from '../types';
 export default function select(
     detections: IDetection[],
     compare: (x: Bbox, y: Bbox) => number,
-    filter: (d: IDetection) => boolean = b => true,
+    filter?: (d: IDetection) => boolean,
 ): Bbox | undefined {
-    const personBboxes: Bbox[] = detections
-        .filter(
-            detection => detection.info.type === 'person' && filter(detection),
-        )
-        .map(detection => detection.bbox);
+    let personDetections = detections.filter(
+        detection => detection.info.type === 'person',
+    );
+    if (filter) {
+        personDetections = personDetections.filter(detection =>
+            filter(detection),
+        );
+    }
+
+    const personBboxes = personDetections.map(detection => detection.bbox);
     return personBboxes.reduce<Bbox | undefined>(
         (best, current) =>
             best === undefined || compare(current, best) > 0 ? current : best,
