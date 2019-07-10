@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import tinycolor from 'tinycolor2';
 import { eyes, transitionTime } from '../../AppConstants';
 import './Eye.css';
-import { innerPath } from './innerPath';
+import { getInnerPath } from './getInnerPath';
 import { Shadows } from './Shadows';
 
 export interface IEyeProps {
@@ -41,12 +41,12 @@ export default function Eye(props: IEyeProps) {
     const cornerShape = getCornerShape(props);
     const irisAdjustment = getIrisAdjustment(props);
 
-    const [path, setPath] = useState(
-        innerPath(props.width / 960, props.height / 1080),
+    const [innerPath, setInnerPath] = useState(
+        getInnerPath(props.width / 960, props.height / 1080),
     );
 
     useEffect(() => {
-        setPath(innerPath(props.width / 960, props.height / 1080));
+        setInnerPath(getInnerPath(props.width / 960, props.height / 1080));
     }, [props.width, props.height]);
 
     return (
@@ -77,7 +77,7 @@ export default function Eye(props: IEyeProps) {
                 />
                 <g className="irisStyling">
                     <path
-                        d={`M ${irisAdjustment.innerX} ${props.innerY} ${path}`}
+                        d={`M ${irisAdjustment.innerX} ${props.innerY} ${innerPath}`}
                         fill={tinycolor(props.irisColor)
                             .darken(10)
                             .toHexString()}

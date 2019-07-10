@@ -1,4 +1,4 @@
-export function innerPath(xScale: number, yScale: number) {
+export function getInnerPath(xScale: number, yScale: number) {
     return `l ${153.6 * xScale} 0
 l ${-134.4 * xScale} 0
 l ${134.097 * xScale} ${9.645 * yScale}
