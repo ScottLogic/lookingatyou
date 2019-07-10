@@ -7,15 +7,13 @@ export default function select(
     compare: (x: Bbox, y: Bbox) => number,
     filter?: (d: IDetection) => boolean,
 ): Bbox | undefined {
-    let personDetections = detections.filter(
-        detection => detection.info.type === 'person',
-    );
-    if (filter) {
-        personDetections = personDetections.filter(detection =>
-            filter(detection),
-        );
-    }
-    const personBboxes = personDetections.map(detection => detection.bbox);
+    const personBboxes = detections
+        .filter(
+            detection =>
+                detection.info.type === 'person' &&
+                (!filter || filter(detection)),
+        )
+        .map(detection => detection.bbox);
     return personBboxes.reduce<Bbox | undefined>(
         (best, current) =>
             best === undefined || compare(current, best) > 0 ? current : best,
