@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import tinycolor from 'tinycolor2';
 import { eyes, transitionTime } from '../../AppConstants';
 import './Eye.css';
@@ -41,6 +41,14 @@ export default function Eye(props: IEyeProps) {
     const cornerShape = getCornerShape(props);
     const irisAdjustment = getIrisAdjustment(props);
 
+    const [path, setPath] = useState(
+        innerPath(props.width / 960, props.height / 1080),
+    );
+
+    useEffect(() => {
+        setPath(innerPath(props.width / 960, props.height / 1080));
+    }, [props.width, props.height]);
+
     return (
         <svg className={props.class} width={props.width} height={props.height}>
             <circle
@@ -69,7 +77,7 @@ export default function Eye(props: IEyeProps) {
                 />
                 <g className="irisStyling">
                     <path
-                        d={`M ${irisAdjustment.innerX} ${props.innerY} ${innerPath}`}
+                        d={`M ${irisAdjustment.innerX} ${props.innerY} ${path}`}
                         fill={tinycolor(props.irisColor)
                             .darken(10)
                             .toHexString()}
