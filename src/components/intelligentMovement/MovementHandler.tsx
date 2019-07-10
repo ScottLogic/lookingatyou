@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { eyelidPosition, pupilSizes, sleepDelay } from '../../AppConstants';
-import { IDetection } from '../../models/objectDetection';
+import { Detection } from '../../models/objectDetection';
 import {
     setBright,
     setDetected,
@@ -33,7 +33,7 @@ interface IMovementProps {
 
 interface IStateProps {
     fps: number;
-    detections: IDetection[];
+    detections: Detection[];
     target: ITargets;
     tooBright: boolean;
     left: boolean;

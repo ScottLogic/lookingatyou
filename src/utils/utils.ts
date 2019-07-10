@@ -1,6 +1,6 @@
-import { IDetection } from '../models/objectDetection';
+import { Detection } from '../models/objectDetection';
 import { Bbox } from './types';
 
-export function getBbox(detection: IDetection): Bbox | undefined {
+export function getBbox(detection: Detection): Bbox | undefined {
     return detection ? detection.bbox : undefined;
 }

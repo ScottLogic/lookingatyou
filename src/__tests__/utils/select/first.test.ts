@@ -1,7 +1,7 @@
 import {
+    Detection,
     DetectionModelType,
     ICocoSSDDetection,
-    IDetection,
 } from '../../models/objectDetection';
 import select, { first } from '../../utils/objectSelection/select';
 
@@ -24,7 +24,7 @@ const person: ICocoSSDDetection = {
 };
 
 describe('selectFirstOfType should return', () => {
-    const selectFirst = (detections: IDetection[]) => select(detections, first);
+    const selectFirst = (detections: Detection[]) => select(detections, first);
 
     it('undefined when arg:detections is empty', () => {
         expect(selectFirst([])).toBeUndefined();

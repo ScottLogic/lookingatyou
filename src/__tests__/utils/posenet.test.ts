@@ -1,8 +1,8 @@
 import * as posenet from '@tensorflow-models/posenet';
 import {
+    Detection,
     DetectionModelType,
     IObjectDetector,
-    IPosenetDetection,
 } from '../../models/objectDetection';
 import Posenet from '../../utils/objectDetection/posenet';
 
@@ -152,7 +152,7 @@ const testInput = [testPose];
 
 const box = posenet.getBoundingBox(testPose.keypoints);
 
-const testOutput: IPosenetDetection[] = [
+const testOutput: Detection[] = [
     {
         model: DetectionModelType.Posenet,
         bbox: [box.minX, box.minY, box.maxX - box.minX, box.maxY - box.minY],
@@ -170,7 +170,7 @@ describe('Posenet', () => {
         expect(testPosenet).toBeInstanceOf(Posenet);
     });
 
-    it('shapeDetect should return object of shape IDetection', () => {
+    it('shapeDetect should return object of shape Detection', () => {
         expect(testPosenet.reshapeDetections(testInput)).toStrictEqual(
             testOutput,
         );

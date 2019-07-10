@@ -1,13 +1,17 @@
-import { IDetection } from '../../../models/objectDetection';
-import select, { largerThan } from '../../../utils/objectSelection/select';
-import { Bbox } from '../../../utils/types';
+import {
+    Detection,
+    DetectionModelType,
+    ICocoSSDDetection,
+} from '../../models/objectDetection';
+import select, { largerThan } from '../../utils/objectSelection/select';
+import { Bbox } from '../../utils/types';
 describe('selectLargest', () => {
     const selectLargest: (
-        detections: IDetection[],
+        detections: Detection[],
     ) => Bbox | undefined = detections => select(detections, largerThan);
 
     it('return undefined for no  detections', () => {
-        const detections: IDetection[] = [];
+        const detections: Detection[] = [];
         expect(selectLargest(detections)).toBe(undefined);
     });
     it('return undefined for no person detections', () => {

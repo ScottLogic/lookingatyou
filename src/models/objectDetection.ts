@@ -3,8 +3,8 @@ import { Pose } from '@tensorflow-models/posenet';
 import { Bbox, DetectionImage } from '../utils/types';
 
 export interface IObjectDetector {
-    reshapeDetections(detections: DetectedObject[]): IDetection[];
-    detect(image: DetectionImage): Promise<IDetection[]>;
+    reshapeDetections(detections: DetectedObject[]): Detection[];
+    detect(image: DetectionImage): Promise<Detection[]>;
 }
 
 export type DetectedObject = ssdObject | Pose;
@@ -22,8 +22,8 @@ export interface IDetection {
 }
 
 export interface IDetections {
-    left: IDetection[];
-    right: IDetection[] | null;
+    left: Detection[];
+    right: Detection[] | null;
 }
 
 export interface ISelections {

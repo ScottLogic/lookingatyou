@@ -1,7 +1,7 @@
 import * as posenet from '@tensorflow-models/posenet';
 import {
+    Detection,
     DetectionModelType,
-    IDetection,
     IObjectDetector,
 } from '../../models/objectDetection';
 import { DetectionImage } from '../types';
@@ -19,7 +19,7 @@ export default class Posenet implements IObjectDetector {
 
     private constructor(private model: posenet.PoseNet) {}
 
-    async detect(image: DetectionImage): Promise<IDetection[]> {
+    async detect(image: DetectionImage): Promise<Detection[]> {
         const detections = await this.model.estimateMultiplePoses(image, {
             flipHorizontal: false,
             maxDetections: 5,
@@ -29,7 +29,7 @@ export default class Posenet implements IObjectDetector {
         return this.reshapeDetections(detections);
     }
 
-    reshapeDetections(detections: posenet.Pose[]): IDetection[] {
+    reshapeDetections(detections: posenet.Pose[]): Detection[] {
         return detections.map(detection => {
             const box = posenet.getBoundingBox(detection.keypoints);
             return {
