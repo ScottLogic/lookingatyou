@@ -29,10 +29,12 @@
     "dependencies": {
         "@tensorflow-models/coco-ssd": "^1.1.0",
         "@tensorflow/tfjs": "^1.2.1",
+        "@types/react-tooltip": "^3.9.3",
         "react": "^16.8.6",
         "react-dom": "^16.8.6",
         "react-redux": "^7.1.0",
         "react-scripts": "3.0.1",
+        "react-tooltip": "^3.10.0",
         "redux": "^4.0.1",
         "redux-localstorage-simple": "^2.1.6",
         "redux-mock-store": "^1.5.3",
@@ -47,7 +49,7 @@
         "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
         "eject": "react-scripts eject",
         "lint": "./node_modules/.bin/tslint -p .",
-        "coverage": "react-scripts test --coverage --watchAll=false"
+        "coverage": "rm -r coverage && react-scripts test --coverage --watchAll=false"
     },
     "eslintConfig": {
         "extends": "react-app"
@@ -62,6 +64,30 @@
             "last 1 chrome version",
             "last 1 firefox version",
             "last 1 safari version"
+        ]
+    },
+    "jest": {
+        "snapshotSerializers": [
+            "enzyme-to-json/serializer"
+        ],
+        "collectCoverageFrom": [
+            "src/**/*.tsx",
+            "src/**/*.ts",
+            "!<rootDir>/src/index.tsx",
+            "!<rootDir>/src/serviceWorker.ts",
+            "!<rootDir>/src/store/store.ts",
+            "!<rootDir>/node_modules/"
+        ],
+        "coverageThreshold": {
+            "global": {
+                "branches": 80,
+                "functions": 80,
+                "lines": 80,
+                "statements": 80
+            }
+        },
+        "coverageReporters": [
+            "html"
         ]
     }
 }

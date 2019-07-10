@@ -1,9 +1,11 @@
 import React from 'react';
+import { HelpWith } from '../Help';
 
 export interface ICheckBoxMenuItemProps {
     name: string;
     onInputChange: (checked: boolean) => void;
     checked: boolean;
+    helpWith: HelpWith;
 }
 
 const CheckBoxMenuItem = React.memo(
@@ -12,7 +14,7 @@ const CheckBoxMenuItem = React.memo(
             props.onInputChange(event.target.checked);
         }
         return (
-            <div>
+            <div data-tip={true} data-for={HelpWith[props.helpWith]}>
                 <label>{props.name}</label>
                 <input
                     type="checkbox"

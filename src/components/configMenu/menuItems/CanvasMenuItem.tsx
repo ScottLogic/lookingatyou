@@ -5,9 +5,11 @@ import { IRootStore } from '../../../store/reducers/rootReducer';
 import { getSelections } from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
 import { Bbox } from '../../../utils/types';
+import { HelpWith } from '../Help';
 
 interface ICanvasMenuItemProps {
     name: string;
+    helpWith: HelpWith;
     videoIndex: number;
 }
 
@@ -73,7 +75,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
 
     render() {
         return (
-            <div>
+            <div data-tip={true} data-for={HelpWith[this.props.helpWith]}>
                 <label>{this.props.name}</label>
                 <br />
                 <canvas id="canvas" ref={this.canvasRef} />
