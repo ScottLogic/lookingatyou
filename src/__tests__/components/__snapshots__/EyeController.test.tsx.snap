@@ -2,8 +2,8 @@
 
 exports[`Eye Controller should render correctly 1`] = `
 "<div className=\\"container\\">
-  <Eye class=\\"left\\" width={250} height={500} irisColor=\\"#ff8080\\" scleraRadius={111.11111111111111} irisRadius={50} pupilRadius={20.833333333333332} openCoefficient={0.45} dilatedCoefficient={1} innerX={81.78791892748876} innerY={293.21208107251124} fps={2} />
   <Eye class=\\"right\\" width={250} height={500} irisColor=\\"#ff8080\\" scleraRadius={111.11111111111111} irisRadius={50} pupilRadius={20.833333333333332} openCoefficient={0.45} dilatedCoefficient={1} innerX={81.78791892748876} innerY={293.21208107251124} fps={2} />
+  <Eye class=\\"left\\" width={250} height={500} irisColor=\\"#ff8080\\" scleraRadius={111.11111111111111} irisRadius={50} pupilRadius={20.833333333333332} openCoefficient={0.45} dilatedCoefficient={1} innerX={81.78791892748876} innerY={293.21208107251124} fps={2} />
   <Gradients irisColor=\\"#ff8080\\" />
 </div>"
 `;
