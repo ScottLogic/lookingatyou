@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { eyelidPosition, maxMoveWithoutBlink } from '../../AppConstants';
 import {
     DetectionConfig,
     IDetections,
@@ -11,16 +12,20 @@ import {
 import {
     setDetections,
     setModelLoaded,
+    setOpen,
     setSelections,
     setTarget,
 } from '../../store/actions/detections/actions';
 import {
     ISetDetectionsAction,
     ISetLoadedAction,
+    ISetOpenAction,
     ISetSelectionsAction,
     ISetTargetAction,
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
+import { getFPS } from '../../store/selectors/configSelectors';
+import { getTargets } from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import CocoSSD from '../../utils/objectDetection/cocoSSD';
 import matchYPosition from '../../utils/objectSelection/rightEyeObjectMatching/matchYPosition';
@@ -28,7 +33,7 @@ import select, { closerTo } from '../../utils/objectSelection/select';
 import calculateTargetPos, {
     normalise,
 } from '../../utils/objectTracking/calculateFocus';
-import { DetectionImage, ITargets } from '../../utils/types';
+import { DetectionImage, ICoords, ITargets } from '../../utils/types';
 
 interface IDetectionHandlerProps {
     modelConfig: ModelConfig;
@@ -38,7 +43,7 @@ interface IDetectionHandlerProps {
 interface IStateProps {
     FPS: number;
     videos: Array<HTMLVideoElement | undefined>;
-    target: ITargets;
+    targets: ITargets;
 }
 
 interface IDispatchProps {
@@ -46,6 +51,7 @@ interface IDispatchProps {
     setTarget: (target: ITargets) => ISetTargetAction;
     setDetections: (detections: IDetections) => ISetDetectionsAction;
     setSelections: (selections: ISelections) => ISetSelectionsAction;
+    setOpenCoefficient: (openCoefficient: number) => ISetOpenAction;
 }
 
 export type DetectionHandlerProps = IDetectionHandlerProps &
@@ -61,6 +67,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
         this.detectionInterval = 0;
 
         this.detectionHandler = this.detectionHandler.bind(this);
+        this.blinkOnLargeMove = this.blinkOnLargeMove.bind(this);
     }
 
     async componentDidMount() {
@@ -105,7 +112,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
             const leftEyeDetections = await this.model.detect(images[0]);
             const leftEyeSelection = select(
                 leftEyeDetections,
-                closerTo(this.props.target.left),
+                closerTo(this.props.targets.left),
             );
             if (leftEyeSelection) {
                 const leftEyeCoords = calculateTargetPos(leftEyeSelection);
@@ -135,10 +142,9 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                         leftTarget.y = averageY;
                     }
                 }
-                this.props.setTarget({
-                    left: leftTarget,
-                    right: rightTarget,
-                });
+                const newTargets = { left: leftTarget, right: rightTarget };
+                this.blinkOnLargeMove(newTargets);
+                this.props.setTarget(newTargets);
                 this.props.setDetections({
                     left: leftEyeDetections,
                     right: rightEyeDetections,
@@ -155,13 +161,42 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
             }
         }
     }
+
+    blinkOnLargeMove(newTargets: ITargets) {
+        const leftEyeDist = getLargerDistance(
+            this.props.targets.left,
+            newTargets.left,
+        );
+
+        if (leftEyeDist > maxMoveWithoutBlink) {
+            this.props.setOpenCoefficient(eyelidPosition.CLOSED);
+        }
+
+        if (this.props.targets.right && newTargets.right) {
+            const rightEyeDist = getLargerDistance(
+                this.props.targets.right,
+                newTargets.right,
+            );
+
+            if (rightEyeDist > maxMoveWithoutBlink) {
+                this.props.setOpenCoefficient(eyelidPosition.CLOSED);
+            }
+        }
+    }
+}
+
+function getLargerDistance(old: ICoords, newCoords: ICoords): number {
+    return Math.max(
+        Math.abs(old.x - newCoords.x),
+        Math.abs(old.y - newCoords.y),
+    );
 }
 
 const mergeStateToProps = (state: IRootStore) => {
     return {
         videos: getVideos(state),
-        FPS: state.configStore.config.fps,
-        target: state.detectionStore.target,
+        FPS: getFPS(state),
+        targets: getTargets(state),
     };
 };
 
@@ -174,6 +209,8 @@ const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
             dispatch(setDetections(detections)),
         setSelections: (selections: ISelections) =>
             dispatch(setSelections(selections)),
+        setOpenCoefficient: (openCoefficient: number) =>
+            dispatch(setOpen(openCoefficient)),
     };
 };
 

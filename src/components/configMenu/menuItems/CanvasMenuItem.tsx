@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { ISelections } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import { getSelections } from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
@@ -7,11 +8,12 @@ import { Bbox } from '../../../utils/types';
 
 interface ICanvasMenuItemProps {
     name: string;
+    videoIndex: number;
 }
 
 interface IAppMapStateToProps {
     videos: Array<HTMLVideoElement | undefined>;
-    bbox: Bbox;
+    selections: ISelections;
 }
 
 type CanvasMenuItemProps = ICanvasMenuItemProps & IAppMapStateToProps;
@@ -19,12 +21,13 @@ type CanvasMenuItemProps = ICanvasMenuItemProps & IAppMapStateToProps;
 const mapStateToProps = (state: IRootStore) => {
     return {
         videos: getVideos(state),
-        bbox: getSelections(state).left,
+        selections: getSelections(state),
     };
 };
 
 export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
     canvasRef: React.RefObject<HTMLCanvasElement>;
+    private bbox: Bbox = [0, 0, 0, 0];
     constructor(props: CanvasMenuItemProps) {
         super(props);
 
@@ -39,12 +42,30 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
 
     componentDidUpdate() {
         this.getStream();
+        if (this.props.videoIndex === 0) {
+            this.bbox = this.props.selections.left;
+        } else if (this.props.videoIndex === 1 && this.props.selections.right) {
+            this.bbox = this.props.selections.right;
+        }
+    }
+
+    shouldComponentUpdate(
+        previousProps: CanvasMenuItemProps,
+        nextProps: CanvasMenuItemProps,
+    ) {
+        return (
+            previousProps.selections !== nextProps.selections ||
+            previousProps.name !== nextProps.name ||
+            previousProps.videoIndex !== nextProps.videoIndex
+        );
     }
 
     getStream() {
-        const video = this.props.videos[0] as HTMLVideoElement;
-        if (this.props.bbox) {
-            const [x, y, width, height] = this.props.bbox;
+        const video = this.props.videos[
+            this.props.videoIndex
+        ] as HTMLVideoElement;
+        if (this.props.selections) {
+            const [x, y, width, height] = this.bbox;
             const bbox = { x, y, width, height };
             this.drawImage(video, bbox);
         }
