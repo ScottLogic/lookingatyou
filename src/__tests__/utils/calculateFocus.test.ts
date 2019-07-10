@@ -39,8 +39,8 @@ describe('normalise should return', () => {
 
 describe('calculateTargetPos should return', () => {
     const testValues: Array<[Bbox, ICoords]> = [
-        [[0, 0, 10, 20], { x: 5, y: 15 }],
-        [[50, 800, 100, 200], { x: 100, y: 950 }],
+        [[0, 0, 10, 20], { x: 5, y: 5 }],
+        [[50, 800, 100, 200], { x: 100, y: 850 }],
         [[42, 21, 0, 0], { x: 42, y: 21 }],
     ];
     it.each(testValues)(
