@@ -5,9 +5,8 @@ exports[`ConfigMenuElement tests should render correctly 1`] = `
   <Memo() name=\\"X Sensitivity\\" defaultValue=\\"1\\" isValidInput={[Function: isValidSensitivity]} onValidInput={[Function: parseAndStoreXSensitivity]} parse={[Function: extractFloatToString]} helpWith={1} />
   <Memo() name=\\"Y Sensitivity\\" defaultValue=\\"1\\" isValidInput={[Function: isValidSensitivity]} onValidInput={[Function: parseAndStoreYSensitivity]} parse={[Function: extractFloatToString]} helpWith={2} />
   <Memo() name=\\"FPS\\" defaultValue=\\"30\\" isValidInput={[Function: isValidFPS]} onValidInput={[Function: parseAndStoreFPS]} parse={[Function: extractIntToString]} helpWith={0} />
-  <Memo() name=\\"Swap Eyes\\" helpWith={4} checked={false} onInputChange={[Function: storeSwapEyes]} />
-  <Memo() name=\\"Iris Colour\\" color=\\"blue\\" onInputChange={[Function: storeIrisColor]} helpWith={5} />
-  <Connect(CanvasMenuItem) name=\\"Camera Feed\\" helpWith={3} />
+  <Memo() name=\\"Swap Eyes\\" helpWith={6} checked={false} onInputChange={[Function: storeSwapEyes]} />
+  <Memo() name=\\"Iris Colour\\" color=\\"blue\\" onInputChange={[Function: storeIrisColor]} helpWith={7} />
   <br />
   <p data-tip={true} data-for=\\"APP\\">
     <h2>
@@ -18,8 +17,8 @@ exports[`ConfigMenuElement tests should render correctly 1`] = `
   <Help problemWith={3} />
   <Help problemWith={1} />
   <Help problemWith={2} />
-  <Help problemWith={4} />
-  <Help problemWith={5} />
   <Help problemWith={6} />
+  <Help problemWith={7} />
+  <Help problemWith={8} />
 </ConfigMenu>"
 `;

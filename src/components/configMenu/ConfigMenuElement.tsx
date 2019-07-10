@@ -7,6 +7,7 @@ import {
 } from '../../store/actions/config/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
+import { getVideos } from '../../store/selectors/videoSelectors';
 import ConfigMenu from './ConfigMenu';
 import Help, { HelpWith } from './Help';
 import IUserConfig from './IUserConfig';
@@ -21,12 +22,14 @@ export interface IConfigMenuElementProps {
 
 interface IConfigMenuElementMapStateToProps {
     config: IUserConfig;
+    videoCount: number;
 }
 const mapStateToProps = (
     state: IRootStore,
 ): IConfigMenuElementMapStateToProps => {
     return {
         config: getConfig(state),
+        videoCount: getVideos(state).length,
     };
 };
 
@@ -64,6 +67,9 @@ export const ConfigMenuElement = React.memo(
         }
         function storeIrisColor(irisColor: string) {
             props.setConfig({ partialConfig: { irisColor } });
+        }
+        function storeToggleDebug(toggleDebug: boolean) {
+            props.setConfig({ partialConfig: { toggleDebug } });
         }
         function extractFloatToString(floatString: string): string {
             return `${parseFloat(floatString)}`;
@@ -122,10 +128,35 @@ export const ConfigMenuElement = React.memo(
                     helpWith={HelpWith.IRIS_COLOUR}
                 />
 
-                <CanvasMenuItem
-                    name={'Camera Feed'}
-                    helpWith={HelpWith.VIDEO_STREAM}
+                <CheckBoxMenuItem
+                    name={'Toggle Debug'}
+                    helpWith={HelpWith.DEBUG}
+                    checked={props.config.toggleDebug}
+                    onInputChange={storeToggleDebug}
                 />
+
+                {props.config.toggleDebug ? (
+                    props.videoCount > 1 ? (
+                        <>
+                            <CanvasMenuItem
+                                name={'L Camera'}
+                                videoIndex={0}
+                                helpWith={HelpWith.LEFT_VIDEO_STREAM}
+                            />
+                            <CanvasMenuItem
+                                name={'R Camera'}
+                                videoIndex={1}
+                                helpWith={HelpWith.RIGHT_VIDEO_STREAM}
+                            />
+                        </>
+                    ) : (
+                        <CanvasMenuItem
+                            name={'Camera'}
+                            videoIndex={0}
+                            helpWith={HelpWith.VIDEO_STREAM}
+                        />
+                    )
+                ) : null}
 
                 <br />
 
@@ -140,6 +171,9 @@ export const ConfigMenuElement = React.memo(
                 <Help problemWith={HelpWith.SWAP_EYES} />
                 <Help problemWith={HelpWith.IRIS_COLOUR} />
                 <Help problemWith={HelpWith.APP} />
+                <Help problemWith={HelpWith.LEFT_VIDEO_STREAM} />
+                <Help problemWith={HelpWith.RIGHT_VIDEO_STREAM} />
+                <Help problemWith={HelpWith.DEBUG} />
             </ConfigMenu>
         );
     },
