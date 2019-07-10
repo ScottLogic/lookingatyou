@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { HelpWith } from '../Help';
 
 export interface ITextBoxMenuItemProps {
     name: string;
@@ -6,6 +7,7 @@ export interface ITextBoxMenuItemProps {
     onValidInput: (text: string) => void;
     defaultValue: string;
     parse: (text: string) => string;
+    helpWith: HelpWith;
 }
 const TextBoxMenuItem = React.memo(
     (props: ITextBoxMenuItemProps) => {
@@ -32,7 +34,7 @@ const TextBoxMenuItem = React.memo(
             }
         }
         return (
-            <div>
+            <div data-tip={true} data-for={HelpWith[props.helpWith]}>
                 <label>{props.name}</label>
                 <input
                     type="textbox"

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CheckBoxMenuItem tests should render correctly 1`] = `
-"<div>
+"<div data-tip={true} data-for={[undefined]}>
   <label>
     test
   </label>
