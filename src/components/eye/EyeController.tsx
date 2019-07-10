@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import {
     eyelidPosition,
     EyeSide,
     neutralBlinkFrequency,
     transitionTime,
 } from '../../AppConstants';
+import {
+    setBright,
+    setDilation,
+    setOpen,
+} from '../../store/actions/detections/actions';
+import {
+    ISetBrightAction,
+    ISetDilationAction,
+    ISetOpenAction,
+} from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
 import { getOpenCoefficient } from '../../store/selectors/detectionSelectors';
@@ -13,6 +24,7 @@ import { getVideos } from '../../store/selectors/videoSelectors';
 import { ICoords, ITargets } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
+import { analyseLight, checkLight } from './EyeUtils';
 import { Gradients } from './Gradients';
 
 interface IEyeControllerProps {
@@ -39,7 +51,29 @@ export const EyeController = React.memo(
         const [isBlinking, setIsBlinking] = useState(false); // Will change based on camera feed e.g. blink less when object in frame
         const [eyesOpenCoefficient] = useState(eyelidPosition.OPEN); // Will change based on camera feed e.g. higher coefficient to show surprise
 
+        const calculateBrightness = () => {
+            if (props.videos) {
+                const { tooBright, scaledPupilSize } = checkLight(
+                    window.document,
+                    props.tooBright,
+                    props.videos[0] as HTMLVideoElement,
+                    analyseLight,
+                );
+
+                if (tooBright) {
+                    setBright(true);
+                    setOpen(eyelidPosition.CLOSED);
+                } else if (props.tooBright) {
+                    setBright(false);
+                    setOpen(eyelidPosition.OPEN);
+                }
+
+                setDilation(scaledPupilSize);
+            }
+        };
+
         useEffect(() => {
+            calculateBrightness();
             const blink = props.environment.setInterval(() => {
                 if (isBlinking) {
                     setIsBlinking(false);
