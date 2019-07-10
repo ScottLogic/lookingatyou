@@ -2,9 +2,7 @@ import { IVideo } from '../actions/video/types';
 import { IRootStore } from '../reducers/rootReducer';
 
 export function getDeviceIds(state: IRootStore): string[] {
-    const deviceIds = Object.keys(state.videoStore.videos).map(
-        (deviceId: string) => deviceId,
-    );
+    const deviceIds = Object.keys(state.videoStore.videos);
     if (state.configStore.config.swapEyes) {
         deviceIds.reverse();
     }
