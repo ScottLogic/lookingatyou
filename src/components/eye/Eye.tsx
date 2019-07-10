@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import tinycolor from 'tinycolor2';
 import { eyes, transitionTime } from '../../AppConstants';
 import './Eye.css';
-import { innerPath } from './innerPath';
+import { getInnerPath } from './getInnerPath';
 import { Shadows } from './Shadows';
 
 export interface IEyeProps {
@@ -40,6 +40,14 @@ export default function Eye(props: IEyeProps) {
     const bezier = getBezier(props);
     const cornerShape = getCornerShape(props);
     const irisAdjustment = getIrisAdjustment(props);
+
+    const [innerPath, setInnerPath] = useState(
+        getInnerPath(props.width / 960, props.height / 1080),
+    );
+
+    useEffect(() => {
+        setInnerPath(getInnerPath(props.width / 960, props.height / 1080));
+    }, [props.width, props.height]);
 
     return (
         <svg className={props.class} width={props.width} height={props.height}>
@@ -91,7 +99,8 @@ export default function Eye(props: IEyeProps) {
                     fill={'url(#reflectionGradient)'}
                     cx={irisAdjustment.innerX + props.pupilRadius * 0.4}
                     cy={props.innerY - props.pupilRadius * 0.4}
-                    transform={'skewX(20) translate(-165, 5)'}
+                    transform={`skewX(20) translate(${(-145 / 960) *
+                        props.width}, ${(5 / 1080) * props.height})`}
                 />
                 <circle
                     className={'outerReflection'}
@@ -100,7 +109,8 @@ export default function Eye(props: IEyeProps) {
                     fill={'url(#reflectionGradient)'}
                     cx={irisAdjustment.innerX + props.scleraRadius * 0.3}
                     cy={props.innerY - props.scleraRadius * 0.3}
-                    transform={'skewX(20) translate(-165, 5)'}
+                    transform={`skewX(20) translate(${(-140 / 960) *
+                        props.width}, ${(5 / 1080) * props.height})`}
                 />
             </g>
 
