@@ -54,7 +54,10 @@ export default function Eye(props: IEyeProps) {
             <g
                 className="inner"
                 style={innerTransitionStyle}
-                transform={`scale(${irisAdjustment.xScale}, 1) skewX(${irisAdjustment.xSkew}) `}
+                transform={`
+                scale(${irisAdjustment.xScale}, 1)
+                skewX(${irisAdjustment.xSkew})
+                `}
             >
                 <circle
                     className={'iris'}
@@ -232,24 +235,21 @@ function getCornerShape(props: IEyeProps) {
 }
 
 function getIrisAdjustment(props: IEyeProps) {
-    const xScaleSensitivity = 0.4;
+    const minXScale = 0.75;
+
     const irisXoffset = props.innerX - props.width / 2;
     const maxIrisXOffset = props.scleraRadius - props.irisRadius;
-    let irisXDirection = Math.abs(irisXoffset) / irisXoffset;
-    if (isNaN(irisXDirection)) {
-        irisXDirection = 0;
+    let xDirection = Math.abs(irisXoffset) / irisXoffset;
+    if (isNaN(xDirection)) {
+        xDirection = 0;
     }
-    const xScale =
-        1 - Math.abs(xScaleSensitivity * irisXoffset) / maxIrisXOffset;
+    const xScale = 1 - Math.abs((1 - minXScale) * irisXoffset) / maxIrisXOffset;
     const xSkew =
         (((xScale - 1) * (90 * (props.innerY - props.height / 2))) /
             props.scleraRadius) *
-        irisXDirection;
+        xDirection;
     const innerX =
         props.innerX +
-        irisXDirection *
-            props.irisRadius *
-            (((1 / xScale) * (1 - xScale)) / xScaleSensitivity);
-
+        (xDirection * (props.scleraRadius * (1 - xScale))) / xScale;
     return { xScale, xSkew, innerX };
 }
