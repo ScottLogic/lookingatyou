@@ -12,7 +12,7 @@ export const initialState: IConfigState = {
         fps: 2,
         swapEyes: false,
         toggleDebug: false,
-        irisColor: '#ff8080', // must be hex value, as this is passed to colour picker input,
+        irisColor: '#55acee', // must be hex value, as this is passed to colour picker input,
     },
 };
 
