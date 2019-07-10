@@ -178,11 +178,9 @@ export default function Eye(props: IEyeProps) {
                          L 0 0`}
                 />
                 <path
-                    d={`M ${0} ${eyeCoords.middleY},
+                    d={`M 0 ${eyeCoords.middleY},
                          L ${eyeCoords.leftX} ${eyeCoords.middleY},
-                         A ${props.scleraRadius} ${props.scleraRadius} 0 0 0 ${
-                        eyeCoords.rightX
-                    } ${eyeCoords.middleY}
+                         A ${props.scleraRadius} ${props.scleraRadius} 0 0 0 ${eyeCoords.rightX} ${eyeCoords.middleY}
                          L ${props.width} ${eyeCoords.middleY},
                          L ${props.width} ${props.height}
                          L 0 ${props.height}`}
