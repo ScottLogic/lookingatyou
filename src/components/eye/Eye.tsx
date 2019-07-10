@@ -232,14 +232,15 @@ function getCornerShape(props: IEyeProps) {
 }
 
 function getIrisAdjustment(props: IEyeProps) {
+    const xScaleSensitivity = 0.4;
     const irisXoffset = props.innerX - props.width / 2;
     const maxIrisXOffset = props.scleraRadius - props.irisRadius;
-
     let irisXDirection = Math.abs(irisXoffset) / irisXoffset;
     if (isNaN(irisXDirection)) {
         irisXDirection = 0;
     }
-    const xScale = 1 - Math.abs(0.4 * irisXoffset) / maxIrisXOffset;
+    const xScale =
+        1 - Math.abs(xScaleSensitivity * irisXoffset) / maxIrisXOffset;
     const xSkew =
         (((xScale - 1) * (90 * (props.innerY - props.height / 2))) /
             props.scleraRadius) *
@@ -248,7 +249,7 @@ function getIrisAdjustment(props: IEyeProps) {
         props.innerX +
         irisXDirection *
             props.irisRadius *
-            (((1 / xScale) * (1 - xScale)) / 0.4);
+            (((1 / xScale) * (1 - xScale)) / xScaleSensitivity);
 
     return { xScale, xSkew, innerX };
 }
