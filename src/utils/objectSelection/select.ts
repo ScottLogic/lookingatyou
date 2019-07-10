@@ -1,4 +1,5 @@
 import { IDetection } from '../../models/objectDetection';
+import calculateTargetPos from '../objectTracking/calculateFocus';
 import { Bbox, ICoords } from '../types';
 
 export default function select(
@@ -14,7 +15,6 @@ export default function select(
             filter(detection),
         );
     }
-
     const personBboxes = personDetections.map(detection => detection.bbox);
     return personBboxes.reduce<Bbox | undefined>(
         (best, current) =>
@@ -52,7 +52,10 @@ export function closerTo(
 
 export function closerYTo(y: number): (bbox1: Bbox, bbox2: Bbox) => number {
     return function closerToCoords(bbox1: Bbox, bbox2: Bbox) {
-        return Math.abs(bbox2[1] - y) - Math.abs(bbox1[1] - y);
+        return (
+            Math.abs(calculateTargetPos(bbox2).y - y) -
+            Math.abs(calculateTargetPos(bbox1).y - y)
+        );
     };
 }
 
