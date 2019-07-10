@@ -28,3 +28,4 @@ export const transitionTime = {
     dilate: 750,
 };
 export const neutralBlinkFrequency = 0.25;
+export const maxMoveWithoutBlink = 0.5;
