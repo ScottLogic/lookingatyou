@@ -34,20 +34,18 @@ const TextBoxMenuItem = React.memo(
             }
         }
         return (
-            <p data-tip={true} data-for={HelpWith[props.helpWith]}>
-                <div>
-                    <label>{props.name}</label>
-                    <input
-                        type="textbox"
-                        value={value || ''}
-                        style={{
-                            color: isValid ? 'black' : 'red',
-                        }}
-                        onBlur={onBlur}
-                        onChange={onChange}
-                    />
-                </div>
-            </p>
+            <div data-tip={true} data-for={HelpWith[props.helpWith]}>
+                <label>{props.name}</label>
+                <input
+                    type="textbox"
+                    value={value || ''}
+                    style={{
+                        color: isValid ? 'black' : 'red',
+                    }}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                />
+            </div>
         );
     },
     (previous, next) =>

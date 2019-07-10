@@ -75,13 +75,11 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
 
     render() {
         return (
-            <p data-tip={true} data-for={HelpWith[this.props.helpWith]}>
-                <div>
-                    <label>{this.props.name}</label>
-                    <br />
-                    <canvas id="canvas" ref={this.canvasRef} />
-                </div>
-            </p>
+            <div data-tip={true} data-for={HelpWith[this.props.helpWith]}>
+                <label>{this.props.name}</label>
+                <br />
+                <canvas id="canvas" ref={this.canvasRef} />
+            </div>
         );
     }
 

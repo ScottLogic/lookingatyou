@@ -1,12 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CheckBoxMenuItem tests should render correctly 1`] = `
-"<p data-tip={true} data-for={[undefined]}>
-  <div>
-    <label>
-      test
-    </label>
-    <input type=\\"checkbox\\" checked={false} onChange={[Function: onChange]} />
-  </div>
-</p>"
+"<div data-tip={true} data-for={[undefined]}>
+  <label>
+    test
+  </label>
+  <input type=\\"checkbox\\" checked={false} onChange={[Function: onChange]} />
+</div>"
 `;

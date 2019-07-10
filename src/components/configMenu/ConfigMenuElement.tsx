@@ -161,7 +161,7 @@ export const ConfigMenuElement = React.memo(
                 <br />
 
                 <p data-tip={true} data-for={HelpWith[HelpWith.APP]}>
-                    <h2>Help</h2>
+                    Help
                 </p>
 
                 <Help problemWith={HelpWith.FPS} />

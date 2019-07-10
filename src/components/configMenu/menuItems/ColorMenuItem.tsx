@@ -14,16 +14,10 @@ const ColorMenuItem = React.memo(
             props.onInputChange(event.target.value);
         }
         return (
-            <p data-tip={true} data-for={HelpWith[props.helpWith]}>
-                <div>
-                    <label>{props.name}</label>
-                    <input
-                        type="color"
-                        value={props.color}
-                        onChange={onChange}
-                    />
-                </div>
-            </p>
+            <div data-tip={true} data-for={HelpWith[props.helpWith]}>
+                <label>{props.name}</label>
+                <input type="color" value={props.color} onChange={onChange} />
+            </div>
         );
     },
     (previous, next) =>
