@@ -1,13 +1,13 @@
 import { eyelidPosition, pupilSizes, sleepDelay } from '../../AppConstants';
 import {
-    SET_BRIGHT,
-    SET_DILATION,
-    SET_LEFT,
-    SET_OPEN,
-    SET_PERSON,
-    SET_SQUINT,
-    SET_TARGET,
-} from '../../store/actions/detections/types';
+    setBright,
+    setDetected,
+    setDilation,
+    setLeft,
+    setOpen,
+    setSquinting,
+    setTarget,
+} from '../../store/actions/detections/actions';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import { AppStore } from '../../store/store';
 import { analyseLight, checkLight, naturalMovement } from '../eye/EyeUtils';
@@ -22,14 +22,14 @@ export function checkSelection(store: AppStore) {
     });
 
     if (state.detectionStore.isSquinting && Math.random() < 0.1) {
-        setOpenCoefficient(store, eyelidPosition.OPEN);
-        store.dispatch({ type: SET_SQUINT, payload: false });
+        store.dispatch(setOpen(eyelidPosition.OPEN));
+        store.dispatch(setSquinting(false));
     }
 
     if (selection) {
         wake(store);
         if (state.detectionStore.isSquinting) {
-            setOpenCoefficient(store, eyelidPosition.OPEN);
+            store.dispatch(setOpen(eyelidPosition.OPEN));
         }
         isNewTarget(store);
     } else {
@@ -44,7 +44,7 @@ export function checkSelection(store: AppStore) {
                 },
                 right: null,
             };
-            store.dispatch({ type: SET_TARGET, payload: stopEyeLeaving });
+            store.dispatch(setTarget(stopEyeLeaving));
         }
 
         const { newX, left } = naturalMovement(
@@ -54,8 +54,8 @@ export function checkSelection(store: AppStore) {
 
         const newTarget = { left: { x: newX, y: 0 }, right: null };
 
-        store.dispatch({ type: SET_TARGET, payload: newTarget });
-        store.dispatch({ type: SET_LEFT, payload: left });
+        store.dispatch(setTarget(newTarget));
+        store.dispatch(setLeft(left));
     }
 }
 
@@ -71,33 +71,33 @@ export function calculateBrightness(store: AppStore) {
         );
 
         if (tooBright) {
-            store.dispatch({ type: SET_BRIGHT, payload: true });
-            store.dispatch({ type: SET_OPEN, payload: eyelidPosition.CLOSED });
+            store.dispatch(setBright(true));
+            store.dispatch(setOpen(eyelidPosition.CLOSED));
         } else if (state.detectionStore.tooBright) {
-            store.dispatch({ type: SET_BRIGHT, payload: false });
-            store.dispatch({ type: SET_OPEN, payload: eyelidPosition.OPEN });
+            store.dispatch(setBright(false));
+            store.dispatch(setOpen(eyelidPosition.OPEN));
         }
 
-        store.dispatch({ type: SET_DILATION, payload: scaledPupilSize });
+        store.dispatch(setDilation(scaledPupilSize));
     }
 }
 
 function isNewTarget(store: AppStore) {
     if (!store.getState().detectionStore.personDetected) {
-        store.dispatch({ type: SET_PERSON, payload: true });
-        store.dispatch({ type: SET_DILATION, payload: pupilSizes.dilated });
+        store.dispatch(setDetected(true));
+        store.dispatch(setDilation(pupilSizes.dilated));
     }
 }
 
 function hasTargetLeft(store: AppStore) {
     if (store.getState().detectionStore.personDetected) {
-        store.dispatch({ type: SET_PERSON, payload: false });
-        store.dispatch({ type: SET_SQUINT, payload: true });
-        store.dispatch({ type: SET_DILATION, payload: pupilSizes.constricted });
+        store.dispatch(setDetected(false));
+        store.dispatch(setSquinting(true));
+        store.dispatch(setDilation(pupilSizes.constricted));
 
         const target = { left: { x: 0, y: 0 }, right: null };
-        store.dispatch({ type: SET_TARGET, payload: target });
-        setOpenCoefficient(store, eyelidPosition.SQUINT);
+        store.dispatch(setTarget(target));
+        store.dispatch(setOpen(eyelidPosition.SQUINT));
     }
 }
 
@@ -105,18 +105,14 @@ function wake(store: AppStore) {
     if (sleepTimeout !== null) {
         clearTimeout(sleepTimeout);
         sleepTimeout = null;
-        setOpenCoefficient(store, eyelidPosition.OPEN);
+        store.dispatch(setOpen(eyelidPosition.OPEN));
     }
 }
 
 function sleep(store: AppStore) {
     if (sleepTimeout === null) {
         sleepTimeout = setTimeout(() => {
-            setOpenCoefficient(store, eyelidPosition.CLOSED);
+            store.dispatch(setOpen(eyelidPosition.CLOSED));
         }, sleepDelay);
     }
-}
-
-function setOpenCoefficient(store: AppStore, openCoefficient: number) {
-    store.dispatch({ type: SET_OPEN, payload: openCoefficient });
 }
