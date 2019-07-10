@@ -183,7 +183,7 @@ export default function Eye(props: IEyeProps) {
     );
 }
 
-export function getEyeCoords(props: IEyeProps) {
+function getEyeCoords(props: IEyeProps) {
     const middleX = props.width / 2;
     const leftX = middleX - props.scleraRadius;
     const rightX = middleX + props.scleraRadius;
