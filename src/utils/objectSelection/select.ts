@@ -50,7 +50,9 @@ export function closerTo(
     };
 }
 
-export function closerYTo(y: number): (bbox1: Bbox, bbox2: Bbox) => number {
+export function closerVerticallyTo(
+    y: number,
+): (bbox1: Bbox, bbox2: Bbox) => number {
     return function closerToCoords(bbox1: Bbox, bbox2: Bbox) {
         return (
             Math.abs(calculateTargetPos(bbox2).y - y) -

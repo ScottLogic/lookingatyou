@@ -1,11 +1,14 @@
-import { IDetection } from '../../models/objectDetection';
-import select, { closerYTo, rightOf } from '../../utils/objectSelection/select';
+import { IDetection } from '../../../models/objectDetection';
+import select, {
+    closerVerticallyTo,
+    rightOf,
+} from '../../../utils/objectSelection/select';
 const personInfo = { certainty: 1, type: 'person' };
 const nonPersonInfo = { certainty: 1, type: 'non-person' };
 describe('selectMatching should return', () => {
     it('undefined when all right-eye coords are to the left of the left-eye coord', () => {
         const matchYPosition = (detections: IDetection[]) =>
-            select(detections, closerYTo(50), rightOf(5));
+            select(detections, closerVerticallyTo(50), rightOf(5));
 
         const rightEyeDetections: IDetection[] = [
             { bbox: [-10, 20, 0, 0], info: personInfo },
@@ -16,7 +19,7 @@ describe('selectMatching should return', () => {
     });
     it('of all the right-eye coords (that are persons) whose x-value is greater than the x value of the left-eye coord, return that whose y-value is closest the y value of the left-eye coord', () => {
         const matchYPosition = (detections: IDetection[]) =>
-            select(detections, closerYTo(325), rightOf(50));
+            select(detections, closerVerticallyTo(325), rightOf(50));
         const rightEyeDetections: IDetection[] = [
             { bbox: [10, 20, 0, 0], info: nonPersonInfo },
             { bbox: [40, 5, 0, 0], info: nonPersonInfo },
@@ -41,7 +44,7 @@ describe('selectMatching should return', () => {
 
     it('undefined when there are no detections', () => {
         const matchYPosition = (detections: IDetection[]) =>
-            select(detections, closerYTo(325), rightOf(50));
+            select(detections, closerVerticallyTo(325), rightOf(50));
         expect(matchYPosition([])).toBe(undefined);
     });
 });

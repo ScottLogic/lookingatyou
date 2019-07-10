@@ -25,7 +25,7 @@ import { getVideos } from '../../store/selectors/videoSelectors';
 import CocoSSD from '../../utils/objectDetection/cocoSSD';
 import select, {
     closerTo,
-    closerYTo,
+    closerVerticallyTo,
     leftOf,
 } from '../../utils/objectSelection/select';
 import calculateTargetPos, {
@@ -123,7 +123,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                     rightEyeDetections = await this.model.detect(images[1]);
                     rightEyeSelection = select(
                         rightEyeDetections,
-                        closerYTo(leftEyeSelection[1]),
+                        closerVerticallyTo(leftEyeSelection[1]),
                         leftOf(leftEyeSelection[0]),
                     );
                     if (rightEyeSelection) {
