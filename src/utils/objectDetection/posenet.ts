@@ -6,7 +6,7 @@ import {
 } from '../../models/objectDetection';
 import { DetectionImage } from '../types';
 
-export default class Posenet {
+export default class Posenet implements IObjectDetector {
     static async init(): Promise<IObjectDetector> {
         const model = await posenet.load({
             architecture: 'MobileNetV1',
