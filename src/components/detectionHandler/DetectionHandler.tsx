@@ -9,7 +9,7 @@ import {
 } from '../../models/objectDetection';
 import {
     setDetections,
-    setModelLoaded,
+    setModel,
     setOpen,
     setSelections,
     setTarget,
@@ -197,7 +197,7 @@ const mergeStateToProps = (state: IRootStore) => {
 
 const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
     return {
-        setModel: (model: IObjectDetector) => dispatch(setModelLoaded(model)),
+        setModel: (model: IObjectDetector) => dispatch(setModel(model)),
         setTarget: (target: ITargets) => dispatch(setTarget(target)),
         setDetections: (detections: IDetections) =>
             dispatch(setDetections(detections)),

@@ -6,6 +6,7 @@ import {
 import { ITargets } from '../../../utils/types';
 
 export const SET_MODEL = 'SET_MODEL';
+export const SET_INTERVAL = 'SET_INTERVAL';
 export const SET_TARGET = 'SET_TARGET';
 export const SET_DETECTIONS = 'SET_DETECTIONS';
 export const SET_BRIGHT = 'SET_BRIGHT';
@@ -18,6 +19,7 @@ export const SET_SELECTIONS = 'SET_SELECTIONS';
 
 export interface IDetectionState {
     model: IObjectDetector | null;
+    detectionInterval: number;
     tooBright: boolean;
     left: boolean;
     dilationCoefficient: number;
@@ -32,6 +34,11 @@ export interface IDetectionState {
 export interface ISetModelAction {
     type: 'SET_MODEL';
     payload: IObjectDetector;
+}
+
+export interface ISetIntervalAction {
+    type: 'SET_INTERVAL';
+    payload: number;
 }
 
 export interface ISetTargetAction {
@@ -81,6 +88,7 @@ export interface ISetSelectionsAction {
 
 export type DetectionActionType =
     | ISetModelAction
+    | ISetIntervalAction
     | ISetTargetAction
     | ISetDetectionsAction
     | ISetBrightAction

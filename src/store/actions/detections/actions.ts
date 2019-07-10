@@ -27,7 +27,7 @@ import {
     SET_TARGET,
 } from './types';
 
-export function setModelLoaded(model: IObjectDetector): ISetModelAction {
+export function setModel(model: IObjectDetector): ISetModelAction {
     return {
         type: SET_MODEL,
         payload: model,

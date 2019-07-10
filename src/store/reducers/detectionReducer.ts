@@ -11,6 +11,7 @@ import {
     SET_BRIGHT,
     SET_DETECTIONS,
     SET_DILATION,
+    SET_INTERVAL,
     SET_LEFT,
     SET_MODEL,
     SET_OPEN,
@@ -22,6 +23,7 @@ import {
 
 export const initialState: IDetectionState = {
     model: null,
+    detectionInterval: 0,
     tooBright: false,
     left: false,
     personDetected: false,
@@ -35,6 +37,7 @@ export const initialState: IDetectionState = {
 
 const detectionActionMapping = {
     [SET_MODEL]: setModel,
+    [SET_INTERVAL]: setDetectionInterval,
     [SET_TARGET]: setTarget,
     [SET_DETECTIONS]: setDetections,
     [SET_BRIGHT]: setBright,
@@ -60,6 +63,13 @@ function setModel(
     action: DetectionActionType,
 ): IDetectionState {
     return { ...state, model: action.payload as IObjectDetector };
+}
+
+function setDetectionInterval(
+    state: IDetectionState,
+    action: DetectionActionType,
+): IDetectionState {
+    return { ...state, detectionInterval: action.payload as number };
 }
 
 function setTarget(
