@@ -215,21 +215,19 @@ function getCornerShape(props: IEyeProps) {
     const innerBottomCoefficient = 1.1;
     const outerTopCoefficient = 0.7;
     const outerBottomCoefficient = 0.5;
-    if (props.class === eyes.RIGHT) {
-        return {
-            leftTop: innerTopCoefficient,
-            rightTop: outerTopCoefficient,
-            leftBottom: innerBottomCoefficient,
-            rightBottom: outerBottomCoefficient,
-        };
-    } else {
-        return {
-            leftTop: outerTopCoefficient,
-            rightTop: innerTopCoefficient,
-            leftBottom: outerBottomCoefficient,
-            rightBottom: innerBottomCoefficient,
-        };
-    }
+    return props.class === eyes.RIGHT
+        ? {
+              leftTop: innerTopCoefficient,
+              rightTop: outerTopCoefficient,
+              leftBottom: innerBottomCoefficient,
+              rightBottom: outerBottomCoefficient,
+          }
+        : {
+              leftTop: outerTopCoefficient,
+              rightTop: innerTopCoefficient,
+              leftBottom: outerBottomCoefficient,
+              rightBottom: innerBottomCoefficient,
+          };
 }
 
 function getIrisAdjustment(props: IEyeProps) {
