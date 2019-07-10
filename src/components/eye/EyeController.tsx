@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import {
     eyelidPosition,
     eyes,
@@ -7,33 +8,50 @@ import {
     pupilSizes,
     transitionTime,
 } from '../../AppConstants';
+import {
+    setBright,
+    setDilation,
+    setOpen,
+} from '../../store/actions/detections/actions';
+import {
+    ISetBrightAction,
+    ISetDilationAction,
+    ISetOpenAction,
+} from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
+import { getVideos } from '../../store/selectors/videoSelectors';
 import { ICoords, ITargets } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
+import { analyseLight, checkLight } from './EyeUtils';
 import { Gradients } from './Gradients';
+
 interface IEyeControllerProps {
     width: number;
     height: number;
     environment: Window;
 }
+
 interface IEyeControllerMapStateToProps {
     config: IUserConfig;
     dilation: number;
     openCoefficient: number;
     detected: boolean;
     target: ITargets;
+    videos: Array<HTMLVideoElement | undefined>;
+    tooBright: boolean;
 }
+
+interface IDispatchProps {
+    setOpen: (openCoefficient: number) => ISetOpenAction;
+    setDilation: (dilationCoefficient: number) => ISetDilationAction;
+    setBright: (tooBright: boolean) => ISetBrightAction;
+}
+
 export type EyeControllerProps = IEyeControllerProps &
     IEyeControllerMapStateToProps;
-const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
-    config: getConfig(state),
-    target: state.detectionStore.target,
-    dilation: state.detectionStore.dilationCoefficient,
-    openCoefficient: state.detectionStore.eyesOpenCoefficient,
-    detected: state.detectionStore.personDetected,
-});
+
 export const EyeController = React.memo(
     (props: EyeControllerProps) => {
         const [blinkFrequencyCoefficient] = useState(1); // Will change based on camera feed e.g. lower coefficient when object in frame
@@ -41,7 +59,29 @@ export const EyeController = React.memo(
         const [eyesOpenCoefficient] = useState(eyelidPosition.OPEN); // Will change based on camera feed e.g. higher coefficient to show surprise
         const [dilationCoefficient] = useState(pupilSizes.neutral); // Will change based on camera feed e.g. briefly increase coefficient (dilate) when object enters frame then reset to 1 (neutral)
 
+        const calculateBrightness = () => {
+            if (props.videos) {
+                const { tooBright, scaledPupilSize } = checkLight(
+                    window.document,
+                    props.tooBright,
+                    props.videos[0] as HTMLVideoElement,
+                    analyseLight,
+                );
+
+                if (tooBright) {
+                    setBright(true);
+                    setOpen(eyelidPosition.CLOSED);
+                } else if (props.tooBright) {
+                    setBright(false);
+                    setOpen(eyelidPosition.OPEN);
+                }
+
+                setDilation(scaledPupilSize);
+            }
+        };
+
         useEffect(() => {
+            calculateBrightness();
             const blink = props.environment.setInterval(() => {
                 if (isBlinking) {
                     setIsBlinking(false);
@@ -64,6 +104,7 @@ export const EyeController = React.memo(
             isBlinking,
             blinkFrequencyCoefficient,
             dilationCoefficient,
+            calculateBrightness,
         ]);
 
         const scleraRadius = props.width / 4.5;
@@ -134,4 +175,27 @@ export const EyeController = React.memo(
                 previous.target.right.y === next.target.right!.y)),
 );
 
-export default connect(mapStateToProps)(EyeController);
+const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
+    config: getConfig(state),
+    target: state.detectionStore.target,
+    dilation: state.detectionStore.dilationCoefficient,
+    openCoefficient: state.detectionStore.eyesOpenCoefficient,
+    detected: state.detectionStore.personDetected,
+    videos: getVideos(state),
+    tooBright: state.detectionStore.tooBright,
+});
+
+const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
+    return {
+        setBright: (tooBright: boolean) => dispatch(setBright(tooBright)),
+        setOpen: (openCoefficient: number) =>
+            dispatch(setOpen(openCoefficient)),
+        setDilation: (dilationCoefficient: number) =>
+            dispatch(setDilation(dilationCoefficient)),
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mergeDispatchToProps,
+)(EyeController);

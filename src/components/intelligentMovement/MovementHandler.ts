@@ -1,6 +1,5 @@
 import { eyelidPosition, pupilSizes, sleepDelay } from '../../AppConstants';
 import {
-    setBright,
     setDetected,
     setDilation,
     setLeft,
@@ -8,9 +7,8 @@ import {
     setSquinting,
     setTarget,
 } from '../../store/actions/detections/actions';
-import { getVideos } from '../../store/selectors/videoSelectors';
 import { AppStore } from '../../store/store';
-import { analyseLight, checkLight, naturalMovement } from '../eye/EyeUtils';
+import { naturalMovement } from '../eye/EyeUtils';
 
 let sleepTimeout: NodeJS.Timeout | null;
 
@@ -56,29 +54,6 @@ export function checkSelection(store: AppStore) {
 
         store.dispatch(setTarget(newTarget));
         store.dispatch(setLeft(left));
-    }
-}
-
-export function calculateBrightness(store: AppStore) {
-    const state = store.getState();
-
-    if (getVideos(state)) {
-        const { tooBright, scaledPupilSize } = checkLight(
-            window.document,
-            state.detectionStore.tooBright,
-            getVideos(state)[0] as HTMLVideoElement,
-            analyseLight,
-        );
-
-        if (tooBright) {
-            store.dispatch(setBright(true));
-            store.dispatch(setOpen(eyelidPosition.CLOSED));
-        } else if (state.detectionStore.tooBright) {
-            store.dispatch(setBright(false));
-            store.dispatch(setOpen(eyelidPosition.OPEN));
-        }
-
-        store.dispatch(setDilation(scaledPupilSize));
     }
 }
 
