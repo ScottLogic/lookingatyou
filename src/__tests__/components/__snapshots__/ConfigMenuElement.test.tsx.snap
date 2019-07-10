@@ -13,14 +13,11 @@ exports[`ConfigMenuElement tests should render correctly 1`] = `
     Help
   </p>
   <Help problemWith={0} />
-  <Help problemWith={3} />
   <Help problemWith={1} />
   <Help problemWith={2} />
   <Help problemWith={6} />
   <Help problemWith={7} />
   <Help problemWith={8} />
-  <Help problemWith={4} />
-  <Help problemWith={5} />
   <Help problemWith={9} />
 </ConfigMenu>"
 `;
