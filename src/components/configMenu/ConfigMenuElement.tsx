@@ -7,6 +7,7 @@ import {
 } from '../../store/actions/config/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
+import { getVideos } from '../../store/selectors/videoSelectors';
 import ConfigMenu from './ConfigMenu';
 import IUserConfig from './IUserConfig';
 import CanvasMenuItem from './menuItems/CanvasMenuItem';
@@ -20,12 +21,14 @@ export interface IConfigMenuElementProps {
 
 interface IConfigMenuElementMapStateToProps {
     config: IUserConfig;
+    videoCount: number;
 }
 const mapStateToProps = (
     state: IRootStore,
 ): IConfigMenuElementMapStateToProps => {
     return {
         config: getConfig(state),
+        videoCount: getVideos(state).length,
     };
 };
 
@@ -119,7 +122,18 @@ export const ConfigMenuElement = React.memo(
                     color={props.config.irisColor}
                     onInputChange={storeIrisColor}
                 />
-                <CanvasMenuItem name={'Camera Feed'} />
+                {props.config.toggleDebug ? (
+                    props.videoCount > 1 ? (
+                        <>
+                            <CanvasMenuItem name={'L Camera'} videoIndex={0} />
+                            <CanvasMenuItem name={'R Camera'} videoIndex={1} />
+                        </>
+                    ) : (
+                        <CanvasMenuItem name={'Camera'} videoIndex={0} />
+                    )
+                ) : (
+                    null
+                )}
             </ConfigMenu>
         );
     },
