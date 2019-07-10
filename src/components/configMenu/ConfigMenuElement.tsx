@@ -148,13 +148,20 @@ export const ConfigMenuElement = React.memo(
                                 videoIndex={1}
                                 helpWith={HelpWith.RIGHT_VIDEO_STREAM}
                             />
+
+                            <Help problemWith={HelpWith.LEFT_VIDEO_STREAM} />
+                            <Help problemWith={HelpWith.RIGHT_VIDEO_STREAM} />
                         </>
                     ) : (
-                        <CanvasMenuItem
-                            name={'Camera'}
-                            videoIndex={0}
-                            helpWith={HelpWith.VIDEO_STREAM}
-                        />
+                        <>
+                            <CanvasMenuItem
+                                name={'Camera'}
+                                videoIndex={0}
+                                helpWith={HelpWith.VIDEO_STREAM}
+                            />
+
+                            <Help problemWith={HelpWith.VIDEO_STREAM} />
+                        </>
                     )
                 ) : null}
 
@@ -165,14 +172,11 @@ export const ConfigMenuElement = React.memo(
                 </p>
 
                 <Help problemWith={HelpWith.FPS} />
-                <Help problemWith={HelpWith.VIDEO_STREAM} />
                 <Help problemWith={HelpWith.X_SENSITIVITY} />
                 <Help problemWith={HelpWith.Y_SENSITIVITY} />
                 <Help problemWith={HelpWith.SWAP_EYES} />
                 <Help problemWith={HelpWith.IRIS_COLOUR} />
                 <Help problemWith={HelpWith.APP} />
-                <Help problemWith={HelpWith.LEFT_VIDEO_STREAM} />
-                <Help problemWith={HelpWith.RIGHT_VIDEO_STREAM} />
                 <Help problemWith={HelpWith.DEBUG} />
             </ConfigMenu>
         );
