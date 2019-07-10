@@ -91,7 +91,8 @@ export default function Eye(props: IEyeProps) {
                     fill={'url(#reflectionGradient)'}
                     cx={irisAdjustment.innerX + props.pupilRadius * 0.4}
                     cy={props.innerY - props.pupilRadius * 0.4}
-                    transform={'skewX(20) translate(-165, 5)'}
+                    transform={`skewX(20) translate(${(-165 / 960) *
+                        props.width}, ${(5 / 1080) * props.height})`}
                 />
                 <circle
                     className={'outerReflection'}
@@ -100,7 +101,8 @@ export default function Eye(props: IEyeProps) {
                     fill={'url(#reflectionGradient)'}
                     cx={irisAdjustment.innerX + props.scleraRadius * 0.3}
                     cy={props.innerY - props.scleraRadius * 0.3}
-                    transform={'skewX(20) translate(-165, 5)'}
+                    transform={`skewX(20) translate(${(-165 / 960) *
+                        props.width}, ${(5 / 1080) * props.height})`}
                 />
             </g>
 
