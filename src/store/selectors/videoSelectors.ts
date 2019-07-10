@@ -21,8 +21,7 @@ export function getStreamForDevice(
 export function getVideos(
     state: IRootStore,
 ): Array<HTMLVideoElement | undefined> {
-    const videos = getDeviceIds(state).map(
+    return getDeviceIds(state).map(
         (deviceId: string) => state.videoStore.videos[deviceId].video,
     );
-    return videos;
 }
