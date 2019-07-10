@@ -235,7 +235,7 @@ function getCornerShape(props: IEyeProps) {
 }
 
 function getIrisAdjustment(props: IEyeProps) {
-    const minXScale = 0.75;
+    const minXScale = 0.85;
 
     const irisXoffset = props.innerX - props.width / 2;
     const maxIrisXOffset = props.scleraRadius - props.irisRadius;
