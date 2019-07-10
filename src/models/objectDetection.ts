@@ -1,5 +1,5 @@
-import * as ssd from '@tensorflow-models/coco-ssd';
-import * as posenet from '@tensorflow-models/posenet';
+import { DetectedObject as ssdObject } from '@tensorflow-models/coco-ssd';
+import { Pose } from '@tensorflow-models/posenet';
 import { Bbox, DetectionImage } from '../utils/types';
 
 export interface IObjectDetector {
@@ -7,7 +7,9 @@ export interface IObjectDetector {
     detect(image: DetectionImage): Promise<IDetection[]>;
 }
 
-export type DetectedObject = ssd.DetectedObject | posenet.Pose;
+export type DetectedObject = ssdObject | Pose;
+
+export type Detection = ICocoSSDDetection | IPosenetDetection;
 
 export enum DetectionModelType {
     CocoSSD = 'CocoSSD',
@@ -36,7 +38,7 @@ export interface ICocoSSDDetection extends IDetection {
 
 export interface IPosenetDetection extends IDetection {
     model: DetectionModelType.Posenet;
-    info: posenet.Pose;
+    info: Pose;
 }
 
 export interface ICocoInfo {

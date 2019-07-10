@@ -1,13 +1,9 @@
-import {
-    DetectionModelType,
-    ICocoSSDDetection,
-    IDetection,
-} from '../../models/objectDetection';
+import { Detection, DetectionModelType } from '../../models/objectDetection';
 
-export function isPerson(detection: IDetection): boolean {
+export function isPerson(detection: Detection): boolean {
     switch (detection.model) {
         case DetectionModelType.CocoSSD:
-            return (detection as ICocoSSDDetection).info.type === 'person';
+            return detection.info.type === 'person';
         case DetectionModelType.Posenet:
             return true;
         default:
