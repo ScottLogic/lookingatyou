@@ -9,3 +9,7 @@ export function getSelections(state: IRootStore): ISelections {
 export function getTargets(state: IRootStore): ITargets {
     return state.detectionStore.target;
 }
+
+export function getOpenCoefficient(state: IRootStore): number {
+    return state.detectionStore.eyesOpenCoefficient;
+}

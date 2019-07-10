@@ -25,7 +25,10 @@ import {
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getFPS } from '../../store/selectors/configSelectors';
-import { getTargets } from '../../store/selectors/detectionSelectors';
+import {
+    getOpenCoefficient,
+    getTargets,
+} from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import { AppStore } from '../../store/store';
 import CocoSSD from '../../utils/objectDetection/cocoSSD';
@@ -50,6 +53,7 @@ interface IStateProps {
     FPS: number;
     videos: Array<HTMLVideoElement | undefined>;
     targets: ITargets;
+    open: number;
 }
 
 interface IDispatchProps {
@@ -176,6 +180,10 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
             newTargets.left,
         );
 
+        if (this.props.open === eyelidPosition.CLOSED && Math.random() < 0.2) {
+            this.props.setOpenCoefficient(eyelidPosition.OPEN);
+        }
+
         if (leftEyeDist > maxMoveWithoutBlink) {
             this.props.setOpenCoefficient(eyelidPosition.CLOSED);
         }
@@ -205,6 +213,7 @@ const mergeStateToProps = (state: IRootStore) => {
         videos: getVideos(state),
         FPS: getFPS(state),
         targets: getTargets(state),
+        open: getOpenCoefficient(state),
     };
 };
 
