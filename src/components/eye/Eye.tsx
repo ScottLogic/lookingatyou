@@ -160,11 +160,9 @@ export default function Eye(props: IEyeProps) {
             </svg>
             <svg className="BlackFill">
                 <path
-                    d={`M ${0} ${eyeCoords.middleY},
+                    d={`M 0 ${eyeCoords.middleY},
                          L ${eyeCoords.leftX} ${eyeCoords.middleY},
-                         A ${props.scleraRadius} ${props.scleraRadius} 0 0 1 ${
-                        eyeCoords.rightX
-                    } ${eyeCoords.middleY}
+                         A ${props.scleraRadius} ${props.scleraRadius} 0 0 1 ${eyeCoords.rightX} ${eyeCoords.middleY}
                          L ${props.width} ${eyeCoords.middleY},
                          L ${props.width} 0
                          L 0 0`}
