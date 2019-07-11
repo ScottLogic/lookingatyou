@@ -25,7 +25,7 @@ import { IRootStore } from '../../store/reducers/rootReducer';
 import { getFPS } from '../../store/selectors/configSelectors';
 import { getTargets } from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
-import CocoSSD from '../../utils/objectDetection/cocoSSD';
+import Posenet from '../../utils/objectDetection/posenet';
 import select, {
     closerTo,
     closerVerticallyTo,
@@ -65,7 +65,7 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
     }
 
     async componentDidMount() {
-        this.model = await CocoSSD.init();
+        this.model = await Posenet.init();
         this.props.setModelLoaded(true);
         this.detectionInterval = setInterval(
             this.detectionHandler,
