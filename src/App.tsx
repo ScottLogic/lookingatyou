@@ -1,15 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 import './App.css';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
-import DetectionHandler from './components/detectionHandler/DetectionHandler';
 import EyeController from './components/eye/EyeController';
 import MovementHandler from './components/intelligentMovement/MovementHandler';
 import Video from './components/video/Video';
 import { IObjectDetector } from './models/objectDetection';
+import { loadModel } from './store/actions/detections/actions';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds } from './store/selectors/videoSelectors';
 import { AppStore } from './store/store';
+import CocoSSD from './utils/objectDetection/cocoSSD';
 
 interface IAppState {
     width: number;
@@ -33,12 +36,25 @@ interface IAppMapStateToProps {
     model: IObjectDetector | null;
 }
 
-type AppProps = IAppProps & IAppMapStateToProps;
+interface IAppMapDispatchToProps {
+    loadModel: (init: () => Promise<IObjectDetector>) => void;
+}
+
+type AppProps = IAppProps & IAppMapStateToProps & IAppMapDispatchToProps;
 
 const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     return {
         deviceIds: getDeviceIds(state),
         model: state.detectionStore.model,
+    };
+};
+
+const mapDispatchToProps = (
+    dispatch: ThunkDispatch<IRootStore, void, Action>,
+) => {
+    return {
+        loadModel: (init: () => Promise<IObjectDetector>) =>
+            dispatch(loadModel(init)),
     };
 };
 
@@ -88,6 +104,7 @@ export class App extends React.PureComponent<AppProps, IAppState> {
         this.setState({
             webcamAvailable: true,
         });
+        this.props.loadModel(CocoSSD.init);
     }
 
     onUserMediaError() {
@@ -102,8 +119,6 @@ export class App extends React.PureComponent<AppProps, IAppState> {
                         <Video key={key} deviceId={device} />
                     ))}
                 </div>
-
-                {this.state.webcamAvailable && <DetectionHandler />}
 
                 {this.state.webcamAvailable ? (
                     !this.props.model ? (
@@ -132,4 +147,7 @@ export class App extends React.PureComponent<AppProps, IAppState> {
     }
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(App);
