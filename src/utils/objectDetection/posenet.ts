@@ -17,19 +17,7 @@ export default class Posenet implements IObjectDetector {
         return new Posenet(model);
     }
 
-    private constructor(private model: posenet.PoseNet) {}
-
-    async detect(image: DetectionImage): Promise<Detection[]> {
-        const detections = await this.model.estimateMultiplePoses(image, {
-            flipHorizontal: false,
-            maxDetections: 5,
-            scoreThreshold: 0.5,
-            nmsRadius: 20,
-        });
-        return this.reshapeDetections(detections);
-    }
-
-    reshapeDetections(detections: posenet.Pose[]): Detection[] {
+    static reshapeDetections(detections: posenet.Pose[]): Detection[] {
         return detections.map(detection => {
             const box = posenet.getBoundingBox(detection.keypoints);
             return {
@@ -43,5 +31,17 @@ export default class Posenet implements IObjectDetector {
                 info: detection,
             };
         });
+    }
+
+    private constructor(private model: posenet.PoseNet) {}
+
+    async detect(image: DetectionImage): Promise<Detection[]> {
+        const detections = await this.model.estimateMultiplePoses(image, {
+            flipHorizontal: false,
+            maxDetections: 5,
+            scoreThreshold: 0.5,
+            nmsRadius: 20,
+        });
+        return Posenet.reshapeDetections(detections);
     }
 }

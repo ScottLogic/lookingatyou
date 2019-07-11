@@ -1,9 +1,5 @@
-import * as ssd from '@tensorflow-models/coco-ssd';
-import {
-    Detection,
-    DetectionModelType,
-    IObjectDetector,
-} from '../../models/objectDetection';
+import { DetectedObject } from '@tensorflow-models/coco-ssd';
+import { Detection, DetectionModelType } from '../../models/objectDetection';
 import CocoSSD from '../../utils/objectDetection/cocoSSD';
 import { Bbox } from '../../utils/types';
 
@@ -11,7 +7,7 @@ const testBbox: Bbox = [1, 2, 3, 4];
 const testType: string = 'person';
 const testScore: number = 50;
 
-const testInput: ssd.DetectedObject[] = [
+const testInput: DetectedObject[] = [
     {
         bbox: testBbox,
         class: testType,
@@ -28,16 +24,7 @@ const testOutput: Detection[] = [
 ];
 
 describe('CocoSSD', () => {
-    let testCoco: IObjectDetector;
-    beforeAll(async () => {
-        testCoco = await CocoSSD.init();
-    }, 60000);
-
-    it('model should load successfully', () => {
-        expect(testCoco).toBeInstanceOf(CocoSSD);
-    });
-
     it('shapeDetect should return object of shape Detection', () => {
-        expect(testCoco.reshapeDetections(testInput)).toStrictEqual(testOutput);
+        expect(CocoSSD.reshapeDetections(testInput)).toStrictEqual(testOutput);
     });
 });

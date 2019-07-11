@@ -3,7 +3,6 @@ import { Pose } from '@tensorflow-models/posenet';
 import { Bbox, DetectionImage } from '../utils/types';
 
 export interface IObjectDetector {
-    reshapeDetections(detections: DetectedObject[]): Detection[];
     detect(image: DetectionImage): Promise<Detection[]>;
 }
 

@@ -1,12 +1,8 @@
-import * as posenet from '@tensorflow-models/posenet';
-import {
-    Detection,
-    DetectionModelType,
-    IObjectDetector,
-} from '../../models/objectDetection';
+import { getBoundingBox, Pose } from '@tensorflow-models/posenet';
+import { Detection, DetectionModelType } from '../../models/objectDetection';
 import Posenet from '../../utils/objectDetection/posenet';
 
-const testPose: posenet.Pose = {
+const testPose: Pose = {
     score: 50,
     keypoints: [
         {
@@ -150,7 +146,7 @@ const testPose: posenet.Pose = {
 
 const testInput = [testPose];
 
-const box = posenet.getBoundingBox(testPose.keypoints);
+const box = getBoundingBox(testPose.keypoints);
 
 const testOutput: Detection[] = [
     {
@@ -161,18 +157,7 @@ const testOutput: Detection[] = [
 ];
 
 describe('Posenet', () => {
-    let testPosenet: IObjectDetector;
-    beforeAll(async () => {
-        testPosenet = await Posenet.init();
-    }, 60000);
-
-    it('model should load successfully', () => {
-        expect(testPosenet).toBeInstanceOf(Posenet);
-    });
-
     it('shapeDetect should return object of shape Detection', () => {
-        expect(testPosenet.reshapeDetections(testInput)).toStrictEqual(
-            testOutput,
-        );
+        expect(Posenet.reshapeDetections(testInput)).toStrictEqual(testOutput);
     });
 });
