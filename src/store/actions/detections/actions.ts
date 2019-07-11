@@ -11,10 +11,9 @@ import select, {
     closerVerticallyTo,
     leftOf,
 } from '../../../utils/objectSelection/select';
-import calculateTargetPos, {
-    normalise,
-} from '../../../utils/objectTracking/calculateFocus';
-import { ICoords, ITargets } from '../../../utils/types';
+import { calculateNormalisedPos } from '../../../utils/objectTracking/calculateFocus';
+import { ITargets } from '../../../utils/types';
+import { getLargerDistance } from '../../../utils/utils';
 import { IRootStore } from '../../reducers/rootReducer';
 import { getTargets } from '../../selectors/detectionSelectors';
 import { getVideos } from '../../selectors/videoSelectors';
@@ -78,89 +77,90 @@ export function handleDetection() {
     ) => {
         const state = getState();
         const images = getVideos(state);
-        if (images.length === 0) {
+        const model = state.detectionStore.model;
+
+        if (!images[0] || !model) {
             return;
         }
-        const model = state.detectionStore.model;
-        const targets = getTargets(state);
-        if (model) {
-            const leftEyeDetections = await model.detect(images[0]!);
-            const leftEyeSelection = select(
-                leftEyeDetections,
-                closerTo(targets.left),
+        const leftImage = images[0]!;
+
+        const previousTargets = getTargets(state);
+        const leftEyeDetections = await model.detect(leftImage);
+        const leftEyeSelection = select(
+            leftEyeDetections,
+            closerTo(previousTargets.left),
+        );
+
+        if (leftEyeSelection) {
+            const leftTarget = calculateNormalisedPos(
+                leftEyeSelection,
+                leftImage.width,
+                leftImage.height,
             );
-            if (leftEyeSelection) {
-                const leftEyeCoords = calculateTargetPos(leftEyeSelection);
-                let rightEyeDetections = null;
-                let rightEyeSelection = null;
-                const leftTarget = {
-                    x: normalise(leftEyeCoords.x, images[0]!.width),
-                    y: normalise(leftEyeCoords.y, images[0]!.height),
-                };
-                let rightTarget = null;
-                if (images.length >= 2) {
-                    rightEyeDetections = await model.detect(images[1]!);
-                    rightEyeSelection = select(
-                        rightEyeDetections,
-                        closerVerticallyTo(leftEyeSelection[1]),
-                        leftOf(leftEyeSelection[0]),
+
+            let rightEyeDetections = null;
+            let rightEyeSelection = null;
+            let rightTarget = null;
+            if (images[1]) {
+                const rightImage = images[1]!;
+                rightEyeDetections = await model.detect(rightImage);
+                rightEyeSelection = select(
+                    rightEyeDetections,
+                    closerVerticallyTo(leftEyeSelection[1]),
+                    leftOf(leftEyeSelection[0]),
+                );
+                if (rightEyeSelection) {
+                    rightTarget = calculateNormalisedPos(
+                        rightEyeSelection,
+                        rightImage.width,
+                        rightImage.height,
                     );
-                    if (rightEyeSelection) {
-                        const rightEyeCoords = calculateTargetPos(
-                            rightEyeSelection,
-                        );
-                        rightTarget = {
-                            x: normalise(rightEyeCoords.x, images[1]!.width),
-                            y: normalise(rightEyeCoords.y, images[1]!.height),
-                        };
-                        const averageY = rightTarget.y + leftTarget.y;
-                        rightTarget.y = averageY;
-                        leftTarget.y = averageY;
-                    }
+                    rightTarget.y = leftTarget.y =
+                        (rightTarget.y + leftTarget.y) / 2;
                 }
-                const newTargets = {
-                    left: leftTarget,
-                    right: rightTarget,
-                };
-                const leftEyeDist = getLargerDistance(
-                    targets.left,
-                    newTargets.left,
+            }
+            const newTargets = {
+                left: leftTarget,
+                right: rightTarget,
+            };
+            const leftEyeDist = getLargerDistance(
+                previousTargets.left,
+                newTargets.left,
+            );
+
+            if (leftEyeDist > maxMoveWithoutBlink) {
+                dispatch(setOpen(eyelidPosition.CLOSED));
+            }
+
+            if (previousTargets.right && newTargets.right) {
+                const rightEyeDist = getLargerDistance(
+                    previousTargets.right,
+                    newTargets.right,
                 );
 
-                if (leftEyeDist > maxMoveWithoutBlink) {
+                if (rightEyeDist > maxMoveWithoutBlink) {
                     dispatch(setOpen(eyelidPosition.CLOSED));
                 }
-
-                if (targets.right && newTargets.right) {
-                    const rightEyeDist = getLargerDistance(
-                        targets.right,
-                        newTargets.right,
-                    );
-
-                    if (rightEyeDist > maxMoveWithoutBlink) {
-                        dispatch(setOpen(eyelidPosition.CLOSED));
-                    }
-                }
-
-                dispatch(setTarget(newTargets));
-                dispatch(
-                    setDetections({
-                        left: leftEyeDetections,
-                        right: rightEyeDetections,
-                    }),
-                );
-                dispatch(
-                    setSelections({
-                        left: leftEyeSelection,
-                        right:
-                            rightEyeSelection === undefined
-                                ? null
-                                : rightEyeSelection,
-                    }),
-                );
-            } else {
-                dispatch(setDetections({ left: [], right: [] }));
             }
+
+            dispatch(setTarget(newTargets));
+            dispatch(
+                setDetections({
+                    left: leftEyeDetections,
+                    right: rightEyeDetections,
+                }),
+            );
+            dispatch(
+                setSelections({
+                    left: leftEyeSelection,
+                    right:
+                        rightEyeSelection === undefined
+                            ? null
+                            : rightEyeSelection,
+                }),
+            );
+        } else {
+            dispatch(setDetections({ left: [], right: [] }));
         }
     };
 }
@@ -226,11 +226,4 @@ export function setBright(isBright: boolean): ISetBrightAction {
         type: SET_BRIGHT,
         payload: isBright,
     };
-}
-
-function getLargerDistance(old: ICoords, newCoords: ICoords): number {
-    return Math.max(
-        Math.abs(old.x - newCoords.x),
-        Math.abs(old.y - newCoords.y),
-    );
 }
