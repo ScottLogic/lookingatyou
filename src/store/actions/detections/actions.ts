@@ -8,6 +8,7 @@ import {
     ISetBrightAction,
     ISetDetectionsAction,
     ISetDilationAction,
+    ISetIntervalAction,
     ISetLeftAction,
     ISetModelAction,
     ISetOpenAction,
@@ -18,6 +19,7 @@ import {
     SET_BRIGHT,
     SET_DETECTIONS,
     SET_DILATION,
+    SET_INTERVAL,
     SET_LEFT,
     SET_MODEL,
     SET_OPEN,
@@ -33,6 +35,15 @@ export function setModel(model: IObjectDetector): ISetModelAction {
         payload: model,
     };
 }
+
+export function setInterval(id: number): ISetIntervalAction {
+    return {
+        type: SET_INTERVAL,
+        payload: id,
+    };
+}
+
+export function loadModel(dispatch, getState) {}
 
 export function setTarget(target: ITargets): ISetTargetAction {
     return {
