@@ -1,7 +1,7 @@
-export const eyes = {
-    RIGHT: 'right',
-    LEFT: 'left',
-};
+export enum EyeSide {
+    RIGHT = 'RIGHT',
+    LEFT = 'LEFT',
+}
 export const eyelidPosition = {
     OPEN: 0.45,
     CLOSED: 0,
