@@ -32,8 +32,11 @@ import {
 import { getVideos } from '../../store/selectors/videoSelectors';
 import { AppStore } from '../../store/store';
 import CocoSSD from '../../utils/objectDetection/cocoSSD';
-import matchYPosition from '../../utils/objectSelection/rightEyeObjectMatching/matchYPosition';
-import select, { closerTo } from '../../utils/objectSelection/select';
+import select, {
+    closerTo,
+    closerVerticallyTo,
+    leftOf,
+} from '../../utils/objectSelection/select';
 import calculateTargetPos, {
     normalise,
 } from '../../utils/objectTracking/calculateFocus';
@@ -132,9 +135,10 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                 let rightTarget = null;
                 if (images.length >= 2) {
                     rightEyeDetections = await this.model.detect(images[1]);
-                    rightEyeSelection = matchYPosition(
-                        leftEyeSelection,
+                    rightEyeSelection = select(
                         rightEyeDetections,
+                        closerVerticallyTo(leftEyeSelection[1]),
+                        leftOf(leftEyeSelection[0]),
                     );
                     if (rightEyeSelection) {
                         const rightEyeCoords = calculateTargetPos(
