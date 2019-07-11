@@ -108,7 +108,12 @@ npm run lint
 
 Looking At You is automatically deployed to a S3 bucket after each successful merge to the master branch. The project can be accessed [here](https://looking-at-you.s3.amazonaws.com/index.html).
 
-Any branch prepended with `feature/` will also be automatically deployed after passing the required linting check and tests. Feature branches can be accessed at `https://looking-at-you.s3.amazonaws.com/BRANCH_NAME` where `BRANCH_NAME` is the name of the feature branch you are trying to access. These branches are currently not cleaned up when deleted.
+Any branch prepended with `feature/` will also be automatically deployed after passing the required linting check and tests. Feature branches can be accessed at `https://looking-at-you.s3.amazonaws.com/BRANCH_NAME` where `BRANCH_NAME` is the name of the feature branch you are trying to access. Those branches are automatically deleted either in following scenarios:
+
+-   after they are merged to master branch, or
+-   they have been closed without merging.
+
+Please note, that the closed branches are not automatically deleted from AWS after closing them. Instead, they will be deleted during the deployment of any other branch.
 
 In order to deploy the application manually first install all dependencies and build the project:
 

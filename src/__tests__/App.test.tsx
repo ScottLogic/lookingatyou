@@ -37,6 +37,7 @@ describe('App', () => {
                 <ConnectedApp
                     environment={window}
                     configureStream={configureStream}
+                    store={store}
                 />
             </Provider>,
             div,
@@ -51,6 +52,7 @@ describe('App', () => {
                 environment={window}
                 configureStream={configureStream}
                 isModelLoaded={false}
+                store={store}
             />,
         );
         expect(wrapper.find('Connect(Video)')).toHaveLength(2);

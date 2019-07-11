@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import tinycolor from 'tinycolor2';
 import { eyes, transitionTime } from '../../AppConstants';
 import './Eye.css';
 import { getFatigueMultiplier } from './EyeUtils';
-import { innerPath } from './innerPath';
+import { getInnerPath } from './getInnerPath';
 import { Shadows } from './Shadows';
 
 export interface IEyeProps {
@@ -23,227 +23,241 @@ export interface IEyeProps {
 
 const pupilColor = 'black';
 
-export default class Eye extends React.Component<IEyeProps> {
-    private circleTransitionStyle: { transition: string };
-    private eyelidTransitionStyle: { transition: string };
-    private lineTransitionStyle: { transition: string };
-    private fatigueMultiplier: number;
+export default function Eye(props: IEyeProps) {
+    const [fatigueMultiplier, setFatigueMultiplier] = useState(1);
 
-    constructor(props: IEyeProps) {
-        super(props);
+    const circleTransitionStyle = {
+        transition: `r ${transitionTime.dilate}ms, cx ${1000 /
+            props.fps}ms, cy ${1000 / (props.fps * fatigueMultiplier)}ms`, // cx and cy transitions based on FPS
+    };
+    const innerTransitionStyle = {
+        transition: `transform ${1000 / (props.fps * fatigueMultiplier)}ms`,
+    };
+    const eyelidTransitionStyle = {
+        transition: `d ${transitionTime.blink * fatigueMultiplier}ms`,
+    };
+    const lineTransitionStyle = {
+        transition: `d ${1000 / (props.fps * fatigueMultiplier)}ms`,
+    };
+    const eyeCoords = getEyeCoords(props);
+    const bezier = getBezier(props);
+    const cornerShape = getCornerShape(props);
+    const irisAdjustment = getIrisAdjustment(props);
 
-        this.fatigueMultiplier = getFatigueMultiplier();
+    const [innerPath, setInnerPath] = useState(
+        getInnerPath(props.width / 960, props.height / 1080),
+    );
 
-        this.circleTransitionStyle = {
-            transition: `r ${transitionTime.dilate}ms, cx ${1000 /
-                props.fps}ms, cy ${1000 / props.fps}ms`, // cx and cy transitions based on FPS
-        };
-        this.eyelidTransitionStyle = {
-            transition: `d ${transitionTime.blink}ms`,
-        };
-        this.lineTransitionStyle = {
-            transition: `d ${1000 / (props.fps * this.fatigueMultiplier)}ms`,
-        };
-    }
+    useEffect(() => {
+        setInnerPath(getInnerPath(props.width / 960, props.height / 1080));
+        setFatigueMultiplier(getFatigueMultiplier());
+    }, [props.width, props.height]);
 
-    renderCircle(
-        radius: number,
-        name: string,
-        color: string,
-        centerX: number = this.props.width / 2,
-        centerY: number = this.props.height / 2,
-        transform: string = '',
-    ) {
-        return (
+    return (
+        <svg className={props.class} width={props.width} height={props.height}>
             <circle
-                style={this.circleTransitionStyle}
-                r={radius}
-                className={name}
-                fill={color}
-                cx={centerX}
-                cy={centerY}
-                transform={transform}
+                className={'sclera'}
+                style={circleTransitionStyle}
+                r={props.scleraRadius}
+                fill={'url(#scleraGradient)'}
+                cx={props.width / 2}
+                cy={props.height / 2}
             />
-        );
-    }
-
-    renderIrisStyling() {
-        const scale = this.props.width / 960; // component width divided by the width the styling was created at
-        return (
-            <g transform={`scale(${scale})`}>
-                <path
-                    d={`M ${this.props.innerX / scale} ${this.props.innerY /
-                        scale} ${innerPath}`}
-                    fill={tinycolor(this.props.irisColor)
-                        .darken(10)
-                        .toHexString()}
-                    style={this.lineTransitionStyle}
+            <g
+                className="inner"
+                style={innerTransitionStyle}
+                transform={`
+                scale(${irisAdjustment.xScale}, 1)
+                skewX(${irisAdjustment.xSkew})
+                `}
+            >
+                <circle
+                    className={'iris'}
+                    style={circleTransitionStyle}
+                    r={props.irisRadius}
+                    fill={'url(#irisGradient)'}
+                    cx={irisAdjustment.innerX}
+                    cy={props.innerY}
+                />
+                <g className="irisStyling">
+                    <path
+                        d={`M ${irisAdjustment.innerX} ${props.innerY} ${innerPath}`}
+                        fill={tinycolor(props.irisColor)
+                            .darken(10)
+                            .toHexString()}
+                        style={lineTransitionStyle}
+                    />
+                </g>
+                <circle
+                    className={'pupil'}
+                    style={circleTransitionStyle}
+                    r={props.pupilRadius}
+                    fill={pupilColor}
+                    cx={irisAdjustment.innerX}
+                    cy={props.innerY}
+                />
+                <circle
+                    className={'innerReflection'}
+                    style={circleTransitionStyle}
+                    r={props.pupilRadius}
+                    fill={'url(#reflectionGradient)'}
+                    cx={irisAdjustment.innerX + props.pupilRadius * 0.4}
+                    cy={props.innerY - props.pupilRadius * 0.4}
+                    transform={`skewX(20) translate(${(-145 / 960) *
+                        props.width}, ${(5 / 1080) * props.height})`}
+                />
+                <circle
+                    className={'outerReflection'}
+                    style={circleTransitionStyle}
+                    r={props.pupilRadius * 0.75}
+                    fill={'url(#reflectionGradient)'}
+                    cx={irisAdjustment.innerX + props.scleraRadius * 0.3}
+                    cy={props.innerY - props.scleraRadius * 0.3}
+                    transform={`skewX(20) translate(${(-140 / 960) *
+                        props.width}, ${(5 / 1080) * props.height})`}
                 />
             </g>
-        );
-    }
 
-    componentDidUpdate() {
-        this.fatigueMultiplier = getFatigueMultiplier();
-    }
-
-    render() {
-        const eyeMiddleX = this.props.width / 2;
-        const eyeLeft = eyeMiddleX - this.props.scleraRadius;
-        const eyeRight = eyeMiddleX + this.props.scleraRadius;
-        const eyeMiddleY = this.props.height / 2;
-
-        const topEyelidY =
-            eyeMiddleY - this.props.scleraRadius * this.props.openCoefficient;
-        const bottomEyelidY =
-            eyeMiddleY + this.props.scleraRadius * this.props.openCoefficient;
-
-        const bezierCurveConstant = 0.55228474983; // (4/3)tan(pi/8)
-        const bezierControlOffset =
-            this.props.scleraRadius * bezierCurveConstant;
-        const scaledYBezierControlOffset =
-            bezierControlOffset * this.props.openCoefficient;
-        const scaledXBezierControlOffset =
-            bezierControlOffset - scaledYBezierControlOffset;
-        const innerTopCoefficient = 1.45;
-        const innerBottomCoefficient = 1.1;
-        const outerTopCoefficient = 0.7;
-        const outerBottomCoefficient = 0.5;
-        let leftTopCoefficient;
-        let rightTopCoefficient;
-        let leftBottomCoefficient;
-        let rightBottomCoefficient;
-        if (this.props.class === eyes.RIGHT) {
-            leftTopCoefficient = innerTopCoefficient;
-            rightTopCoefficient = outerTopCoefficient;
-            leftBottomCoefficient = innerBottomCoefficient;
-            rightBottomCoefficient = outerBottomCoefficient;
-        } else {
-            leftTopCoefficient = outerTopCoefficient;
-            rightTopCoefficient = innerTopCoefficient;
-            leftBottomCoefficient = outerBottomCoefficient;
-            rightBottomCoefficient = innerBottomCoefficient;
-        }
-        return (
-            <svg
-                className={this.props.class}
-                width={this.props.width}
-                height={this.props.height}
-            >
-                {this.renderCircle(
-                    this.props.scleraRadius,
-                    'sclera',
-                    'url(#scleraGradient)',
-                )}
-                <g className="inner">
-                    {this.renderCircle(
-                        this.props.irisRadius,
-                        'iris',
-                        'url(#irisGradient)',
-                        this.props.innerX,
-                        this.props.innerY,
-                    )}
-                    {this.renderIrisStyling()}
-                    {this.renderCircle(
-                        this.props.pupilRadius * this.props.dilatedCoefficient,
-                        'pupil',
-                        pupilColor,
-                        this.props.innerX,
-                        this.props.innerY,
-                    )}
-                    {this.renderCircle(
-                        this.props.pupilRadius,
-                        'reflection',
-                        'url(#reflectionGradient)',
-                        this.props.innerX + this.props.pupilRadius * 0.4,
-                        this.props.innerY - this.props.pupilRadius * 0.4,
-                        `skewX(20) translate(-165, 0)`,
-                    )}
-                    {this.renderCircle(
-                        this.props.pupilRadius,
-                        'reflection',
-                        'url(#reflectionGradient)',
-                        this.props.innerX + this.props.scleraRadius * 0.3,
-                        this.props.innerY - this.props.scleraRadius * 0.3,
-                        'skewX(20) translate(-165, 5)',
-                    )}
-                </g>
-                <svg className="Eyelids">
-                    <path
-                        style={this.eyelidTransitionStyle}
-                        filter="url(#shadowTop)"
-                        d={
-                            // upper eyelid
-                            `M ${eyeLeft} ${eyeMiddleY},
-                         A ${this.props.scleraRadius} ${
-                                this.props.scleraRadius
-                            } 0 0 1 ${eyeRight} ${eyeMiddleY}
-                         C ${eyeRight -
-                             rightTopCoefficient *
-                                 scaledXBezierControlOffset} ${eyeMiddleY -
-                                scaledYBezierControlOffset},
-                         ${eyeMiddleX +
-                             bezierControlOffset} ${topEyelidY}, ${eyeMiddleX} ${topEyelidY}
-                         C ${eyeMiddleX -
-                             bezierControlOffset} ${topEyelidY}, ${eyeLeft +
-                                leftTopCoefficient *
-                                    scaledXBezierControlOffset} ${eyeMiddleY -
-                                scaledYBezierControlOffset}, ${eyeLeft} ${eyeMiddleY}`
-                        }
-                    />
-                    <path
-                        style={this.eyelidTransitionStyle}
-                        filter="url(#shadowBottom)"
-                        d={
-                            // lower eyelid
-                            `M ${eyeLeft} ${eyeMiddleY},
-                         A ${this.props.scleraRadius} ${
-                                this.props.scleraRadius
-                            } 0 0 0 ${eyeRight} ${eyeMiddleY}
-                         C ${eyeRight -
-                             rightBottomCoefficient *
-                                 scaledXBezierControlOffset} ${eyeMiddleY +
-                                scaledYBezierControlOffset},
-                         ${eyeMiddleX +
-                             bezierControlOffset} ${bottomEyelidY}, ${eyeMiddleX} ${bottomEyelidY}
-                         C ${eyeMiddleX -
-                             bezierControlOffset} ${bottomEyelidY}, ${eyeLeft +
-                                leftBottomCoefficient *
-                                    scaledXBezierControlOffset} ${eyeMiddleY +
-                                scaledYBezierControlOffset}, ${eyeLeft} ${eyeMiddleY}`
-                        }
-                    />
-                </svg>
-                <svg className="BlackFill">
-                    <path
-                        d={
-                            // upper eyelid
-                            `M ${0} ${eyeMiddleY},
-                         L ${eyeLeft} ${eyeMiddleY},
-                         A ${this.props.scleraRadius} ${
-                                this.props.scleraRadius
-                            } 0 0 1 ${eyeRight} ${eyeMiddleY}
-                         L ${this.props.width} ${eyeMiddleY},
-                         L ${this.props.width} 0
-                         L 0 0`
-                        }
-                    />
-                    <path
-                        d={
-                            // upper eyelid
-                            `M ${0} ${eyeMiddleY},
-                         L ${eyeLeft} ${eyeMiddleY},
-                         A ${this.props.scleraRadius} ${
-                                this.props.scleraRadius
-                            } 0 0 0 ${eyeRight} ${eyeMiddleY}
-                         L ${this.props.width} ${eyeMiddleY},
-                         L ${this.props.width} ${this.props.height}
-                         L 0 ${this.props.height}`
-                        }
-                    />
-                </svg>
-                <Shadows openCoefficient={this.props.openCoefficient} />
+            <svg className="Eyelids">
+                <path
+                    style={eyelidTransitionStyle}
+                    filter="url(#shadowTop)"
+                    d={
+                        // upper eyelid
+                        `M ${eyeCoords.leftX} ${eyeCoords.middleY},
+                         A ${props.scleraRadius} ${props.scleraRadius} 0 0 1 ${
+                            eyeCoords.rightX
+                        } ${eyeCoords.middleY}
+                         C ${eyeCoords.rightX -
+                             cornerShape.rightTop *
+                                 bezier.scaledXcontrolOffset} ${eyeCoords.middleY -
+                            bezier.scaledYcontrolOffset},
+                         ${eyeCoords.middleX + bezier.controlOffset} ${
+                            eyeCoords.topEyelidY
+                        }, ${eyeCoords.middleX} ${eyeCoords.topEyelidY}
+                         C ${eyeCoords.middleX - bezier.controlOffset} ${
+                            eyeCoords.topEyelidY
+                        }, ${eyeCoords.leftX +
+                            cornerShape.leftTop *
+                                bezier.scaledXcontrolOffset} ${eyeCoords.middleY -
+                            bezier.scaledYcontrolOffset}, ${eyeCoords.leftX} ${
+                            eyeCoords.middleY
+                        }`
+                    }
+                />
+                <path
+                    style={eyelidTransitionStyle}
+                    filter="url(#shadowBottom)"
+                    d={
+                        // lower eyelid
+                        `M ${eyeCoords.leftX} ${eyeCoords.middleY},
+                         A ${props.scleraRadius} ${props.scleraRadius} 0 0 0 ${
+                            eyeCoords.rightX
+                        } ${eyeCoords.middleY}
+                         C ${eyeCoords.rightX -
+                             cornerShape.rightBottom *
+                                 bezier.scaledXcontrolOffset} ${eyeCoords.middleY +
+                            bezier.scaledYcontrolOffset},
+                         ${eyeCoords.middleX + bezier.controlOffset} ${
+                            eyeCoords.bottomEyelidY
+                        }, ${eyeCoords.middleX} ${eyeCoords.bottomEyelidY}
+                         C ${eyeCoords.middleX - bezier.controlOffset} ${
+                            eyeCoords.bottomEyelidY
+                        }, ${eyeCoords.leftX +
+                            cornerShape.leftBottom *
+                                bezier.scaledXcontrolOffset} ${eyeCoords.middleY +
+                            bezier.scaledYcontrolOffset}, ${eyeCoords.leftX} ${
+                            eyeCoords.middleY
+                        }`
+                    }
+                />
             </svg>
-        );
+            <svg className="BlackFill">
+                <path
+                    d={`M 0 ${eyeCoords.middleY},
+                         L ${eyeCoords.leftX} ${eyeCoords.middleY},
+                         A ${props.scleraRadius} ${props.scleraRadius} 0 0 1 ${eyeCoords.rightX} ${eyeCoords.middleY}
+                         L ${props.width} ${eyeCoords.middleY},
+                         L ${props.width} 0
+                         L 0 0`}
+                />
+                <path
+                    d={`M 0 ${eyeCoords.middleY},
+                         L ${eyeCoords.leftX} ${eyeCoords.middleY},
+                         A ${props.scleraRadius} ${props.scleraRadius} 0 0 0 ${eyeCoords.rightX} ${eyeCoords.middleY}
+                         L ${props.width} ${eyeCoords.middleY},
+                         L ${props.width} ${props.height}
+                         L 0 ${props.height}`}
+                />
+            </svg>
+            <Shadows openCoefficient={props.openCoefficient} />
+        </svg>
+    );
+}
+
+function getEyeCoords(props: IEyeProps) {
+    const middleX = props.width / 2;
+    const leftX = middleX - props.scleraRadius;
+    const rightX = middleX + props.scleraRadius;
+    const middleY = props.height / 2;
+
+    const topEyelidY = middleY - props.scleraRadius * props.openCoefficient;
+    const bottomEyelidY = middleY + props.scleraRadius * props.openCoefficient;
+
+    return {
+        middleX,
+        leftX,
+        rightX,
+        middleY,
+        topEyelidY,
+        bottomEyelidY,
+    };
+}
+
+function getBezier(props: IEyeProps) {
+    const curveConstant = 0.55228474983; // (4/3)tan(pi/8)
+    const controlOffset = props.scleraRadius * curveConstant;
+    const scaledYcontrolOffset = controlOffset * props.openCoefficient;
+    const scaledXcontrolOffset = controlOffset - scaledYcontrolOffset;
+    return { controlOffset, scaledXcontrolOffset, scaledYcontrolOffset };
+}
+
+function getCornerShape(props: IEyeProps) {
+    const innerTopCoefficient = 1.45;
+    const innerBottomCoefficient = 1.1;
+    const outerTopCoefficient = 0.7;
+    const outerBottomCoefficient = 0.5;
+    return props.class === eyes.RIGHT
+        ? {
+              leftTop: innerTopCoefficient,
+              rightTop: outerTopCoefficient,
+              leftBottom: innerBottomCoefficient,
+              rightBottom: outerBottomCoefficient,
+          }
+        : {
+              leftTop: outerTopCoefficient,
+              rightTop: innerTopCoefficient,
+              leftBottom: outerBottomCoefficient,
+              rightBottom: innerBottomCoefficient,
+          };
+}
+
+function getIrisAdjustment(props: IEyeProps) {
+    const minXScale = 0.85;
+
+    const irisXoffset = props.innerX - props.width / 2;
+    const maxIrisXOffset = props.scleraRadius - props.irisRadius;
+    let xDirection = Math.abs(irisXoffset) / irisXoffset;
+    if (isNaN(xDirection)) {
+        xDirection = 0;
     }
+    const xScale = 1 - Math.abs((1 - minXScale) * irisXoffset) / maxIrisXOffset;
+    const xSkew =
+        (((xScale - 1) * (90 * (props.innerY - props.height / 2))) /
+            props.scleraRadius) *
+        xDirection;
+    const innerX =
+        props.innerX +
+        (xDirection * (props.scleraRadius * (1 - xScale))) / xScale;
+    return { xScale, xSkew, innerX };
 }

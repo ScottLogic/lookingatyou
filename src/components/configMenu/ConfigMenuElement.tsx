@@ -9,6 +9,7 @@ import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import ConfigMenu from './ConfigMenu';
+import Help, { HelpWith } from './Help';
 import IUserConfig from './IUserConfig';
 import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
@@ -64,11 +65,11 @@ export const ConfigMenuElement = React.memo(
         function storeSwapEyes(swapEyes: boolean) {
             props.setConfig({ partialConfig: { swapEyes } });
         }
-        function storeToggleDebug(toggleDebug: boolean) {
-            props.setConfig({ partialConfig: { toggleDebug } });
-        }
         function storeIrisColor(irisColor: string) {
             props.setConfig({ partialConfig: { irisColor } });
+        }
+        function storeToggleDebug(toggleDebug: boolean) {
+            props.setConfig({ partialConfig: { toggleDebug } });
         }
         function extractFloatToString(floatString: string): string {
             return `${parseFloat(floatString)}`;
@@ -92,48 +93,91 @@ export const ConfigMenuElement = React.memo(
                     isValidInput={isValidSensitivity}
                     onValidInput={parseAndStoreXSensitivity}
                     parse={extractFloatToString}
+                    helpWith={HelpWith.X_SENSITIVITY}
                 />
+
                 <TextBoxMenuItem
                     name={'Y Sensitivity'}
                     defaultValue={`${props.config.ySensitivity}`}
                     isValidInput={isValidSensitivity}
                     onValidInput={parseAndStoreYSensitivity}
                     parse={extractFloatToString}
+                    helpWith={HelpWith.Y_SENSITIVITY}
                 />
+
                 <TextBoxMenuItem
                     name={'FPS'}
                     defaultValue={`${props.config.fps}`}
                     isValidInput={isValidFPS}
                     onValidInput={parseAndStoreFPS}
                     parse={extractIntToString}
+                    helpWith={HelpWith.FPS}
                 />
+
                 <CheckBoxMenuItem
                     name={'Swap Eyes'}
+                    helpWith={HelpWith.SWAP_EYES}
                     checked={props.config.swapEyes}
                     onInputChange={storeSwapEyes}
                 />
+
+                <ColorMenuItem
+                    name={'Iris Colour'}
+                    color={props.config.irisColor}
+                    onInputChange={storeIrisColor}
+                    helpWith={HelpWith.IRIS_COLOUR}
+                />
+
                 <CheckBoxMenuItem
                     name={'Toggle Debug'}
+                    helpWith={HelpWith.DEBUG}
                     checked={props.config.toggleDebug}
                     onInputChange={storeToggleDebug}
                 />
-                <ColorMenuItem
-                    name={'Iris Color'}
-                    color={props.config.irisColor}
-                    onInputChange={storeIrisColor}
-                />
+
                 {props.config.toggleDebug ? (
                     props.videoCount > 1 ? (
                         <>
-                            <CanvasMenuItem name={'L Camera'} videoIndex={0} />
-                            <CanvasMenuItem name={'R Camera'} videoIndex={1} />
+                            <CanvasMenuItem
+                                name={'L Camera'}
+                                videoIndex={0}
+                                helpWith={HelpWith.LEFT_VIDEO_STREAM}
+                            />
+                            <CanvasMenuItem
+                                name={'R Camera'}
+                                videoIndex={1}
+                                helpWith={HelpWith.RIGHT_VIDEO_STREAM}
+                            />
+
+                            <Help problemWith={HelpWith.LEFT_VIDEO_STREAM} />
+                            <Help problemWith={HelpWith.RIGHT_VIDEO_STREAM} />
                         </>
                     ) : (
-                        <CanvasMenuItem name={'Camera'} videoIndex={0} />
+                        <>
+                            <CanvasMenuItem
+                                name={'Camera'}
+                                videoIndex={0}
+                                helpWith={HelpWith.VIDEO_STREAM}
+                            />
+
+                            <Help problemWith={HelpWith.VIDEO_STREAM} />
+                        </>
                     )
-                ) : (
-                    null
-                )}
+                ) : null}
+
+                <br />
+
+                <p data-tip={true} data-for={HelpWith[HelpWith.APP]}>
+                    Help
+                </p>
+
+                <Help problemWith={HelpWith.FPS} />
+                <Help problemWith={HelpWith.X_SENSITIVITY} />
+                <Help problemWith={HelpWith.Y_SENSITIVITY} />
+                <Help problemWith={HelpWith.SWAP_EYES} />
+                <Help problemWith={HelpWith.IRIS_COLOUR} />
+                <Help problemWith={HelpWith.APP} />
+                <Help problemWith={HelpWith.DEBUG} />
             </ConfigMenu>
         );
     },

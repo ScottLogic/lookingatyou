@@ -1,65 +1,63 @@
-import { IDetection } from '../../models/objectDetection';
-import select, { closerTo } from '../../utils/objectSelection/select';
-import { Bbox } from '../../utils/types';
-describe('selectClosest', () => {
+import { IDetection } from '../../../models/objectDetection';
+import select, { largerThan } from '../../../utils/objectSelection/select';
+import { Bbox } from '../../../utils/types';
+describe('selectLargest', () => {
+    const selectLargest: (
+        detections: IDetection[],
+    ) => Bbox | undefined = detections => select(detections, largerThan);
+
     it('return undefined for no  detections', () => {
-        const selectClosest: (ds: IDetection[]) => Bbox | undefined = ds =>
-            select(ds, closerTo({ x: 0, y: 0 }));
         const detections: IDetection[] = [];
-        expect(selectClosest(detections)).toBe(undefined);
+        expect(selectLargest(detections)).toBe(undefined);
     });
     it('return undefined for no person detections', () => {
-        const selectClosest: (ds: IDetection[]) => Bbox | undefined = ds =>
-            select(ds, closerTo({ x: 0, y: 0 }));
         const detections: IDetection[] = [
             {
                 bbox: [10, 20, 30, 400],
                 info: { type: 'giraffe', certainty: 100 },
             },
         ];
-        expect(selectClosest(detections)).toBe(undefined);
+        expect(selectLargest(detections)).toBe(undefined);
     });
-    it('return bounding box closest to point', () => {
+    it('return largest bounding box that belongs to a person', () => {
         const detections: IDetection[] = [
             {
-                bbox: [160, 20, 0, 450],
+                bbox: [160, 20, 340, 400],
                 info: { type: 'person', certainty: 100 },
             },
             {
-                bbox: [10, 206, 0, 40],
+                bbox: [10, 206, 53, 200],
                 info: { type: 'person', certainty: 100 },
             },
             {
-                bbox: [100, 20, 50, 0],
+                bbox: [10, 20, 1000, 999],
                 info: { type: 'person', certainty: 100 },
             },
             {
-                bbox: [120, 2300, 0, 70],
+                bbox: [10, 200, 53, 4],
                 info: { type: 'person', certainty: 100 },
             },
             {
-                bbox: [300, 290, 360, 0],
+                bbox: [0, 20, 3000, 3000],
                 info: { type: 'giraffe', certainty: 100 },
             },
             {
-                bbox: [10, 550, 0, 0],
+                bbox: [10, 0, 30, 1],
                 info: { type: 'person', certainty: 100 },
             },
             {
-                bbox: [10, 50, 10, 110],
+                bbox: [10, 0, 1000, 1000],
                 info: { type: 'person', certainty: 100 },
             },
             {
-                bbox: [305, 295, 5, 5],
+                bbox: [0, 20, 30, 400],
                 info: { type: 'person', certainty: 100 },
             },
             {
-                bbox: [0, 0, 0, 110],
+                bbox: [0, 0, 30, 400],
                 info: { type: 'person', certainty: 100 },
             },
         ];
-        const selectClosest: (ds: IDetection[]) => Bbox | undefined = ds =>
-            select(ds, closerTo({ x: 300, y: 290 }));
-        expect(selectClosest(detections)).toStrictEqual([305, 295, 5, 5]);
+        expect(selectLargest(detections)).toStrictEqual([10, 0, 1000, 1000]);
     });
 });
