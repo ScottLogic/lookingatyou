@@ -9,7 +9,9 @@ export default function select(
     filter?: (d: Detection) => boolean,
 ): Bbox | undefined {
     const personBboxes: Bbox[] = detections
-        .filter(detection => isPerson(detection))
+        .filter(
+            detection => isPerson(detection) && (!filter || filter(detection)),
+        )
         .map(detection => detection.bbox);
     return personBboxes.reduce<Bbox | undefined>(
         (best, current) =>

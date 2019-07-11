@@ -1,10 +1,6 @@
-import {
-    Detection,
-    DetectionModelType,
-    ICocoSSDDetection,
-} from '../../models/objectDetection';
-import select, { largerThan } from '../../utils/objectSelection/select';
-import { Bbox } from '../../utils/types';
+import { Detection, DetectionModelType } from '../../../models/objectDetection';
+import select, { largerThan } from '../../../utils/objectSelection/select';
+import { Bbox } from '../../../utils/types';
 describe('selectLargest', () => {
     const selectLargest: (
         detections: Detection[],
@@ -15,7 +11,7 @@ describe('selectLargest', () => {
         expect(selectLargest(detections)).toBe(undefined);
     });
     it('return undefined for no person detections', () => {
-        const detections: ICocoSSDDetection[] = [
+        const detections: Detection[] = [
             {
                 model: DetectionModelType.CocoSSD,
                 bbox: [10, 20, 30, 400],
@@ -25,7 +21,7 @@ describe('selectLargest', () => {
         expect(selectLargest(detections)).toBe(undefined);
     });
     it('return largest bounding box that belongs to a person', () => {
-        const detections: ICocoSSDDetection[] = [
+        const detections: Detection[] = [
             {
                 model: DetectionModelType.CocoSSD,
                 bbox: [160, 20, 340, 400],

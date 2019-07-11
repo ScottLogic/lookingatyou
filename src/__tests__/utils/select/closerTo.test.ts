@@ -2,9 +2,9 @@ import {
     Detection,
     DetectionModelType,
     ICocoSSDDetection,
-} from '../../models/objectDetection';
-import select, { closerTo } from '../../utils/objectSelection/select';
-import { Bbox } from '../../utils/types';
+} from '../../../models/objectDetection';
+import select, { closerTo } from '../../../utils/objectSelection/select';
+import { Bbox } from '../../../utils/types';
 describe('selectClosest', () => {
     it('return undefined for no  detections', () => {
         const selectClosest: (ds: Detection[]) => Bbox | undefined = ds =>
