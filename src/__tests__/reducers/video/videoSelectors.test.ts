@@ -41,8 +41,8 @@ describe('Video Selectors', () => {
         );
         mockRootStore = {
             videoStore: mockVideoStore,
-            configStore: initialConfigState,
-            detectionStore: initialDetectionState,
+            configStore: initialConfigStore,
+            detectionStore: initialDetectionStore,
         };
     });
 
