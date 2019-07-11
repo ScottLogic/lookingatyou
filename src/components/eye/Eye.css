@@ -9,3 +9,7 @@
     stroke: black;
     stroke-width: 2;
 }
+
+.inner {
+    transform-origin: center;
+}
