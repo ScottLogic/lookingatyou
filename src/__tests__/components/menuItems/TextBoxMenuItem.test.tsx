@@ -1,23 +1,24 @@
 import { mount, shallow } from 'enzyme';
 import React from 'react';
+import Help, { HelpWith } from '../../../components/configMenu/Help';
 import TextBoxMenuItem, {
     ITextBoxMenuItemProps,
 } from '../../../components/configMenu/menuItems/TextBoxMenuItem';
 
 let props: ITextBoxMenuItemProps;
-let mockIsValidInput: jest.Mock;
 let mockParse: jest.Mock;
 
 describe('TextBoxMenuItem tests', () => {
     beforeEach(() => {
-        mockIsValidInput = jest.fn();
         mockParse = jest.fn();
         props = {
             name: 'test',
             defaultValue: '30',
-            isValidInput: mockIsValidInput,
             onValidInput: jest.fn(),
-            parse: mockParse,
+            configName: 'test',
+            validRegex: /^[0-9]+$/,
+            configParse: jest.fn(),
+            helpWith: HelpWith.FPS,
         };
     });
 
@@ -26,25 +27,15 @@ describe('TextBoxMenuItem tests', () => {
         expect(wrapper).toMatchSnapshot();
     });
 
-    it('should call isValidInput', () => {
-        const value = '25';
-        mockIsValidInput.mockReturnValue(false);
-        const wrapper = mount(<TextBoxMenuItem {...props} />);
-        wrapper.find('input').simulate('change', { target: value });
-        expect(wrapper.get(0).props.isValidInput).toHaveBeenCalled();
-    });
-
     it('should call onValidInput when input is valid', () => {
-        const value = '1';
-        mockIsValidInput.mockReturnValue(true);
+        const value = '5';
         const wrapper = mount(<TextBoxMenuItem {...props} />);
-        wrapper.find('input').simulate('change', { target: value });
+        wrapper.find('input').simulate('change', { target: { value } });
         expect(wrapper.get(0).props.onValidInput).toHaveBeenCalled();
     });
 
     it('onBlur should reset input to last valid value when invalid value has been entered', () => {
-        const value = '1';
-        mockIsValidInput.mockReturnValue(false);
+        const value = 'test';
         mockParse.mockReturnValue(props.defaultValue);
         const wrapper = mount(<TextBoxMenuItem {...props} />);
         wrapper.find('input').simulate('focus');

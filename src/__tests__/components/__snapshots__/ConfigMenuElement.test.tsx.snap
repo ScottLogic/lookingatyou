@@ -2,12 +2,12 @@
 
 exports[`ConfigMenuElement tests should render correctly 1`] = `
 "<ConfigMenu width=\\"14em\\" timerLength={1000} window={{...}}>
-  <Memo() name=\\"X Sensitivity\\" defaultValue=\\"1\\" isValidInput={[Function: isValidSensitivity]} onValidInput={[Function: parseAndStoreXSensitivity]} parse={[Function: extractFloatToString]} helpWith={1} />
-  <Memo() name=\\"Y Sensitivity\\" defaultValue=\\"1\\" isValidInput={[Function: isValidSensitivity]} onValidInput={[Function: parseAndStoreYSensitivity]} parse={[Function: extractFloatToString]} helpWith={2} />
-  <Memo() name=\\"FPS\\" defaultValue=\\"30\\" isValidInput={[Function: isValidFPS]} onValidInput={[Function: parseAndStoreFPS]} parse={[Function: extractIntToString]} helpWith={0} />
-  <Memo() name=\\"Swap Eyes\\" helpWith={6} checked={false} onInputChange={[Function: storeSwapEyes]} />
-  <Memo() name=\\"Iris Colour\\" color=\\"blue\\" onInputChange={[Function: storeIrisColor]} helpWith={7} />
-  <Memo() name=\\"Toggle Debug\\" helpWith={9} checked={false} onInputChange={[Function: storeToggleDebug]} />
+  <Memo() name=\\"X Sensitivity\\" configName=\\"xSensitivity\\" validRegex={{...}} defaultValue=\\"1\\" onValidInput={[Function: mockConstructor]} configParse={[Function: parseFloat]} helpWith={1} />
+  <Memo() name=\\"Y Sensitivity\\" configName=\\"ySensitivity\\" validRegex={{...}} defaultValue=\\"1\\" onValidInput={[Function: mockConstructor]} configParse={[Function: parseFloat]} helpWith={2} />
+  <Memo() name=\\"FPS\\" configName=\\"fps\\" validRegex={{...}} defaultValue=\\"30\\" onValidInput={[Function: mockConstructor]} configParse={[Function: parseInt]} helpWith={0} />
+  <Memo() name=\\"Swap Eyes\\" configName=\\"swapEyes\\" helpWith={6} checked={false} onInputChange={[Function: mockConstructor]} />
+  <Memo() name=\\"Iris Colour\\" configName=\\"irisColor\\" color=\\"blue\\" onInputChange={[Function: mockConstructor]} helpWith={7} />
+  <Memo() name=\\"Toggle Debug\\" configName=\\"toggleDebug\\" helpWith={9} checked={false} onInputChange={[Function: mockConstructor]} />
   <br />
   <p data-tip={true} data-for=\\"APP\\">
     Help
