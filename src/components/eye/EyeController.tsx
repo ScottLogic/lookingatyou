@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { connect, Provider, useDispatch } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import {
     eyelidPosition,
     EyeSide,
