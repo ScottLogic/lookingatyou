@@ -52,6 +52,7 @@ export function loadModel(init: () => Promise<IObjectDetector>) {
     return async (dispatch: ThunkDispatch<IRootStore, void, Action>) => {
         const model = await init();
         dispatch(setModel(model));
+        dispatch(restartDetection());
     };
 }
 
@@ -63,7 +64,7 @@ export function restartDetection() {
         const state = getState();
         clearInterval(state.detectionStore.detectionInterval);
         const id = setInterval(
-            () => dispatch(handleDetection),
+            () => dispatch(handleDetection()),
             1000 / state.configStore.config.fps,
         );
         dispatch({ type: 'SET_INTERVAL', payload: id });
