@@ -1,9 +1,11 @@
 import React from 'react';
+import { ISetConfigPayload } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 
 export interface ICheckBoxMenuItemProps {
     name: string;
-    onInputChange: (checked: boolean) => void;
+    configName: string;
+    onInputChange: (payload: ISetConfigPayload) => void;
     checked: boolean;
     helpWith: HelpWith;
 }
@@ -11,7 +13,9 @@ export interface ICheckBoxMenuItemProps {
 const CheckBoxMenuItem = React.memo(
     (props: ICheckBoxMenuItemProps) => {
         function onChange(event: React.ChangeEvent<HTMLInputElement>) {
-            props.onInputChange(event.target.checked);
+            props.onInputChange({
+                partialConfig: { [props.configName]: event.target.checked },
+            });
         }
         return (
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>

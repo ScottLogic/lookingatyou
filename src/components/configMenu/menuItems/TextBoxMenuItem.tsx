@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { ISetConfigPayload } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 
 export interface ITextBoxMenuItemProps {
     name: string;
-    isValidInput: (text: string) => boolean;
-    onValidInput: (text: string) => void;
+    configName: string;
+    validRegex: RegExp;
+    onValidInput: (payload: ISetConfigPayload) => void;
     defaultValue: string;
-    parse: (text: string) => string;
+    configParse: (text: string) => number;
     helpWith: HelpWith;
 }
 const TextBoxMenuItem = React.memo(
@@ -19,20 +21,27 @@ const TextBoxMenuItem = React.memo(
         useEffect(() => {
             setValue(props.defaultValue);
         }, [props.defaultValue, setValue]);
-        function onBlur(event: React.FocusEvent<HTMLInputElement>) {
-            setValue(props.parse(lastValidValue));
+
+        function onBlur() {
+            setValue(lastValidValue);
             setIsValid(true);
         }
+
         function onChange(event: React.ChangeEvent<HTMLInputElement>) {
             const newValue = event.target.value;
             setValue(newValue);
-            const newIsValid = props.isValidInput(event.target.value);
+            const newIsValid = props.validRegex.test(newValue);
             setIsValid(newIsValid);
             if (newIsValid) {
                 setLastValidValue(newValue);
-                props.onValidInput(newValue);
+                props.onValidInput({
+                    partialConfig: {
+                        [props.configName]: props.configParse(newValue),
+                    },
+                });
             }
         }
+
         return (
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>
                 <label>{props.name}</label>
