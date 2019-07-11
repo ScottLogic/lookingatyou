@@ -2,8 +2,8 @@ import {
     Detection,
     DetectionModelType,
     ICocoSSDDetection,
-} from '../../models/objectDetection';
-import select, { first } from '../../utils/objectSelection/select';
+} from '../../../models/objectDetection';
+import select, { first } from '../../../utils/objectSelection/select';
 
 const notPerson: ICocoSSDDetection = {
     model: DetectionModelType.CocoSSD,
