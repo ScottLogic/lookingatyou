@@ -267,9 +267,18 @@ function getIrisAdjustment(props: IEyeProps, previousAngle: number = 0) {
         ) *
             180) /
         Math.PI;
-    while (angle - previousAngle < 0) {
+    let shouldScaleX = true;
+    while (angle - previousAngle < -90) {
         angle = angle + 180;
+        shouldScaleX = !shouldScaleX;
     }
-    console.log(angle);
-    return { scale, angle };
+    while (angle - previousAngle >= 90) {
+        angle = angle - 180;
+        shouldScaleX = !shouldScaleX;
+    }
+
+    return {
+        scale,
+        angle,
+    };
 }
