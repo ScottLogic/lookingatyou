@@ -95,22 +95,18 @@ export default function Eye(props: IEyeProps) {
                 <circle
                     className={'innerReflection'}
                     style={circleTransitionStyle}
-                    r={props.pupilRadius}
+                    r={props.pupilRadius * 0.75}
                     fill={'url(#reflectionGradient)'}
-                    cx={irisAdjustment.innerX + props.pupilRadius * 0.4}
-                    cy={props.innerY - props.pupilRadius * 0.4}
-                    transform={`skewX(20) translate(${(-145 / 960) *
-                        props.width}, ${(5 / 1080) * props.height})`}
+                    cx={irisAdjustment.innerX + props.pupilRadius * 0.68}
+                    cy={props.innerY - props.pupilRadius * 0.68}
                 />
                 <circle
                     className={'outerReflection'}
                     style={circleTransitionStyle}
-                    r={props.pupilRadius * 0.75}
+                    r={props.pupilRadius}
                     fill={'url(#reflectionGradient)'}
-                    cx={irisAdjustment.innerX + props.scleraRadius * 0.3}
-                    cy={props.innerY - props.scleraRadius * 0.3}
-                    transform={`skewX(20) translate(${(-140 / 960) *
-                        props.width}, ${(5 / 1080) * props.height})`}
+                    cx={irisAdjustment.innerX + props.irisRadius * 0.7}
+                    cy={props.innerY - props.irisRadius * 0.7}
                 />
             </g>
 
