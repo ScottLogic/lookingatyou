@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import tinycolor from 'tinycolor2';
-import { EyeSide, transitionTime } from '../../AppConstants';
+import { EyeSide, irisSkewFactor, transitionTime } from '../../AppConstants';
 import './Eye.css';
+import { getMaxDisplacement } from './EyeUtils';
 import { getInnerPath } from './getInnerPath';
 import { Shadows } from './Shadows';
 
@@ -25,8 +26,8 @@ const pupilColor = 'black';
 export default function Eye(props: IEyeProps) {
     const circleTransitionStyle = {
         transition: `r ${transitionTime.dilate}ms, cx ${1000 /
-            props.fps}ms, cy ${1000 / props.fps}ms, transform ${1000 /
-            props.fps}ms`, // cx and cy transitions based on FPS
+            props.fps}ms, cy ${1000 / props.fps}ms,
+            transform ${1000 / props.fps}ms`, // cx and cy transitions based on FPS
     };
     const innerTransitionStyle = {
         transition: `transform ${1000 / props.fps}ms`,
@@ -40,15 +41,19 @@ export default function Eye(props: IEyeProps) {
     const eyeCoords = getEyeCoords(props);
     const bezier = getBezier(props);
     const cornerShape = getCornerShape(props);
-    const irisAdjustment = getIrisAdjustment(props);
 
     const [innerPath, setInnerPath] = useState(
         getInnerPath(props.width / 960, props.height / 1080),
     );
+    const [irisAdjustment, setIrisAdjustment] = useState({
+        scale: 1,
+        angle: 0,
+    });
 
     useEffect(() => {
         setInnerPath(getInnerPath(props.width / 960, props.height / 1080));
-    }, [props.width, props.height]);
+        setIrisAdjustment(getIrisAdjustment(props, irisAdjustment.angle));
+    }, [props, irisAdjustment, innerPath]);
 
     return (
         <svg className={props.class} width={props.width} height={props.height}>
@@ -240,25 +245,31 @@ function getCornerShape(props: IEyeProps) {
           };
 }
 
-function getIrisAdjustment(props: IEyeProps) {
-    const minScale = 0.85;
-
+function getIrisAdjustment(props: IEyeProps, previousAngle: number = 0) {
     const displacement = Math.hypot(
         props.innerX - props.width / 2,
         props.innerY - props.height / 2,
     );
-    const maxDisplacement = props.scleraRadius - props.irisRadius;
+    const maxDisplacement = getMaxDisplacement(
+        props.scleraRadius,
+        props.irisRadius,
+    );
 
     const scale =
-        minScale +
-        ((1 - minScale) * (maxDisplacement - displacement)) / maxDisplacement;
+        irisSkewFactor +
+        ((1 - irisSkewFactor) * (maxDisplacement - displacement)) /
+            maxDisplacement;
 
-    const angle =
+    let angle =
         (Math.atan2(
             props.innerY - props.height / 2,
             props.innerX - props.width / 2,
         ) *
             180) /
         Math.PI;
+    while (angle - previousAngle < 0) {
+        angle = angle + 180;
+    }
+    console.log(angle);
     return { scale, angle };
 }

@@ -29,3 +29,4 @@ export const transitionTime = {
 };
 export const neutralBlinkFrequency = 0.25;
 export const maxMoveWithoutBlink = 0.5;
+export const irisSkewFactor = 0.8;

@@ -12,6 +12,7 @@ import { getConfig } from '../../store/selectors/configSelectors';
 import { ICoords, ITargets } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
+import { getMaxDisplacement } from './EyeUtils';
 import { Gradients } from './Gradients';
 interface IEyeControllerProps {
     width: number;
@@ -71,7 +72,10 @@ export const EyeController = React.memo(
         const pupilRadius = props.width / 24;
 
         const getEyeCoords = (target: ICoords): ICoords => {
-            const maxDisplacement = scleraRadius - irisRadius;
+            const maxDisplacement = getMaxDisplacement(
+                scleraRadius,
+                irisRadius,
+            );
             const targetY = target.y * props.config.ySensitivity;
             const targetX = -target.x * props.config.xSensitivity; // mirrored
             const polarDistance = Math.hypot(targetY, targetX);
