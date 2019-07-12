@@ -87,7 +87,7 @@ export default function Eye(props: IEyeProps) {
                 <circle
                     className={'pupil'}
                     style={circleTransitionStyle}
-                    r={props.pupilRadius}
+                    r={props.pupilRadius * props.dilatedCoefficient}
                     fill={pupilColor}
                     cx={irisAdjustment.innerX}
                     cy={props.innerY}

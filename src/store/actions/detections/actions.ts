@@ -1,25 +1,15 @@
 import { IDetections, ISelections } from '../../../models/objectDetection';
 import { ITargets } from '../../../utils/types';
 import {
-    ISetBrightAction,
     ISetDetectionsAction,
-    ISetDilationAction,
-    ISetLeftAction,
     ISetLoadedAction,
     ISetOpenAction,
-    ISetPersonAction,
     ISetSelectionsAction,
-    ISetSquintAction,
     ISetTargetAction,
-    SET_BRIGHT,
     SET_DETECTIONS,
-    SET_DILATION,
-    SET_LEFT,
     SET_MODEL_LOADED,
     SET_OPEN,
-    SET_PERSON,
     SET_SELECTIONS,
-    SET_SQUINT,
     SET_TARGET,
 } from './types';
 
@@ -51,44 +41,9 @@ export function setSelections(selections: ISelections): ISetSelectionsAction {
     };
 }
 
-export function setLeft(left: boolean): ISetLeftAction {
-    return {
-        type: SET_LEFT,
-        payload: left,
-    };
-}
-
-export function setDilation(dilation: number): ISetDilationAction {
-    return {
-        type: SET_DILATION,
-        payload: dilation,
-    };
-}
-
 export function setOpen(openCoefficient: number): ISetOpenAction {
     return {
         type: SET_OPEN,
         payload: openCoefficient,
-    };
-}
-
-export function setDetected(person: boolean): ISetPersonAction {
-    return {
-        type: SET_PERSON,
-        payload: person,
-    };
-}
-
-export function setSquinting(isSquinting: boolean): ISetSquintAction {
-    return {
-        type: SET_SQUINT,
-        payload: isSquinting,
-    };
-}
-
-export function setBright(isBright: boolean): ISetBrightAction {
-    return {
-        type: SET_BRIGHT,
-        payload: isBright,
     };
 }

@@ -39,7 +39,6 @@ describe('Eye Controller', () => {
             dilation: 1,
             openCoefficient: 0.45,
             detected: true,
-            tooBright: false,
             videos: [],
         };
     });

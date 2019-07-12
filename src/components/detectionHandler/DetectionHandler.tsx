@@ -41,7 +41,6 @@ import calculateTargetPos, {
     normalise,
 } from '../../utils/objectTracking/calculateFocus';
 import { DetectionImage, ICoords, ITargets } from '../../utils/types';
-import { checkSelection } from '../intelligentMovement/MovementHandler';
 
 interface IDetectionHandlerProps {
     modelConfig: ModelConfig;
@@ -171,7 +170,6 @@ export class DetectionHandler extends React.Component<DetectionHandlerProps> {
                 this.props.setDetections({ left: [], right: [] });
             }
         }
-        checkSelection(this.props.store);
     }
 
     blinkOnLargeMove(newTargets: ITargets) {

@@ -2,6 +2,6 @@
 
 exports[`Eye Controller should render correctly 1`] = `
 "<ContextProvider value={{...}}>
-  <Memo() width={500} height={500} environment={{...}} target={{...}} config={{...}} dilation={1} openCoefficient={0.45} detected={true} tooBright={false} videos={{...}} />
+  <Memo() width={500} height={500} environment={{...}} target={{...}} config={{...}} dilation={1} openCoefficient={0.45} detected={true} videos={{...}} />
 </ContextProvider>"
 `;

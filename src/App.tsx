@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import './App.css';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import DetectionHandler from './components/detectionHandler/DetectionHandler';
-import EyeController from './components/eye/EyeController';
+import MovementHandler from './components/intelligentMovement/MovementHandler';
 import Video from './components/video/Video';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds } from './store/selectors/videoSelectors';
@@ -114,7 +114,8 @@ export class App extends React.PureComponent<AppProps, IAppState> {
                         <div className="loading-spinner" />
                     ) : (
                         <div>
-                            <EyeController
+                            <MovementHandler
+                                document={document}
                                 width={this.state.width}
                                 height={this.state.height}
                                 environment={this.props.environment}

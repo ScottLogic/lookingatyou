@@ -11,5 +11,5 @@ export function getTargets(state: IRootStore): ITargets {
 }
 
 export function getOpenCoefficient(state: IRootStore): number {
-    return state.detectionStore.eyesOpenCoefficient;
+    return state.detectionStore.openCoefficient;
 }
