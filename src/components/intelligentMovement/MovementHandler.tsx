@@ -35,10 +35,6 @@ interface IDispatchProps {
 }
 
 interface IMovementState {
-    tooBright: boolean;
-    left: boolean;
-    personDetected: boolean;
-    squinting: boolean;
     dilationCoefficient: number;
 }
 
@@ -52,20 +48,24 @@ export class MovementHandler extends React.Component<
 > {
     private movementInterval: number;
     private sleepTimeout: NodeJS.Timeout | null;
+    private tooBright: boolean;
+    private left: boolean;
+    private squinting: boolean;
+    private personDetected: boolean;
 
     constructor(props: MovementHandlerProps) {
         super(props);
 
         this.state = {
-            tooBright: false,
-            left: true,
-            personDetected: false,
-            squinting: false,
             dilationCoefficient: pupilSizes.neutral,
         };
 
         this.movementInterval = 0;
         this.sleepTimeout = null;
+        this.tooBright = false;
+        this.left = false;
+        this.personDetected = false;
+        this.squinting = false;
 
         this.animateEye = this.animateEye.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
@@ -114,20 +114,16 @@ export class MovementHandler extends React.Component<
         if (this.props.videos[0]) {
             const { tooBright, scaledPupilSize } = checkLight(
                 window.document,
-                this.state.tooBright,
+                this.tooBright,
                 this.props.videos[0] as HTMLVideoElement,
                 analyseLight,
             );
 
             if (tooBright) {
-                this.setState({
-                    tooBright: true,
-                });
+                this.tooBright = true;
                 this.props.setOpen(eyelidPosition.CLOSED);
-            } else if (this.state.tooBright) {
-                this.setState({
-                    tooBright: false,
-                });
+            } else if (this.tooBright) {
+                this.tooBright = false;
                 this.props.setOpen(eyelidPosition.OPEN);
             }
             this.setState({ dilationCoefficient: scaledPupilSize });
@@ -135,14 +131,14 @@ export class MovementHandler extends React.Component<
     }
 
     checkSelection() {
+        let target = this.props.target;
+
         const selection = this.props.detections.left.find(detection => {
             return detection.info.type === 'person';
         });
 
-        if (this.state.squinting && Math.random() < 0.1) {
-            this.setState({
-                squinting: false,
-            });
+        if (this.squinting && Math.random() < 0.1) {
+            this.squinting = false;
             this.props.setOpen(eyelidPosition.OPEN);
         }
 
@@ -155,49 +151,52 @@ export class MovementHandler extends React.Component<
 
         if (selection) {
             this.wake();
-            if (this.state.squinting) {
+
+            if (this.squinting) {
                 this.props.setOpen(eyelidPosition.OPEN);
             }
+
             this.isNewTarget();
         } else {
             this.sleep();
             this.hasTargetLeft();
 
             if (Math.abs(this.props.target.left.x) > 1) {
-                this.props.setTarget({
+                target = {
                     left: {
                         x: 0,
                         y: this.props.target.left.y,
                     },
                     right: null,
-                });
+                };
             }
 
             const { newX, left } = naturalMovement(
                 this.props.target.left.x,
-                this.state.left,
+                this.left,
             );
 
-            this.props.setTarget({ left: { x: newX, y: 0 }, right: null });
+            target = { left: { x: newX, y: 0 }, right: null };
+            this.props.setTarget(target);
 
-            this.setState({ left });
+            this.left = left;
         }
     }
 
     isNewTarget() {
-        if (!this.state.personDetected) {
+        if (!this.personDetected) {
+            this.personDetected = true;
             this.setState({
-                personDetected: true,
                 dilationCoefficient: pupilSizes.dilated,
             });
         }
     }
 
     hasTargetLeft() {
-        if (this.state.personDetected) {
+        if (this.personDetected) {
+            this.personDetected = false;
+            this.squinting = true;
             this.setState({
-                personDetected: false,
-                squinting: true,
                 dilationCoefficient: pupilSizes.constricted,
             });
             this.props.setOpen(eyelidPosition.SQUINT);
@@ -228,7 +227,7 @@ export class MovementHandler extends React.Component<
                 height={this.props.height}
                 environment={this.props.environment}
                 dilation={this.state.dilationCoefficient}
-                detected={this.state.personDetected}
+                detected={this.personDetected}
             />
         );
     }
