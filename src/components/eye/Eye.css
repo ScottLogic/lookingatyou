@@ -10,8 +10,6 @@
     stroke-width: 2;
 }
 
-.inner,
-.outerReflection,
-.innerReflection {
+.inner {
     transform-origin: center;
 }

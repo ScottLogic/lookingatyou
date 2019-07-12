@@ -27,6 +27,12 @@ export default function Eye(props: IEyeProps) {
         transition: `r ${transitionTime.dilate}ms, cx ${1000 /
             props.fps}ms, cy ${1000 / props.fps}ms`, // cx and cy transitions based on FPS
     };
+    const ellipseTransitionStyle = {
+        transition: `rx ${transitionTime.dilate}ms, ry ${
+            transitionTime.dilate
+        }ms, cx ${1000 / props.fps}ms, cy ${1000 /
+            props.fps}ms, transform ${1000 / props.fps}ms`, // cx and cy transitions based on FPS
+    };
     const innerTransitionStyle = {
         transition: `transform ${1000 / props.fps}ms`,
     };
@@ -94,23 +100,23 @@ export default function Eye(props: IEyeProps) {
                 />
                 <ellipse
                     className={'innerReflection'}
-                    style={circleTransitionStyle}
-                    rx={props.pupilRadius * 0.75}
-                    ry={props.pupilRadius * 0.375}
+                    style={ellipseTransitionStyle}
+                    rx={props.pupilRadius * 0.375}
+                    ry={props.pupilRadius * 0.75}
                     fill={'url(#reflectionGradient)'}
-                    cx={irisAdjustment.innerX}
-                    cy={props.innerY + props.pupilRadius}
-                    transform={`rotate(225)`}
+                    cx={irisAdjustment.innerX + props.pupilRadius}
+                    cy={props.innerY}
+                    transform={`rotate(-45,${irisAdjustment.innerX},${props.innerY})`}
                 />
                 <ellipse
                     className={'outerReflection'}
-                    style={circleTransitionStyle}
-                    rx={props.pupilRadius}
-                    ry={props.pupilRadius * 0.5}
+                    style={ellipseTransitionStyle}
+                    rx={props.pupilRadius * 0.5}
+                    ry={props.pupilRadius}
                     fill={'url(#reflectionGradient)'}
-                    cx={irisAdjustment.innerX}
-                    cy={props.innerY + props.irisRadius}
-                    transform={`rotate(225)`}
+                    cx={irisAdjustment.innerX + props.irisRadius}
+                    cy={props.innerY}
+                    transform={`rotate(-45,${irisAdjustment.innerX},${props.innerY})`}
                 />
             </g>
 
