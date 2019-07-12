@@ -24,17 +24,17 @@ const pupilColor = 'black';
 
 export default function Eye(props: IEyeProps) {
     const circleTransitionStyle = {
-        transition: `r ${transitionTime.dilate}ms, cx ${0 /
-            props.fps}ms, cy ${0 / props.fps}ms`, // cx and cy transitions based on FPS
+        transition: `r ${transitionTime.dilate}ms, cx ${1000 /
+            props.fps}ms, cy ${1000 / props.fps}ms`, // cx and cy transitions based on FPS
     };
     const innerTransitionStyle = {
-        transition: `transform ${0 / props.fps}ms`,
+        transition: `transform ${1000 / props.fps}ms`,
     };
     const eyelidTransitionStyle = {
         transition: `d ${transitionTime.blink}ms`,
     };
     const lineTransitionStyle = {
-        transition: `d ${0 / props.fps}ms`,
+        transition: `d ${1000 / props.fps}ms`,
     };
     const eyeCoords = getEyeCoords(props);
     const bezier = getBezier(props);
