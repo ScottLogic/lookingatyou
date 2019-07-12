@@ -92,21 +92,25 @@ export default function Eye(props: IEyeProps) {
                     cx={irisAdjustment.innerX}
                     cy={props.innerY}
                 />
-                <circle
+                <ellipse
                     className={'innerReflection'}
                     style={circleTransitionStyle}
-                    r={props.pupilRadius * 0.75}
+                    rx={props.pupilRadius * 0.75}
+                    ry={props.pupilRadius * 0.375}
                     fill={'url(#reflectionGradient)'}
-                    cx={irisAdjustment.innerX + props.pupilRadius * 0.68}
-                    cy={props.innerY - props.pupilRadius * 0.68}
+                    cx={irisAdjustment.innerX}
+                    cy={props.innerY + props.pupilRadius}
+                    transform={`rotate(225)`}
                 />
-                <circle
+                <ellipse
                     className={'outerReflection'}
                     style={circleTransitionStyle}
-                    r={props.pupilRadius}
+                    rx={props.pupilRadius}
+                    ry={props.pupilRadius * 0.5}
                     fill={'url(#reflectionGradient)'}
-                    cx={irisAdjustment.innerX + props.irisRadius * 0.7}
-                    cy={props.innerY - props.irisRadius * 0.7}
+                    cx={irisAdjustment.innerX}
+                    cy={props.innerY + props.irisRadius}
+                    transform={`rotate(225)`}
                 />
             </g>
 
