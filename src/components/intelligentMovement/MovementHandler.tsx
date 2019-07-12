@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { eyelidPosition, pupilSizes, sleepDelay } from '../../AppConstants';
-import { IDetections } from '../../models/objectDetection';
+import { Detection } from '../../models/objectDetection';
 import {
     setBright,
     setDetected,
@@ -23,6 +23,7 @@ import {
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getVideos } from '../../store/selectors/videoSelectors';
+import select, { first } from '../../utils/objectSelection/select';
 import { ITargets } from '../../utils/types';
 import { analyseLight, checkLight, naturalMovement } from '../eye/EyeUtils';
 
@@ -32,7 +33,7 @@ interface IMovementProps {
 
 interface IStateProps {
     fps: number;
-    detections: IDetections;
+    detections: Detection[];
     target: ITargets;
     tooBright: boolean;
     left: boolean;
@@ -105,9 +106,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
     }
 
     checkSelection() {
-        const selection = this.props.detections.left.find(detection => {
-            return detection.info.type === 'person';
-        });
+        const selection = select(this.props.detections, first);
 
         if (this.props.squinting && Math.random() < 0.1) {
             this.props.setOpen(eyelidPosition.OPEN);
@@ -215,7 +214,7 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
 const mergeStateToProps = (state: IRootStore) => {
     return {
         fps: state.configStore.config.fps,
-        detections: state.detectionStore.detections,
+        detections: state.detectionStore.detections.left,
         target: state.detectionStore.target,
         tooBright: state.detectionStore.tooBright,
         left: state.detectionStore.left,
