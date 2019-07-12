@@ -42,11 +42,11 @@ export default function Eye(props: IEyeProps) {
     const irisAdjustment = getIrisAdjustment(props);
 
     const [innerPath, setInnerPath] = useState(
-        getInnerPath(props.width / 960, props.height / 1080),
+        getInnerPath(props.width / 960, props.width / 960),
     );
 
     useEffect(() => {
-        setInnerPath(getInnerPath(props.width / 960, props.height / 1080));
+        setInnerPath(getInnerPath(props.width / 960, props.width / 960));
     }, [props.width, props.height]);
 
     return (
