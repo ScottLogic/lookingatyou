@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import {
     eyelidPosition,
-    eyes,
+    EyeSide,
     neutralBlinkFrequency,
     pupilSizes,
     transitionTime,
@@ -81,12 +81,12 @@ export const EyeController = React.memo(
             const y = props.height / 2 + displacement * Math.sin(polarAngle);
             return { x, y };
         };
-
-        const eyeCoords: { [key: string]: ICoords } = {};
-        eyeCoords[eyes.LEFT] = getEyeCoords(props.target.left);
+        const leftCoords = getEyeCoords(props.target.left);
         const right = props.target.right;
-        eyeCoords[eyes.RIGHT] =
-            right === null ? eyeCoords[eyes.LEFT] : getEyeCoords(right);
+        const eyeCoords: { [key in EyeSide]: ICoords } = {
+            LEFT: leftCoords,
+            RIGHT: right === null ? leftCoords : getEyeCoords(right),
+        };
 
         function getEyesOpenCoefficient(): number {
             if (props.openCoefficient !== eyesOpenCoefficient) {
@@ -100,7 +100,7 @@ export const EyeController = React.memo(
 
         return (
             <div className="container">
-                {[eyes.RIGHT, eyes.LEFT].map((eye, index) => {
+                {[EyeSide.RIGHT, EyeSide.LEFT].map((eye, index) => {
                     return (
                         <Eye
                             class={eye}
