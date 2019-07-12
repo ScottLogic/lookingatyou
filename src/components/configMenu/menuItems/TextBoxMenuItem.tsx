@@ -5,9 +5,9 @@ import { HelpWith } from '../Help';
 export interface ITextBoxMenuItemProps {
     name: string;
     configName: string;
-    validRegex: RegExp;
+    step: number;
     onValidInput: (payload: ISetConfigPayload) => void;
-    defaultValue: string;
+    defaultValue: number;
     configParse: (text: string) => number;
     helpWith: HelpWith;
 }
@@ -28,15 +28,15 @@ const TextBoxMenuItem = React.memo(
         }
 
         function onChange(event: React.ChangeEvent<HTMLInputElement>) {
-            const newValue = event.target.value;
+            const newValue = props.configParse(event.target.value);
             setValue(newValue);
-            const newIsValid = props.validRegex.test(newValue);
+            const newIsValid = !isNaN(newValue);
             setIsValid(newIsValid);
             if (newIsValid) {
                 setLastValidValue(newValue);
                 props.onValidInput({
                     partialConfig: {
-                        [props.configName]: props.configParse(newValue),
+                        [props.configName]: newValue,
                     },
                 });
             }
@@ -46,13 +46,14 @@ const TextBoxMenuItem = React.memo(
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>
                 <label>{props.name}</label>
                 <input
-                    type="textbox"
+                    type="number"
                     value={value || ''}
                     style={{
                         color: isValid ? 'black' : 'red',
                     }}
                     onBlur={onBlur}
                     onChange={onChange}
+                    step={props.step}
                 />
             </div>
         );

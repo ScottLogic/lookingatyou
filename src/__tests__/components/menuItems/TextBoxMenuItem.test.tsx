@@ -13,11 +13,11 @@ describe('TextBoxMenuItem tests', () => {
         mockParse = jest.fn();
         props = {
             name: 'test',
-            defaultValue: '30',
+            defaultValue: 30,
             onValidInput: jest.fn(),
             configName: 'test',
-            validRegex: /^[0-9]+$/,
-            configParse: jest.fn(),
+            step: 1,
+            configParse: parseInt,
             helpWith: HelpWith.FPS,
         };
     });

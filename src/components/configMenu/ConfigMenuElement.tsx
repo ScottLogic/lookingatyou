@@ -43,9 +43,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     };
 };
 
-const floatValidRegex = /^[0-9]+[.]?[0-9]*$/;
-const intValidregex = /^[0-9]+$/;
-
 export type ConfigMenuElementProps = IConfigMenuElementProps &
     IConfigMenuElementMapStateToProps &
     IConfigMenuElementMapDispatchToProps;
@@ -57,8 +54,8 @@ export const ConfigMenuElement = React.memo(
                 <TextBoxMenuItem
                     name={'X Sensitivity'}
                     configName={'xSensitivity'}
-                    validRegex={floatValidRegex}
-                    defaultValue={`${props.config.xSensitivity}`}
+                    step={0.1}
+                    defaultValue={props.config.xSensitivity}
                     onValidInput={props.setConfig}
                     configParse={parseFloat}
                     helpWith={HelpWith.X_SENSITIVITY}
@@ -67,8 +64,8 @@ export const ConfigMenuElement = React.memo(
                 <TextBoxMenuItem
                     name={'Y Sensitivity'}
                     configName={'ySensitivity'}
-                    validRegex={floatValidRegex}
-                    defaultValue={`${props.config.ySensitivity}`}
+                    step={0.1}
+                    defaultValue={props.config.ySensitivity}
                     onValidInput={props.setConfig}
                     configParse={parseFloat}
                     helpWith={HelpWith.Y_SENSITIVITY}
@@ -77,8 +74,8 @@ export const ConfigMenuElement = React.memo(
                 <TextBoxMenuItem
                     name={'FPS'}
                     configName={'fps'}
-                    validRegex={intValidregex}
-                    defaultValue={`${props.config.fps}`}
+                    step={1}
+                    defaultValue={props.config.fps}
                     onValidInput={props.setConfig}
                     configParse={parseInt}
                     helpWith={HelpWith.FPS}
