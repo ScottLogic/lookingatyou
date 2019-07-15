@@ -52,7 +52,6 @@ export const VideoHandler = React.memo(
             }
         }, [mediaDevices, configureStream]);
 
-        console.log('rerender');
         return (
             <div className="webcam-feed">
                 {props.deviceIds.map((device, key) => (
