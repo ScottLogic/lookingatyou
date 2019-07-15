@@ -151,10 +151,6 @@ export const ConfigMenuElement = React.memo(
                           );
                       })
                     : null}
-                <br />
-                <p data-tip={true} data-for={HelpWith[HelpWith.APP]}>
-                    Help
-                </p>
 
                 {Object.values(HelpWith).map((type, key: number) => (
                     <Help key={key} problemWith={HelpWith[type] as HelpWith} />
