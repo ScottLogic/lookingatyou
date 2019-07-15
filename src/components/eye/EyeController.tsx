@@ -14,6 +14,7 @@ import { ICoords, ITargets } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
 import { Gradients } from './Gradients';
+import { Shadows } from './Shadows';
 
 interface IEyeControllerProps {
     width: number;
@@ -28,6 +29,7 @@ interface IEyeControllerMapStateToProps {
     target: ITargets;
     videos: Array<HTMLVideoElement | undefined>;
     openCoefficient: number;
+    irisColor: string;
 }
 
 export type EyeControllerProps = IEyeControllerProps &
@@ -118,7 +120,8 @@ export const EyeController = React.memo(
                         />
                     );
                 })}
-                <Gradients irisColor={props.config.irisColor} />
+                <Gradients irisColor={props.irisColor} />
+                <Shadows openCoefficient={props.openCoefficient} />
             </div>
         );
     },
@@ -138,6 +141,7 @@ const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     target: state.detectionStore.target,
     videos: getVideos(state),
     openCoefficient: getOpenCoefficient(state),
+    irisColor: state.configStore.config.irisColor,
 });
 
 export default connect(mapStateToProps)(EyeController);

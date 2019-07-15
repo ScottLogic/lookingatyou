@@ -3,7 +3,6 @@ import tinycolor from 'tinycolor2';
 import { EyeSide, transitionTime } from '../../AppConstants';
 import './Eye.css';
 import { getInnerPath } from './getInnerPath';
-import { Shadows } from './Shadows';
 
 export interface IEyeProps {
     class: EyeSide;
@@ -186,7 +185,6 @@ export default function Eye(props: IEyeProps) {
                          L 0 ${props.height}`}
                 />
             </svg>
-            <Shadows openCoefficient={props.openCoefficient} />
         </svg>
     );
 }
