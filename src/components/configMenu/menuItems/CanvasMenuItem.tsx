@@ -1,8 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ISelections } from '../../../models/objectDetection';
+import { IDetections, ISelections } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
-import { getSelections } from '../../../store/selectors/detectionSelectors';
+import {
+    getDetections,
+    getSelections,
+} from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
 import { Bbox } from '../../../utils/types';
 import { HelpWith } from '../Help';
@@ -16,6 +19,7 @@ interface ICanvasMenuItemProps {
 interface IAppMapStateToProps {
     videos: Array<HTMLVideoElement | undefined>;
     selections: ISelections;
+    detections: IDetections;
 }
 
 type CanvasMenuItemProps = ICanvasMenuItemProps & IAppMapStateToProps;
@@ -24,6 +28,7 @@ const mapStateToProps = (state: IRootStore) => {
     return {
         videos: getVideos(state),
         selections: getSelections(state),
+        detections: getDetections(state),
     };
 };
 
@@ -66,10 +71,26 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         const video = this.props.videos[
             this.props.videoIndex
         ] as HTMLVideoElement;
-        if (this.props.selections) {
-            const [x, y, width, height] = this.bbox;
-            const bbox = { x, y, width, height };
-            this.drawImage(video, bbox);
+
+        const detections =
+            this.props.videoIndex === 0
+                ? this.props.detections.left
+                : this.props.detections.right;
+
+        if (this.props.selections && detections) {
+            let [x, y, width, height] = this.bbox;
+            let bbox = { x, y, width, height };
+            this.drawImage(video, 'red', bbox);
+
+            detections.forEach(detection => {
+                if (this.bbox !== detection.bbox) {
+                    [x, y, width, height] = detection.bbox;
+                    bbox = { x, y, width, height };
+                    if (this.canvasRef.current) {
+                        this.drawImage(this.canvasRef.current, 'blue', bbox);
+                    }
+                }
+            });
         }
     }
 
@@ -85,16 +106,19 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
 
     drawImage(
         image: CanvasImageSource,
+        colour: string,
         bbox?: { x: number; y: number; width: number; height: number },
     ) {
-        if (image instanceof HTMLVideoElement) {
-            const canvas = this.canvasRef.current;
-            if (canvas) {
+        const canvas = this.canvasRef.current;
+        if (canvas) {
+            if (image instanceof HTMLVideoElement) {
                 canvas.height = image.height;
                 canvas.width = image.width;
-                const canvasCtx = canvas.getContext('2d');
+            }
+            const canvasCtx = canvas.getContext('2d');
 
-                if (canvasCtx) {
+            if (canvasCtx) {
+                if (image instanceof HTMLVideoElement) {
                     canvasCtx.drawImage(
                         image,
                         0,
@@ -102,13 +126,13 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
                         canvas.width,
                         canvas.height,
                     );
-                    if (bbox !== undefined) {
-                        canvasCtx.beginPath();
-                        canvasCtx.lineWidth = 5;
-                        canvasCtx.strokeStyle = 'red';
-                        canvasCtx.rect(bbox.x, bbox.y, bbox.width, bbox.height);
-                        canvasCtx.stroke();
-                    }
+                }
+                if (bbox !== undefined) {
+                    canvasCtx.beginPath();
+                    canvasCtx.lineWidth = 5;
+                    canvasCtx.strokeStyle = colour;
+                    canvasCtx.rect(bbox.x, bbox.y, bbox.width, bbox.height);
+                    canvasCtx.stroke();
                 }
             }
         }
