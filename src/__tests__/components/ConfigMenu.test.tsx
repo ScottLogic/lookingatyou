@@ -21,11 +21,11 @@ describe('ConfigMenu', () => {
         textBoxProps = {
             name: 'textBox',
             configName: 'textBox',
-            defaultValue: 'test',
+            defaultValue: 20,
             onValidInput: jest.fn(),
-            validRegex: /^[0-9]+$/,
             configParse: jest.fn(),
             helpWith: HelpWith.FPS,
+            step: 1,
         };
         children = <TextBoxMenuItem {...textBoxProps} />;
 
