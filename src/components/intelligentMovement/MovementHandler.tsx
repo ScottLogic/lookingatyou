@@ -59,6 +59,7 @@ export class MovementHandler extends React.Component<
     private left: boolean;
     private squinting: boolean;
     private personDetected: boolean;
+    private prevProps: MovementHandlerProps | null;
 
     constructor(props: MovementHandlerProps) {
         super(props);
@@ -73,6 +74,7 @@ export class MovementHandler extends React.Component<
         this.left = false;
         this.personDetected = false;
         this.squinting = false;
+        this.prevProps = null;
 
         this.animateEye = this.animateEye.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
@@ -87,26 +89,22 @@ export class MovementHandler extends React.Component<
         this.movementInterval = window.setInterval(
             this.animateEye,
             1000 / this.props.fps,
+            this.prevProps,
         );
     }
 
     shouldComponentUpdate(nextProps: MovementHandlerProps) {
         return (
-            this.props.fps !== nextProps.fps ||
             this.props.height !== nextProps.height ||
             this.props.width !== nextProps.width ||
             this.props.openCoefficient !== nextProps.openCoefficient ||
-            this.props.target !== nextProps.target
+            this.props.target !== nextProps.target ||
+            this.props.detections !== nextProps.detections
         );
     }
 
     componentDidUpdate(prevProps: MovementHandlerProps) {
-        clearInterval(this.movementInterval);
-        this.movementInterval = window.setInterval(
-            this.animateEye,
-            1000 / this.props.fps,
-            prevProps,
-        );
+        this.prevProps = prevProps;
     }
 
     animateEye(prevProps: MovementHandlerProps) {
@@ -142,8 +140,6 @@ export class MovementHandler extends React.Component<
     checkSelection() {
         let target = this.props.target;
 
-        const selection = select(this.props.detections, first);
-
         if (this.squinting && Math.random() < 0.1) {
             this.squinting = false;
             this.props.setOpen(eyelidPosition.OPEN);
@@ -156,7 +152,7 @@ export class MovementHandler extends React.Component<
             this.props.setOpen(eyelidPosition.OPEN);
         }
 
-        if (selection) {
+        if (this.props.detections.length > 0) {
             this.wake();
 
             if (this.squinting) {
@@ -190,7 +186,7 @@ export class MovementHandler extends React.Component<
         }
     }
 
-    checkBlink(prevProps: MovementHandlerProps) {
+    checkBlink(prevProps: MovementHandlerProps | undefined) {
         if (prevProps && this.props.target) {
             const leftEyeDist = getLargerDistance(
                 prevProps.target.left,
