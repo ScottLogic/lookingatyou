@@ -21,5 +21,9 @@ export default function Throttle<Props>(
         render() {
             return <Component {...this.props} />;
         }
+
+        componentWillUpdate() {
+            // empty function for spy
+        }
     };
 }
