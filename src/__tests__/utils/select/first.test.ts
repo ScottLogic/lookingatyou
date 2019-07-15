@@ -1,7 +1,12 @@
-import { IDetection } from '../../../models/objectDetection';
+import {
+    Detection,
+    DetectionModelType,
+    ICocoSSDDetection,
+} from '../../../models/objectDetection';
 import select, { first } from '../../../utils/objectSelection/select';
 
-const notPerson: IDetection = {
+const notPerson: ICocoSSDDetection = {
+    model: DetectionModelType.CocoSSD,
     bbox: [0, 0, 0, 0],
     info: {
         certainty: 100,
@@ -9,7 +14,8 @@ const notPerson: IDetection = {
     },
 };
 
-const person: IDetection = {
+const person: ICocoSSDDetection = {
+    model: DetectionModelType.CocoSSD,
     bbox: [1, 1, 1, 1],
     info: {
         certainty: 50,
@@ -18,7 +24,7 @@ const person: IDetection = {
 };
 
 describe('selectFirstOfType should return', () => {
-    const selectFirst = (detections: IDetection[]) => select(detections, first);
+    const selectFirst = (detections: Detection[]) => select(detections, first);
 
     it('undefined when arg:detections is empty', () => {
         expect(selectFirst([])).toBeUndefined();
@@ -26,7 +32,7 @@ describe('selectFirstOfType should return', () => {
     it('undefined when arg:detections does not contain detection of arg:type', () => {
         expect(selectFirst([notPerson]));
     });
-    it('Bbox of detection if arg:detections contains an detection of arg:type', () => {
+    it('Bbox of detection if arg:detections contains a detection of arg:type', () => {
         expect(selectFirst([person])).toBe(person.bbox);
         expect(
             selectFirst([

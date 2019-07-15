@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import tinycolor from 'tinycolor2';
-import { eyes, transitionTime } from '../../AppConstants';
+import { EyeSide, transitionTime } from '../../AppConstants';
 import './Eye.css';
 import { getInnerPath } from './getInnerPath';
 import { Shadows } from './Shadows';
 
 export interface IEyeProps {
-    class: string;
+    class: EyeSide;
     width: number;
     height: number;
     irisColor: string;
@@ -223,7 +223,7 @@ function getCornerShape(props: IEyeProps) {
     const innerBottomCoefficient = 1.1;
     const outerTopCoefficient = 0.7;
     const outerBottomCoefficient = 0.5;
-    return props.class === eyes.RIGHT
+    return props.class === EyeSide.RIGHT
         ? {
               leftTop: innerTopCoefficient,
               rightTop: outerTopCoefficient,

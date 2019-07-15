@@ -1,5 +1,6 @@
 import { mount, shallow } from 'enzyme';
 import React from 'react';
+import { HelpWith } from '../../../components/configMenu/Help';
 import CheckBoxMenuItem, {
     ICheckBoxMenuItemProps,
 } from '../../../components/configMenu/menuItems/CheckBoxMenuItem';
@@ -12,8 +13,10 @@ describe('CheckBoxMenuItem tests', () => {
         mockOnInputChange = jest.fn();
         props = {
             name: 'test',
+            configName: 'test',
             checked: false,
             onInputChange: mockOnInputChange,
+            helpWith: HelpWith.DEBUG,
         };
     });
 
