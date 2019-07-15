@@ -11,6 +11,7 @@ import { IObjectDetector } from './models/objectDetection';
 import { loadModel } from './store/actions/detections/actions';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getWebcamAvailable } from './store/selectors/videoSelectors';
+import Posenet from './utils/objectDetection/posenet';
 
 interface IAppState {
     width: number;
@@ -66,6 +67,12 @@ export class App extends React.PureComponent<AppProps, IAppState> {
             'resize',
             this.updateDimensions,
         );
+    }
+
+    componentDidUpdate() {
+        if (this.props.webcamAvailable && !this.props.model) {
+            this.props.loadModel(Posenet.init);
+        }
     }
 
     componentWillUnmount() {
