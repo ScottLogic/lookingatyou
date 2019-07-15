@@ -20,6 +20,5 @@ exports[`Eye should render correctly 1`] = `
     <path d=\\"M 0 250,\\\\n                         L 150 250,\\\\n                         A 100 100 0 0 1 350 250\\\\n                         L 500 250,\\\\n                         L 500 0\\\\n                         L 0 0\\" />
     <path d=\\"M 0 250,\\\\n                         L 150 250,\\\\n                         A 100 100 0 0 0 350 250\\\\n                         L 500 250,\\\\n                         L 500 500\\\\n                         L 0 500\\" />
   </svg>
-  <Shadows openCoefficient={0.5} />
 </svg>"
 `;
