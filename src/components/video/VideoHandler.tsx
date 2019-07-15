@@ -36,28 +36,30 @@ const mapDispatchToProps = (
         dispatch(setStream(mediaDevices)),
 });
 
-export function VideoHandler(props: VideoHandlerProps) {
-    const { mediaDevices, configureStream } = { ...props };
+export const VideoHandler = React.memo(
+    (props: VideoHandlerProps) => {
+        const { mediaDevices, configureStream } = { ...props };
 
-    useEffect(() => {
-        if (mediaDevices) {
-            configureStream(mediaDevices);
-            mediaDevices.ondevicechange = () => {
-                if (mediaDevices) {
-                    configureStream(mediaDevices);
-                }
-            };
-        }
-    }, [mediaDevices, configureStream]);
-
-    return (
-        <div className="webcam-feed">
-            {props.deviceIds.map((device, key) => (
-                <Video key={key} deviceId={device} />
-            ))}
-        </div>
-    );
-}
+        useEffect(() => {
+            if (mediaDevices) {
+                configureStream(mediaDevices);
+                mediaDevices.ondevicechange = () => {
+                    if (mediaDevices) {
+                        configureStream(mediaDevices);
+                    }
+                };
+            }
+        }, [mediaDevices, configureStream]);
+        return (
+            <div className="webcam-feed">
+                {props.deviceIds.map((device, key) => (
+                    <Video key={key} deviceId={device} />
+                ))}
+            </div>
+        );
+    },
+    (previous, next) => previous.deviceIds === next.deviceIds,
+);
 
 export default connect(
     mapStateToProps,
