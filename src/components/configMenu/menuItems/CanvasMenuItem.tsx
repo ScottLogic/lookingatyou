@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { tooCloseDistance } from '../../../AppConstants';
 import { IDetections, ISelections } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import {
@@ -45,6 +46,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         this.canvasRef = React.createRef();
 
         this.getStream = this.getStream.bind(this);
+        this.closeToChosenTarget = this.closeToChosenTarget.bind(this);
     }
 
     componentDidUpdate() {
@@ -83,7 +85,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
             this.drawImage(video, 'red', bbox);
 
             detections.forEach(detection => {
-                if (this.bbox !== detection.bbox) {
+                if (!this.closeToChosenTarget(detection.bbox)) {
                     [x, y, width, height] = detection.bbox;
                     bbox = { x, y, width, height };
                     if (this.canvasRef.current) {
@@ -92,6 +94,17 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
                 }
             });
         }
+    }
+
+    closeToChosenTarget(bbox: Bbox) {
+        const [x, y, width, height] = bbox;
+        const [chosenX, chosenY, chosenWidth, chosenHeight] = this.bbox;
+        return (
+            areCoordinatesClose(x, chosenX) &&
+            areCoordinatesClose(y, chosenY) &&
+            areCoordinatesClose(width, chosenWidth) &&
+            areCoordinatesClose(height, chosenHeight)
+        );
     }
 
     render() {
@@ -137,6 +150,10 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
             }
         }
     }
+}
+
+function areCoordinatesClose(point1: number, point2: number): boolean {
+    return Math.abs(point1 - point2) < tooCloseDistance;
 }
 
 export default connect(mapStateToProps)(CanvasMenuItem);
