@@ -36,7 +36,7 @@ type AppProps = IAppProps & IAppMapStateToProps & IAppMapDispatchToProps;
 const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     return {
         model: state.detectionStore.model,
-        webcamAvailable: state.videoStore.webcamAvailable,
+        webcamAvailable: getWebcamAvailable(state),
     };
 };
 
