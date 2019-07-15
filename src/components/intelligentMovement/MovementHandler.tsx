@@ -1,7 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { eyelidPosition, pupilSizes, sleepDelay } from '../../AppConstants';
+import {
+    eyelidPosition,
+    maxMoveWithoutBlink,
+    pupilSizes,
+    sleepDelay,
+} from '../../AppConstants';
 import { Detection } from '../../models/objectDetection';
 import { setOpen, setTarget } from '../../store/actions/detections/actions';
 import {
@@ -12,6 +17,7 @@ import { IRootStore } from '../../store/reducers/rootReducer';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import select, { first } from '../../utils/objectSelection/select';
 import { ITargets } from '../../utils/types';
+import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
 import { analyseLight, checkLight, naturalMovement } from '../eye/EyeUtils';
 
@@ -94,17 +100,19 @@ export class MovementHandler extends React.Component<
         );
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps: MovementHandlerProps) {
         clearInterval(this.movementInterval);
         this.movementInterval = window.setInterval(
             this.animateEye,
             1000 / this.props.fps,
+            prevProps,
         );
     }
 
-    animateEye() {
+    animateEye(prevProps: MovementHandlerProps) {
         this.checkSelection();
         this.calculateBrightness();
+        this.checkBlink(prevProps);
     }
 
     componentWillUnmount() {
@@ -182,6 +190,30 @@ export class MovementHandler extends React.Component<
         }
     }
 
+    checkBlink(prevProps: MovementHandlerProps) {
+        if (prevProps && this.props.target) {
+            const leftEyeDist = getLargerDistance(
+                prevProps.target.left,
+                this.props.target.left,
+            );
+
+            if (leftEyeDist > maxMoveWithoutBlink) {
+                this.props.setOpen(eyelidPosition.CLOSED);
+            }
+
+            if (prevProps.target.right && this.props.target.right) {
+                const rightEyeDist = getLargerDistance(
+                    prevProps.target.right,
+                    this.props.target.right,
+                );
+
+                if (rightEyeDist > maxMoveWithoutBlink) {
+                    this.props.setOpen(eyelidPosition.CLOSED);
+                }
+            }
+        }
+    }
+
     isNewTarget() {
         if (!this.personDetected) {
             this.personDetected = true;
@@ -237,7 +269,7 @@ const mergeStateToProps = (state: IRootStore) => {
         fps: state.configStore.config.fps,
         detections: state.detectionStore.detections.left,
         target: state.detectionStore.target,
-        openCoefficient: state.detectionStore.openCoefficient,
+        openCoefficient: state.detectionStore.eyesOpenCoefficient,
         videos: getVideos(state),
     };
 };
