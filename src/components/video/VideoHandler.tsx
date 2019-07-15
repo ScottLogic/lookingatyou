@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -50,6 +51,8 @@ export const VideoHandler = React.memo(
                 };
             }
         }, [mediaDevices, configureStream]);
+
+        console.log('rerender');
         return (
             <div className="webcam-feed">
                 {props.deviceIds.map((device, key) => (
@@ -58,7 +61,9 @@ export const VideoHandler = React.memo(
             </div>
         );
     },
-    (previous, next) => previous.deviceIds === next.deviceIds,
+    (previous, next) => {
+        return isEqual(previous.deviceIds, next.deviceIds);
+    },
 );
 
 export default connect(
