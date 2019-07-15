@@ -49,90 +49,60 @@ export type ConfigMenuElementProps = IConfigMenuElementProps &
 
 export const ConfigMenuElement = React.memo(
     (props: ConfigMenuElementProps) => {
-        function parseAndStoreXSensitivity(xSensitivity: string) {
-            props.setConfig({
-                partialConfig: { xSensitivity: parseFloat(xSensitivity) },
-            });
-        }
-        function parseAndStoreYSensitivity(ySensitivity: string) {
-            props.setConfig({
-                partialConfig: { ySensitivity: parseFloat(ySensitivity) },
-            });
-        }
-        function parseAndStoreFPS(fps: string) {
-            props.setConfig({ partialConfig: { fps: parseInt(fps, 10) } });
-        }
-        function storeSwapEyes(swapEyes: boolean) {
-            props.setConfig({ partialConfig: { swapEyes } });
-        }
-        function storeIrisColor(irisColor: string) {
-            props.setConfig({ partialConfig: { irisColor } });
-        }
-        function storeToggleDebug(toggleDebug: boolean) {
-            props.setConfig({ partialConfig: { toggleDebug } });
-        }
-        function extractFloatToString(floatString: string): string {
-            return `${parseFloat(floatString)}`;
-        }
-        function extractIntToString(intString: string): string {
-            return `${parseInt(intString, 10)}`;
-        }
-        function isValidSensitivity(sensitivity: string): boolean {
-            return (
-                !isNaN(parseFloat(sensitivity)) && parseFloat(sensitivity) >= 0
-            );
-        }
-        function isValidFPS(fps: string): boolean {
-            return !isNaN(parseInt(fps, 10)) && parseInt(fps, 10) > 0;
-        }
         return (
             <ConfigMenu width="14em" timerLength={1000} window={props.window}>
                 <TextBoxMenuItem
                     name={'X Sensitivity'}
-                    defaultValue={`${props.config.xSensitivity}`}
-                    isValidInput={isValidSensitivity}
-                    onValidInput={parseAndStoreXSensitivity}
-                    parse={extractFloatToString}
+                    configName={'xSensitivity'}
+                    step={0.1}
+                    defaultValue={props.config.xSensitivity}
+                    onValidInput={props.setConfig}
+                    configParse={parseFloat}
                     helpWith={HelpWith.X_SENSITIVITY}
                 />
 
                 <TextBoxMenuItem
                     name={'Y Sensitivity'}
-                    defaultValue={`${props.config.ySensitivity}`}
-                    isValidInput={isValidSensitivity}
-                    onValidInput={parseAndStoreYSensitivity}
-                    parse={extractFloatToString}
+                    configName={'ySensitivity'}
+                    step={0.1}
+                    defaultValue={props.config.ySensitivity}
+                    onValidInput={props.setConfig}
+                    configParse={parseFloat}
                     helpWith={HelpWith.Y_SENSITIVITY}
                 />
 
                 <TextBoxMenuItem
                     name={'FPS'}
-                    defaultValue={`${props.config.fps}`}
-                    isValidInput={isValidFPS}
-                    onValidInput={parseAndStoreFPS}
-                    parse={extractIntToString}
+                    configName={'fps'}
+                    step={1}
+                    defaultValue={props.config.fps}
+                    onValidInput={props.setConfig}
+                    configParse={parseInt}
                     helpWith={HelpWith.FPS}
                 />
 
                 <CheckBoxMenuItem
                     name={'Swap Eyes'}
+                    configName={'swapEyes'}
                     helpWith={HelpWith.SWAP_EYES}
                     checked={props.config.swapEyes}
-                    onInputChange={storeSwapEyes}
+                    onInputChange={props.setConfig}
                 />
 
                 <ColorMenuItem
                     name={'Iris Colour'}
+                    configName={'irisColor'}
                     color={props.config.irisColor}
-                    onInputChange={storeIrisColor}
+                    onInputChange={props.setConfig}
                     helpWith={HelpWith.IRIS_COLOUR}
                 />
 
                 <CheckBoxMenuItem
                     name={'Toggle Debug'}
+                    configName={'toggleDebug'}
                     helpWith={HelpWith.DEBUG}
                     checked={props.config.toggleDebug}
-                    onInputChange={storeToggleDebug}
+                    onInputChange={props.setConfig}
                 />
 
                 {props.config.toggleDebug ? (

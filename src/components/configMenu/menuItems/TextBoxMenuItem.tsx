@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { ISetConfigPayload } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 
 export interface ITextBoxMenuItemProps {
     name: string;
-    isValidInput: (text: string) => boolean;
-    onValidInput: (text: string) => void;
-    defaultValue: string;
-    parse: (text: string) => string;
+    configName: string;
+    step: number;
+    onValidInput: (payload: ISetConfigPayload) => void;
+    defaultValue: number;
+    configParse: (text: string) => number;
     helpWith: HelpWith;
 }
 const TextBoxMenuItem = React.memo(
@@ -19,31 +21,39 @@ const TextBoxMenuItem = React.memo(
         useEffect(() => {
             setValue(props.defaultValue);
         }, [props.defaultValue, setValue]);
-        function onBlur(event: React.FocusEvent<HTMLInputElement>) {
-            setValue(props.parse(lastValidValue));
+
+        function onBlur() {
+            setValue(lastValidValue);
             setIsValid(true);
         }
+
         function onChange(event: React.ChangeEvent<HTMLInputElement>) {
-            const newValue = event.target.value;
+            const newValue = props.configParse(event.target.value);
             setValue(newValue);
-            const newIsValid = props.isValidInput(event.target.value);
+            const newIsValid = !isNaN(newValue);
             setIsValid(newIsValid);
             if (newIsValid) {
                 setLastValidValue(newValue);
-                props.onValidInput(newValue);
+                props.onValidInput({
+                    partialConfig: {
+                        [props.configName]: newValue,
+                    },
+                });
             }
         }
+
         return (
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>
                 <label>{props.name}</label>
                 <input
-                    type="textbox"
+                    type="number"
                     value={value || ''}
                     style={{
                         color: isValid ? 'black' : 'red',
                     }}
                     onBlur={onBlur}
                     onChange={onChange}
+                    step={props.step}
                 />
             </div>
         );
