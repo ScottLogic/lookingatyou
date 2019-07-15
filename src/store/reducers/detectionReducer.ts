@@ -1,5 +1,9 @@
 import { eyelidPosition } from '../../AppConstants';
-import { IDetections, ISelections } from '../../models/objectDetection';
+import {
+    IDetections,
+    IObjectDetector,
+    ISelections,
+} from '../../models/objectDetection';
 import { ITargets } from '../../utils/types';
 import {
     DetectionActionType,
@@ -7,8 +11,9 @@ import {
     SET_BRIGHT,
     SET_DETECTIONS,
     SET_DILATION,
+    SET_INTERVAL,
     SET_LEFT,
-    SET_MODEL_LOADED,
+    SET_MODEL,
     SET_OPEN,
     SET_PERSON,
     SET_SELECTIONS,
@@ -17,7 +22,8 @@ import {
 } from '../actions/detections/types';
 
 export const initialState: IDetectionState = {
-    isModelLoaded: false,
+    model: null,
+    detectionInterval: 0,
     tooBright: false,
     left: false,
     personDetected: false,
@@ -30,7 +36,8 @@ export const initialState: IDetectionState = {
 };
 
 const detectionActionMapping = {
-    [SET_MODEL_LOADED]: setModelLoaded,
+    [SET_MODEL]: setModel,
+    [SET_INTERVAL]: setDetectionInterval,
     [SET_TARGET]: setTarget,
     [SET_DETECTIONS]: setDetections,
     [SET_BRIGHT]: setBright,
@@ -51,11 +58,18 @@ const detectionStore = (
         : state;
 };
 
-function setModelLoaded(
+function setModel(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    return { ...state, isModelLoaded: action.payload as boolean };
+    return { ...state, model: action.payload as IObjectDetector };
+}
+
+function setDetectionInterval(
+    state: IDetectionState,
+    action: DetectionActionType,
+): IDetectionState {
+    return { ...state, detectionInterval: action.payload as number };
 }
 
 function setTarget(
