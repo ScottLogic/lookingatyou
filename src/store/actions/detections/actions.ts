@@ -2,9 +2,12 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import {
     Detection,
+    DetectionModelType,
     IDetections,
     IObjectDetector,
 } from '../../../models/objectDetection';
+import CocoSSD from '../../../utils/objectDetection/cocoSSD';
+import Posenet from '../../../utils/objectDetection/posenet';
 import { ICoords } from '../../../utils/types';
 import { IRootStore } from '../../reducers/rootReducer';
 import { getVideos } from '../../selectors/videoSelectors';
@@ -19,17 +22,32 @@ import {
     SET_OPEN,
 } from './types';
 
-export function setModel(model: IObjectDetector): ISetModelAction {
+export function setModel(model: IObjectDetector | null): ISetModelAction {
     return {
         type: SET_MODEL,
         payload: model,
     };
 }
 
-export function loadModel(init: () => Promise<IObjectDetector>) {
-    return async (dispatch: ThunkDispatch<IRootStore, void, Action>) => {
-        const model = await init();
-        dispatch(setModel(model));
+export function loadModel() {
+    return async (
+        dispatch: ThunkDispatch<IRootStore, void, Action>,
+        getState: () => IRootStore,
+    ) => {
+        const state = getState();
+        dispatch(setModel(null));
+        let model;
+        switch (state.configStore.config.model) {
+            case DetectionModelType.Posenet:
+                model = await Posenet.init();
+                break;
+            case DetectionModelType.CocoSSD:
+                model = await CocoSSD.init();
+                break;
+        }
+        if (model) {
+            dispatch(setModel(model));
+        }
         dispatch(restartDetection());
     };
 }
