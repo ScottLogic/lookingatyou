@@ -29,7 +29,6 @@ interface IEyeControllerMapStateToProps {
     target: ITargets;
     videos: Array<HTMLVideoElement | undefined>;
     openCoefficient: number;
-    irisColor: string;
 }
 
 export type EyeControllerProps = IEyeControllerProps &
@@ -120,7 +119,7 @@ export const EyeController = React.memo(
                         />
                     );
                 })}
-                <Gradients irisColor={props.irisColor} />
+                <Gradients irisColor={props.config.irisColor} />
                 <Shadows openCoefficient={props.openCoefficient} />
             </div>
         );
@@ -141,7 +140,6 @@ const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     target: state.detectionStore.target,
     videos: getVideos(state),
     openCoefficient: getOpenCoefficient(state),
-    irisColor: state.configStore.config.irisColor,
 });
 
 export default connect(mapStateToProps)(EyeController);
