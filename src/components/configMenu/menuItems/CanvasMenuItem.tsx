@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { tooCloseDistance } from '../../../AppConstants';
 import { IDetections, ISelections } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import {
@@ -46,16 +45,15 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         this.canvasRef = React.createRef();
 
         this.getStream = this.getStream.bind(this);
-        this.closeToChosenTarget = this.closeToChosenTarget.bind(this);
     }
 
     componentDidUpdate() {
-        this.getStream();
         if (this.props.videoIndex === 0) {
             this.bbox = this.props.selections.left;
         } else if (this.props.videoIndex === 1 && this.props.selections.right) {
             this.bbox = this.props.selections.right;
         }
+        this.getStream();
     }
 
     shouldComponentUpdate(
@@ -74,55 +72,34 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
             this.props.videoIndex
         ] as HTMLVideoElement;
 
+        const targetBbox = this.bbox;
         const detections =
             this.props.videoIndex === 0
                 ? this.props.detections.left
                 : this.props.detections.right;
 
-        this.drawImage(video, 'none');
+        this.drawVideoFrame(video);
+
+        let [x, y, width, height] = targetBbox;
+        let bbox = { x, y, width, height };
 
         if (this.props.selections && detections) {
             detections.forEach(detection => {
-                if (!this.closeToChosenTarget(detection.bbox)) {
-                    const [
-                        detectionX,
-                        detectionY,
-                        detectionWidth,
-                        detectionHeight,
-                    ] = detection.bbox;
-                    const detectionBbox = {
-                        x: detectionX,
-                        y: detectionY,
-                        width: detectionWidth,
-                        height: detectionHeight,
-                    };
+                if (targetBbox !== detection.bbox) {
+                    [x, y, width, height] = detection.bbox;
+                    bbox = { x, y, width, height };
                     if (this.canvasRef.current) {
-                        this.drawImage(
-                            this.canvasRef.current,
-                            'blue',
-                            detectionBbox,
-                        );
+                        this.drawRectangle('blue', bbox);
                     }
                 } else {
-                    const [x, y, width, height] = this.bbox;
-                    const bbox = { x, y, width, height };
+                    [x, y, width, height] = targetBbox;
+                    bbox = { x, y, width, height };
                     if (this.canvasRef.current) {
-                        this.drawImage(this.canvasRef.current, 'red', bbox);
+                        this.drawRectangle('red', bbox);
                     }
                 }
             });
         }
-    }
-
-    closeToChosenTarget(bbox: Bbox) {
-        const [x, y, width, height] = bbox;
-        const [chosenX, chosenY, chosenWidth, chosenHeight] = this.bbox;
-        return (
-            areCoordinatesClose(x, chosenX) ||
-            areCoordinatesClose(y, chosenY) ||
-            areCoordinatesClose(width, chosenWidth) ||
-            areCoordinatesClose(height, chosenHeight)
-        );
     }
 
     render() {
@@ -135,43 +112,36 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         );
     }
 
-    drawImage(
-        image: CanvasImageSource,
+    drawVideoFrame(image: HTMLVideoElement) {
+        const canvas = this.canvasRef.current;
+        if (canvas && image instanceof HTMLVideoElement) {
+            canvas.height = image.height;
+            canvas.width = image.width;
+
+            const canvasCtx = canvas.getContext('2d');
+
+            if (canvasCtx) {
+                canvasCtx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            }
+        }
+    }
+
+    drawRectangle(
         colour: string,
         bbox?: { x: number; y: number; width: number; height: number },
     ) {
         const canvas = this.canvasRef.current;
         if (canvas) {
-            if (image instanceof HTMLVideoElement) {
-                canvas.height = image.height;
-                canvas.width = image.width;
-            }
             const canvasCtx = canvas.getContext('2d');
-
-            if (canvasCtx) {
-                if (image instanceof HTMLVideoElement) {
-                    canvasCtx.drawImage(
-                        image,
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height,
-                    );
-                }
-                if (bbox !== undefined) {
-                    canvasCtx.beginPath();
-                    canvasCtx.lineWidth = 5;
-                    canvasCtx.strokeStyle = colour;
-                    canvasCtx.rect(bbox.x, bbox.y, bbox.width, bbox.height);
-                    canvasCtx.stroke();
-                }
+            if (canvasCtx && bbox) {
+                canvasCtx.beginPath();
+                canvasCtx.lineWidth = 5;
+                canvasCtx.strokeStyle = colour;
+                canvasCtx.rect(bbox.x, bbox.y, bbox.width, bbox.height);
+                canvasCtx.stroke();
             }
         }
     }
-}
-
-function areCoordinatesClose(point1: number, point2: number): boolean {
-    return Math.abs(point1 - point2) < tooCloseDistance;
 }
 
 export default connect(mapStateToProps)(CanvasMenuItem);
