@@ -34,8 +34,8 @@ export const getSelections = createSelector(
 );
 
 export const getTargets = createSelector(
-    [getSelections, getVideos],
-    (selections, videos): ITargets => {
+    [getSelections, getVideos, getIdleTargets],
+    (selections, videos, idleTargets): ITargets => {
         let left;
         let right;
         left =
@@ -58,12 +58,20 @@ export const getTargets = createSelector(
             const y = (left.y + right.y) / 2;
             left.y = right.y = y;
         }
-        return {
-            left,
-            right,
-        };
+        if (left && right) {
+            return {
+                left,
+                right,
+            };
+        } else {
+            return idleTargets;
+        }
     },
 );
+
+export function getIdleTargets(state: IRootStore): ITargets {
+    return state.detectionStore.idleTargets;
+}
 
 export function getOpenCoefficient(state: IRootStore): number {
     return state.detectionStore.eyesOpenCoefficient;

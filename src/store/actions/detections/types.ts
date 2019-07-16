@@ -16,9 +16,8 @@ export interface IDetectionState {
     model: IObjectDetector | null;
     detectionInterval: number;
     eyesOpenCoefficient: number;
-    target: ITargets;
     detections: IDetections;
-    selections: ISelections;
+    idleTargets: ITargets;
 }
 
 export interface ISetModelAction {
