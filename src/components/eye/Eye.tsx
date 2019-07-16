@@ -22,6 +22,19 @@ export interface IEyeProps {
     innerX: number;
     innerY: number;
     fps: number;
+    bezier: {
+        controlOffset: number;
+        scaledXcontrolOffset: number;
+        scaledYcontrolOffset: number;
+    };
+    eyeCoords: {
+        leftX: number;
+        rightX: number;
+        middleY: number;
+        middleX: number;
+        topEyelidY: number;
+        bottomEyelidY: number;
+    };
 }
 
 const pupilColor = 'black';
@@ -48,8 +61,6 @@ export default function Eye(props: IEyeProps) {
         transition: `d ${1000 / props.fps}ms`,
     };
 
-    const eyeCoords = getEyeCoords(props);
-    const bezier = getBezier(props);
     const cornerShape = getCornerShape(props);
 
     const originalResolution = 960;
@@ -93,19 +104,20 @@ export default function Eye(props: IEyeProps) {
                 innerPath={innerPath}
                 pupilRadius={props.pupilRadius}
                 pupilColor={pupilColor}
+                dilatedCoefficient={props.dilatedCoefficient}
                 scleraRadius={props.scleraRadius}
                 width={props.width}
                 height={props.height}
             />
             <Eyelids
                 style={eyelidTransitionStyle}
-                eyeCoords={eyeCoords}
+                eyeCoords={props.eyeCoords}
                 cornerShape={cornerShape}
-                bezier={bezier}
+                bezier={props.bezier}
                 scleraRadius={props.scleraRadius}
             />
             <BlackFill
-                eyeCoords={eyeCoords}
+                eyeCoords={props.eyeCoords}
                 scleraRadius={props.scleraRadius}
                 height={props.height}
                 width={props.width}
@@ -113,33 +125,6 @@ export default function Eye(props: IEyeProps) {
             <Shadows openCoefficient={props.openCoefficient} />
         </svg>
     );
-}
-
-function getEyeCoords(props: IEyeProps) {
-    const middleX = props.width / 2;
-    const leftX = middleX - props.scleraRadius;
-    const rightX = middleX + props.scleraRadius;
-    const middleY = props.height / 2;
-
-    const topEyelidY = middleY - props.scleraRadius * props.openCoefficient;
-    const bottomEyelidY = middleY + props.scleraRadius * props.openCoefficient;
-
-    return {
-        middleX,
-        leftX,
-        rightX,
-        middleY,
-        topEyelidY,
-        bottomEyelidY,
-    };
-}
-
-function getBezier(props: IEyeProps) {
-    const curveConstant = 0.55228474983; // (4/3)tan(pi/8)
-    const controlOffset = props.scleraRadius * curveConstant;
-    const scaledYcontrolOffset = controlOffset * props.openCoefficient;
-    const scaledXcontrolOffset = controlOffset - scaledYcontrolOffset;
-    return { controlOffset, scaledXcontrolOffset, scaledYcontrolOffset };
 }
 
 function getCornerShape(props: IEyeProps) {

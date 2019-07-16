@@ -13,6 +13,7 @@ interface IInnerEyeProps {
     innerPath: any;
     pupilRadius: number;
     pupilColor: string;
+    dilatedCoefficient: number;
     scleraRadius: number;
     width: number;
     height: number;
@@ -49,7 +50,7 @@ export const InnerEye = React.memo(
                 <circle
                     className={'pupil'}
                     style={props.circleTransitionStyle}
-                    r={props.pupilRadius}
+                    r={props.pupilRadius * props.dilatedCoefficient}
                     fill={props.pupilColor}
                     cx={props.irisAdjustment.innerX}
                     cy={props.innerY}
