@@ -9,13 +9,7 @@ import VideoHandler from './components/video/VideoHandler';
 import { IObjectDetector } from './models/objectDetection';
 import { loadModel } from './store/actions/detections/actions';
 import { IRootStore } from './store/reducers/rootReducer';
-<<<<<<< HEAD
 import { getWebcamAvailable } from './store/selectors/videoSelectors';
-=======
-import { getDeviceIds } from './store/selectors/videoSelectors';
-import { AppStore } from './store/store';
-import CocoSSD from './utils/objectDetection/cocoSSD';
->>>>>>> decomposed Eye component into smaller components
 import Posenet from './utils/objectDetection/posenet';
 
 interface IAppState {
@@ -93,20 +87,6 @@ export class App extends React.PureComponent<AppProps, IAppState> {
         });
     }
 
-<<<<<<< HEAD
-=======
-    onUserMedia() {
-        this.setState({
-            webcamAvailable: true,
-        });
-        this.props.loadModel(Posenet.init);
-    }
-
-    onUserMediaError() {
-        this.setState({ webcamAvailable: false });
-    }
-
->>>>>>> decomposed Eye component into smaller components
     render() {
         return (
             <div className="App">
