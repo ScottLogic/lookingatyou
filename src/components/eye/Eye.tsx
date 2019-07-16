@@ -47,13 +47,9 @@ export default function Eye(props: IEyeProps) {
     const lineTransitionStyle = {
         transition: `d ${1000 / props.fps}ms`,
     };
-    console.time('eye coords');
+
     const eyeCoords = getEyeCoords(props);
-    console.timeEnd('eye coords');
-    console.time('bezier');
     const bezier = getBezier(props);
-    console.timeEnd('bezier');
-    console.time('corner shape');
     const cornerShape = getCornerShape(props);
 
     const originalResolution = 960;
