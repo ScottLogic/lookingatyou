@@ -27,6 +27,12 @@ export default function Eye(props: IEyeProps) {
         transition: `r ${transitionTime.dilate}ms, cx ${1000 /
             props.fps}ms, cy ${1000 / props.fps}ms`, // cx and cy transitions based on FPS
     };
+    const ellipseTransitionStyle = {
+        transition: `rx ${transitionTime.dilate}ms, ry ${
+            transitionTime.dilate
+        }ms, cx ${1000 / props.fps}ms, cy ${1000 /
+            props.fps}ms, transform ${1000 / props.fps}ms`, // cx and cy transitions based on FPS
+    };
     const innerTransitionStyle = {
         transition: `transform ${1000 / props.fps}ms`,
     };
@@ -41,12 +47,16 @@ export default function Eye(props: IEyeProps) {
     const cornerShape = getCornerShape(props);
     const irisAdjustment = getIrisAdjustment(props);
 
+    const originalResolution = 960;
     const [innerPath, setInnerPath] = useState(
-        getInnerPath(props.width / 960, props.height / 1080),
+        getInnerPath(
+            props.width / originalResolution,
+            props.width / originalResolution,
+        ),
     );
 
     useEffect(() => {
-        setInnerPath(getInnerPath(props.width / 960, props.height / 1080));
+        setInnerPath(getInnerPath(props.width / 960, props.width / 960));
     }, [props.width, props.height]);
 
     return (
@@ -92,25 +102,25 @@ export default function Eye(props: IEyeProps) {
                     cx={irisAdjustment.innerX}
                     cy={props.innerY}
                 />
-                <circle
+                <ellipse
                     className={'innerReflection'}
-                    style={circleTransitionStyle}
-                    r={props.pupilRadius}
+                    style={ellipseTransitionStyle}
+                    rx={props.pupilRadius * 0.375}
+                    ry={props.pupilRadius * 0.75}
                     fill={'url(#reflectionGradient)'}
-                    cx={irisAdjustment.innerX + props.pupilRadius * 0.4}
-                    cy={props.innerY - props.pupilRadius * 0.4}
-                    transform={`skewX(20) translate(${(-145 / 960) *
-                        props.width}, ${(5 / 1080) * props.height})`}
+                    cx={irisAdjustment.innerX + props.pupilRadius}
+                    cy={props.innerY}
+                    transform={`rotate(-45,${irisAdjustment.innerX},${props.innerY})`}
                 />
-                <circle
+                <ellipse
                     className={'outerReflection'}
-                    style={circleTransitionStyle}
-                    r={props.pupilRadius * 0.75}
+                    style={ellipseTransitionStyle}
+                    rx={props.pupilRadius * 0.5}
+                    ry={props.pupilRadius}
                     fill={'url(#reflectionGradient)'}
-                    cx={irisAdjustment.innerX + props.scleraRadius * 0.3}
-                    cy={props.innerY - props.scleraRadius * 0.3}
-                    transform={`skewX(20) translate(${(-140 / 960) *
-                        props.width}, ${(5 / 1080) * props.height})`}
+                    cx={irisAdjustment.innerX + props.irisRadius}
+                    cy={props.innerY}
+                    transform={`rotate(-45,${irisAdjustment.innerX},${props.innerY})`}
                 />
             </g>
 

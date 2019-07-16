@@ -1,4 +1,5 @@
 import React from 'react';
+import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
@@ -151,7 +152,7 @@ export const ConfigMenuElement = React.memo(
             </ConfigMenu>
         );
     },
-    (previous, next) => previous.config === next.config,
+    (previous, next) => isEqual(previous, next),
 );
 
 export default connect(
