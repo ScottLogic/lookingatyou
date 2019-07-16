@@ -1,4 +1,8 @@
-import { Detection } from '../../models/objectDetection';
+import {
+    Detection,
+    IDetections,
+    ISelections,
+} from '../../models/objectDetection';
 import calculateTargetPos from '../objectTracking/calculateFocus';
 import { Bbox, ICoords } from '../types';
 import { isPerson } from './detectionSelector';
@@ -38,12 +42,20 @@ export function largerThan(bbox1: Bbox, bbox2: Bbox): number {
 
 export function closerTo(
     coords: ICoords,
+    history: ISelections[],
 ): (bbox1: Bbox, bbox2: Bbox) => number {
     return function closerToCoords(bbox1: Bbox, bbox2: Bbox) {
-        return (
+        const closerTo =
             Math.hypot(bbox2[0] - coords.x, bbox2[1] - coords.y) -
-            Math.hypot(bbox1[0] - coords.x, bbox1[1] - coords.y)
-        );
+            Math.hypot(bbox1[0] - coords.x, bbox1[1] - coords.y);
+
+        /*
+        const weightedAvg = [];
+        for (let i = 0; i < history.length; i++) {
+            weightedAvg.push(history[i].left[0] * Math.pow(3, i));
+        }*/
+
+        return closerTo;
     };
 }
 

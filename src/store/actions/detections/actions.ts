@@ -76,7 +76,7 @@ export function handleDetection() {
         const leftEyeDetections = await model.detect(leftImage);
         const leftEyeSelection = select(
             leftEyeDetections,
-            closerTo(previousTargets.left),
+            closerTo(previousTargets.left, state.detectionStore.history),
         );
 
         if (leftEyeSelection) {
@@ -119,6 +119,7 @@ export function handleDetection() {
                     right: rightEyeDetections,
                 }),
             );
+
             dispatch(
                 setSelections({
                     left: leftEyeSelection,

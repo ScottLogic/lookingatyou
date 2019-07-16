@@ -23,6 +23,7 @@ export const initialState: IDetectionState = {
     selections: { left: [0, 0, 0, 0], right: null },
     eyesOpenCoefficient: eyelidPosition.OPEN,
     detectionInterval: 0,
+    history: [],
 };
 
 const detectionActionMapping = {
@@ -78,6 +79,12 @@ function setSelections(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
+    if (state.history.length < 8) {
+        state.history.push(action.payload as ISelections);
+    } else if (state.history.length === 8) {
+        state.history.shift();
+        state.history.push(action.payload as ISelections);
+    }
     return { ...state, selections: action.payload as ISelections };
 }
 
