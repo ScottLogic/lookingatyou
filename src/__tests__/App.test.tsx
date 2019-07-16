@@ -51,7 +51,7 @@ describe('App', () => {
                 deviceIds={[testDevice1, testDevice2]}
                 environment={window}
                 configureStream={configureStream}
-                isModelLoaded={false}
+                model={null}
                 store={store}
             />,
         );

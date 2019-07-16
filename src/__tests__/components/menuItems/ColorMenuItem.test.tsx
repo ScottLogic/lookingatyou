@@ -1,5 +1,6 @@
 import { mount, shallow } from 'enzyme';
 import React from 'react';
+import { HelpWith } from '../../../components/configMenu/Help';
 import ColorMenuItem, {
     IColorMenuItemProps,
 } from '../../../components/configMenu/menuItems/ColorMenuItem';
@@ -12,8 +13,10 @@ describe('TextBoxMenuItem tests', () => {
         mockOnInputChange = jest.fn();
         props = {
             name: 'test',
+            configName: 'test',
             color: '#cbcbcb',
             onInputChange: mockOnInputChange,
+            helpWith: HelpWith.IRIS_COLOUR,
         };
     });
 

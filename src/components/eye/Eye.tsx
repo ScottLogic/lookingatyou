@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import tinycolor from 'tinycolor2';
-import { eyes, transitionTime } from '../../AppConstants';
+import { EyeSide, transitionTime } from '../../AppConstants';
 import './Eye.css';
 import { getFatigueMultiplier } from './EyeUtils';
 import { getInnerPath } from './getInnerPath';
 import { Shadows } from './Shadows';
 
 export interface IEyeProps {
-    class: string;
+    class: EyeSide;
     width: number;
     height: number;
     irisColor: string;
@@ -91,7 +91,7 @@ export default function Eye(props: IEyeProps) {
                 <circle
                     className={'pupil'}
                     style={circleTransitionStyle}
-                    r={props.pupilRadius}
+                    r={props.pupilRadius * props.dilatedCoefficient}
                     fill={pupilColor}
                     cx={irisAdjustment.innerX}
                     cy={props.innerY}
@@ -227,7 +227,7 @@ function getCornerShape(props: IEyeProps) {
     const innerBottomCoefficient = 1.1;
     const outerTopCoefficient = 0.7;
     const outerBottomCoefficient = 0.5;
-    return props.class === eyes.RIGHT
+    return props.class === EyeSide.RIGHT
         ? {
               leftTop: innerTopCoefficient,
               rightTop: outerTopCoefficient,

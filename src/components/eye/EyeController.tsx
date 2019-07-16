@@ -2,45 +2,43 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import {
     eyelidPosition,
-    eyes,
+    EyeSide,
     neutralBlinkFrequency,
-    pupilSizes,
     transitionTime,
 } from '../../AppConstants';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
+import { getOpenCoefficient } from '../../store/selectors/detectionSelectors';
+import { getVideos } from '../../store/selectors/videoSelectors';
 import { ICoords, ITargets } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
 import { getFatigueMultiplier } from './EyeUtils';
 import { Gradients } from './Gradients';
+
 interface IEyeControllerProps {
     width: number;
     height: number;
     environment: Window;
+    dilation: number;
+    detected: boolean;
 }
+
 interface IEyeControllerMapStateToProps {
     config: IUserConfig;
-    dilation: number;
-    openCoefficient: number;
-    detected: boolean;
     target: ITargets;
+    videos: Array<HTMLVideoElement | undefined>;
+    openCoefficient: number;
 }
+
 export type EyeControllerProps = IEyeControllerProps &
     IEyeControllerMapStateToProps;
-const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
-    config: getConfig(state),
-    target: state.detectionStore.target,
-    dilation: state.detectionStore.dilationCoefficient,
-    openCoefficient: state.detectionStore.eyesOpenCoefficient,
-    detected: state.detectionStore.personDetected,
-});
+
 export const EyeController = React.memo(
     (props: EyeControllerProps) => {
         const [blinkFrequencyCoefficient] = useState(1); // Will change based on camera feed e.g. lower coefficient when object in frame
         const [isBlinking, setIsBlinking] = useState(false); // Will change based on camera feed e.g. blink less when object in frame
         const [eyesOpenCoefficient] = useState(eyelidPosition.OPEN); // Will change based on camera feed e.g. higher coefficient to show surprise
-        const [dilationCoefficient] = useState(pupilSizes.neutral); // Will change based on camera feed e.g. briefly increase coefficient (dilate) when object enters frame then reset to 1 (neutral)
         const [fatigueMultiplier, setFatigueMulitplier] = useState(1);
 
         useEffect(() => {
@@ -68,7 +66,6 @@ export const EyeController = React.memo(
             props.environment,
             isBlinking,
             blinkFrequencyCoefficient,
-            dilationCoefficient,
             fatigueMultiplier,
         ]);
 
@@ -87,12 +84,12 @@ export const EyeController = React.memo(
             const y = props.height / 2 + displacement * Math.sin(polarAngle);
             return { x, y };
         };
-
-        const eyeCoords: { [key: string]: ICoords } = {};
-        eyeCoords[eyes.LEFT] = getEyeCoords(props.target.left);
+        const leftCoords = getEyeCoords(props.target.left);
         const right = props.target.right;
-        eyeCoords[eyes.RIGHT] =
-            right === null ? eyeCoords[eyes.LEFT] : getEyeCoords(right);
+        const eyeCoords: { [key in EyeSide]: ICoords } = {
+            LEFT: leftCoords,
+            RIGHT: right === null ? leftCoords : getEyeCoords(right),
+        };
 
         function getEyesOpenCoefficient(): number {
             if (props.openCoefficient !== eyesOpenCoefficient) {
@@ -106,7 +103,7 @@ export const EyeController = React.memo(
 
         return (
             <div className="container">
-                {[eyes.RIGHT, eyes.LEFT].map((eye, index) => {
+                {[EyeSide.RIGHT, EyeSide.LEFT].map((eye, index) => {
                     return (
                         <Eye
                             class={eye}
@@ -132,6 +129,8 @@ export const EyeController = React.memo(
         );
     },
     (previous, next) =>
+        previous.dilation === next.dilation &&
+        previous.openCoefficient === next.openCoefficient &&
         previous.target.left.x === next.target.left.x &&
         previous.target.left.y === next.target.left.y &&
         previous.target.right === next.target.right &&
@@ -139,5 +138,12 @@ export const EyeController = React.memo(
             (previous.target.right.x === next.target.right!.x &&
                 previous.target.right.y === next.target.right!.y)),
 );
+
+const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
+    config: getConfig(state),
+    target: state.detectionStore.target,
+    videos: getVideos(state),
+    openCoefficient: getOpenCoefficient(state),
+});
 
 export default connect(mapStateToProps)(EyeController);

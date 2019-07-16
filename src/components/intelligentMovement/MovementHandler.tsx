@@ -1,29 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { eyelidPosition, pupilSizes, sleepDelay } from '../../AppConstants';
-import { IDetections } from '../../models/objectDetection';
 import {
-    setBright,
-    setDetected,
-    setDilation,
-    setLeft,
-    setOpen,
-    setSquinting,
-    setTarget,
-} from '../../store/actions/detections/actions';
+    eyelidPosition,
+    maxMoveWithoutBlink,
+    pupilSizes,
+    sleepDelay,
+} from '../../AppConstants';
+import { Detection } from '../../models/objectDetection';
+import { setOpen, setTarget } from '../../store/actions/detections/actions';
 import {
-    ISetBrightAction,
-    ISetDilationAction,
-    ISetLeftAction,
     ISetOpenAction,
-    ISetPersonAction,
-    ISetSquintAction,
     ISetTargetAction,
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import { ITargets } from '../../utils/types';
+import { getLargerDistance } from '../../utils/utils';
+import EyeController from '../eye/EyeController';
 import {
     analyseLight,
     checkLight,
@@ -33,93 +27,128 @@ import {
 
 interface IMovementProps {
     document: Document;
+    width: number;
+    height: number;
+    environment: Window;
 }
 
 interface IStateProps {
     fps: number;
-    detections: IDetections;
+    detections: Detection[];
     target: ITargets;
-    tooBright: boolean;
-    left: boolean;
-    personDetected: boolean;
-    squinting: boolean;
-    openCoefficient: number;
-    dilationCoefficient: number;
     videos: Array<HTMLVideoElement | undefined>;
+    openCoefficient: number;
 }
 
 interface IDispatchProps {
-    setLeft: (left: boolean) => ISetLeftAction;
-    setBright: (tooBright: boolean) => ISetBrightAction;
-    setSquinting: (isSquinting: boolean) => ISetSquintAction;
-    setOpen: (openCoefficient: number) => ISetOpenAction;
-    setDilation: (dilation: number) => ISetDilationAction;
-    setDetected: (detected: boolean) => ISetPersonAction;
     setTarget: (target: ITargets) => ISetTargetAction;
+    setOpen: (openCoefficient: number) => ISetOpenAction;
+}
+
+interface IMovementState {
+    dilationCoefficient: number;
 }
 
 export type MovementHandlerProps = IMovementProps &
     IDispatchProps &
     IStateProps;
 
-export class MovementHandler extends React.Component<MovementHandlerProps> {
+export class MovementHandler extends React.Component<
+    MovementHandlerProps,
+    IMovementState
+> {
     private movementInterval: number;
     private fatigueMultiplier: number;
     private sleepTimeout: NodeJS.Timeout | null;
+    private tooBright: boolean;
+    private left: boolean;
+    private squinting: boolean;
+    private personDetected: boolean;
+    private prevProps: MovementHandlerProps | null;
 
     constructor(props: MovementHandlerProps) {
         super(props);
 
+        this.state = {
+            dilationCoefficient: pupilSizes.neutral,
+        };
+
         this.movementInterval = 0;
         this.fatigueMultiplier = getFatigueMultiplier();
         this.sleepTimeout = null;
+        this.tooBright = false;
+        this.left = false;
+        this.personDetected = false;
+        this.squinting = false;
+        this.prevProps = null;
 
-        this.calculateBrightness = this.calculateBrightness.bind(this);
+        this.animateEye = this.animateEye.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
         this.hasTargetLeft = this.hasTargetLeft.bind(this);
         this.checkSelection = this.checkSelection.bind(this);
-        this.movementHandler = this.movementHandler.bind(this);
+        this.calculateBrightness = this.calculateBrightness.bind(this);
         this.sleep = this.sleep.bind(this);
         this.wake = this.wake.bind(this);
     }
 
     componentDidMount() {
         this.movementInterval = window.setInterval(
-            this.movementHandler,
-            1000 / (2 * this.props.fps),
+            this.animateEye,
+            1000 / this.props.fps,
+            this.prevProps,
         );
     }
 
     shouldComponentUpdate(nextProps: MovementHandlerProps) {
-        return this.props.fps !== nextProps.fps;
+        return (
+            this.props.height !== nextProps.height ||
+            this.props.width !== nextProps.width ||
+            this.props.openCoefficient !== nextProps.openCoefficient ||
+            this.props.target !== nextProps.target ||
+            this.props.detections !== nextProps.detections
+        );
     }
 
-    componentDidUpdate() {
-        clearInterval(this.movementInterval);
-        this.movementInterval = window.setInterval(
-            this.movementHandler,
-            1000 / (2 * this.props.fps),
-        );
+    componentDidUpdate(prevProps: MovementHandlerProps) {
+        this.prevProps = prevProps;
+    }
+
+    animateEye(prevProps: MovementHandlerProps) {
         this.fatigueMultiplier = getFatigueMultiplier();
+        this.checkSelection();
+        this.calculateBrightness();
+        this.checkBlink(prevProps);
     }
 
     componentWillUnmount() {
         clearInterval(this.movementInterval);
     }
 
-    movementHandler() {
-        this.checkSelection();
-        this.calculateBrightness();
+    calculateBrightness() {
+        if (this.props.videos[0]) {
+            const { tooBright, scaledPupilSize } = checkLight(
+                this.props.environment.document,
+                this.props.videos[0] as HTMLVideoElement,
+                analyseLight,
+            );
+
+            if (tooBright) {
+                this.tooBright = true;
+                this.props.setOpen(eyelidPosition.CLOSED);
+            } else if (this.tooBright) {
+                this.tooBright = false;
+                this.props.setOpen(eyelidPosition.OPEN);
+            }
+            this.setState({ dilationCoefficient: scaledPupilSize });
+        }
     }
 
     checkSelection() {
-        const selection = this.props.detections.left.find(detection => {
-            return detection.info.type === 'person';
-        });
+        let target = this.props.target;
 
-        if (this.props.squinting && Math.random() < 0.1) {
+        if (this.squinting && Math.random() < 0.1) {
+            this.squinting = false;
             this.props.setOpen(eyelidPosition.OPEN * this.fatigueMultiplier);
-            this.props.setSquinting(false);
         }
 
         if (
@@ -129,77 +158,84 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
             this.props.setOpen(eyelidPosition.OPEN);
         }
 
-        if (selection) {
+        if (this.props.detections.length > 0) {
             this.wake();
-            if (this.props.squinting) {
+
+            if (this.squinting) {
                 this.props.setOpen(
                     eyelidPosition.OPEN * this.fatigueMultiplier,
                 );
             }
+
             this.isNewTarget();
         } else {
             this.sleep();
             this.hasTargetLeft();
 
             if (Math.abs(this.props.target.left.x) > 1) {
-                this.props.setTarget({
+                target = {
                     left: {
                         x: 0,
                         y: this.props.target.left.y,
                     },
                     right: null,
-                });
+                };
             }
 
             const { newX, left } = naturalMovement(
                 this.props.target.left.x,
-                this.props.left,
+                this.left,
             );
 
-            this.props.setTarget({ left: { x: newX, y: 0 }, right: null });
-            this.props.setLeft(left);
+            target = { left: { x: newX, y: 0 }, right: null };
+            this.props.setTarget(target);
+
+            this.left = left;
         }
     }
 
-    calculateBrightness() {
-        if (this.props.videos[0]) {
-            const { tooBright, scaledPupilSize } = checkLight(
-                this.props.document,
-                this.props.tooBright,
-                this.props.videos[0] as HTMLVideoElement,
-                analyseLight,
+    checkBlink(prevProps?: MovementHandlerProps) {
+        if (prevProps && this.props.target) {
+            const leftEyeDist = getLargerDistance(
+                prevProps.target.left,
+                this.props.target.left,
             );
 
-            if (tooBright) {
-                this.props.setBright(true);
+            if (leftEyeDist > maxMoveWithoutBlink) {
                 this.props.setOpen(eyelidPosition.CLOSED);
-            } else if (this.props.tooBright) {
-                this.props.setBright(false);
-                this.props.setOpen(
-                    eyelidPosition.OPEN * this.fatigueMultiplier,
-                );
             }
 
-            this.props.setDilation(scaledPupilSize);
+            if (prevProps.target.right && this.props.target.right) {
+                const rightEyeDist = getLargerDistance(
+                    prevProps.target.right,
+                    this.props.target.right,
+                );
+
+                if (rightEyeDist > maxMoveWithoutBlink) {
+                    this.props.setOpen(eyelidPosition.CLOSED);
+                }
+            }
         }
     }
 
     isNewTarget() {
-        if (!this.props.personDetected) {
-            this.props.setDetected(true);
-            this.props.setDilation(pupilSizes.dilated);
-            this.props.setDilation(pupilSizes.neutral);
+        if (!this.personDetected) {
+            this.personDetected = true;
+            this.setState({
+                dilationCoefficient: pupilSizes.dilated,
+            });
         }
     }
 
     hasTargetLeft() {
-        if (this.props.personDetected) {
-            this.props.setDetected(false);
-            this.props.setSquinting(true);
-            this.props.setDilation(pupilSizes.constricted);
-            this.props.setDilation(pupilSizes.neutral);
-            this.props.setTarget({ left: { x: 0, y: 0 }, right: null });
+        if (this.personDetected) {
+            this.personDetected = false;
+            this.squinting = true;
+            this.setState({
+                dilationCoefficient: pupilSizes.constricted,
+            });
             this.props.setOpen(eyelidPosition.SQUINT);
+            this.props.setTarget({ left: { x: 0, y: 0 }, right: null });
         }
     }
 
@@ -220,36 +256,33 @@ export class MovementHandler extends React.Component<MovementHandlerProps> {
     }
 
     render() {
-        return null;
+        return (
+            <EyeController
+                width={this.props.width}
+                height={this.props.height}
+                environment={this.props.environment}
+                dilation={this.state.dilationCoefficient}
+                detected={this.personDetected}
+            />
+        );
     }
 }
 
 const mergeStateToProps = (state: IRootStore) => {
     return {
         fps: state.configStore.config.fps,
-        detections: state.detectionStore.detections,
+        detections: state.detectionStore.detections.left,
         target: state.detectionStore.target,
-        tooBright: state.detectionStore.tooBright,
-        left: state.detectionStore.left,
-        squinting: state.detectionStore.isSquinting,
         openCoefficient: state.detectionStore.eyesOpenCoefficient,
-        dilationCoefficient: state.detectionStore.dilationCoefficient,
-        personDetected: state.detectionStore.personDetected,
         videos: getVideos(state),
     };
 };
 
 const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
     return {
-        setLeft: (left: boolean) => dispatch(setLeft(left)),
-        setSquinting: (isSquinting: boolean) =>
-            dispatch(setSquinting(isSquinting)),
-        setBright: (bright: boolean) => dispatch(setBright(bright)),
-        setDilation: (dilation: number) => dispatch(setDilation(dilation)),
+        setTarget: (target: ITargets) => dispatch(setTarget(target)),
         setOpen: (openCoefficient: number) =>
             dispatch(setOpen(openCoefficient)),
-        setDetected: (detected: boolean) => dispatch(setDetected(detected)),
-        setTarget: (target: ITargets) => dispatch(setTarget(target)),
     };
 };
 
