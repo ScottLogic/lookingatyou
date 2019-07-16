@@ -261,20 +261,18 @@ function getIrisAdjustment(props: IEyeProps, previousAngle: number = 0) {
             maxDisplacement;
 
     let angle =
-        (Math.atan2(
+        ((Math.atan2(
             props.innerY - props.height / 2,
             props.innerX - props.width / 2,
         ) *
             180) /
-        Math.PI;
-    let shouldScaleX = true;
-    while (angle - previousAngle < -90) {
+            Math.PI) %
+        180;
+    if (angle < -90) {
         angle = angle + 180;
-        shouldScaleX = !shouldScaleX;
     }
-    while (angle - previousAngle >= 90) {
+    if (angle > 90) {
         angle = angle - 180;
-        shouldScaleX = !shouldScaleX;
     }
 
     return {
