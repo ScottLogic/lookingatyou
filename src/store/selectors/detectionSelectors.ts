@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { IDetections } from '../../models/objectDetection';
 import select, {
+    closerTo,
     closerVerticallyTo,
     largerThan,
     leftOf,
@@ -15,9 +16,9 @@ export function getDetections(state: IRootStore): IDetections {
 }
 
 export const getSelections = createSelector(
-    [getDetections],
-    detections => {
-        const left = select(detections.left, largerThan);
+    [getDetections, getPreviousTargets],
+    (detections, previousTarget) => {
+        const left = select(detections.left, closerTo(previousTarget.left));
         const right =
             left === undefined
                 ? undefined
