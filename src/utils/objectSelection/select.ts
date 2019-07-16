@@ -50,7 +50,7 @@ export function closerTo(
             Math.hypot(bbox1[0] - coords.x, bbox1[1] - coords.y);
 
         const weightedAvg = [];
-        for (let i = 0; i < history.length; i++) {
+        for (let i = history.length - 1; i > 0; i--) {
             weightedAvg.push(history[i].left[0] * Math.pow(0.5, i));
         }
 
