@@ -19,7 +19,6 @@ export interface IDetectionState {
     target: ITargets;
     detections: IDetections;
     selections: ISelections;
-    openCoefficient: number;
 }
 
 export interface ISetModelAction {
