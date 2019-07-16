@@ -72,7 +72,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
             this.props.videoIndex
         ] as HTMLVideoElement;
 
-        const targetBbox = this.bbox;
+        const focusedBbox = this.bbox;
         const detections =
             this.props.videoIndex === 0
                 ? this.props.detections.left
@@ -80,23 +80,13 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
 
         this.drawVideoFrame(video);
 
-        let [x, y, width, height] = targetBbox;
-        let bbox = { x, y, width, height };
-
         if (this.props.selections && detections) {
             detections.forEach(detection => {
-                if (targetBbox !== detection.bbox) {
-                    [x, y, width, height] = detection.bbox;
-                    bbox = { x, y, width, height };
-                    if (this.canvasRef.current) {
-                        this.drawRectangle('blue', bbox);
-                    }
-                } else {
-                    [x, y, width, height] = targetBbox;
-                    bbox = { x, y, width, height };
-                    if (this.canvasRef.current) {
-                        this.drawRectangle('red', bbox);
-                    }
+                const [x, y, width, height] = detection.bbox;
+                const bbox = { x, y, width, height };
+                const colour = detection.bbox === focusedBbox ? 'red' : 'blue';
+                if (this.canvasRef.current) {
+                    this.drawRectangle(colour, bbox);
                 }
             });
         }
