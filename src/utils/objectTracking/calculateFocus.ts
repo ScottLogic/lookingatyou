@@ -5,6 +5,18 @@ export default function calculateTargetPos(bbox: Bbox): ICoords {
     return { x: x + width / 2, y: y + height / 4 };
 }
 
+export function calculateNormalisedPos(
+    bbox: Bbox,
+    width: number,
+    height: number,
+): ICoords {
+    const position = calculateTargetPos(bbox);
+    return {
+        x: normalise(position.x, width),
+        y: normalise(position.y, height),
+    };
+}
+
 export function normalise(
     val: number,
     max: number,

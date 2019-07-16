@@ -79,17 +79,35 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
                 ? this.props.detections.left
                 : this.props.detections.right;
 
-        if (this.props.selections && detections) {
-            let [x, y, width, height] = this.bbox;
-            let bbox = { x, y, width, height };
-            this.drawImage(video, 'red', bbox);
+        this.drawImage(video, 'none');
 
+        if (this.props.selections && detections) {
             detections.forEach(detection => {
                 if (!this.closeToChosenTarget(detection.bbox)) {
-                    [x, y, width, height] = detection.bbox;
-                    bbox = { x, y, width, height };
+                    const [
+                        detectionX,
+                        detectionY,
+                        detectionWidth,
+                        detectionHeight,
+                    ] = detection.bbox;
+                    const detectionBbox = {
+                        x: detectionX,
+                        y: detectionY,
+                        width: detectionWidth,
+                        height: detectionHeight,
+                    };
                     if (this.canvasRef.current) {
-                        this.drawImage(this.canvasRef.current, 'blue', bbox);
+                        this.drawImage(
+                            this.canvasRef.current,
+                            'blue',
+                            detectionBbox,
+                        );
+                    }
+                } else {
+                    const [x, y, width, height] = this.bbox;
+                    const bbox = { x, y, width, height };
+                    if (this.canvasRef.current) {
+                        this.drawImage(this.canvasRef.current, 'red', bbox);
                     }
                 }
             });
@@ -100,9 +118,9 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         const [x, y, width, height] = bbox;
         const [chosenX, chosenY, chosenWidth, chosenHeight] = this.bbox;
         return (
-            areCoordinatesClose(x, chosenX) &&
-            areCoordinatesClose(y, chosenY) &&
-            areCoordinatesClose(width, chosenWidth) &&
+            areCoordinatesClose(x, chosenX) ||
+            areCoordinatesClose(y, chosenY) ||
+            areCoordinatesClose(width, chosenWidth) ||
             areCoordinatesClose(height, chosenHeight)
         );
     }
