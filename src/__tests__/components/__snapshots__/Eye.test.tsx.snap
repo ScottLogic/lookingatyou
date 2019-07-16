@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Eye should render correctly 1`] = `
-"<svg className=\\"eye\\" width={500} height={500}>
+"<svg className=\\"LEFT\\" width={500} height={500}>
   <circle className=\\"sclera\\" style={{...}} r={100} fill=\\"url(#scleraGradient)\\" cx={250} cy={250} />
   <g className=\\"inner\\" style={{...}} transform=\\"\\\\n                rotate(0)\\\\n                scale(1, 1)\\\\n                rotate(0)\\\\n                \\">
     <circle className=\\"iris\\" style={{...}} r={50} fill=\\"url(#irisGradient)\\" cx={250} cy={250} />
@@ -20,6 +20,5 @@ exports[`Eye should render correctly 1`] = `
     <path d=\\"M 0 250,\\\\n                         L 150 250,\\\\n                         A 100 100 0 0 1 350 250\\\\n                         L 500 250,\\\\n                         L 500 0\\\\n                         L 0 0\\" />
     <path d=\\"M 0 250,\\\\n                         L 150 250,\\\\n                         A 100 100 0 0 0 350 250\\\\n                         L 500 250,\\\\n                         L 500 500\\\\n                         L 0 500\\" />
   </svg>
-  <Shadows openCoefficient={0.5} />
 </svg>"
 `;

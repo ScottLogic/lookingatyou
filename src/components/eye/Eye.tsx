@@ -4,7 +4,6 @@ import { EyeSide, irisSkewFactor, transitionTime } from '../../AppConstants';
 import './Eye.css';
 import { getMaxDisplacement } from './EyeUtils';
 import { getInnerPath } from './getInnerPath';
-import { Shadows } from './Shadows';
 
 export interface IEyeProps {
     class: EyeSide;
@@ -210,7 +209,6 @@ export default function Eye(props: IEyeProps) {
                          L 0 ${props.height}`}
                 />
             </svg>
-            <Shadows openCoefficient={props.openCoefficient} />
         </svg>
     );
 }

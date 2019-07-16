@@ -15,6 +15,7 @@ import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
 import { getMaxDisplacement } from './EyeUtils';
 import { Gradients } from './Gradients';
+import { Shadows } from './Shadows';
 
 interface IEyeControllerProps {
     width: number;
@@ -123,6 +124,7 @@ export const EyeController = React.memo(
                     );
                 })}
                 <Gradients irisColor={props.config.irisColor} />
+                <Shadows openCoefficient={props.openCoefficient} />
             </div>
         );
     },
