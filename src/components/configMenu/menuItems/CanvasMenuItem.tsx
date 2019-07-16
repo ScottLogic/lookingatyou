@@ -81,12 +81,11 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         this.drawVideoFrame(video);
 
         if (this.props.selections && detections) {
-            detections.forEach(detection => {
-                const [x, y, width, height] = detection.bbox;
-                const bbox = { x, y, width, height };
-                const colour = detection.bbox === focusedBbox ? 'red' : 'blue';
+            detections.forEach(({ bbox }) => {
+                const [x, y, width, height] = bbox;
+                const colour = bbox === focusedBbox ? 'red' : 'blue';
                 if (this.canvasRef.current) {
-                    this.drawRectangle(colour, bbox);
+                    this.drawRectangle(colour, { x, y, width, height });
                 }
             });
         }
