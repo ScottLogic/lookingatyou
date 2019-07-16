@@ -69,8 +69,12 @@ export const getTargets = createSelector(
     },
 );
 
+export function getPreviousTargets(state: IRootStore): ITargets {
+    return state.detectionStore.previousTarget;
+}
+
 export function getIdleTargets(state: IRootStore): ITargets {
-    return state.detectionStore.idleTargets;
+    return state.detectionStore.idleTarget;
 }
 
 export function getOpenCoefficient(state: IRootStore): number {

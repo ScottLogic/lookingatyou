@@ -8,7 +8,10 @@ import {
 } from '../../AppConstants';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
-import { getOpenCoefficient } from '../../store/selectors/detectionSelectors';
+import {
+    getOpenCoefficient,
+    getTargets,
+} from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import { ICoords, ITargets } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
@@ -141,7 +144,7 @@ export const EyeController = React.memo(
 
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     config: getConfig(state),
-    target: state.detectionStore.target,
+    target: getTargets(state),
     videos: getVideos(state),
     openCoefficient: getOpenCoefficient(state),
 });
