@@ -79,9 +79,9 @@ function setSelections(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    if (state.history.length < 8) {
+    if (state.history.length < 4) {
         state.history.push(action.payload as ISelections);
-    } else if (state.history.length === 8) {
+    } else if (state.history.length === 4) {
         state.history.shift();
         state.history.push(action.payload as ISelections);
     }

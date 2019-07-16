@@ -49,11 +49,10 @@ export function closerTo(
             Math.hypot(bbox2[0] - coords.x, bbox2[1] - coords.y) -
             Math.hypot(bbox1[0] - coords.x, bbox1[1] - coords.y);
 
-        /*
         const weightedAvg = [];
         for (let i = 0; i < history.length; i++) {
-            weightedAvg.push(history[i].left[0] * Math.pow(3, i));
-        }*/
+            weightedAvg.push(history[i].left[0] * Math.pow(0.5, i));
+        }
 
         return closerTo;
     };
