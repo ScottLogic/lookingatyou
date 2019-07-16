@@ -119,7 +119,7 @@ export class MovementHandler extends React.Component<
     calculateBrightness() {
         if (this.props.videos[0]) {
             const { tooBright, scaledPupilSize } = checkLight(
-                window.document,
+                this.props.environment.document,
                 this.tooBright,
                 this.props.videos[0] as HTMLVideoElement,
                 analyseLight,
@@ -185,7 +185,7 @@ export class MovementHandler extends React.Component<
         }
     }
 
-    checkBlink(prevProps: MovementHandlerProps | undefined) {
+    checkBlink(prevProps?: MovementHandlerProps) {
         if (prevProps && this.props.target) {
             const leftEyeDist = getLargerDistance(
                 prevProps.target.left,
