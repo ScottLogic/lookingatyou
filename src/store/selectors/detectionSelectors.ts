@@ -3,7 +3,6 @@ import { IDetections } from '../../models/objectDetection';
 import select, {
     closerTo,
     closerVerticallyTo,
-    largerThan,
     leftOf,
 } from '../../utils/objectSelection/select';
 import { calculateNormalisedPos } from '../../utils/objectTracking/calculateFocus';
