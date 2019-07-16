@@ -59,7 +59,6 @@ export default function Eye(props: IEyeProps) {
     const lineTransitionStyle = {
         transition: `d ${1000 / props.fps}ms`,
     };
-
     const cornerShape = getCornerShape(props);
 
     const resolutionScale = props.width / 960;
