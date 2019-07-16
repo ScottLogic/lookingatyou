@@ -143,19 +143,15 @@ export const EyeController = React.memo(
             </div>
         );
     },
-    (previous, next) => {
-        console.log(previous);
-        return (
-            previous.dilation === next.dilation &&
-            previous.openCoefficient === next.openCoefficient &&
-            previous.target.left.x === next.target.left.x &&
-            previous.target.left.y === next.target.left.y &&
-            previous.target.right === next.target.right &&
-            (previous.target.right === null ||
-                (previous.target.right.x === next.target.right!.x &&
-                    previous.target.right.y === next.target.right!.y))
-        );
-    },
+    (previous, next) =>
+        previous.dilation === next.dilation &&
+        previous.openCoefficient === next.openCoefficient &&
+        previous.target.left.x === next.target.left.x &&
+        previous.target.left.y === next.target.left.y &&
+        previous.target.right === next.target.right &&
+        (previous.target.right === null ||
+            (previous.target.right.x === next.target.right!.x &&
+                previous.target.right.y === next.target.right!.y)),
 );
 
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
