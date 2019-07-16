@@ -2,7 +2,7 @@ import React from 'react';
 import isEqual from 'react-fast-compare';
 
 interface IEyelidsProps {
-    style: any;
+    transitionStyle: { transition: string };
     eyeCoords: {
         leftX: number;
         rightX: number;
@@ -30,7 +30,7 @@ export const Eyelids = React.memo(
         return (
             <svg className="Eyelids">
                 <path
-                    style={props.style}
+                    style={props.transitionStyle}
                     filter="url(#shadowTop)"
                     d={
                         // upper eyelid
@@ -62,7 +62,7 @@ export const Eyelids = React.memo(
                     }
                 />
                 <path
-                    style={props.style}
+                    style={props.transitionStyle}
                     filter="url(#shadowBottom)"
                     d={
                         // lower eyelid

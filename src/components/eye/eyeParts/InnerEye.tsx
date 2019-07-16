@@ -3,9 +3,10 @@ import isEqual from 'react-fast-compare';
 import tinycolor from 'tinycolor2';
 
 interface IInnerEyeProps {
-    innerTransitionStyle: any;
-    circleTransitionStyle: any;
-    lineTransitionStyle: any;
+    innerTransitionStyle: { transition: string };
+    circleTransitionStyle: { transition: string };
+    lineTransitionStyle: { transition: string };
+    ellipseTransitionStyle: { transition: string };
     irisAdjustment: { xScale: number; xSkew: number; innerX: number };
     irisRadius: number;
     innerY: number;
@@ -55,25 +56,25 @@ export const InnerEye = React.memo(
                     cx={props.irisAdjustment.innerX}
                     cy={props.innerY}
                 />
-                <circle
+                <ellipse
                     className={'innerReflection'}
-                    style={props.circleTransitionStyle}
-                    r={props.pupilRadius}
+                    style={props.ellipseTransitionStyle}
+                    rx={props.pupilRadius * 0.375}
+                    ry={props.pupilRadius * 0.75}
                     fill={'url(#reflectionGradient)'}
-                    cx={props.irisAdjustment.innerX + props.pupilRadius * 0.4}
-                    cy={props.innerY - props.pupilRadius * 0.4}
-                    transform={`skewX(20) translate(${(-145 / 960) *
-                        props.width}, ${(5 / 1080) * props.height})`}
+                    cx={props.irisAdjustment.innerX + props.pupilRadius}
+                    cy={props.innerY}
+                    transform={`rotate(-45,${props.irisAdjustment.innerX},${props.innerY})`}
                 />
-                <circle
+                <ellipse
                     className={'outerReflection'}
-                    style={props.circleTransitionStyle}
-                    r={props.pupilRadius * 0.75}
+                    style={props.ellipseTransitionStyle}
+                    rx={props.pupilRadius * 0.5}
+                    ry={props.pupilRadius}
                     fill={'url(#reflectionGradient)'}
-                    cx={props.irisAdjustment.innerX + props.scleraRadius * 0.3}
-                    cy={props.innerY - props.scleraRadius * 0.3}
-                    transform={`skewX(20) translate(${(-140 / 960) *
-                        props.width}, ${(5 / 1080) * props.height})`}
+                    cx={props.irisAdjustment.innerX + props.irisRadius}
+                    cy={props.innerY}
+                    transform={`rotate(-45,${props.irisAdjustment.innerX},${props.innerY})`}
                 />
             </g>
         );

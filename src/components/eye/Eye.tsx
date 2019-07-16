@@ -97,6 +97,7 @@ export default function Eye(props: IEyeProps) {
                 innerTransitionStyle={innerTransitionStyle}
                 circleTransitionStyle={circleTransitionStyle}
                 lineTransitionStyle={lineTransitionStyle}
+                ellipseTransitionStyle={ellipseTransitionStyle}
                 irisAdjustment={irisAdjustment}
                 irisRadius={props.irisRadius}
                 irisColor={props.irisColor}
@@ -110,7 +111,7 @@ export default function Eye(props: IEyeProps) {
                 height={props.height}
             />
             <Eyelids
-                style={eyelidTransitionStyle}
+                transitionStyle={eyelidTransitionStyle}
                 eyeCoords={props.eyeCoords}
                 cornerShape={cornerShape}
                 bezier={props.bezier}
