@@ -47,8 +47,12 @@ export default function Eye(props: IEyeProps) {
     const cornerShape = getCornerShape(props);
     const irisAdjustment = getIrisAdjustment(props);
 
+    const originalResolution = 960;
     const [innerPath, setInnerPath] = useState(
-        getInnerPath(props.width / 960, props.width / 960),
+        getInnerPath(
+            props.width / originalResolution,
+            props.width / originalResolution,
+        ),
     );
 
     useEffect(() => {
