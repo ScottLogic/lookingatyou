@@ -4,6 +4,7 @@ import React from 'react';
 import ConfigMenu, {
     IConfigMenuProps,
 } from '../../components/configMenu/ConfigMenu';
+import { HelpWith } from '../../components/configMenu/Help';
 import TextBoxMenuItem, {
     ITextBoxMenuItemProps,
 } from '../../components/configMenu/menuItems/TextBoxMenuItem';
@@ -19,10 +20,12 @@ describe('ConfigMenu', () => {
         map = {};
         textBoxProps = {
             name: 'textBox',
-            defaultValue: 'test',
-            isValidInput: jest.fn(),
+            configName: 'textBox',
+            defaultValue: 20,
             onValidInput: jest.fn(),
-            parse: jest.fn(),
+            configParse: jest.fn(),
+            helpWith: HelpWith.FPS,
+            step: 1,
         };
         children = <TextBoxMenuItem {...textBoxProps} />;
 

@@ -4,43 +4,41 @@ import {
     eyelidPosition,
     EyeSide,
     neutralBlinkFrequency,
-    pupilSizes,
     transitionTime,
 } from '../../AppConstants';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
+import { getOpenCoefficient } from '../../store/selectors/detectionSelectors';
+import { getVideos } from '../../store/selectors/videoSelectors';
 import { ICoords, ITargets } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
 import { getMaxDisplacement } from './EyeUtils';
 import { Gradients } from './Gradients';
+
 interface IEyeControllerProps {
     width: number;
     height: number;
     environment: Window;
+    dilation: number;
+    detected: boolean;
 }
+
 interface IEyeControllerMapStateToProps {
     config: IUserConfig;
-    dilation: number;
-    openCoefficient: number;
-    detected: boolean;
     target: ITargets;
+    videos: Array<HTMLVideoElement | undefined>;
+    openCoefficient: number;
 }
+
 export type EyeControllerProps = IEyeControllerProps &
     IEyeControllerMapStateToProps;
-const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
-    config: getConfig(state),
-    target: state.detectionStore.target,
-    dilation: state.detectionStore.dilationCoefficient,
-    openCoefficient: state.detectionStore.eyesOpenCoefficient,
-    detected: state.detectionStore.personDetected,
-});
+
 export const EyeController = React.memo(
     (props: EyeControllerProps) => {
         const [blinkFrequencyCoefficient] = useState(1); // Will change based on camera feed e.g. lower coefficient when object in frame
         const [isBlinking, setIsBlinking] = useState(false); // Will change based on camera feed e.g. blink less when object in frame
         const [eyesOpenCoefficient] = useState(eyelidPosition.OPEN); // Will change based on camera feed e.g. higher coefficient to show surprise
-        const [dilationCoefficient] = useState(pupilSizes.neutral); // Will change based on camera feed e.g. briefly increase coefficient (dilate) when object enters frame then reset to 1 (neutral)
 
         useEffect(() => {
             const blink = props.environment.setInterval(() => {
@@ -64,7 +62,6 @@ export const EyeController = React.memo(
             props.environment,
             isBlinking,
             blinkFrequencyCoefficient,
-            dilationCoefficient,
         ]);
 
         const scleraRadius = props.width / 4.5;
@@ -130,6 +127,8 @@ export const EyeController = React.memo(
         );
     },
     (previous, next) =>
+        previous.dilation === next.dilation &&
+        previous.openCoefficient === next.openCoefficient &&
         previous.target.left.x === next.target.left.x &&
         previous.target.left.y === next.target.left.y &&
         previous.target.right === next.target.right &&
@@ -137,5 +136,12 @@ export const EyeController = React.memo(
             (previous.target.right.x === next.target.right!.x &&
                 previous.target.right.y === next.target.right!.y)),
 );
+
+const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
+    config: getConfig(state),
+    target: state.detectionStore.target,
+    videos: getVideos(state),
+    openCoefficient: getOpenCoefficient(state),
+});
 
 export default connect(mapStateToProps)(EyeController);
