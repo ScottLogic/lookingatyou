@@ -27,6 +27,7 @@ describe('ConfigMenuElement tests', () => {
             config,
             window,
             setConfig: jest.fn(),
+            videos: [],
         };
     });
 
