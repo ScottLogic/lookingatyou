@@ -4,7 +4,6 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import './App.css';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
-import EyeController from './components/eye/EyeController';
 import MovementHandler from './components/intelligentMovement/MovementHandler';
 import Video from './components/video/Video';
 import { IObjectDetector } from './models/objectDetection';
@@ -125,13 +124,11 @@ export class App extends React.PureComponent<AppProps, IAppState> {
                         <div className="loading-spinner" />
                     ) : (
                         <div>
-                            <EyeController
+                            <MovementHandler
+                                document={document}
                                 width={this.state.width}
                                 height={this.state.height}
                                 environment={this.props.environment}
-                            />
-                            <MovementHandler
-                                document={this.props.environment.document}
                             />
                         </div>
                     )
