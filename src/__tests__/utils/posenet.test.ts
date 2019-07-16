@@ -146,7 +146,7 @@ const testPose: Pose = {
 
 const testInput = [testPose];
 
-const box = getBoundingBox(testPose.keypoints);
+const box = getBoundingBox(testPose.keypoints.slice(0, 2));
 
 const testOutput: Detection[] = [
     {
