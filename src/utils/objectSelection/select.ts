@@ -1,6 +1,6 @@
 import { Detection, ISelections } from '../../models/objectDetection';
 import calculateTargetPos from '../objectTracking/calculateFocus';
-import { Bbox, ICoords } from '../types';
+import { Bbox } from '../types';
 import { isPerson } from './detectionSelector';
 
 let xPrediction = 0;

@@ -13,7 +13,6 @@ import select, {
 import { calculateNormalisedPos } from '../../../utils/objectTracking/calculateFocus';
 import { ITargets } from '../../../utils/types';
 import { IRootStore } from '../../reducers/rootReducer';
-import { getTargets } from '../../selectors/detectionSelectors';
 import { getVideos } from '../../selectors/videoSelectors';
 import {
     ISetDetectionsAction,
