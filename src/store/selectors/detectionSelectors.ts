@@ -36,9 +36,7 @@ export const getSelections = createSelector(
 export const getTargets = createSelector(
     [getSelections, getVideos, getIdleTargets],
     (selections, videos, idleTargets): ITargets => {
-        let left;
-        let right;
-        left =
+        const left =
             selections.left === undefined || !videos[0]
                 ? undefined
                 : calculateNormalisedPos(
@@ -46,7 +44,7 @@ export const getTargets = createSelector(
                       videos[0]!.width,
                       videos[0]!.height,
                   );
-        right =
+        const right =
             selections.right === undefined || !videos[1]
                 ? left
                 : calculateNormalisedPos(
