@@ -6,6 +6,7 @@ export interface IConfigMenuProps {
     timerLength: number;
     children: React.ReactNode;
     window: Window;
+    debugEnabled: boolean;
 }
 interface IConfigMenuState {
     leftPosition: string;
@@ -30,7 +31,7 @@ export default class ConfigMenu extends React.Component<
     mouseMoveHandler() {
         this.setState({ leftPosition: '0px' });
         clearInterval(this.hideTimeout);
-        if (!this.state.isUnderMouse) {
+        if (!this.state.isUnderMouse && !this.props.debugEnabled) {
             this.hideTimeout = window.setTimeout(
                 () => this.setState({ leftPosition: '-' + this.props.width }),
                 this.props.timerLength,

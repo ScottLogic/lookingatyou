@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ConfigMenuElement tests should render correctly 1`] = `
-"<ConfigMenu width=\\"14em\\" timerLength={1000} window={{...}}>
+"<ConfigMenu width=\\"14em\\" timerLength={1000} window={{...}} debugEnabled={false}>
   <Memo() name=\\"X Sensitivity\\" configName=\\"xSensitivity\\" step={0.1} defaultValue={1} onValidInput={[Function: mockConstructor]} configParse={[Function: parseFloat]} helpWith={1} />
   <Memo() name=\\"Y Sensitivity\\" configName=\\"ySensitivity\\" step={0.1} defaultValue={1} onValidInput={[Function: mockConstructor]} configParse={[Function: parseFloat]} helpWith={2} />
   <Memo() name=\\"FPS\\" configName=\\"fps\\" step={1} defaultValue={30} onValidInput={[Function: mockConstructor]} configParse={[Function: parseInt]} helpWith={0} />
@@ -19,5 +19,7 @@ exports[`ConfigMenuElement tests should render correctly 1`] = `
   <Help problemWith={7} />
   <Help problemWith={8} />
   <Help problemWith={9} />
+  <Help problemWith={4} />
+  <Help problemWith={5} />
 </ConfigMenu>"
 `;
