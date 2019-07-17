@@ -83,12 +83,13 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         if (this.props.selections && detections) {
             detections.forEach(({ bbox }) => {
                 const [x, y, width, height] = bbox;
-                const colour = bbox === focusedBbox ? 'green' : 'red';
                 if (this.canvasRef.current) {
-                    this.drawRectangle(colour, { x, y, width, height });
+                    this.drawRectangle('red', { x, y, width, height });
                 }
             });
         }
+        const [a, b, c, d] = focusedBbox;
+        this.drawRectangle('green', {a, b, c, d});
     }
 
     render() {
