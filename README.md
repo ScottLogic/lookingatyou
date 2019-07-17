@@ -24,7 +24,7 @@
 -   [About the Project](#about-the-project)
 -   [Prerequisites](#prerequisites)
     -   [General](#general)
-    -   [Test](#test)
+    -   [Tests](#tests)
 -   [Running the project (local)](#running-the-project-locally)
 -   [Usage](#usage)
 -   [Testing](#testing)
@@ -122,7 +122,7 @@ npm install
 npm run build
 ```
 
-Once the project is build, you can deploy it to AWS S3 bucket with following command:
+Once the project is built, you can deploy it to AWS S3 bucket with following command:
 
 ```
 aws s3 sync ./build/ s3://<bucket-name>/ --delete

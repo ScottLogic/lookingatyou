@@ -7,7 +7,7 @@ export interface ICoords {
 
 export interface ITargets {
     left: ICoords;
-    right: ICoords | null;
+    right: ICoords;
 }
 
 export type DetectionImage =

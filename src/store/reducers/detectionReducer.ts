@@ -1,26 +1,21 @@
-import { eyelidPosition, maxNumTargetsToConsider } from '../../AppConstants';
-import {
-    IDetections,
-    IObjectDetector,
-    ISelections,
-} from '../../models/objectDetection';
-import { ITargets } from '../../utils/types';
+import { eyelidPosition } from '../../AppConstants';
+import { IDetections, IObjectDetector } from '../../models/objectDetection';
+import { ICoords } from '../../utils/types';
 import {
     DetectionActionType,
     IDetectionState,
     SET_DETECTIONS,
+    SET_IDLE_TARGET,
     SET_INTERVAL,
     SET_MODEL,
     SET_OPEN,
-    SET_SELECTIONS,
-    SET_TARGET,
 } from '../actions/detections/types';
 
 export const initialState: IDetectionState = {
     model: null,
-    target: { left: { x: 0, y: 0 }, right: null },
-    detections: { left: [], right: null },
-    selections: { left: [0, 0, 0, 0], right: null },
+    idleTarget: { left: { x: 0, y: 0 }, right: { x: 0, y: 0 } },
+    previousTarget: { left: { x: 0, y: 0 }, right: { x: 0, y: 0 } },
+    detections: { left: [], right: [] },
     eyesOpenCoefficient: eyelidPosition.OPEN,
     detectionInterval: 0,
     history: [],
@@ -29,9 +24,8 @@ export const initialState: IDetectionState = {
 const detectionActionMapping = {
     [SET_MODEL]: setModel,
     [SET_INTERVAL]: setDetectionInterval,
-    [SET_TARGET]: setTarget,
+    [SET_IDLE_TARGET]: setIdleTarget,
     [SET_DETECTIONS]: setDetections,
-    [SET_SELECTIONS]: setSelections,
     [SET_OPEN]: setOpen,
 };
 
@@ -58,13 +52,16 @@ function setDetectionInterval(
     return { ...state, detectionInterval: action.payload as number };
 }
 
-function setTarget(
+function setIdleTarget(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
     return {
         ...state,
-        target: { ...(action.payload as ITargets) },
+        idleTarget: {
+            left: action.payload as ICoords,
+            right: action.payload as ICoords,
+        },
     };
 }
 
@@ -73,24 +70,6 @@ function setDetections(
     action: DetectionActionType,
 ): IDetectionState {
     return { ...state, detections: action.payload as IDetections };
-}
-
-function setSelections(
-    state: IDetectionState,
-    action: DetectionActionType,
-): IDetectionState {
-    const newHistory = state.history;
-    if (state.history.length < maxNumTargetsToConsider) {
-        newHistory.push(action.payload as ISelections);
-    } else if (state.history.length === maxNumTargetsToConsider) {
-        newHistory.shift();
-        newHistory.push(action.payload as ISelections);
-    }
-    return {
-        ...state,
-        selections: action.payload as ISelections,
-        history: newHistory,
-    };
 }
 
 function setOpen(

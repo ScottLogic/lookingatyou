@@ -1,6 +1,6 @@
-import { Detection, ISelections } from '../../models/objectDetection';
+import { Detection } from '../../models/objectDetection';
 import calculateTargetPos from '../objectTracking/calculateFocus';
-import { Bbox } from '../types';
+import { Bbox, ITargets } from '../types';
 import { isPerson } from './detectionSelector';
 
 let xPrediction = 0;
@@ -10,7 +10,7 @@ export default function select(
     detections: Detection[],
     leftCam: boolean,
     compare: (x: Bbox, y: Bbox) => number,
-    history?: ISelections[],
+    history?: ITargets[],
     filter?: (d: Detection) => boolean,
 ): Bbox | undefined {
     const personBboxes: Bbox[] = detections
@@ -20,22 +20,7 @@ export default function select(
         .map(detection => detection.bbox);
 
     if (history) {
-        let coordsX: number[] = [];
-        let coordsY: number[] = [];
-        if (leftCam) {
-            coordsX = history.map(target => target.left[0]);
-            coordsY = history.map(target => target.left[1]);
-        } else {
-            coordsX = history.map(target =>
-                target.right ? target.right[0] : 0,
-            );
-            coordsY = history.map(target =>
-                target.right ? target.right[1] : 0,
-            );
-        }
-
-        xPrediction = getWeightedPrediction(coordsX);
-        yPrediction = getWeightedPrediction(coordsY);
+        setPrediction(leftCam, history);
     }
 
     return personBboxes.reduce<Bbox | undefined>(
@@ -43,6 +28,20 @@ export default function select(
             best === undefined || compare(current, best) > 0 ? current : best,
         undefined,
     );
+}
+
+function setPrediction(leftCam: boolean, history: ITargets[]) {
+    let coordsX: number[] = [];
+    let coordsY: number[] = [];
+    if (leftCam) {
+        coordsX = history.map(target => target.left.x);
+        coordsY = history.map(target => target.left.y);
+    } else {
+        coordsX = history.map(target => (target.right ? target.right.x : 0));
+        coordsY = history.map(target => (target.right ? target.right.y : 0));
+    }
+    xPrediction = getWeightedPrediction(coordsX);
+    yPrediction = getWeightedPrediction(coordsY);
 }
 
 export function leftOf(x: number) {
@@ -61,13 +60,13 @@ export function largerThan(bbox1: Bbox, bbox2: Bbox): number {
     return bbox1[2] * bbox1[3] - bbox2[2] * bbox2[3];
 }
 
-export function closerTo(): (bbox1: Bbox, bbox2: Bbox) => number {
+export function closerToPrediction(): (bbox1: Bbox, bbox2: Bbox) => number {
     return function closerToCoords(bbox1: Bbox, bbox2: Bbox) {
         const closerToPredictedTarget =
             Math.hypot(bbox2[0] - xPrediction, bbox2[1] - yPrediction) -
             Math.hypot(bbox1[0] - xPrediction, bbox1[1] - yPrediction);
 
-        return closerToPredictedTarget; // + closerToOldTarget;
+        return closerToPredictedTarget;
     };
 }
 

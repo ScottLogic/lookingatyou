@@ -3,18 +3,20 @@ import {
     DetectionModelType,
     ICocoSSDDetection,
 } from '../../../models/objectDetection';
-import select, { closerTo } from '../../../utils/objectSelection/select';
+import select, {
+    closerToPrediction,
+} from '../../../utils/objectSelection/select';
 import { Bbox } from '../../../utils/types';
 describe('selectClosest', () => {
     it('return undefined for no  detections', () => {
         const selectClosest: (ds: Detection[]) => Bbox | undefined = ds =>
-            select(ds, true, closerTo());
+            select(ds, true, closerToPrediction());
         const detections: Detection[] = [];
         expect(selectClosest(detections)).toBe(undefined);
     });
     it('return undefined for no person detections', () => {
         const selectClosest: (ds: Detection[]) => Bbox | undefined = ds =>
-            select(ds, true, closerTo());
+            select(ds, true, closerToPrediction());
         const detections: ICocoSSDDetection[] = [
             {
                 model: DetectionModelType.CocoSSD,
@@ -73,7 +75,7 @@ describe('selectClosest', () => {
             },
         ];
         const selectClosest: (ds: Detection[]) => Bbox | undefined = ds =>
-            select(ds, true, closerTo());
+            select(ds, true, closerToPrediction());
         expect(selectClosest(detections)).toStrictEqual([0, 0, 0, 110]);
     });
 });
