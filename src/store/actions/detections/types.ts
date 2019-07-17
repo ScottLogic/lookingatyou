@@ -1,24 +1,19 @@
-import {
-    IDetections,
-    IObjectDetector,
-    ISelections,
-} from '../../../models/objectDetection';
-import { ITargets } from '../../../utils/types';
+import { IDetections, IObjectDetector } from '../../../models/objectDetection';
+import { ICoords, ITargets } from '../../../utils/types';
 
 export const SET_MODEL = 'SET_MODEL';
 export const SET_INTERVAL = 'SET_INTERVAL';
-export const SET_TARGET = 'SET_TARGET';
+export const SET_IDLE_TARGET = 'SET_IDLE_TARGET';
 export const SET_DETECTIONS = 'SET_DETECTIONS';
-export const SET_SELECTIONS = 'SET_SELECTIONS';
 export const SET_OPEN = 'SET_OPEN';
 
 export interface IDetectionState {
     model: IObjectDetector | null;
     detectionInterval: number;
     eyesOpenCoefficient: number;
-    target: ITargets;
     detections: IDetections;
-    selections: ISelections;
+    previousTarget: ITargets;
+    idleTarget: ITargets;
 }
 
 export interface ISetModelAction {
@@ -31,19 +26,14 @@ export interface ISetIntervalAction {
     payload: number;
 }
 
-export interface ISetTargetAction {
-    type: 'SET_TARGET';
-    payload: ITargets;
+export interface ISetIdleTargetAction {
+    type: 'SET_IDLE_TARGET';
+    payload: ICoords;
 }
 
 export interface ISetDetectionsAction {
     type: 'SET_DETECTIONS';
     payload: IDetections;
-}
-
-export interface ISetSelectionsAction {
-    type: 'SET_SELECTIONS';
-    payload: ISelections;
 }
 
 export interface ISetOpenAction {
@@ -54,7 +44,6 @@ export interface ISetOpenAction {
 export type DetectionActionType =
     | ISetModelAction
     | ISetIntervalAction
-    | ISetTargetAction
+    | ISetIdleTargetAction
     | ISetDetectionsAction
-    | ISetSelectionsAction
     | ISetOpenAction;

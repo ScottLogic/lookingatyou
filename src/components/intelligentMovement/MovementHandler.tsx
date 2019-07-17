@@ -8,14 +8,15 @@ import {
     sleepDelay,
 } from '../../AppConstants';
 import { Detection } from '../../models/objectDetection';
-import { setOpen, setTarget } from '../../store/actions/detections/actions';
+import { setIdleTarget, setOpen } from '../../store/actions/detections/actions';
 import {
+    ISetIdleTargetAction,
     ISetOpenAction,
-    ISetTargetAction,
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
+import { getTargets } from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
-import { ITargets } from '../../utils/types';
+import { ICoords, ITargets } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
 import { analyseLight, checkLight, naturalMovement } from '../eye/EyeUtils';
@@ -36,7 +37,7 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-    setTarget: (target: ITargets) => ISetTargetAction;
+    setIdleTarget: (coords: ICoords) => ISetIdleTargetAction;
     setOpen: (openCoefficient: number) => ISetOpenAction;
 }
 
@@ -55,7 +56,7 @@ export class MovementHandler extends React.Component<
     private movementInterval: number;
     private sleepTimeout: NodeJS.Timeout | null;
     private tooBright: boolean;
-    private left: boolean;
+    private isMovingLeft: boolean;
     private squinting: boolean;
     private personDetected: boolean;
     private prevProps: MovementHandlerProps | null;
@@ -70,7 +71,7 @@ export class MovementHandler extends React.Component<
         this.movementInterval = 0;
         this.sleepTimeout = null;
         this.tooBright = false;
-        this.left = false;
+        this.isMovingLeft = false;
         this.personDetected = false;
         this.squinting = false;
         this.prevProps = null;
@@ -137,8 +138,6 @@ export class MovementHandler extends React.Component<
     }
 
     checkSelection() {
-        let target = this.props.target;
-
         if (this.squinting && Math.random() < 0.1) {
             this.squinting = false;
             this.props.setOpen(eyelidPosition.OPEN);
@@ -163,25 +162,21 @@ export class MovementHandler extends React.Component<
             this.sleep();
             this.hasTargetLeft();
 
-            if (Math.abs(this.props.target.left.x) > 1) {
-                target = {
-                    left: {
-                        x: 0,
-                        y: this.props.target.left.y,
-                    },
-                    right: null,
-                };
+            let idleCoords = this.props.target.left;
+
+            if (Math.abs(idleCoords.x) > 1) {
+                idleCoords.x = 0;
             }
 
-            const { newX, left } = naturalMovement(
-                this.props.target.left.x,
-                this.left,
+            const { newX, isMovingLeft } = naturalMovement(
+                idleCoords.x,
+                this.isMovingLeft,
             );
 
-            target = { left: { x: newX, y: 0 }, right: null };
-            this.props.setTarget(target);
+            idleCoords = { x: newX, y: 0 };
+            this.props.setIdleTarget(idleCoords);
 
-            this.left = left;
+            this.isMovingLeft = isMovingLeft;
         }
     }
 
@@ -226,7 +221,7 @@ export class MovementHandler extends React.Component<
                 dilationCoefficient: pupilSizes.constricted,
             });
             this.props.setOpen(eyelidPosition.SQUINT);
-            this.props.setTarget({ left: { x: 0, y: 0 }, right: null });
+            this.props.setIdleTarget({ x: 0, y: 0 });
         }
     }
 
@@ -263,7 +258,7 @@ const mergeStateToProps = (state: IRootStore) => {
     return {
         fps: state.configStore.config.fps,
         detections: state.detectionStore.detections.left,
-        target: state.detectionStore.target,
+        target: getTargets(state),
         openCoefficient: state.detectionStore.eyesOpenCoefficient,
         videos: getVideos(state),
     };
@@ -271,7 +266,7 @@ const mergeStateToProps = (state: IRootStore) => {
 
 const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
     return {
-        setTarget: (target: ITargets) => dispatch(setTarget(target)),
+        setIdleTarget: (coords: ICoords) => dispatch(setIdleTarget(coords)),
         setOpen: (openCoefficient: number) =>
             dispatch(setOpen(openCoefficient)),
     };

@@ -22,12 +22,12 @@ export interface IDetection {
 
 export interface IDetections {
     left: Detection[];
-    right: Detection[] | null;
+    right: Detection[];
 }
 
 export interface ISelections {
-    left: Bbox;
-    right: Bbox | null;
+    left?: Bbox;
+    right?: Bbox;
 }
 
 export interface ICocoSSDDetection extends IDetection {
