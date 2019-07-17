@@ -1,12 +1,17 @@
 import * as posenet from '@tensorflow-models/posenet';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { EyeSide } from '../../../AppConstants';
 import { Detections, IDetection } from '../../../models/objectDetection';
 import { ICoords } from '../../../utils/types';
-import { reshapeDetections } from '../../../utils/utils';
+import {
+    getImageDataFromVideos,
+    reshapeDetections,
+} from '../../../utils/utils';
 import { IRootStore } from '../../reducers/rootReducer';
 import { getTargets } from '../../selectors/detectionSelectors';
 import { getVideos } from '../../selectors/videoSelectors';
+import { setImageDataAction } from '../video/actions';
 import {
     ISetDetectionsAction,
     ISetIdleTargetAction,
@@ -55,11 +60,18 @@ export function handleDetection() {
         getState: () => IRootStore,
     ) => {
         const state = getState();
-        const images = getVideos(state);
+        const videos = getVideos(state);
         const model = state.detectionStore.model;
 
+        if (!videos[0] || !model) {
+            return;
+        }
+
+        const images = getImageDataFromVideos(videos);
+        dispatch(setImageDataAction(images));
+
         let left: IDetection[] = [];
-        const leftImage = images[0];
+        const leftImage = images[EyeSide.LEFT];
         if (leftImage && model) {
             const leftDetections = await model.estimateMultiplePoses(leftImage);
             left = reshapeDetections(leftDetections);
