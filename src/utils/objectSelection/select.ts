@@ -45,7 +45,7 @@ export function closerTo(
     history: ISelections[],
 ): (bbox1: Bbox, bbox2: Bbox) => number {
     return function closerToCoords(bbox1: Bbox, bbox2: Bbox) {
-        /*      const closerToOldTarget =
+        /*const closerToOldTarget =
             Math.hypot(bbox2[0] - coords.x, bbox2[1] - coords.y) -
             Math.hypot(bbox1[0] - coords.x, bbox1[1] - coords.y);
 */
@@ -59,17 +59,21 @@ export function closerTo(
             Math.hypot(bbox2[0] - predictedX, bbox2[1] - predictedY) -
             Math.hypot(bbox1[0] - predictedX, bbox1[1] - predictedY);
 
-        return closerToPredictedTarget;
+        return closerToPredictedTarget /*+ closerToOldTarget) / 2*/;
     };
 }
 
 function getWeightedPrediction(nums: number[]): number {
     const weightedNums = [];
+    let decayTotal = 0;
     for (let i = nums.length - 1; i > 0; i--) {
-        weightedNums.push(nums[i] * Math.pow(0.5, i));
+        const decay = Math.pow(0.5, i);
+        weightedNums.push(nums[i] * decay);
+        decayTotal += decay;
     }
-    const weightedTotal = weightedNums.reduce((a, b) => a + b);
-    return weightedTotal / history.length + nums[nums.length - 1];
+    const weightedTotal = weightedNums.reduce((a, b) => a + b, 0) / decayTotal;
+    console.log(weightedTotal / nums.length + nums[nums.length - 1]);
+    return weightedTotal / nums.length + nums[nums.length - 1];
 }
 
 export function closerVerticallyTo(
