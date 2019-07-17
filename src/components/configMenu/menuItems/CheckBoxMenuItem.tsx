@@ -30,4 +30,5 @@ const CheckBoxMenuItem = React.memo(
     },
     (previous, next) => previous.checked === next.checked,
 );
+
 export default CheckBoxMenuItem;

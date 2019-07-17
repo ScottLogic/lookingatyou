@@ -62,4 +62,5 @@ const TextBoxMenuItem = React.memo(
         previous.name === next.name &&
         previous.defaultValue === next.defaultValue,
 );
+
 export default TextBoxMenuItem;

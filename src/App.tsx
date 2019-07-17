@@ -33,6 +33,7 @@ interface IAppMapDispatchToProps {
 
 type AppProps = IAppProps & IAppMapStateToProps & IAppMapDispatchToProps;
 
+<<<<<<< HEAD
 const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     return {
         model: state.detectionStore.model,
@@ -48,6 +49,8 @@ const mapDispatchToProps = (
     };
 };
 
+=======
+>>>>>>> relocated mapStateToProps to near bottom of files, and renamed occurence of mergeStateToProps to mapStateToProps. Did same thing for mapDispatchToProps
 export class App extends React.PureComponent<AppProps, IAppState> {
     constructor(props: AppProps) {
         super(props);
@@ -116,6 +119,22 @@ export class App extends React.PureComponent<AppProps, IAppState> {
         );
     }
 }
+
+const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
+    return {
+        deviceIds: getDeviceIds(state),
+        model: state.detectionStore.model,
+    };
+};
+
+const mapDispatchToProps = (
+    dispatch: ThunkDispatch<IRootStore, void, Action>,
+) => {
+    return {
+        loadModel: (init: () => Promise<IObjectDetector>) =>
+            dispatch(loadModel(init)),
+    };
+};
 
 export default connect(
     mapStateToProps,

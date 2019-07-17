@@ -254,7 +254,7 @@ export class MovementHandler extends React.Component<
     }
 }
 
-const mergeStateToProps = (state: IRootStore) => {
+const mapStateToProps = (state: IRootStore) => {
     return {
         fps: state.configStore.config.fps,
         detections: state.detectionStore.detections.left,
@@ -264,7 +264,7 @@ const mergeStateToProps = (state: IRootStore) => {
     };
 };
 
-const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
+const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
     return {
         setIdleTarget: (coords: ICoords) => dispatch(setIdleTarget(coords)),
         setOpen: (openCoefficient: number) =>
@@ -273,6 +273,6 @@ const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
 };
 
 export default connect(
-    mergeStateToProps,
-    mergeDispatchToProps,
+    mapStateToProps,
+    mapDispatchToProps,
 )(MovementHandler);

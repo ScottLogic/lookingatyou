@@ -27,18 +27,10 @@ interface IConfigMenuElementMapStateToProps {
     videos: Array<HTMLVideoElement | undefined>;
 }
 
-const mapStateToProps = (
-    state: IRootStore,
-): IConfigMenuElementMapStateToProps => {
-    return {
-        config: getConfig(state),
-        videos: getVideos(state),
-    };
-};
-
 interface IConfigMenuElementMapDispatchToProps {
     setConfig: (payload: ISetConfigPayload) => void;
 }
+<<<<<<< HEAD
 const mapDispatchToProps = (
     dispatch: ThunkDispatch<IRootStore, void, Action>,
 ) => {
@@ -47,6 +39,8 @@ const mapDispatchToProps = (
             dispatch(updateConfigAction(payload)),
     };
 };
+=======
+>>>>>>> relocated mapStateToProps to near bottom of files, and renamed occurence of mergeStateToProps to mapStateToProps. Did same thing for mapDispatchToProps
 
 export type ConfigMenuElementProps = IConfigMenuElementProps &
     IConfigMenuElementMapStateToProps &
@@ -164,6 +158,22 @@ export const ConfigMenuElement = React.memo(
     },
     (previous, next) => isEqual(previous, next),
 );
+
+const mapStateToProps = (
+    state: IRootStore,
+): IConfigMenuElementMapStateToProps => {
+    return {
+        config: getConfig(state),
+        videos: getVideos(state),
+    };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+    return {
+        setConfig: (payload: ISetConfigPayload) =>
+            dispatch({ type: UPDATE_CONFIG, payload }),
+    };
+};
 
 export default connect(
     mapStateToProps,

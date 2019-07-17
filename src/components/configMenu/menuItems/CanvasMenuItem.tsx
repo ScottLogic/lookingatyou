@@ -24,14 +24,6 @@ interface IAppMapStateToProps {
 
 type CanvasMenuItemProps = ICanvasMenuItemProps & IAppMapStateToProps;
 
-const mapStateToProps = (state: IRootStore) => {
-    return {
-        videos: getVideos(state),
-        selections: getSelections(state),
-        detections: getDetections(state),
-    };
-};
-
 export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
     canvasRef: React.RefObject<HTMLCanvasElement>;
     private bbox: Bbox = [0, 0, 0, 0];
@@ -131,5 +123,13 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         }
     }
 }
+
+const mapStateToProps = (state: IRootStore) => {
+    return {
+        videos: getVideos(state),
+        selections: getSelections(state),
+        detections: getDetections(state),
+    };
+};
 
 export default connect(mapStateToProps)(CanvasMenuItem);
