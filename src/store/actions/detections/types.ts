@@ -8,7 +8,6 @@ import { ITargets } from '../../../utils/types';
 export const SET_MODEL = 'SET_MODEL';
 export const SET_INTERVAL = 'SET_INTERVAL';
 export const SET_TARGET = 'SET_TARGET';
-export const ADD_HISTORY = 'ADD_HISTORY';
 export const SET_DETECTIONS = 'SET_DETECTIONS';
 export const SET_SELECTIONS = 'SET_SELECTIONS';
 export const SET_OPEN = 'SET_OPEN';
@@ -51,11 +50,6 @@ export interface ISetSelectionsAction {
 export interface ISetOpenAction {
     type: 'SET_OPEN';
     payload: number;
-}
-
-export interface IAddHistoryAction {
-    type: 'ADD_HISTORY';
-    payload: ITargets;
 }
 
 export type DetectionActionType =
