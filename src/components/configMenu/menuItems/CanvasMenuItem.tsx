@@ -89,7 +89,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
             });
         }
         const [a, b, c, d] = focusedBbox;
-        this.drawRectangle('green', {a, b, c, d});
+        this.drawRectangle('green', {x: a, y: b, width: c, height: d});
     }
 
     render() {
