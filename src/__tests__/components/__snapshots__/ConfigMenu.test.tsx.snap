@@ -5,6 +5,6 @@ exports[`ConfigMenu should render correctly 1`] = `
   <h1>
     Config
   </h1>
-  <Memo() name=\\"textBox\\" configName=\\"textBox\\" defaultValue={20} onValidInput={[Function: mockConstructor]} configParse={[Function: mockConstructor]} helpWith=\\"FPS\\" step={1} />
+  <Memo() name=\\"textBox\\" configName=\\"textBox\\" defaultValue={20} onValidInput={[Function: mockConstructor]} helpWith=\\"FPS\\" min={1} step={1} />
 </div>"
 `;

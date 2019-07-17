@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TextBoxMenuItem tests should render correctly 1`] = `
+exports[`NumberMenuItem tests should render correctly 1`] = `
 "<div data-tip={true} data-for=\\"IRIS_COLOUR\\">
   <label>
     test

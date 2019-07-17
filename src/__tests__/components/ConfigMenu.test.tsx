@@ -5,12 +5,12 @@ import ConfigMenu, {
     IConfigMenuProps,
 } from '../../components/configMenu/ConfigMenu';
 import { HelpWith } from '../../components/configMenu/Help';
-import TextBoxMenuItem, {
-    ITextBoxMenuItemProps,
-} from '../../components/configMenu/menuItems/TextBoxMenuItem';
+import NumberMenuItem, {
+    INumberMenuItemProps,
+} from '../../components/configMenu/menuItems/NumberMenuItem';
 
 let props: IConfigMenuProps;
-let textBoxProps: ITextBoxMenuItemProps;
+let textBoxProps: INumberMenuItemProps;
 let children: React.ReactNode;
 let window: Window;
 let map: { [key: string]: any };
@@ -23,11 +23,11 @@ describe('ConfigMenu', () => {
             configName: 'textBox',
             defaultValue: 20,
             onValidInput: jest.fn(),
-            configParse: jest.fn(),
             helpWith: HelpWith.FPS,
+            min: 1,
             step: 1,
         };
-        children = <TextBoxMenuItem {...textBoxProps} />;
+        children = <NumberMenuItem {...textBoxProps} />;
 
         window = new jsdom.JSDOM().window;
         window.addEventListener = jest.fn((event, cb) => {

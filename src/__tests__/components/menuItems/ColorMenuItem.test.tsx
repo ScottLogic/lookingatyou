@@ -8,7 +8,7 @@ import ColorMenuItem, {
 let props: IColorMenuItemProps;
 let mockOnInputChange: jest.Mock;
 
-describe('TextBoxMenuItem tests', () => {
+describe('NumberMenuItem tests', () => {
     beforeEach(() => {
         mockOnInputChange = jest.fn();
         props = {
