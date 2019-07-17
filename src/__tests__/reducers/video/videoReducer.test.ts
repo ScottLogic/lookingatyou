@@ -1,3 +1,5 @@
+import { EyeSide } from '../../../AppConstants';
+import { setImageDataAction } from '../../../store/actions/video/actions';
 import {
     IVideo,
     IVideoState,
