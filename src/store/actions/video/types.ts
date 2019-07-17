@@ -1,6 +1,6 @@
 export const SET_VIDEO = 'SET_VIDEO';
 export const SET_VIDEO_STREAMS = 'SET_VIDEO_STREAMS';
-export const CLEAR_STATE = 'CLEAR_STATE';
+export const SET_IMAGE_DATA = 'SET_IMAGE_DATA';
 
 export interface IVideo {
     deviceId: string;
@@ -12,6 +12,7 @@ export interface IVideo {
 
 export interface IVideoState {
     videos: { [deviceId: string]: IVideo };
+    images: ImageData[];
 }
 
 export interface ISetVideoPayload {
@@ -29,4 +30,12 @@ interface ISetVideoStreamsAction {
     videos: IVideo[];
 }
 
-export type VideoActionTypes = ISetVideoAction | ISetVideoStreamsAction;
+interface ISetImageDataAction {
+    type: typeof SET_IMAGE_DATA;
+    images: ImageData[];
+}
+
+export type VideoActionTypes =
+    | ISetVideoAction
+    | ISetVideoStreamsAction
+    | ISetImageDataAction;

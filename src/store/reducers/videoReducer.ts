@@ -1,6 +1,7 @@
 import {
     IVideo,
     IVideoState,
+    SET_IMAGE_DATA,
     SET_VIDEO,
     SET_VIDEO_STREAMS,
     VideoActionTypes,
@@ -8,6 +9,7 @@ import {
 
 export const initialState: IVideoState = {
     videos: {},
+    images: [],
 };
 
 const videoStore = (
@@ -40,6 +42,11 @@ const videoStore = (
                     ...state.videos,
                     ...updatedObject,
                 },
+            };
+        case SET_IMAGE_DATA:
+            return {
+                ...state,
+                ...action,
             };
         default:
             return state;
