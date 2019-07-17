@@ -1,4 +1,10 @@
-import * as posenet from '@tensorflow-models/posenet';
+import {
+    getBoundingBox,
+    load,
+    partIds,
+    Pose,
+    PoseNet,
+} from '@tensorflow-models/posenet';
 import {
     Detection,
     DetectionModelType,
@@ -8,7 +14,7 @@ import { DetectionImage } from '../types';
 
 export default class Posenet implements IObjectDetector {
     static async init(): Promise<IObjectDetector> {
-        const model = await posenet.load({
+        const model = await load({
             architecture: 'MobileNetV1',
             outputStride: 16,
             multiplier: 0.75,
@@ -17,9 +23,13 @@ export default class Posenet implements IObjectDetector {
         return new Posenet(model);
     }
 
-    static reshapeDetections(detections: posenet.Pose[]): Detection[] {
+    static reshapeDetections(detections: Pose[]): Detection[] {
         return detections.map(detection => {
-            const box = posenet.getBoundingBox(detection.keypoints.slice(1, 3)); // 1 and 2 correspond to left and right eye
+            const keypoints = detection.keypoints;
+            const box = getBoundingBox([
+                keypoints[partIds.leftEye],
+                keypoints[partIds.rightEye],
+            ]);
             return {
                 model: DetectionModelType.Posenet,
                 bbox: [
@@ -32,7 +42,7 @@ export default class Posenet implements IObjectDetector {
             };
         });
     }
-    private constructor(private model: posenet.PoseNet) {}
+    private constructor(private model: PoseNet) {}
 
     async detect(image: DetectionImage): Promise<Detection[]> {
         const detections = await this.model.estimateMultiplePoses(image, {
