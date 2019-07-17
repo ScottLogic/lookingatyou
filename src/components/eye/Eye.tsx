@@ -55,8 +55,7 @@ export default function Eye(props: IEyeProps) {
     });
 
     useEffect(() => {
-        setIrisAdjustment(getIrisAdjustment(props, irisAdjustment.angle));
-        // eslint-disable-next-line
+        setIrisAdjustment(previous => getIrisAdjustment(props, previous.angle));
     }, [props]);
     useEffect(() => {
         setInnerPath(getInnerPath(resolutionScale));
