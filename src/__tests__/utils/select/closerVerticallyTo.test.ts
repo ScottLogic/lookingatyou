@@ -8,7 +8,13 @@ const nonPersonInfo = { certainty: 1, type: 'non-person' };
 describe('selectMatching should return', () => {
     it('undefined when all right-eye coords are to the left of the left-eye coord', () => {
         const matchYPosition = (detections: Detection[]) =>
-            select(detections, closerVerticallyTo(50), undefined, rightOf(5));
+            select(
+                detections,
+                true,
+                closerVerticallyTo(50),
+                undefined,
+                rightOf(5),
+            );
 
         const rightEyeDetections: Detection[] = [
             {
@@ -31,7 +37,13 @@ describe('selectMatching should return', () => {
     });
     it('of all the right-eye coords (that are persons) whose x-value is greater than the x value of the left-eye coord, return that whose y-value is closest the y value of the left-eye coord', () => {
         const matchYPosition = (detections: Detection[]) =>
-            select(detections, closerVerticallyTo(325), undefined, rightOf(50));
+            select(
+                detections,
+                true,
+                closerVerticallyTo(325),
+                undefined,
+                rightOf(50),
+            );
         const rightEyeDetections: Detection[] = [
             {
                 bbox: [10, 20, 0, 0],
@@ -104,7 +116,13 @@ describe('selectMatching should return', () => {
 
     it('undefined when there are no detections', () => {
         const matchYPosition = (detections: Detection[]) =>
-            select(detections, closerVerticallyTo(325), undefined, rightOf(50));
+            select(
+                detections,
+                true,
+                closerVerticallyTo(325),
+                undefined,
+                rightOf(50),
+            );
         expect(matchYPosition([])).toBe(undefined);
     });
 });

@@ -8,13 +8,13 @@ import { Bbox } from '../../../utils/types';
 describe('selectClosest', () => {
     it('return undefined for no  detections', () => {
         const selectClosest: (ds: Detection[]) => Bbox | undefined = ds =>
-            select(ds, closerTo({ x: 0, y: 0 }));
+            select(ds, true, closerTo());
         const detections: Detection[] = [];
         expect(selectClosest(detections)).toBe(undefined);
     });
     it('return undefined for no person detections', () => {
         const selectClosest: (ds: Detection[]) => Bbox | undefined = ds =>
-            select(ds, closerTo({ x: 0, y: 0 }));
+            select(ds, true, closerTo());
         const detections: ICocoSSDDetection[] = [
             {
                 model: DetectionModelType.CocoSSD,
@@ -73,7 +73,7 @@ describe('selectClosest', () => {
             },
         ];
         const selectClosest: (ds: Detection[]) => Bbox | undefined = ds =>
-            select(ds, closerTo({ x: 300, y: 290 }));
+            select(ds, true, closerTo());
         expect(selectClosest(detections)).toStrictEqual([0, 0, 0, 110]);
     });
 });
