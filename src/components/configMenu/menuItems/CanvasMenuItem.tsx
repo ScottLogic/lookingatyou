@@ -48,12 +48,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
     }
 
     componentDidUpdate() {
-<<<<<<< HEAD
-        if (this.props.videoIndex === 0) {
-=======
-        this.getStream();
         if (this.props.videoIndex === 0 && this.props.selections.left) {
->>>>>>> finished moving selections and targets to derived state
             this.bbox = this.props.selections.left;
         } else if (this.props.videoIndex === 1 && this.props.selections.right) {
             this.bbox = this.props.selections.right;
