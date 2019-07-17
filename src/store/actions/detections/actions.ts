@@ -76,8 +76,8 @@ export function handleDetection() {
         const leftEyeDetections = await model.detect(leftImage);
         const leftEyeSelection = select(
             leftEyeDetections,
-            state.detectionStore.history,
             closerTo(previousTargets.left),
+            state.detectionStore.history,
         );
 
         if (leftEyeSelection) {
@@ -95,8 +95,8 @@ export function handleDetection() {
                 rightEyeDetections = await model.detect(rightImage);
                 rightEyeSelection = select(
                     rightEyeDetections,
-                    state.detectionStore.history,
                     closerVerticallyTo(leftEyeSelection[1]),
+                    state.detectionStore.history,
                     leftOf(leftEyeSelection[0]),
                 );
                 if (rightEyeSelection) {
