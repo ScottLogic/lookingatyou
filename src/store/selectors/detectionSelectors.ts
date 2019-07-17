@@ -54,11 +54,9 @@ export const getTargets = createSelector(
                       videos[1]!.width,
                       videos[1]!.height,
                   );
-        if (left !== undefined && right !== undefined) {
+        if (left && right) {
             const y = (left.y + right.y) / 2;
             left.y = right.y = y;
-        }
-        if (left && right) {
             return {
                 left,
                 right,
