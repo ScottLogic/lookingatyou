@@ -11,7 +11,6 @@ import { loadModel } from './store/actions/detections/actions';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds } from './store/selectors/videoSelectors';
 import { AppStore } from './store/store';
-import CocoSSD from './utils/objectDetection/cocoSSD';
 import Posenet from './utils/objectDetection/posenet';
 
 interface IAppState {

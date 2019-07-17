@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
     eyelidPosition,
+    EyeSide,
     maxMoveWithoutBlink,
     pupilSizes,
     sleepDelay,
@@ -14,11 +15,10 @@ import {
     ISetTargetAction,
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
-import { getVideos } from '../../store/selectors/videoSelectors';
 import { ITargets } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
-import { checkLight, naturalMovement } from '../eye/EyeUtils';
+import { analyseLight, naturalMovement } from '../eye/EyeUtils';
 
 interface IMovementProps {
     document: Document;
@@ -31,8 +31,8 @@ interface IStateProps {
     fps: number;
     detections: Detection[];
     target: ITargets;
-    videos: Array<HTMLVideoElement | undefined>;
     openCoefficient: number;
+    images: { [key: string]: ImageData };
 }
 
 interface IDispatchProps {
@@ -117,11 +117,10 @@ export class MovementHandler extends React.Component<
     }
 
     calculateBrightness() {
-        if (this.props.videos[0]) {
-            const { tooBright, scaledPupilSize } = checkLight(
-                this.props.environment.document,
+        if (this.props.images[EyeSide.LEFT]) {
+            const { tooBright, scaledPupilSize } = analyseLight(
+                this.props.images[EyeSide.LEFT],
                 this.tooBright,
-                this.props.videos[0] as HTMLVideoElement,
             );
             if (tooBright) {
                 this.tooBright = true;
@@ -263,7 +262,7 @@ const mergeStateToProps = (state: IRootStore) => {
         detections: state.detectionStore.detections.left,
         target: state.detectionStore.target,
         openCoefficient: state.detectionStore.eyesOpenCoefficient,
-        videos: getVideos(state),
+        images: state.videoStore.images,
     };
 };
 

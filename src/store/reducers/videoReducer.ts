@@ -9,7 +9,7 @@ import {
 
 export const initialState: IVideoState = {
     videos: {},
-    images: [],
+    images: {},
 };
 
 const videoStore = (
@@ -46,7 +46,10 @@ const videoStore = (
         case SET_IMAGE_DATA:
             return {
                 ...state,
-                ...action,
+                images: {
+                    ...state.images,
+                    ...action.images,
+                },
             };
         default:
             return state;

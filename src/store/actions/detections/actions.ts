@@ -1,5 +1,6 @@
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { EyeSide } from '../../../AppConstants';
 import {
     IDetections,
     IObjectDetector,
@@ -12,9 +13,11 @@ import select, {
 } from '../../../utils/objectSelection/select';
 import { calculateNormalisedPos } from '../../../utils/objectTracking/calculateFocus';
 import { ITargets } from '../../../utils/types';
+import { getImageDataFromVideos } from '../../../utils/utils';
 import { IRootStore } from '../../reducers/rootReducer';
 import { getTargets } from '../../selectors/detectionSelectors';
 import { getVideos } from '../../selectors/videoSelectors';
+import { setImageDataAction } from '../video/actions';
 import {
     ISetDetectionsAction,
     ISetModelAction,
@@ -64,72 +67,76 @@ export function handleDetection() {
         getState: () => IRootStore,
     ) => {
         const state = getState();
-        const images = getVideos(state);
+        const videos = getVideos(state);
         const model = state.detectionStore.model;
 
-        if (!images[0] || !model) {
+        if (!videos[0] || !model) {
             return;
         }
-        const leftImage = images[0]!;
 
-        const previousTargets = getTargets(state);
-        const leftEyeDetections = await model.detect(leftImage);
-        const leftEyeSelection = select(
-            leftEyeDetections,
-            closerTo(previousTargets.left),
-        );
+        const images = getImageDataFromVideos(videos);
+        dispatch(setImageDataAction(images));
 
-        if (leftEyeSelection) {
-            const leftTarget = calculateNormalisedPos(
-                leftEyeSelection,
-                leftImage.width,
-                leftImage.height,
+        if (images[EyeSide.LEFT]) {
+            const previousTargets = getTargets(state);
+            const leftEyeDetections = await model.detect(images[EyeSide.LEFT]!);
+            const leftEyeSelection = select(
+                leftEyeDetections,
+                closerTo(previousTargets.left),
             );
 
-            let rightEyeDetections = null;
-            let rightEyeSelection = null;
-            let rightTarget = null;
-            if (images[1]) {
-                const rightImage = images[1]!;
-                rightEyeDetections = await model.detect(rightImage);
-                rightEyeSelection = select(
-                    rightEyeDetections,
-                    closerVerticallyTo(leftEyeSelection[1]),
-                    leftOf(leftEyeSelection[0]),
+            if (leftEyeSelection) {
+                const leftTarget = calculateNormalisedPos(
+                    leftEyeSelection,
+                    images[EyeSide.LEFT].width,
+                    images[EyeSide.LEFT].height,
                 );
-                if (rightEyeSelection) {
-                    rightTarget = calculateNormalisedPos(
-                        rightEyeSelection,
-                        rightImage.width,
-                        rightImage.height,
-                    );
-                    rightTarget.y = leftTarget.y =
-                        (rightTarget.y + leftTarget.y) / 2;
-                }
-            }
-            const newTargets = {
-                left: leftTarget,
-                right: rightTarget,
-            };
 
-            dispatch(setTarget(newTargets));
-            dispatch(
-                setDetections({
-                    left: leftEyeDetections,
-                    right: rightEyeDetections,
-                }),
-            );
-            dispatch(
-                setSelections({
-                    left: leftEyeSelection,
-                    right:
-                        rightEyeSelection === undefined
-                            ? null
-                            : rightEyeSelection,
-                }),
-            );
-        } else {
-            dispatch(setDetections({ left: [], right: [] }));
+                let rightEyeDetections = null;
+                let rightEyeSelection = null;
+                let rightTarget = null;
+                if (images[EyeSide.RIGHT]) {
+                    rightEyeDetections = await model.detect(
+                        images[EyeSide.RIGHT],
+                    );
+                    rightEyeSelection = select(
+                        rightEyeDetections,
+                        closerVerticallyTo(leftEyeSelection[1]),
+                        leftOf(leftEyeSelection[0]),
+                    );
+                    if (rightEyeSelection) {
+                        rightTarget = calculateNormalisedPos(
+                            rightEyeSelection,
+                            images[EyeSide.RIGHT].width,
+                            images[EyeSide.RIGHT].height,
+                        );
+                        rightTarget.y = leftTarget.y =
+                            (rightTarget.y + leftTarget.y) / 2;
+                    }
+                }
+                const newTargets = {
+                    left: leftTarget,
+                    right: rightTarget,
+                };
+                dispatch(setTarget(newTargets));
+                dispatch(
+                    setDetections({
+                        left: leftEyeDetections,
+                        right: rightEyeDetections,
+                    }),
+                );
+                dispatch(
+                    setSelections({
+                        left: leftEyeSelection,
+                        right:
+                            rightEyeSelection === undefined
+                                ? null
+                                : rightEyeSelection,
+                    }),
+                );
+            } else {
+                dispatch(setDetections({ left: [], right: [] }));
+            }
         }
     };
 }

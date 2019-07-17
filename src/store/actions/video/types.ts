@@ -12,7 +12,7 @@ export interface IVideo {
 
 export interface IVideoState {
     videos: { [deviceId: string]: IVideo };
-    images: ImageData[];
+    images: { [key: string]: ImageData };
 }
 
 export interface ISetVideoPayload {
@@ -32,7 +32,9 @@ interface ISetVideoStreamsAction {
 
 interface ISetImageDataAction {
     type: typeof SET_IMAGE_DATA;
-    images: ImageData[];
+    images: {
+        [key: string]: ImageData;
+    };
 }
 
 export type VideoActionTypes =
