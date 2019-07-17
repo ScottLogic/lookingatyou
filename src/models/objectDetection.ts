@@ -26,8 +26,8 @@ export interface IDetections {
 }
 
 export interface ISelections {
-    left: Bbox | undefined;
-    right: Bbox | undefined;
+    left?: Bbox;
+    right?: Bbox;
 }
 
 export interface ICocoSSDDetection extends IDetection {
