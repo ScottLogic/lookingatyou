@@ -3,10 +3,12 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { IDetection, IDetections } from '../../../models/objectDetection';
 import { ICoords, ITargets } from '../../../utils/types';
-import { reshapeDetections } from '../../../utils/utils';
+import { reshapeDetections, getImageDataFromVideos } from '../../../utils/utils';
+import { EyeSide } from '../../../AppConstants';
 import { IRootStore } from '../../reducers/rootReducer';
 import { getTargets } from '../../selectors/detectionSelectors';
 import { getVideos } from '../../selectors/videoSelectors';
+import { setImageDataAction } from '../video/actions';
 import {
     ISetDetectionsAction,
     ISetIdleTargetAction,
@@ -55,24 +57,30 @@ export function handleDetection() {
         getState: () => IRootStore,
     ) => {
         const state = getState();
-        const images = getVideos(state);
+        const videos = getVideos(state);
         const model = state.detectionStore.model;
 
+        if (!videos[0] || !model) {
+            return;
+        }
+
+        const images = getImageDataFromVideos(videos);
+        dispatch(setImageDataAction(images));
+
         let left: IDetection[] = [];
-        const leftImage = images[0];
+        const leftImage = images[EyeSide.LEFT];
         if (leftImage && model) {
             const leftDetections = await model.estimateMultiplePoses(leftImage);
             left = reshapeDetections(leftDetections);
         }
 
         let right: IDetection[] = [];
-        const rightImage = images[1];
+        const rightImage = images[EyeSide.RIGHT];
         if (rightImage && model && left.length > 0) {
             const rightDetections = await model.estimateMultiplePoses(
                 rightImage,
             );
             right = reshapeDetections(rightDetections);
-        }
 
         dispatch(setDetections({ left, right }, getTargets(state)));
     };

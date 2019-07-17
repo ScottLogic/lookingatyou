@@ -52,7 +52,9 @@ export function setStream(mediaDevices: MediaDevices) {
     };
 }
 
-export function setImageDataAction(images: ImageData[]): VideoActionTypes {
+export function setImageDataAction(images: {
+    [key: string]: ImageData;
+}): VideoActionTypes {
     return {
         type: SET_IMAGE_DATA,
         images,
