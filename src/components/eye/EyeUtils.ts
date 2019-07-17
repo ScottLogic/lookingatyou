@@ -18,21 +18,16 @@ export function checkLight(
         | HTMLCanvasElement
         | HTMLVideoElement
         | null,
-    analyse: (
-        canvas: HTMLCanvasElement,
-        tooBright: boolean,
-    ) => { tooBright: boolean; scaledPupilSize: number },
 ): { tooBright: boolean; scaledPupilSize: number } {
     if (video && video instanceof HTMLVideoElement) {
         const canvas = doc.createElement('canvas');
         canvas.height = video.height;
         canvas.width = video.width;
         const canvasCtx = canvas.getContext('2d');
-
         if (canvasCtx) {
             canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
         }
-        return analyse(canvas, tooBright);
+        return analyseLight(canvas, tooBright);
     }
     return { tooBright: false, scaledPupilSize: 0 };
 }
@@ -45,17 +40,13 @@ export function analyseLight(
 
     if (ctx && canvas.width > 0) {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
         const data = imageData.data;
-
         let colorSum = 0;
-
         for (let i = 0; i < data.length; i += 4) {
             const avg = Math.floor((data[i] + data[i + 1] + data[i + 2]) / 3);
 
             colorSum += avg;
         }
-
         let brightness = Math.floor(colorSum / (canvas.width * canvas.height));
 
         if (brightness > maxBrightness) {
@@ -64,7 +55,6 @@ export function analyseLight(
         } else if (tooBright) {
             tooBright = false;
         }
-
         const scaledPupilSize =
             ((maxBrightness - brightness) / maxBrightness) * dilationMultipler +
             dilationOffset;

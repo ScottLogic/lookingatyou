@@ -19,7 +19,7 @@ import { getVideos } from '../../store/selectors/videoSelectors';
 import { ICoords, ITargets } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
-import { analyseLight, checkLight, naturalMovement } from '../eye/EyeUtils';
+import { checkLight, naturalMovement } from '../eye/EyeUtils';
 
 interface IMovementProps {
     document: Document;
@@ -123,9 +123,7 @@ export class MovementHandler extends React.Component<
                 this.props.environment.document,
                 this.tooBright,
                 this.props.videos[0] as HTMLVideoElement,
-                analyseLight,
             );
-
             if (tooBright) {
                 this.tooBright = true;
                 this.props.setOpen(eyelidPosition.CLOSED);
