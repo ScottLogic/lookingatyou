@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import tinycolor from 'tinycolor2';
-import { EyeSide, transitionTime } from '../../AppConstants';
+import { EyeSide, irisSkewFactor, transitionTime } from '../../AppConstants';
 import './Eye.css';
+import { getMaxDisplacement } from './EyeUtils';
 import { getInnerPath } from './getInnerPath';
-import { Shadows } from './Shadows';
 
 export interface IEyeProps {
     class: EyeSide;
@@ -25,7 +25,8 @@ const pupilColor = 'black';
 export default function Eye(props: IEyeProps) {
     const circleTransitionStyle = {
         transition: `r ${transitionTime.dilate}ms, cx ${1000 /
-            props.fps}ms, cy ${1000 / props.fps}ms`, // cx and cy transitions based on FPS
+            props.fps}ms, cy ${1000 / props.fps}ms,
+            transform ${1000 / props.fps}ms`, // cx and cy transitions based on FPS
     };
     const ellipseTransitionStyle = {
         transition: `rx ${transitionTime.dilate}ms, ry ${
@@ -45,7 +46,6 @@ export default function Eye(props: IEyeProps) {
     const eyeCoords = getEyeCoords(props);
     const bezier = getBezier(props);
     const cornerShape = getCornerShape(props);
-    const irisAdjustment = getIrisAdjustment(props);
 
     const originalResolution = 960;
     const [innerPath, setInnerPath] = useState(
@@ -54,10 +54,20 @@ export default function Eye(props: IEyeProps) {
             props.width / originalResolution,
         ),
     );
+    const [irisAdjustment, setIrisAdjustment] = useState({
+        scale: 1,
+        angle: 0,
+    });
 
     useEffect(() => {
-        setInnerPath(getInnerPath(props.width / 960, props.width / 960));
-    }, [props.width, props.height]);
+        setInnerPath(
+            getInnerPath(
+                props.width / originalResolution,
+                props.height / originalResolution,
+            ),
+        );
+        setIrisAdjustment(getIrisAdjustment(props, irisAdjustment.angle));
+    }, [props, irisAdjustment, innerPath]);
 
     return (
         <svg className={props.class} width={props.width} height={props.height}>
@@ -73,8 +83,9 @@ export default function Eye(props: IEyeProps) {
                 className="inner"
                 style={innerTransitionStyle}
                 transform={`
-                scale(${irisAdjustment.xScale}, 1)
-                skewX(${irisAdjustment.xSkew})
+                rotate(${irisAdjustment.angle})
+                scale(${irisAdjustment.scale}, 1)
+                rotate(${-irisAdjustment.angle})
                 `}
             >
                 <circle
@@ -82,12 +93,12 @@ export default function Eye(props: IEyeProps) {
                     style={circleTransitionStyle}
                     r={props.irisRadius}
                     fill={'url(#irisGradient)'}
-                    cx={irisAdjustment.innerX}
+                    cx={props.innerX}
                     cy={props.innerY}
                 />
                 <g className="irisStyling">
                     <path
-                        d={`M ${irisAdjustment.innerX} ${props.innerY} ${innerPath}`}
+                        d={`M ${props.innerX} ${props.innerY} ${innerPath}`}
                         fill={tinycolor(props.irisColor)
                             .darken(10)
                             .toHexString()}
@@ -99,7 +110,7 @@ export default function Eye(props: IEyeProps) {
                     style={circleTransitionStyle}
                     r={props.pupilRadius * props.dilatedCoefficient}
                     fill={pupilColor}
-                    cx={irisAdjustment.innerX}
+                    cx={props.innerX}
                     cy={props.innerY}
                 />
                 <ellipse
@@ -108,9 +119,10 @@ export default function Eye(props: IEyeProps) {
                     rx={props.pupilRadius * 0.375}
                     ry={props.pupilRadius * 0.75}
                     fill={'url(#reflectionGradient)'}
-                    cx={irisAdjustment.innerX + props.pupilRadius}
-                    cy={props.innerY}
-                    transform={`rotate(-45,${irisAdjustment.innerX},${props.innerY})`}
+                    cx={props.innerX + props.pupilRadius * 0.4}
+                    cy={props.innerY - props.pupilRadius * 0.4}
+                    transform={`skewX(20) translate(${(-145 / 960) *
+                        props.width}, ${(5 / 1080) * props.height})`}
                 />
                 <ellipse
                     className={'outerReflection'}
@@ -118,9 +130,10 @@ export default function Eye(props: IEyeProps) {
                     rx={props.pupilRadius * 0.5}
                     ry={props.pupilRadius}
                     fill={'url(#reflectionGradient)'}
-                    cx={irisAdjustment.innerX + props.irisRadius}
-                    cy={props.innerY}
-                    transform={`rotate(-45,${irisAdjustment.innerX},${props.innerY})`}
+                    cx={props.innerX + props.scleraRadius * 0.3}
+                    cy={props.innerY - props.scleraRadius * 0.3}
+                    transform={`skewX(20) translate(${(-140 / 960) *
+                        props.width}, ${(5 / 1080) * props.height})`}
                 />
             </g>
 
@@ -196,7 +209,6 @@ export default function Eye(props: IEyeProps) {
                          L 0 ${props.height}`}
                 />
             </svg>
-            <Shadows openCoefficient={props.openCoefficient} />
         </svg>
     );
 }
@@ -248,22 +260,38 @@ function getCornerShape(props: IEyeProps) {
           };
 }
 
-function getIrisAdjustment(props: IEyeProps) {
-    const minXScale = 0.85;
+function getIrisAdjustment(props: IEyeProps, previousAngle: number = 0) {
+    const displacement = Math.hypot(
+        props.innerX - props.width / 2,
+        props.innerY - props.height / 2,
+    );
+    const maxDisplacement = getMaxDisplacement(
+        props.scleraRadius,
+        props.irisRadius,
+    );
 
-    const irisXoffset = props.innerX - props.width / 2;
-    const maxIrisXOffset = props.scleraRadius - props.irisRadius;
-    let xDirection = Math.abs(irisXoffset) / irisXoffset;
-    if (isNaN(xDirection)) {
-        xDirection = 0;
+    const scale =
+        irisSkewFactor +
+        ((1 - irisSkewFactor) * (maxDisplacement - displacement)) /
+            maxDisplacement;
+
+    let angle =
+        ((Math.atan2(
+            props.innerY - props.height / 2,
+            props.innerX - props.width / 2,
+        ) *
+            180) /
+            Math.PI) %
+        180;
+    if (angle < -90) {
+        angle = angle + 180;
     }
-    const xScale = 1 - Math.abs((1 - minXScale) * irisXoffset) / maxIrisXOffset;
-    const xSkew =
-        (((xScale - 1) * (90 * (props.innerY - props.height / 2))) /
-            props.scleraRadius) *
-        xDirection;
-    const innerX =
-        props.innerX +
-        (xDirection * (props.scleraRadius * (1 - xScale))) / xScale;
-    return { xScale, xSkew, innerX };
+    if (angle > 90) {
+        angle = angle - 180;
+    }
+
+    return {
+        scale,
+        angle,
+    };
 }

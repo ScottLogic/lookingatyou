@@ -2,6 +2,7 @@ import {
     buffer,
     dilationMultipler,
     dilationOffset,
+    irisSkewFactor,
     maxBrightness,
     middleX,
     moveSize,
@@ -120,4 +121,8 @@ function moveRight(
         return { newX: currentX - moveSize, left: !left };
     }
     return { newX: currentX, left };
+}
+
+export function getMaxDisplacement(scleraRadius: number, irisRadius: number) {
+    return (scleraRadius - irisRadius * irisSkewFactor) / irisSkewFactor;
 }

@@ -1,5 +1,6 @@
 import { shallow } from 'enzyme';
 import React from 'react';
+import { EyeSide } from '../../AppConstants';
 import Eye, { IEyeProps } from '../../components/eye/Eye';
 
 let props: IEyeProps;
@@ -7,7 +8,7 @@ let props: IEyeProps;
 describe('Eye', () => {
     beforeEach(() => {
         props = {
-            class: 'eye',
+            class: EyeSide.LEFT,
             width: 500,
             height: 500,
             irisColor: 'blue',

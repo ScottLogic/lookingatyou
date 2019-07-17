@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Shadows should render correctly 1`] = `
-"<svg>
+"<svg className=\\"collapse\\">
   <defs>
     <filter id=\\"shadowTop\\">
-      <feDropShadow dx=\\"0\\" dy=\\"20\\" stdDeviation=\\"20\\" floodColor=\\"#333333\\" />
+      <feDropShadow dx=\\"0\\" dy={44.44444444444444} stdDeviation={44.44444444444444} floodColor=\\"#333333\\" />
     </filter>
     <filter id=\\"shadowBottom\\">
-      <feDropShadow dx=\\"0\\" dy={-5} stdDeviation=\\"15\\" floodColor=\\"#333333\\" />
+      <feDropShadow dx=\\"0\\" dy={-11.11111111111111} stdDeviation={33.333333333333336} floodColor=\\"#333333\\" />
     </filter>
   </defs>
 </svg>"

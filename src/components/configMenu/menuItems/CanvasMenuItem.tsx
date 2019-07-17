@@ -1,8 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ISelections } from '../../../models/objectDetection';
+import { IDetections, ISelections } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
-import { getSelections } from '../../../store/selectors/detectionSelectors';
+import {
+    getDetections,
+    getSelections,
+} from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
 import { Bbox } from '../../../utils/types';
 import { HelpWith } from '../Help';
@@ -16,6 +19,7 @@ interface ICanvasMenuItemProps {
 interface IAppMapStateToProps {
     videos: Array<HTMLVideoElement | undefined>;
     selections: ISelections;
+    detections: IDetections;
 }
 
 type CanvasMenuItemProps = ICanvasMenuItemProps & IAppMapStateToProps;
@@ -24,6 +28,7 @@ const mapStateToProps = (state: IRootStore) => {
     return {
         videos: getVideos(state),
         selections: getSelections(state),
+        detections: getDetections(state),
     };
 };
 
@@ -43,12 +48,12 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
     }
 
     componentDidUpdate() {
-        this.getStream();
         if (this.props.videoIndex === 0) {
             this.bbox = this.props.selections.left;
         } else if (this.props.videoIndex === 1 && this.props.selections.right) {
             this.bbox = this.props.selections.right;
         }
+        this.getStream();
     }
 
     shouldComponentUpdate(
@@ -66,10 +71,23 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         const video = this.props.videos[
             this.props.videoIndex
         ] as HTMLVideoElement;
-        if (this.props.selections) {
-            const [x, y, width, height] = this.bbox;
-            const bbox = { x, y, width, height };
-            this.drawImage(video, bbox);
+
+        const focusedBbox = this.bbox;
+        const detections =
+            this.props.videoIndex === 0
+                ? this.props.detections.left
+                : this.props.detections.right;
+
+        this.drawVideoFrame(video);
+
+        if (this.props.selections && detections) {
+            detections.forEach(({ bbox }) => {
+                const [x, y, width, height] = bbox;
+                const colour = bbox === focusedBbox ? 'green' : 'red';
+                if (this.canvasRef.current) {
+                    this.drawRectangle(colour, { x, y, width, height });
+                }
+            });
         }
     }
 
@@ -83,33 +101,33 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         );
     }
 
-    drawImage(
-        image: CanvasImageSource,
+    drawVideoFrame(image: HTMLVideoElement) {
+        const canvas = this.canvasRef.current;
+        if (canvas && image instanceof HTMLVideoElement) {
+            canvas.height = image.height;
+            canvas.width = image.width;
+
+            const canvasCtx = canvas.getContext('2d');
+
+            if (canvasCtx) {
+                canvasCtx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            }
+        }
+    }
+
+    drawRectangle(
+        colour: string,
         bbox?: { x: number; y: number; width: number; height: number },
     ) {
-        if (image instanceof HTMLVideoElement) {
-            const canvas = this.canvasRef.current;
-            if (canvas) {
-                canvas.height = image.height;
-                canvas.width = image.width;
-                const canvasCtx = canvas.getContext('2d');
-
-                if (canvasCtx) {
-                    canvasCtx.drawImage(
-                        image,
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height,
-                    );
-                    if (bbox !== undefined) {
-                        canvasCtx.beginPath();
-                        canvasCtx.lineWidth = 5;
-                        canvasCtx.strokeStyle = 'red';
-                        canvasCtx.rect(bbox.x, bbox.y, bbox.width, bbox.height);
-                        canvasCtx.stroke();
-                    }
-                }
+        const canvas = this.canvasRef.current;
+        if (canvas) {
+            const canvasCtx = canvas.getContext('2d');
+            if (canvasCtx && bbox) {
+                canvasCtx.beginPath();
+                canvasCtx.lineWidth = 5;
+                canvasCtx.strokeStyle = colour;
+                canvasCtx.rect(bbox.x, bbox.y, bbox.width, bbox.height);
+                canvasCtx.stroke();
             }
         }
     }
