@@ -1,14 +1,14 @@
-import {
-    Detection,
-    IDetections,
-    ISelections,
-} from '../../models/objectDetection';
+import { Detection, ISelections } from '../../models/objectDetection';
 import calculateTargetPos from '../objectTracking/calculateFocus';
 import { Bbox, ICoords } from '../types';
 import { isPerson } from './detectionSelector';
 
+let xPrediction = 0;
+let yPrediction = 0;
+
 export default function select(
     detections: Detection[],
+    history: ISelections[],
     compare: (x: Bbox, y: Bbox) => number,
     filter?: (d: Detection) => boolean,
 ): Bbox | undefined {
@@ -17,6 +17,12 @@ export default function select(
             detection => isPerson(detection) && (!filter || filter(detection)),
         )
         .map(detection => detection.bbox);
+    const coordsX = history.map(target => target.left[0]);
+    const coordsY = history.map(target => target.left[1]);
+
+    xPrediction = getWeightedPrediction(coordsX);
+    yPrediction = getWeightedPrediction(coordsY);
+
     return personBboxes.reduce<Bbox | undefined>(
         (best, current) =>
             best === undefined || compare(current, best) > 0 ? current : best,
@@ -42,38 +48,37 @@ export function largerThan(bbox1: Bbox, bbox2: Bbox): number {
 
 export function closerTo(
     coords: ICoords,
-    history: ISelections[],
 ): (bbox1: Bbox, bbox2: Bbox) => number {
     return function closerToCoords(bbox1: Bbox, bbox2: Bbox) {
-        /*const closerToOldTarget =
+        const closerToOldTarget =
             Math.hypot(bbox2[0] - coords.x, bbox2[1] - coords.y) -
             Math.hypot(bbox1[0] - coords.x, bbox1[1] - coords.y);
-*/
-        const coordsX = history.map(target => target.left[0]);
-        const coordsY = history.map(target => target.left[1]);
-
-        const predictedX = getWeightedPrediction(coordsX);
-        const predictedY = getWeightedPrediction(coordsY);
 
         const closerToPredictedTarget =
-            Math.hypot(bbox2[0] - predictedX, bbox2[1] - predictedY) -
-            Math.hypot(bbox1[0] - predictedX, bbox1[1] - predictedY);
+            Math.hypot(bbox2[0] - xPrediction, bbox2[1] - yPrediction) -
+            Math.hypot(bbox1[0] - xPrediction, bbox1[1] - yPrediction);
 
-        return closerToPredictedTarget /*+ closerToOldTarget) / 2*/;
+        return closerToPredictedTarget + closerToOldTarget;
     };
 }
 
 function getWeightedPrediction(nums: number[]): number {
     const weightedNums = [];
     let decayTotal = 0;
-    for (let i = nums.length - 1; i > 0; i--) {
+    const diffNums = [];
+
+    for (let i = 0; i < nums.length - 1; i++) {
+        diffNums.push(nums[i] - nums[i + 1]);
+    }
+    for (let i = diffNums.length - 1; i > 0; i--) {
         const decay = Math.pow(0.5, i);
-        weightedNums.push(nums[i] * decay);
+        weightedNums.push(diffNums[i] * decay);
         decayTotal += decay;
     }
+
     const weightedTotal = weightedNums.reduce((a, b) => a + b, 0) / decayTotal;
-    console.log(weightedTotal / nums.length + nums[nums.length - 1]);
-    return weightedTotal / nums.length + nums[nums.length - 1];
+
+    return weightedTotal / diffNums.length + nums[nums.length - 1];
 }
 
 export function closerVerticallyTo(
