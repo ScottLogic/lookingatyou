@@ -74,6 +74,6 @@ describe('selectClosest', () => {
         ];
         const selectClosest: (ds: Detection[]) => Bbox | undefined = ds =>
             select(ds, closerTo({ x: 300, y: 290 }));
-        expect(selectClosest(detections)).toStrictEqual([305, 295, 5, 5]);
+        expect(selectClosest(detections)).toStrictEqual([0, 0, 0, 110]);
     });
 });

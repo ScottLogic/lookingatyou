@@ -8,8 +8,8 @@ let yPrediction = 0;
 
 export default function select(
     detections: Detection[],
-    history: ISelections[],
     compare: (x: Bbox, y: Bbox) => number,
+    history?: ISelections[],
     filter?: (d: Detection) => boolean,
 ): Bbox | undefined {
     const personBboxes: Bbox[] = detections
@@ -17,11 +17,14 @@ export default function select(
             detection => isPerson(detection) && (!filter || filter(detection)),
         )
         .map(detection => detection.bbox);
-    const coordsX = history.map(target => target.left[0]);
-    const coordsY = history.map(target => target.left[1]);
 
-    xPrediction = getWeightedPrediction(coordsX);
-    yPrediction = getWeightedPrediction(coordsY);
+    if (history) {
+        const coordsX = history.map(target => target.left[0]);
+        const coordsY = history.map(target => target.left[1]);
+
+        xPrediction = getWeightedPrediction(coordsX);
+        yPrediction = getWeightedPrediction(coordsY);
+    }
 
     return personBboxes.reduce<Bbox | undefined>(
         (best, current) =>
