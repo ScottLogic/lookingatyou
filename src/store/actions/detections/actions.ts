@@ -30,16 +30,16 @@ export function setModel(model: posenet.PoseNet | null): ISetModelAction {
     };
 }
 
-export function loadModel() {
+export function loadModel(document: Document) {
     return async (dispatch: ThunkDispatch<IRootStore, void, Action>) => {
         dispatch(setModel(null));
         const model = await posenet.load();
         dispatch(setModel(model));
-        dispatch(restartDetection());
+        dispatch(restartDetection(document));
     };
 }
 
-export function restartDetection() {
+export function restartDetection(document: Document) {
     return (
         dispatch: ThunkDispatch<IRootStore, void, Action>,
         getState: () => IRootStore,
@@ -47,14 +47,14 @@ export function restartDetection() {
         const state = getState();
         clearInterval(state.detectionStore.detectionInterval);
         const id = setInterval(
-            () => dispatch(handleDetection()),
+            () => dispatch(handleDetection(document)),
             1000 / state.configStore.config.fps,
         );
         dispatch({ type: 'SET_INTERVAL', payload: id });
     };
 }
 
-export function handleDetection() {
+export function handleDetection(document: Document) {
     return async (
         dispatch: ThunkDispatch<IRootStore, void, Action>,
         getState: () => IRootStore,
@@ -67,7 +67,7 @@ export function handleDetection() {
             return;
         }
 
-        const images = getImageDataFromVideos(videos);
+        const images = getImageDataFromVideos(videos, document);
         dispatch(setImageDataAction(images));
 
         let left: IDetection[] = [];

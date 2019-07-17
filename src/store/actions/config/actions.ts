@@ -9,11 +9,14 @@ import {
     UPDATE_CONFIG,
 } from './types';
 
-export function updateConfigAction(payload: ISetConfigPayload) {
+export function updateConfigAction(
+    payload: ISetConfigPayload,
+    document: Document,
+) {
     return (dispatch: ThunkDispatch<IRootStore, void, Action>) => {
         dispatch(setConfigAction(payload));
         if (payload.partialConfig.fps) {
-            dispatch(restartDetection());
+            dispatch(restartDetection(document));
         }
     };
 }

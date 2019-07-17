@@ -35,13 +35,14 @@ export function reshapeDetections(detections: Pose[]): IDetection[] {
 
 export function getImageDataFromVideos(
     videos: Array<HTMLVideoElement | undefined>,
+    document: Document,
 ): { [key: string]: ImageData } {
     let images: { [key: string]: ImageData } = {};
-    const leftImage = getImageData(videos[0]);
+    const leftImage = getImageData(videos[0], document);
     if (leftImage) {
         images = { [EyeSide.LEFT]: leftImage };
         if (videos[1]) {
-            const rightImage = getImageData(videos[1]);
+            const rightImage = getImageData(videos[1], document);
             if (rightImage) {
                 images[EyeSide.RIGHT] = rightImage;
             }
@@ -50,7 +51,10 @@ export function getImageDataFromVideos(
     return images;
 }
 
-function getImageData(video: HTMLVideoElement | undefined): ImageData | null {
+function getImageData(
+    video: HTMLVideoElement | undefined,
+    document: Document,
+): ImageData | null {
     if (video) {
         const canvas = document.createElement('canvas');
         canvas.height = video.height;

@@ -22,7 +22,6 @@ import EyeController from '../eye/EyeController';
 import { analyseLight, naturalMovement } from '../eye/EyeUtils';
 
 interface IMovementProps {
-    document: Document;
     width: number;
     height: number;
     environment: Window;
@@ -86,7 +85,7 @@ export class MovementHandler extends React.Component<
     }
 
     componentDidMount() {
-        this.movementInterval = window.setInterval(
+        this.movementInterval = this.props.environment.setInterval(
             this.animateEye,
             1000 / this.props.fps,
             this.prevProps,
@@ -114,7 +113,7 @@ export class MovementHandler extends React.Component<
     }
 
     componentWillUnmount() {
-        clearInterval(this.movementInterval);
+        this.props.environment.clearInterval(this.movementInterval);
     }
 
     calculateBrightness() {
@@ -238,6 +237,7 @@ const mapStateToProps = (state: IRootStore) => ({
     detections: state.detectionStore.detections,
     target: getTargets(state),
     openCoefficient: state.detectionStore.eyesOpenCoefficient,
+    images: state.videoStore.images,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => ({
