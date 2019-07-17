@@ -42,9 +42,8 @@ export function Video(props: VideoProps) {
     );
 }
 
-const mapStateToProps = (state: IRootStore, props: IVideoProps) => {
-    return getStreamForDevice(state, props.deviceId);
-};
+const mapStateToProps = (state: IRootStore, props: IVideoProps) =>
+    getStreamForDevice(state, props.deviceId);
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
