@@ -23,20 +23,22 @@ export interface IConfigMenuElementProps {
 
 interface IConfigMenuElementMapStateToProps {
     config: IUserConfig;
-    videoCount: number;
+    videos: Array<HTMLVideoElement | undefined>;
 }
+
 const mapStateToProps = (
     state: IRootStore,
 ): IConfigMenuElementMapStateToProps => {
     return {
         config: getConfig(state),
-        videoCount: getVideos(state).length,
+        videos: getVideos(state),
     };
 };
 
 interface IConfigMenuElementMapDispatchToProps {
     setConfig: (payload: ISetConfigPayload) => void;
 }
+
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
         setConfig: (payload: ISetConfigPayload) =>
@@ -50,8 +52,18 @@ export type ConfigMenuElementProps = IConfigMenuElementProps &
 
 export const ConfigMenuElement = React.memo(
     (props: ConfigMenuElementProps) => {
+        const canvasData = [
+            { name: 'Left Camera', helpWith: HelpWith.LEFT_VIDEO_STREAM },
+            { name: 'Right Camera', helpWith: HelpWith.RIGHT_VIDEO_STREAM },
+        ];
+
         return (
-            <ConfigMenu width="14em" timerLength={1000} window={props.window}>
+            <ConfigMenu
+                width="14em"
+                timerLength={1000}
+                window={props.window}
+                debugEnabled={props.config.toggleDebug}
+            >
                 <TextBoxMenuItem
                     name={'X Sensitivity'}
                     configName={'xSensitivity'}
@@ -61,7 +73,6 @@ export const ConfigMenuElement = React.memo(
                     configParse={parseFloat}
                     helpWith={HelpWith.X_SENSITIVITY}
                 />
-
                 <TextBoxMenuItem
                     name={'Y Sensitivity'}
                     configName={'ySensitivity'}
@@ -71,7 +82,6 @@ export const ConfigMenuElement = React.memo(
                     configParse={parseFloat}
                     helpWith={HelpWith.Y_SENSITIVITY}
                 />
-
                 <TextBoxMenuItem
                     name={'FPS'}
                     configName={'fps'}
@@ -81,7 +91,6 @@ export const ConfigMenuElement = React.memo(
                     configParse={parseInt}
                     helpWith={HelpWith.FPS}
                 />
-
                 <CheckBoxMenuItem
                     name={'Swap Eyes'}
                     configName={'swapEyes'}
@@ -89,7 +98,6 @@ export const ConfigMenuElement = React.memo(
                     checked={props.config.swapEyes}
                     onInputChange={props.setConfig}
                 />
-
                 <ColorMenuItem
                     name={'Iris Colour'}
                     configName={'irisColor'}
@@ -97,7 +105,6 @@ export const ConfigMenuElement = React.memo(
                     onInputChange={props.setConfig}
                     helpWith={HelpWith.IRIS_COLOUR}
                 />
-
                 <CheckBoxMenuItem
                     name={'Toggle Debug'}
                     configName={'toggleDebug'}
@@ -106,42 +113,26 @@ export const ConfigMenuElement = React.memo(
                     onInputChange={props.setConfig}
                 />
 
-                {props.config.toggleDebug ? (
-                    props.videoCount > 1 ? (
-                        <>
-                            <CanvasMenuItem
-                                name={'L Camera'}
-                                videoIndex={0}
-                                helpWith={HelpWith.LEFT_VIDEO_STREAM}
-                            />
-                            <CanvasMenuItem
-                                name={'R Camera'}
-                                videoIndex={1}
-                                helpWith={HelpWith.RIGHT_VIDEO_STREAM}
-                            />
-
-                            <Help problemWith={HelpWith.LEFT_VIDEO_STREAM} />
-                            <Help problemWith={HelpWith.RIGHT_VIDEO_STREAM} />
-                        </>
-                    ) : (
-                        <>
-                            <CanvasMenuItem
-                                name={'Camera'}
-                                videoIndex={0}
-                                helpWith={HelpWith.VIDEO_STREAM}
-                            />
-
-                            <Help problemWith={HelpWith.VIDEO_STREAM} />
-                        </>
-                    )
-                ) : null}
-
+                {props.config.toggleDebug
+                    ? props.videos.map((ignore, index, videos) => {
+                          return (
+                              <CanvasMenuItem
+                                  name={
+                                      videos.length === 1
+                                          ? 'Camera'
+                                          : canvasData[index].name
+                                  }
+                                  key={index}
+                                  helpWith={canvasData[index].helpWith}
+                                  videoIndex={index}
+                              />
+                          );
+                      })
+                    : null}
                 <br />
-
                 <p data-tip={true} data-for={HelpWith[HelpWith.APP]}>
                     Help
                 </p>
-
                 <Help problemWith={HelpWith.FPS} />
                 <Help problemWith={HelpWith.X_SENSITIVITY} />
                 <Help problemWith={HelpWith.Y_SENSITIVITY} />
@@ -149,6 +140,8 @@ export const ConfigMenuElement = React.memo(
                 <Help problemWith={HelpWith.IRIS_COLOUR} />
                 <Help problemWith={HelpWith.APP} />
                 <Help problemWith={HelpWith.DEBUG} />
+                <Help problemWith={HelpWith.LEFT_VIDEO_STREAM} />
+                <Help problemWith={HelpWith.RIGHT_VIDEO_STREAM} />
             </ConfigMenu>
         );
     },
