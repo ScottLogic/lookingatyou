@@ -13,7 +13,6 @@ export interface IDetectionState {
     eyesOpenCoefficient: number;
     detections: IDetections;
     history: ITargets[];
-    previousTarget: ITargets;
     idleTarget: ITargets;
 }
 

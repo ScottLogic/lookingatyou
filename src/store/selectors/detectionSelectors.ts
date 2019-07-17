@@ -68,7 +68,9 @@ export const getTargets = createSelector(
 );
 
 export function getPreviousTargets(state: IRootStore): ITargets {
-    return state.detectionStore.previousTarget;
+    return state.detectionStore.history[
+        state.detectionStore.history.length - 1
+    ];
 }
 
 export function getIdleTargets(state: IRootStore): ITargets {
