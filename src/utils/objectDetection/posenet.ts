@@ -19,7 +19,7 @@ export default class Posenet implements IObjectDetector {
 
     static reshapeDetections(detections: posenet.Pose[]): Detection[] {
         return detections.map(detection => {
-            const box = posenet.getBoundingBox(detection.keypoints.slice(0, 2)); // 0-2 correspond nose and eyes
+            const box = posenet.getBoundingBox(detection.keypoints.slice(1, 3)); // 1 and 2 correspond nose and eyes
             return {
                 model: DetectionModelType.Posenet,
                 bbox: [
