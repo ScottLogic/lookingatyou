@@ -4,6 +4,7 @@ import {
     dilationMultipler,
     dilationOffset,
     fatigueScale,
+    irisSkewFactor,
     maxBrightness,
     middleX,
     minsInHour,
@@ -128,4 +129,8 @@ export function getFatigueMultiplier(): number {
     const dayProgress = (dayDurationMinutes - currentTime) / dayDurationMinutes;
 
     return dayProgress * fatigueScale + fatigueScale;
+}
+
+export function getMaxDisplacement(scleraRadius: number, irisRadius: number) {
+    return (scleraRadius - irisRadius * irisSkewFactor) / irisSkewFactor;
 }

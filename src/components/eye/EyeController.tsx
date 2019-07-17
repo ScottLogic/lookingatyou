@@ -13,8 +13,9 @@ import { getVideos } from '../../store/selectors/videoSelectors';
 import { ICoords, ITargets } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
-import { getFatigueMultiplier } from './EyeUtils';
+import { getFatigueMultiplier, getMaxDisplacement } from './EyeUtils';
 import { Gradients } from './Gradients';
+import { Shadows } from './Shadows';
 
 interface IEyeControllerProps {
     width: number;
@@ -74,7 +75,10 @@ export const EyeController = React.memo(
         const pupilRadius = props.width / 24;
 
         const getEyeCoords = (target: ICoords): ICoords => {
-            const maxDisplacement = scleraRadius - irisRadius;
+            const maxDisplacement = getMaxDisplacement(
+                scleraRadius,
+                irisRadius,
+            );
             const targetY = target.y * props.config.ySensitivity;
             const targetX = -target.x * props.config.xSensitivity; // mirrored
             const polarDistance = Math.hypot(targetY, targetX);
@@ -125,6 +129,7 @@ export const EyeController = React.memo(
                     );
                 })}
                 <Gradients irisColor={props.config.irisColor} />
+                <Shadows openCoefficient={props.openCoefficient} />
             </div>
         );
     },

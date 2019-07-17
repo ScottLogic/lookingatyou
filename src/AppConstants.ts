@@ -31,4 +31,5 @@ export const neutralBlinkFrequency = 0.25;
 export const dayDurationMinutes = 24 * 60;
 export const minsInHour = 60;
 export const fatigueScale = 0.5;
+export const irisSkewFactor = 0.8;
 export const maxMoveWithoutBlink = 0.8;
