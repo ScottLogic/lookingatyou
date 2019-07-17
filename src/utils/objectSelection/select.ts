@@ -53,15 +53,15 @@ export function closerTo(
     coords: ICoords,
 ): (bbox1: Bbox, bbox2: Bbox) => number {
     return function closerToCoords(bbox1: Bbox, bbox2: Bbox) {
-        const closerToOldTarget =
+        /*const closerToOldTarget =
             Math.hypot(bbox2[0] - coords.x, bbox2[1] - coords.y) -
             Math.hypot(bbox1[0] - coords.x, bbox1[1] - coords.y);
-
+*/
         const closerToPredictedTarget =
             Math.hypot(bbox2[0] - xPrediction, bbox2[1] - yPrediction) -
             Math.hypot(bbox1[0] - xPrediction, bbox1[1] - yPrediction);
 
-        return closerToPredictedTarget + closerToOldTarget;
+        return closerToPredictedTarget; // + closerToOldTarget;
     };
 }
 

@@ -11,7 +11,7 @@ import { loadModel } from './store/actions/detections/actions';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getDeviceIds } from './store/selectors/videoSelectors';
 import { AppStore } from './store/store';
-import CocoSSD from './utils/objectDetection/cocoSSD';
+import Posenet from './utils/objectDetection/posenet';
 
 interface IAppState {
     width: number;
@@ -103,7 +103,7 @@ export class App extends React.PureComponent<AppProps, IAppState> {
         this.setState({
             webcamAvailable: true,
         });
-        this.props.loadModel(CocoSSD.init);
+        this.props.loadModel(Posenet.init);
     }
 
     onUserMediaError() {
