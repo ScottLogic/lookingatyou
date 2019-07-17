@@ -8,6 +8,7 @@ import {
 } from '../../../models/objectDetection';
 import select, {
     closerTo,
+    closerToColour,
     closerVerticallyTo,
     leftOf,
 } from '../../../utils/objectSelection/select';
@@ -69,6 +70,7 @@ export function handleDetection() {
         const state = getState();
         const videos = getVideos(state);
         const model = state.detectionStore.model;
+        const imgData = state.videoStore.images[EyeSide.LEFT];
 
         if (!videos[0] || !model) {
             return;
@@ -82,7 +84,9 @@ export function handleDetection() {
             const leftEyeDetections = await model.detect(images[EyeSide.LEFT]!);
             const leftEyeSelection = select(
                 leftEyeDetections,
-                closerTo(previousTargets.left),
+                previousTargets.left,
+                imgData,
+                closerToColour(imgData),
             );
 
             if (leftEyeSelection) {
@@ -99,11 +103,15 @@ export function handleDetection() {
                     rightEyeDetections = await model.detect(
                         images[EyeSide.RIGHT],
                     );
-                    rightEyeSelection = select(
-                        rightEyeDetections,
-                        closerVerticallyTo(leftEyeSelection[1]),
-                        leftOf(leftEyeSelection[0]),
-                    );
+                    if (previousTargets.right) {
+                        rightEyeSelection = select(
+                            rightEyeDetections,
+                            previousTargets.right,
+                            imgData,
+                            closerVerticallyTo(leftEyeSelection[1]),
+                            leftOf(leftEyeSelection[0]),
+                        );
+                    }
                     if (rightEyeSelection) {
                         rightTarget = calculateNormalisedPos(
                             rightEyeSelection,
