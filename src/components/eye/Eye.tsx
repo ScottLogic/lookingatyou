@@ -48,24 +48,16 @@ export default function Eye(props: IEyeProps) {
     const cornerShape = getCornerShape(props);
 
     const resolutionScale = props.width / 960;
-    const [innerPath, setInnerPath] = useState(
-        getInnerPath(
-            resolutionScale
-        ),
-    );
+    const [innerPath, setInnerPath] = useState(getInnerPath(resolutionScale));
     const [irisAdjustment, setIrisAdjustment] = useState({
         scale: 1,
         angle: 0,
     });
 
     useEffect(() => {
-        setInnerPath(
-            getInnerPath(
-                resolutionScale
-            ),
-        );
+        setInnerPath(getInnerPath(resolutionScale));
         setIrisAdjustment(getIrisAdjustment(props, irisAdjustment.angle));
-    }, [props, irisAdjustment, innerPath]);
+    }, [props, irisAdjustment, innerPath, resolutionScale]);
 
     return (
         <svg className={props.class} width={props.width} height={props.height}>
@@ -280,10 +272,9 @@ function getIrisAdjustment(props: IEyeProps, previousAngle: number = 0) {
         ) *
             180) /
         Math.PI;
-    while (angle - previousAngle < -90) {
+    if (angle - previousAngle < -90) {
         angle = angle + 180;
-    }
-    while (angle - previousAngle > 90) {
+    } else if (angle - previousAngle > 90) {
         angle = angle - 180;
     }
 
