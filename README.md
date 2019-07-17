@@ -24,7 +24,7 @@
 -   [About the Project](#about-the-project)
 -   [Prerequisites](#prerequisites)
     -   [General](#general)
-    -   [Test](#test)
+    -   [Test](#tests)
 -   [Running the project (local)](#running-the-project-locally)
 -   [Usage](#usage)
 -   [Testing](#testing)
