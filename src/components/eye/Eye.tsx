@@ -55,9 +55,12 @@ export default function Eye(props: IEyeProps) {
     });
 
     useEffect(() => {
-        setInnerPath(getInnerPath(resolutionScale));
         setIrisAdjustment(getIrisAdjustment(props, irisAdjustment.angle));
-    }, [props, irisAdjustment, innerPath, resolutionScale]);
+        // eslint-disable-next-line
+    }, [props]);
+    useEffect(() => {
+        setInnerPath(getInnerPath(resolutionScale));
+    }, [resolutionScale]);
 
     return (
         <svg className={props.class} width={props.width} height={props.height}>
