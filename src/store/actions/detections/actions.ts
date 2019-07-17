@@ -66,17 +66,18 @@ export function handleDetection() {
         const state = getState();
         const images = getVideos(state);
         const model = state.detectionStore.model;
+        const left = true;
 
         if (!images[0] || !model) {
             return;
         }
         const leftImage = images[0]!;
 
-        const previousTargets = getTargets(state);
         const leftEyeDetections = await model.detect(leftImage);
         const leftEyeSelection = select(
             leftEyeDetections,
-            closerTo(previousTargets.left),
+            left,
+            closerTo(),
             state.detectionStore.history,
         );
 
@@ -95,6 +96,7 @@ export function handleDetection() {
                 rightEyeDetections = await model.detect(rightImage);
                 rightEyeSelection = select(
                     rightEyeDetections,
+                    !left,
                     closerVerticallyTo(leftEyeSelection[1]),
                     state.detectionStore.history,
                     leftOf(leftEyeSelection[0]),

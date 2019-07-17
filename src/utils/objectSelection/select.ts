@@ -8,6 +8,7 @@ let yPrediction = 0;
 
 export default function select(
     detections: Detection[],
+    leftCam: boolean,
     compare: (x: Bbox, y: Bbox) => number,
     history?: ISelections[],
     filter?: (d: Detection) => boolean,
@@ -19,8 +20,19 @@ export default function select(
         .map(detection => detection.bbox);
 
     if (history) {
-        const coordsX = history.map(target => target.left[0]);
-        const coordsY = history.map(target => target.left[1]);
+        let coordsX: number[] = [];
+        let coordsY: number[] = [];
+        if (leftCam) {
+            coordsX = history.map(target => target.left[0]);
+            coordsY = history.map(target => target.left[1]);
+        } else {
+            coordsX = history.map(target =>
+                target.right ? target.right[0] : 0,
+            );
+            coordsY = history.map(target =>
+                target.right ? target.right[1] : 0,
+            );
+        }
 
         xPrediction = getWeightedPrediction(coordsX);
         yPrediction = getWeightedPrediction(coordsY);
@@ -49,14 +61,8 @@ export function largerThan(bbox1: Bbox, bbox2: Bbox): number {
     return bbox1[2] * bbox1[3] - bbox2[2] * bbox2[3];
 }
 
-export function closerTo(
-    coords: ICoords,
-): (bbox1: Bbox, bbox2: Bbox) => number {
+export function closerTo(): (bbox1: Bbox, bbox2: Bbox) => number {
     return function closerToCoords(bbox1: Bbox, bbox2: Bbox) {
-        /*const closerToOldTarget =
-            Math.hypot(bbox2[0] - coords.x, bbox2[1] - coords.y) -
-            Math.hypot(bbox1[0] - coords.x, bbox1[1] - coords.y);
-*/
         const closerToPredictedTarget =
             Math.hypot(bbox2[0] - xPrediction, bbox2[1] - yPrediction) -
             Math.hypot(bbox1[0] - xPrediction, bbox1[1] - yPrediction);
