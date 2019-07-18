@@ -1,5 +1,7 @@
 import { Detection } from '../../models/objectDetection';
-import calculateTargetPos from '../objectTracking/calculateFocus';
+import calculateTargetPos, {
+    calculateNormalisedPos,
+} from '../objectTracking/calculateFocus';
 import { Bbox, ICoords, ITargets } from '../types';
 import { isPerson } from './detectionSelector';
 
@@ -55,11 +57,15 @@ export function largerThan(bbox1: Bbox, bbox2: Bbox): number {
 
 export function closerToPrediction(
     prediction: ICoords,
+    videoWidth: number,
+    videoHeight: number,
 ): (bbox1: Bbox, bbox2: Bbox) => number {
     return function closerToCoords(bbox1: Bbox, bbox2: Bbox) {
+        const coords1 = calculateNormalisedPos(bbox1, videoWidth, videoHeight);
+        const coords2 = calculateNormalisedPos(bbox2, videoWidth, videoHeight);
         const closerToPredictedTarget =
-            Math.hypot(bbox2[0] - prediction.x, bbox2[1] - prediction.y) -
-            Math.hypot(bbox1[0] - prediction.x, bbox1[1] - prediction.y);
+            Math.hypot(coords2.x - prediction.x, coords2.y - prediction.y) -
+            Math.hypot(coords1.x - prediction.x, coords1.y - prediction.y);
 
         return closerToPredictedTarget;
     };

@@ -16,11 +16,16 @@ export function getDetections(state: IRootStore): IDetections {
 }
 
 export const getSelections = createSelector(
-    [getDetections, getPreviousTargets],
-    (detections, previousTargets) => {
+    [getDetections, getPreviousTargets, getVideos],
+    (detections, previousTargets, videos) => {
         const leftCam = true;
         const prediction = setPrediction(leftCam, previousTargets);
-        const left = select(detections.left, closerToPrediction(prediction));
+        const width = videos[0] ? videos[0]!.width : 1;
+        const height = videos[0] ? videos[0]!.height : 1;
+        const left = select(
+            detections.left,
+            closerToPrediction(prediction, width, height),
+        );
         const right =
             left === undefined
                 ? undefined
