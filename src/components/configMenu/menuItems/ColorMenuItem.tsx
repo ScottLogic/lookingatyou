@@ -24,7 +24,6 @@ const ColorMenuItem = React.memo(
             </div>
         );
     },
-    (previous, next) =>
-        previous.color === next.color && previous.name === next.name,
+    (previous, next) => previous.color === next.color,
 );
 export default ColorMenuItem;

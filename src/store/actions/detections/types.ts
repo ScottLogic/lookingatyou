@@ -18,7 +18,7 @@ export interface IDetectionState {
 
 export interface ISetModelAction {
     type: 'SET_MODEL';
-    payload: IObjectDetector;
+    payload: IObjectDetector | null;
 }
 
 export interface ISetIntervalAction {

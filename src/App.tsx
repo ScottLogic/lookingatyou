@@ -52,8 +52,7 @@ const mapDispatchToProps = (
     dispatch: ThunkDispatch<IRootStore, void, Action>,
 ) => {
     return {
-        loadModel: (init: () => Promise<IObjectDetector>) =>
-            dispatch(loadModel(init)),
+        loadModel: () => dispatch(loadModel()),
     };
 };
 
