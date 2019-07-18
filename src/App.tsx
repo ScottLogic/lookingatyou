@@ -67,7 +67,9 @@ export class App extends React.Component<AppProps, IAppState> {
     shouldComponentUpdate(nextProps: AppProps, nextState: IAppState) {
         return (
             this.props.webcamAvailable !== nextProps.webcamAvailable ||
-            this.props.model !== nextProps.model
+            this.props.model !== nextProps.model ||
+            this.state.height !== nextState.height ||
+            this.state.width !== nextState.width
         );
     }
 
