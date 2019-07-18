@@ -51,15 +51,15 @@ describe('ConfigMenu', () => {
         expect(map).toHaveProperty('mousemove');
     });
 
-    it('should call onMouseMove', () => {
+    it('should call mouseMoveHandler', () => {
         const wrapper = mount(<ConfigMenu {...props} />);
         wrapper.simulate('mousemove');
-        expect(wrapper.state('isUnderMouse')).toBe(true);
+        expect(wrapper.state('isUnderMouse')).toBe(false);
     });
 
     it('should call onMouseLeave', () => {
         const wrapper = mount(<ConfigMenu {...props} />);
-        wrapper.simulate('mousemove');
+        wrapper.simulate('mouseenter');
         expect(wrapper.state('isUnderMouse')).toBe(true);
         wrapper.simulate('mouseleave');
         expect(wrapper.state('isUnderMouse')).toBe(false);

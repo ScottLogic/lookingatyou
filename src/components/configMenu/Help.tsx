@@ -2,17 +2,28 @@ import React, { Fragment } from 'react';
 import ReactTooltip from 'react-tooltip';
 
 export enum HelpWith {
-    FPS,
-    X_SENSITIVITY,
-    Y_SENSITIVITY,
-    VIDEO_STREAM,
-    LEFT_VIDEO_STREAM,
-    RIGHT_VIDEO_STREAM,
-    SWAP_EYES,
-    IRIS_COLOUR,
-    APP,
-    DEBUG,
+    MODEL = 'MODEL',
+    FPS = 'FPS',
+    X_SENSITIVITY = 'X_SENSITIVITY',
+    Y_SENSITIVITY = 'Y_SENSITIVITY',
+    VIDEO_STREAM = 'VIDEO_STREAM',
+    LEFT_VIDEO_STREAM = 'LEFT_VIDEO_STREAM',
+    RIGHT_VIDEO_STREAM = 'RIGHT_VIDEO_STREAM',
+    SWAP_EYES = 'SWAP_EYES',
+    IRIS_COLOUR = 'IRIS_COLOUR',
+    APP = 'APP',
+    DEBUG = 'DEBUG',
 }
+
+const model = () => {
+    return (
+        <Fragment>
+            This sets the model running in the background. Posenet runs faster
+            and is more accurate.
+            <br /> CocoSSD is supported for legacy reasons.
+        </Fragment>
+    );
+};
 
 const fps = () => {
     return (
@@ -109,6 +120,7 @@ interface IHelpSectionMap {
 }
 
 const helpSections: IHelpSectionMap = {
+    MODEL: model,
     FPS: fps,
     X_SENSITIVITY: xSense,
     Y_SENSITIVITY: ySense,

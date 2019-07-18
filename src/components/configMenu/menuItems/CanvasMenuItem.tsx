@@ -66,7 +66,6 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
     ) {
         return (
             previousProps.selections !== nextProps.selections ||
-            previousProps.name !== nextProps.name ||
             previousProps.videoIndex !== nextProps.videoIndex
         );
     }

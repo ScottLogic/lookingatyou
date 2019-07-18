@@ -1,6 +1,7 @@
+import { DetectionModelType } from '../../../models/objectDetection';
 import {
     resetConfigAction,
-    updateConfigAction,
+    setConfigAction,
 } from '../../../store/actions/config/actions';
 import { IConfigState } from '../../../store/actions/config/types';
 import configStore, {
@@ -10,6 +11,7 @@ import configStore, {
 describe('Config Reducer tests', () => {
     const testState: IConfigState = {
         config: {
+            model: DetectionModelType.Posenet,
             xSensitivity: 10,
             ySensitivity: 10,
             fps: 5,
@@ -24,9 +26,10 @@ describe('Config Reducer tests', () => {
     });
     it('update config with partial state, so some values are updated and others are as they were before', () => {
         const partialConfig = { fps: 555, toggleDebug: true, irisColor: 'red' };
-        const updateAction = updateConfigAction({ partialConfig });
+        const setAction = setConfigAction({ partialConfig });
         const alteredState: IConfigState = {
             config: {
+                model: DetectionModelType.Posenet,
                 xSensitivity: 10,
                 ySensitivity: 10,
                 fps: 555,
@@ -35,8 +38,6 @@ describe('Config Reducer tests', () => {
                 toggleDebug: true,
             },
         };
-        expect(configStore(testState, updateAction)).toStrictEqual(
-            alteredState,
-        );
+        expect(configStore(testState, setAction)).toStrictEqual(alteredState);
     });
 });

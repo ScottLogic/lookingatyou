@@ -11,8 +11,8 @@ export type DetectedObject = ssdObject | Pose;
 export type Detection = ICocoSSDDetection | IPosenetDetection;
 
 export enum DetectionModelType {
-    CocoSSD = 'CocoSSD',
-    Posenet = 'Posenet',
+    Posenet = 'posenet',
+    CocoSSD = 'cocossd',
 }
 
 export interface IDetection {

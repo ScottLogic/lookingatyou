@@ -1,11 +1,11 @@
 import React from 'react';
 import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import {
-    ISetConfigPayload,
-    UPDATE_CONFIG,
-} from '../../store/actions/config/types';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { DetectionModelType } from '../../models/objectDetection';
+import { updateConfigAction } from '../../store/actions/config/actions';
+import { ISetConfigPayload } from '../../store/actions/config/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
@@ -15,6 +15,7 @@ import IUserConfig from './IUserConfig';
 import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
+import DropDownMenuItem from './menuItems/DropDownMenuItem';
 import TextBoxMenuItem from './menuItems/TextBoxMenuItem';
 
 export interface IConfigMenuElementProps {
@@ -38,11 +39,12 @@ const mapStateToProps = (
 interface IConfigMenuElementMapDispatchToProps {
     setConfig: (payload: ISetConfigPayload) => void;
 }
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapDispatchToProps = (
+    dispatch: ThunkDispatch<IRootStore, void, Action>,
+) => {
     return {
         setConfig: (payload: ISetConfigPayload) =>
-            dispatch({ type: UPDATE_CONFIG, payload }),
+            dispatch(updateConfigAction(payload)),
     };
 };
 
@@ -64,6 +66,31 @@ export const ConfigMenuElement = React.memo(
                 window={props.window}
                 debugEnabled={props.config.toggleDebug}
             >
+                <span data-tip={true} data-for={HelpWith[HelpWith.APP]}>
+                    ?
+                </span>
+
+                <DropDownMenuItem
+                    name={'Model'}
+                    configName={'model'}
+                    onInputChange={props.setConfig}
+                    values={Object.values(DetectionModelType)}
+                    defaultValue={props.config.model}
+                    helpWith={HelpWith.MODEL}
+                />
+
+                <TextBoxMenuItem
+                    name={'FPS'}
+                    configName={'fps'}
+                    step={1}
+                    defaultValue={props.config.fps}
+                    onValidInput={props.setConfig}
+                    configParse={parseInt}
+                    helpWith={HelpWith.FPS}
+                />
+
+                <br />
+
                 <TextBoxMenuItem
                     name={'X Sensitivity'}
                     configName={'xSensitivity'}
@@ -82,28 +109,23 @@ export const ConfigMenuElement = React.memo(
                     configParse={parseFloat}
                     helpWith={HelpWith.Y_SENSITIVITY}
                 />
-                <TextBoxMenuItem
-                    name={'FPS'}
-                    configName={'fps'}
-                    step={1}
-                    defaultValue={props.config.fps}
-                    onValidInput={props.setConfig}
-                    configParse={parseInt}
-                    helpWith={HelpWith.FPS}
-                />
-                <CheckBoxMenuItem
-                    name={'Swap Eyes'}
-                    configName={'swapEyes'}
-                    helpWith={HelpWith.SWAP_EYES}
-                    checked={props.config.swapEyes}
-                    onInputChange={props.setConfig}
-                />
+
                 <ColorMenuItem
                     name={'Iris Colour'}
                     configName={'irisColor'}
                     color={props.config.irisColor}
                     onInputChange={props.setConfig}
                     helpWith={HelpWith.IRIS_COLOUR}
+                />
+
+                <br />
+
+                <CheckBoxMenuItem
+                    name={'Swap Eyes'}
+                    configName={'swapEyes'}
+                    helpWith={HelpWith.SWAP_EYES}
+                    checked={props.config.swapEyes}
+                    onInputChange={props.setConfig}
                 />
                 <CheckBoxMenuItem
                     name={'Toggle Debug'}
@@ -133,15 +155,10 @@ export const ConfigMenuElement = React.memo(
                 <p data-tip={true} data-for={HelpWith[HelpWith.APP]}>
                     Help
                 </p>
-                <Help problemWith={HelpWith.FPS} />
-                <Help problemWith={HelpWith.X_SENSITIVITY} />
-                <Help problemWith={HelpWith.Y_SENSITIVITY} />
-                <Help problemWith={HelpWith.SWAP_EYES} />
-                <Help problemWith={HelpWith.IRIS_COLOUR} />
-                <Help problemWith={HelpWith.APP} />
-                <Help problemWith={HelpWith.DEBUG} />
-                <Help problemWith={HelpWith.LEFT_VIDEO_STREAM} />
-                <Help problemWith={HelpWith.RIGHT_VIDEO_STREAM} />
+
+                {Object.values(HelpWith).map((type, key: number) => (
+                    <Help key={key} problemWith={HelpWith[type] as HelpWith} />
+                ))}
             </ConfigMenu>
         );
     },
