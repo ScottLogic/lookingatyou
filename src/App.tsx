@@ -64,11 +64,11 @@ export class App extends React.Component<AppProps, IAppState> {
         );
     }
 
-    shouldComponentUpdate(nextProps: AppProps) {
-        const should: boolean =
+    shouldComponentUpdate(nextProps: AppProps, nextState: IAppState) {
+        return (
             this.props.webcamAvailable !== nextProps.webcamAvailable ||
-            this.props.model !== nextProps.model;
-        return should;
+            this.props.model !== nextProps.model
+        );
     }
 
     updateDimensions() {
