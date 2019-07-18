@@ -47,27 +47,19 @@ export default function Eye(props: IEyeProps) {
     const bezier = getBezier(props);
     const cornerShape = getCornerShape(props);
 
-    const originalResolution = 960;
-    const [innerPath, setInnerPath] = useState(
-        getInnerPath(
-            props.width / originalResolution,
-            props.width / originalResolution,
-        ),
-    );
+    const resolutionScale = props.width / 960;
+    const [innerPath, setInnerPath] = useState(getInnerPath(resolutionScale));
     const [irisAdjustment, setIrisAdjustment] = useState({
         scale: 1,
         angle: 0,
     });
 
     useEffect(() => {
-        setInnerPath(
-            getInnerPath(
-                props.width / originalResolution,
-                props.height / originalResolution,
-            ),
-        );
-        setIrisAdjustment(getIrisAdjustment(props, irisAdjustment.angle));
-    }, [props, irisAdjustment, innerPath]);
+        setIrisAdjustment(previous => getIrisAdjustment(props, previous.angle));
+    }, [props]);
+    useEffect(() => {
+        setInnerPath(getInnerPath(resolutionScale));
+    }, [resolutionScale]);
 
     return (
         <svg className={props.class} width={props.width} height={props.height}>
@@ -276,17 +268,15 @@ function getIrisAdjustment(props: IEyeProps, previousAngle: number = 0) {
             maxDisplacement;
 
     let angle =
-        ((Math.atan2(
+        (Math.atan2(
             props.innerY - props.height / 2,
             props.innerX - props.width / 2,
         ) *
             180) /
-            Math.PI) %
-        180;
-    if (angle < -90) {
+        Math.PI;
+    if (angle - previousAngle < -90) {
         angle = angle + 180;
-    }
-    if (angle > 90) {
+    } else if (angle - previousAngle > 90) {
         angle = angle - 180;
     }
 
