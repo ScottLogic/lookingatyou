@@ -1,16 +1,16 @@
 import { eyelidPosition, maxNumTargetsToConsider } from '../../AppConstants';
-import { IDetections, IObjectDetector } from '../../models/objectDetection';
+import { IObjectDetector } from '../../models/objectDetection';
 import { ICoords } from '../../utils/types';
 import {
     DetectionActionType,
     IDetectionState,
+    ISetDetectionsActionPayload,
     SET_DETECTIONS,
     SET_IDLE_TARGET,
     SET_INTERVAL,
     SET_MODEL,
     SET_OPEN,
 } from '../actions/detections/types';
-import { getTargets } from '../selectors/detectionSelectors';
 
 export const initialState: IDetectionState = {
     model: null,
@@ -69,15 +69,15 @@ function setDetections(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    const newHistory = state.history;
-    const oldSelection = getTargets(state);
+    const payload = action.payload as ISetDetectionsActionPayload;
+    const newHistory = [...state.history];
     if (state.history.length >= maxNumTargetsToConsider) {
         newHistory.shift();
     }
-    newHistory.push(oldSelection);
+    newHistory.push(payload.previousTarget);
     return {
         ...state,
-        detections: action.payload as IDetections,
+        detections: payload.detections,
         history: newHistory,
     };
 }

@@ -24,8 +24,7 @@ const person: ICocoSSDDetection = {
 };
 
 describe('selectFirstOfType should return', () => {
-    const selectFirst = (detections: Detection[]) =>
-        select(detections, true, first);
+    const selectFirst = (detections: Detection[]) => select(detections, first);
 
     it('undefined when arg:detections is empty', () => {
         expect(selectFirst([])).toBeUndefined();

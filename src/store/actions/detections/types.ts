@@ -31,9 +31,13 @@ export interface ISetIdleTargetAction {
     payload: ICoords;
 }
 
+export interface ISetDetectionsActionPayload {
+    detections: IDetections;
+    previousTarget: ITargets;
+}
 export interface ISetDetectionsAction {
     type: 'SET_DETECTIONS';
-    payload: IDetections;
+    payload: ISetDetectionsActionPayload;
 }
 
 export interface ISetOpenAction {

@@ -4,7 +4,7 @@ import { Bbox } from '../../../utils/types';
 describe('selectLargest', () => {
     const selectLargest: (
         detections: Detection[],
-    ) => Bbox | undefined = detections => select(detections, true, largerThan);
+    ) => Bbox | undefined = detections => select(detections, largerThan);
 
     it('return undefined for no  detections', () => {
         const detections: Detection[] = [];
