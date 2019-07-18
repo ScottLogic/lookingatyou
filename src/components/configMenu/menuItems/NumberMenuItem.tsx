@@ -28,7 +28,7 @@ const NumberMenuItem = React.memo(
         }
 
         function onChange(event: React.ChangeEvent<HTMLInputElement>) {
-            const newValue = parseFloat(event.target.value);
+            const newValue = Number(event.target.value);
             setValue(newValue);
             const newIsValid = !isNaN(newValue) && newValue >= props.min;
             setIsValid(newIsValid);
