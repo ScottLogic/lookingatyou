@@ -7,7 +7,7 @@ import {
     ISelections,
 } from '../../../models/objectDetection';
 import select, {
-    closerTo,
+    calculateColourMatch,
     closerToColour,
     closerVerticallyTo,
     leftOf,
@@ -82,11 +82,13 @@ export function handleDetection() {
         if (images[EyeSide.LEFT]) {
             const previousTargets = getTargets(state);
             const leftEyeDetections = await model.detect(images[EyeSide.LEFT]!);
+            const avgColour = calculateColourMatch(
+                imgData,
+                previousTargets.left,
+            );
             const leftEyeSelection = select(
                 leftEyeDetections,
-                previousTargets.left,
-                imgData,
-                closerToColour(imgData),
+                closerToColour(imgData, avgColour),
             );
 
             if (leftEyeSelection) {
@@ -106,8 +108,6 @@ export function handleDetection() {
                     if (previousTargets.right) {
                         rightEyeSelection = select(
                             rightEyeDetections,
-                            previousTargets.right,
-                            imgData,
                             closerVerticallyTo(leftEyeSelection[1]),
                             leftOf(leftEyeSelection[0]),
                         );

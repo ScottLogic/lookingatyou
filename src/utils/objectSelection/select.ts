@@ -3,12 +3,8 @@ import calculateTargetPos from '../objectTracking/calculateFocus';
 import { Bbox, ICoords } from '../types';
 import { isPerson } from './detectionSelector';
 
-let avgColour = { r: 0, g: 0, b: 0 };
-
 export default function select(
     detections: Detection[],
-    coords: ICoords,
-    imageData: ImageData,
     compare: (x: Bbox, y: Bbox) => number,
     filter?: (d: Detection) => boolean,
 ): Bbox | undefined {
@@ -18,22 +14,6 @@ export default function select(
         )
         .map(detection => detection.bbox);
 
-    if (imageData) {
-        const xStart =
-            Math.round((coords.x + imageData.width / 2) / imageData.width) - 3;
-        const yStart =
-            Math.round((coords.y + imageData.height / 2) / imageData.height) -
-            3;
-
-        avgColour = getAvgColour(xStart, yStart, imageData);
-    }
-    console.log(
-        '%c CHOSENCOLOUR',
-        'background-color: #' +
-            Math.round(avgColour.r) +
-            Math.round(avgColour.g) +
-            Math.round(avgColour.b),
-    );
     return personBboxes.reduce<Bbox | undefined>(
         (best, current) =>
             best === undefined || compare(current, best) > 0 ? current : best,
@@ -41,11 +21,29 @@ export default function select(
     );
 }
 
-function getAvgColour(xStart: number, yStart: number, imageData: ImageData) {
+export function calculateColourMatch(
+    imageData: ImageData,
+    coords: ICoords,
+): { r: number; g: number; b: number } {
+    if (imageData) {
+        const xStart =
+            Math.round((coords.x + imageData.width / 2) / imageData.width) - 3;
+        const yStart =
+            Math.round((coords.y + imageData.height / 2) / imageData.height) -
+            3;
+        return getAvgColour(xStart, yStart, imageData);
+    }
+    return { r: 0, g: 0, b: 0 };
+}
+
+function getAvgColour(
+    xStart: number,
+    yStart: number,
+    imageData: ImageData,
+): { r: number; g: number; b: number } {
     let r = 0;
     let g = 0;
     let b = 0;
-    let counter = 0;
     if (imageData) {
         for (let i = xStart; i < xStart + 6 * 4; i += 4) {
             for (
@@ -56,10 +54,8 @@ function getAvgColour(xStart: number, yStart: number, imageData: ImageData) {
                 r = imageData.data[i + j];
                 g = imageData.data[i + j + 1];
                 b = imageData.data[i + j + 2];
-                counter += 1;
             }
         }
-        console.log(counter);
         r = r / 36;
         g = g / 36;
         b = b / 36;
@@ -85,6 +81,7 @@ export function largerThan(bbox1: Bbox, bbox2: Bbox): number {
 
 export function closerToColour(
     imageData: ImageData,
+    avgColour: { r: number; g: number; b: number },
 ): (bbox1: Bbox, bbox2: Bbox) => number {
     return function closerToCoords(bbox1: Bbox, bbox2: Bbox) {
         const bbox1AvgColour = getAvgColour(bbox1[0], bbox1[1], imageData);
