@@ -99,24 +99,18 @@ export const ConfigMenuElement = React.memo(
                     onInputChange={props.setConfig}
                     helpWith={HelpWith.IRIS_COLOUR}
                 />
-<<<<<<< HEAD
 
                 <br />
 
-=======
-                {props.videos.length > 1 ?
->>>>>>> swap eyes checkbox hidden when only one camera connected
-                <CheckBoxMenuItem
-                    name={'Swap Eyes'}
-                    configName={'swapEyes'}
-                    helpWith={HelpWith.SWAP_EYES}
-                    checked={props.config.swapEyes}
-                    onInputChange={props.setConfig}
-                />
-<<<<<<< HEAD
-=======
-                : null
-                }
+                {props.videos.length > 1 ? (
+                    <CheckBoxMenuItem
+                        name={'Swap Eyes'}
+                        configName={'swapEyes'}
+                        helpWith={HelpWith.SWAP_EYES}
+                        checked={props.config.swapEyes}
+                        onInputChange={props.setConfig}
+                    />
+                ) : null}
                 <ColorMenuItem
                     name={'Iris Colour'}
                     configName={'irisColor'}
@@ -124,7 +118,6 @@ export const ConfigMenuElement = React.memo(
                     onInputChange={props.setConfig}
                     helpWith={HelpWith.IRIS_COLOUR}
                 />
->>>>>>> swap eyes checkbox hidden when only one camera connected
                 <CheckBoxMenuItem
                     name={'Toggle Debug'}
                     configName={'toggleDebug'}
