@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { EyeSide, irisSkewFactor, transitionTime } from '../../AppConstants';
+import { EyeSide, transitionTime } from '../../AppConstants';
 import './Eye.css';
 import { BlackFill } from './eyeParts/BlackFill';
 import { Eyelids } from './eyeParts/Eyelids';
 import { InnerEye } from './eyeParts/InnerEye';
 import { Sclera } from './eyeParts/Sclera';
-import { getMaxDisplacement } from './EyeUtils';
 import { getInnerPath } from './getInnerPath';
 
 export interface IEyeProps {
@@ -61,19 +60,13 @@ export default function Eye(props: IEyeProps) {
     };
     const cornerShape = getCornerShape(props);
 
-    const resolutionScale = props.width / 960;
-    const [innerPath, setInnerPath] = useState(getInnerPath(resolutionScale));
-    const [irisAdjustment, setIrisAdjustment] = useState({
-        scale: 1,
-        angle: 0,
-    });
+    const scaledResolution = props.width / 960;
+    const [innerPath, setInnerPath] = useState(getInnerPath(scaledResolution));
 
     useEffect(() => {
-        setIrisAdjustment(previous => getIrisAdjustment(props, previous.angle));
-    }, [props]);
-    useEffect(() => {
-        setInnerPath(getInnerPath(resolutionScale));
-    }, [resolutionScale]);
+        console.log('path');
+        setInnerPath(getInnerPath(scaledResolution));
+    }, [innerPath]);
 
     return (
         <svg className={props.class} width={props.width} height={props.height}>
@@ -88,7 +81,6 @@ export default function Eye(props: IEyeProps) {
                 circleTransitionStyle={circleTransitionStyle}
                 lineTransitionStyle={lineTransitionStyle}
                 ellipseTransitionStyle={ellipseTransitionStyle}
-                irisAdjustment={irisAdjustment}
                 irisRadius={props.irisRadius}
                 irisColor={props.irisColor}
                 innerY={props.innerY}
@@ -136,38 +128,4 @@ function getCornerShape(props: IEyeProps) {
               leftBottom: outerBottomCoefficient,
               rightBottom: innerBottomCoefficient,
           };
-}
-
-function getIrisAdjustment(props: IEyeProps, previousAngle: number = 0) {
-    const displacement = Math.hypot(
-        props.innerX - props.width / 2,
-        props.innerY - props.height / 2,
-    );
-    const maxDisplacement = getMaxDisplacement(
-        props.scleraRadius,
-        props.irisRadius,
-    );
-
-    const scale =
-        irisSkewFactor +
-        ((1 - irisSkewFactor) * (maxDisplacement - displacement)) /
-            maxDisplacement;
-
-    let angle =
-        (Math.atan2(
-            props.innerY - props.height / 2,
-            props.innerX - props.width / 2,
-        ) *
-            180) /
-        Math.PI;
-    if (angle - previousAngle < -90) {
-        angle = angle + 180;
-    } else if (angle - previousAngle > 90) {
-        angle = angle - 180;
-    }
-
-    return {
-        scale,
-        angle,
-    };
 }

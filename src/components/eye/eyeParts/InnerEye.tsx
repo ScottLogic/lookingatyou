@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import isEqual from 'react-fast-compare';
 import tinycolor from 'tinycolor2';
+import { getIrisAdjustment } from '../EyeUtils';
 
 interface IInnerEyeProps {
     innerTransitionStyle: { transition: string };
     circleTransitionStyle: { transition: string };
     lineTransitionStyle: { transition: string };
     ellipseTransitionStyle: { transition: string };
-    irisAdjustment: { scale: number; angle: number };
     irisRadius: number;
     innerY: number;
     innerX: number;
@@ -23,14 +23,28 @@ interface IInnerEyeProps {
 
 export const InnerEye = React.memo(
     (props: IInnerEyeProps) => {
+        const irisAdjustmentRef = useRef({ scale: 1, angle: 0 });
+        const irisAdjustment = getIrisAdjustment(
+            props.innerX,
+            props.innerY,
+            props.height,
+            props.width,
+            props.scleraRadius,
+            props.irisRadius,
+        );
+
+        useEffect(() => {
+            irisAdjustmentRef.current = irisAdjustment;
+        }, [irisAdjustment]);
+
         return (
             <g
                 className="inner"
                 style={props.innerTransitionStyle}
                 transform={`
-                    rotate(${props.irisAdjustment.angle})
-                    scale(${props.irisAdjustment.scale}, 1)
-                    rotate(${-props.irisAdjustment.angle})
+                    rotate(${irisAdjustment.angle})
+                    scale(${irisAdjustment.scale}, 1)
+                    rotate(${-irisAdjustment.angle})
                 `}
             >
                 <circle
