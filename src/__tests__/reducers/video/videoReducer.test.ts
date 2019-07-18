@@ -3,6 +3,7 @@ import {
     IVideoState,
     SET_VIDEO,
     SET_VIDEO_STREAMS,
+    TOGGLE_WEBCAM_AVAILABLE,
     VideoActionTypes,
 } from '../../../store/actions/video/types';
 import videoStore from '../../../store/reducers/videoReducer';
@@ -10,23 +11,27 @@ import videoStore from '../../../store/reducers/videoReducer';
 export const testDevice1 = 'testDevice1';
 export const testDevice2 = 'testDevice2';
 
-export const mockInitialAction: IVideo = {
+const testDevice1Video: IVideo = {
     deviceId: testDevice1,
     width: 260,
     height: 380,
     stream: undefined,
 };
 
-export const mockSetVideoStreamsPayload: IVideo = {
+const mockInitialState: { [deviceId: string]: IVideo } = {
+    testDevice1: testDevice1Video,
+};
+
+const testDevice2Video: IVideo = {
     deviceId: testDevice2,
     width: 100,
     height: 100,
     stream: undefined,
 };
 
-export const mockSetVideoStreamsAction: VideoActionTypes = {
-    type: SET_VIDEO_STREAMS,
-    videos: [mockSetVideoStreamsPayload],
+export const mockTwoVideoStreams: { [deviceId: string]: IVideo } = {
+    testDevice1: testDevice1Video,
+    testDevice2: testDevice2Video,
 };
 
 let mockStore: IVideoState;
@@ -34,27 +39,30 @@ let mockStore: IVideoState;
 describe('Video Reducer', () => {
     beforeEach(() => {
         mockStore = videoStore(
-            { videos: {} },
-            { type: SET_VIDEO_STREAMS, videos: [mockInitialAction] },
+            { videos: {}, webcamAvailable: false },
+            { type: SET_VIDEO_STREAMS, videos: mockInitialState },
         );
     });
 
     it('should return the initial state', () => {
         const expectedState: IVideoState = {
-            videos: {
-                testDevice1: mockInitialAction,
-            },
+            videos: mockInitialState,
+            webcamAvailable: false,
         };
         expect(mockStore).toEqual(expectedState);
     });
 
     it('should return a new state when dispaching Set Video Streams action', () => {
-        const newState = videoStore(mockStore, mockSetVideoStreamsAction);
+        const newState = videoStore(mockStore, {
+            type: SET_VIDEO_STREAMS,
+            videos: mockTwoVideoStreams,
+        });
         const expectedState = {
             videos: {
-                testDevice1: mockInitialAction,
-                testDevice2: mockSetVideoStreamsPayload,
+                testDevice1: testDevice1Video,
+                testDevice2: testDevice2Video,
             },
+            webcamAvailable: false,
         };
         expect(newState).toEqual(expectedState);
     });
@@ -72,5 +80,12 @@ describe('Video Reducer', () => {
         const expectedState = mockStore;
         expectedState.videos[testDevice1].video = videoElement;
         expect(newState).toEqual(expectedState);
+    });
+
+    it('should toggle webcam available flag', () => {
+        const newState = videoStore(mockStore, {
+            type: TOGGLE_WEBCAM_AVAILABLE,
+        });
+        expect(newState.webcamAvailable).toBeTruthy();
     });
 });

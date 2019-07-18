@@ -2,18 +2,19 @@ import * as actions from '../../../store/actions/video/actions';
 import {
     SET_VIDEO,
     SET_VIDEO_STREAMS,
+    TOGGLE_WEBCAM_AVAILABLE,
 } from '../../../store/actions/video/types';
-import { mockSetVideoStreamsPayload } from './videoReducer.test';
+import { mockTwoVideoStreams } from './videoReducer.test';
 
 describe('Video Actions', () => {
     it('should create an action to add a video stream', () => {
         const expectedAction = {
             type: SET_VIDEO_STREAMS,
-            videos: [mockSetVideoStreamsPayload],
+            videos: mockTwoVideoStreams,
         };
-        expect(
-            actions.setVideoStreamsAction([mockSetVideoStreamsPayload]),
-        ).toEqual(expectedAction);
+        expect(actions.setVideoStreamsAction(mockTwoVideoStreams)).toEqual(
+            expectedAction,
+        );
     });
 
     it('should create an action to add a video html element', () => {
@@ -25,5 +26,10 @@ describe('Video Actions', () => {
             payload,
         };
         expect(actions.setVideoAction(payload)).toEqual(expectedAction);
+    });
+
+    it('should create an action to toggle the webcam', () => {
+        const expectedAction = { type: TOGGLE_WEBCAM_AVAILABLE };
+        expect(actions.toggleWebcamAvailable()).toEqual(expectedAction);
     });
 });
