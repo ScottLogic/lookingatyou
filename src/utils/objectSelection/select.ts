@@ -88,7 +88,7 @@ function getWeightedPrediction(nums: number[]): number {
 
     const weightedTotal = weightedNums.reduce((a, b) => a + b, 0) / decayTotal;
 
-    return weightedTotal / diffNums.length + nums[nums.length - 1];
+    return weightedTotal + nums[nums.length - 1];
 }
 
 export function closerVerticallyTo(

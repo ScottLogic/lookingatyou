@@ -20,6 +20,8 @@ export const getSelections = createSelector(
     (detections, previousTargets, videos) => {
         const leftCam = true;
         const prediction = setPrediction(leftCam, previousTargets);
+        console.log(prediction);
+        console.log(previousTargets.map(target => target.left));
         const width = videos[0] ? videos[0]!.width : 1;
         const height = videos[0] ? videos[0]!.height : 1;
         const left = select(
