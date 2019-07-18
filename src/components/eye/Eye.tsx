@@ -64,9 +64,8 @@ export default function Eye(props: IEyeProps) {
     const [innerPath, setInnerPath] = useState(getInnerPath(scaledResolution));
 
     useEffect(() => {
-        console.log('path');
         setInnerPath(getInnerPath(scaledResolution));
-    }, [innerPath]);
+    }, [scaledResolution]);
 
     return (
         <svg className={props.class} width={props.width} height={props.height}>
