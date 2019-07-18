@@ -1,16 +1,11 @@
 import { Detection } from '../../models/objectDetection';
 import calculateTargetPos from '../objectTracking/calculateFocus';
-import { Bbox, ITargets } from '../types';
+import { Bbox, ICoords, ITargets } from '../types';
 import { isPerson } from './detectionSelector';
-
-let xPrediction = 0;
-let yPrediction = 0;
 
 export default function select(
     detections: Detection[],
-    leftCam: boolean,
     compare: (x: Bbox, y: Bbox) => number,
-    history?: ITargets[],
     filter?: (d: Detection) => boolean,
 ): Bbox | undefined {
     const personBboxes: Bbox[] = detections
@@ -19,10 +14,6 @@ export default function select(
         )
         .map(detection => detection.bbox);
 
-    if (history) {
-        setPrediction(leftCam, history);
-    }
-
     return personBboxes.reduce<Bbox | undefined>(
         (best, current) =>
             best === undefined || compare(current, best) > 0 ? current : best,
@@ -30,7 +21,7 @@ export default function select(
     );
 }
 
-function setPrediction(leftCam: boolean, history: ITargets[]) {
+export function setPrediction(leftCam: boolean, history: ITargets[]): ICoords {
     let coordsX: number[] = [];
     let coordsY: number[] = [];
     if (leftCam) {
@@ -40,8 +31,10 @@ function setPrediction(leftCam: boolean, history: ITargets[]) {
         coordsX = history.map(target => (target.right ? target.right.x : 0));
         coordsY = history.map(target => (target.right ? target.right.y : 0));
     }
-    xPrediction = getWeightedPrediction(coordsX);
-    yPrediction = getWeightedPrediction(coordsY);
+    const xPrediction = getWeightedPrediction(coordsX);
+    const yPrediction = getWeightedPrediction(coordsY);
+
+    return { x: xPrediction, y: yPrediction };
 }
 
 export function leftOf(x: number) {
@@ -60,11 +53,13 @@ export function largerThan(bbox1: Bbox, bbox2: Bbox): number {
     return bbox1[2] * bbox1[3] - bbox2[2] * bbox2[3];
 }
 
-export function closerToPrediction(): (bbox1: Bbox, bbox2: Bbox) => number {
+export function closerToPrediction(
+    prediction: ICoords,
+): (bbox1: Bbox, bbox2: Bbox) => number {
     return function closerToCoords(bbox1: Bbox, bbox2: Bbox) {
         const closerToPredictedTarget =
-            Math.hypot(bbox2[0] - xPrediction, bbox2[1] - yPrediction) -
-            Math.hypot(bbox1[0] - xPrediction, bbox1[1] - yPrediction);
+            Math.hypot(bbox2[0] - prediction.x, bbox2[1] - prediction.y) -
+            Math.hypot(bbox1[0] - prediction.x, bbox1[1] - prediction.y);
 
         return closerToPredictedTarget;
     };
@@ -79,7 +74,7 @@ function getWeightedPrediction(nums: number[]): number {
         diffNums.push(nums[i] - nums[i + 1]);
     }
 
-    for (let i = diffNums.length - 1; i > 0; i--) {
+    for (let i = diffNums.length - 1; i >= 0; i--) {
         const decay = Math.pow(0.5, i);
         weightedNums.push(diffNums[i] * decay);
         decayTotal += decay;
