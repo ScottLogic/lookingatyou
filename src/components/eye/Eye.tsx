@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import tinycolor from 'tinycolor2';
 import { EyeSide, irisSkewFactor, transitionTime } from '../../AppConstants';
 import './Eye.css';
 import { BlackFill } from './eyeParts/BlackFill';
@@ -102,6 +101,7 @@ export default function Eye(props: IEyeProps) {
                 irisRadius={props.irisRadius}
                 irisColor={props.irisColor}
                 innerY={props.innerY}
+                innerX={props.innerX}
                 innerPath={innerPath}
                 pupilRadius={props.pupilRadius}
                 pupilColor={pupilColor}
@@ -123,7 +123,6 @@ export default function Eye(props: IEyeProps) {
                 height={props.height}
                 width={props.width}
             />
-            <Shadows openCoefficient={props.openCoefficient} />
         </svg>
     );
 }

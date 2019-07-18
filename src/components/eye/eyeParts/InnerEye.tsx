@@ -7,9 +7,10 @@ interface IInnerEyeProps {
     circleTransitionStyle: { transition: string };
     lineTransitionStyle: { transition: string };
     ellipseTransitionStyle: { transition: string };
-    irisAdjustment: { xScale: number; xSkew: number; innerX: number };
+    irisAdjustment: { scale: number; angle: number };
     irisRadius: number;
     innerY: number;
+    innerX: number;
     irisColor: string;
     innerPath: any;
     pupilRadius: number;
@@ -27,8 +28,9 @@ export const InnerEye = React.memo(
                 className="inner"
                 style={props.innerTransitionStyle}
                 transform={`
-                scale(${props.irisAdjustment.xScale}, 1)
-                skewX(${props.irisAdjustment.xSkew})
+                    rotate(${props.irisAdjustment.angle})
+                    scale(${props.irisAdjustment.scale}, 1)
+                    rotate(${-props.irisAdjustment.angle})
                 `}
             >
                 <circle
@@ -36,12 +38,12 @@ export const InnerEye = React.memo(
                     style={props.circleTransitionStyle}
                     r={props.irisRadius}
                     fill={'url(#irisGradient)'}
-                    cx={props.irisAdjustment.innerX}
+                    cx={props.innerX}
                     cy={props.innerY}
                 />
                 <g className="irisStyling">
                     <path
-                        d={`M ${props.irisAdjustment.innerX} ${props.innerY} ${props.innerPath}`}
+                        d={`M ${props.innerX} ${props.innerY} ${props.innerPath}`}
                         fill={tinycolor(props.irisColor)
                             .darken(10)
                             .toHexString()}
@@ -53,7 +55,7 @@ export const InnerEye = React.memo(
                     style={props.circleTransitionStyle}
                     r={props.pupilRadius * props.dilatedCoefficient}
                     fill={props.pupilColor}
-                    cx={props.irisAdjustment.innerX}
+                    cx={props.innerX}
                     cy={props.innerY}
                 />
                 <ellipse
@@ -62,9 +64,10 @@ export const InnerEye = React.memo(
                     rx={props.pupilRadius * 0.375}
                     ry={props.pupilRadius * 0.75}
                     fill={'url(#reflectionGradient)'}
-                    cx={props.irisAdjustment.innerX + props.pupilRadius}
-                    cy={props.innerY}
-                    transform={`rotate(-45,${props.irisAdjustment.innerX},${props.innerY})`}
+                    cx={props.innerX + props.pupilRadius * 0.4}
+                    cy={props.innerY - props.pupilRadius * 0.4}
+                    transform={`skewX(20) translate(${(-145 / 960) *
+                        props.width}, ${(5 / 1080) * props.height})`}
                 />
                 <ellipse
                     className={'outerReflection'}
@@ -72,9 +75,10 @@ export const InnerEye = React.memo(
                     rx={props.pupilRadius * 0.5}
                     ry={props.pupilRadius}
                     fill={'url(#reflectionGradient)'}
-                    cx={props.irisAdjustment.innerX + props.irisRadius}
-                    cy={props.innerY}
-                    transform={`rotate(-45,${props.irisAdjustment.innerX},${props.innerY})`}
+                    cx={props.innerX + props.scleraRadius * 0.3}
+                    cy={props.innerY - props.scleraRadius * 0.3}
+                    transform={`skewX(20) translate(${(-140 / 960) *
+                        props.width}, ${(5 / 1080) * props.height})`}
                 />
             </g>
         );
