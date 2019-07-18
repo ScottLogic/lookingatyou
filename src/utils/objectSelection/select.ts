@@ -76,12 +76,12 @@ function getWeightedPrediction(nums: number[]): number {
     let decayTotal = 0;
     const diffNums = [];
 
-    for (let i = 0; i < nums.length - 1; i++) {
-        diffNums.push(nums[i] - nums[i + 1]);
+    for (let i = 0; i < nums.length - 2; i++) {
+        diffNums.push(nums[i + 1] - nums[i]);
     }
 
     for (let i = diffNums.length - 1; i >= 0; i--) {
-        const decay = Math.pow(0.5, i);
+        const decay = Math.pow(0.5, diffNums.length - 1 - i);
         weightedNums.push(diffNums[i] * decay);
         decayTotal += decay;
     }
