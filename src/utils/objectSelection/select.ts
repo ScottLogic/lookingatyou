@@ -90,18 +90,17 @@ export function closerToColour(
         const bbox1AvgColour = getAvgColour(bbox1[0], bbox1[1], imageData);
         const bbox2AvgColour = getAvgColour(bbox2[0], bbox2[1], imageData);
 
-        const bbox1gDiff = Math.abs(bbox1AvgColour.g - avgColour.g);
-        const bbox1bDiff = Math.abs(bbox1AvgColour.b - avgColour.b);
-        const bbox1rDiff = Math.abs(bbox1AvgColour.r - avgColour.r);
-        const bbox2rDiff = Math.abs(bbox2AvgColour.r - avgColour.r);
-        const bbox2gDiff = Math.abs(bbox2AvgColour.g - avgColour.g);
-        const bbox2bDiff = Math.abs(bbox2AvgColour.b - avgColour.b);
+        const bbox1gDiff = Math.pow(bbox1AvgColour.g - avgColour.g, 2);
+        const bbox1bDiff = Math.pow(bbox1AvgColour.b - avgColour.b, 2);
+        const bbox1rDiff = Math.pow(bbox1AvgColour.r - avgColour.r, 2);
+        const bbox2rDiff = Math.pow(bbox2AvgColour.r - avgColour.r, 2);
+        const bbox2gDiff = Math.pow(bbox2AvgColour.g - avgColour.g, 2);
+        const bbox2bDiff = Math.pow(bbox2AvgColour.b - avgColour.b, 2);
 
-        const rAccuracy = bbox1rDiff < bbox2rDiff ? 1 : -1;
-        const gAccuracy = bbox1gDiff < bbox2gDiff ? 1 : -1;
-        const bAccuracy = bbox1bDiff < bbox2bDiff ? 1 : -1;
+        const bbox1Diff = bbox1rDiff + bbox1gDiff + bbox1bDiff;
+        const bbox2Diff = bbox2rDiff + bbox2gDiff + bbox2bDiff;
 
-        return rAccuracy + gAccuracy + bAccuracy;
+        return bbox1Diff < bbox2Diff ? 1 : -1;
     };
 }
 
