@@ -161,19 +161,15 @@ export const ConfigMenuElement = React.memo(
 
 const mapStateToProps = (
     state: IRootStore,
-): IConfigMenuElementMapStateToProps => {
-    return {
-        config: getConfig(state),
-        videos: getVideos(state),
-    };
-};
+): IConfigMenuElementMapStateToProps => ({
+    config: getConfig(state),
+    videos: getVideos(state),
+});
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
-    return {
-        setConfig: (payload: ISetConfigPayload) =>
-            dispatch({ type: UPDATE_CONFIG, payload }),
-    };
-};
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    setConfig: (payload: ISetConfigPayload) =>
+        dispatch({ type: UPDATE_CONFIG, payload }),
+});
 
 export default connect(
     mapStateToProps,

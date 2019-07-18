@@ -254,23 +254,18 @@ export class MovementHandler extends React.Component<
     }
 }
 
-const mapStateToProps = (state: IRootStore) => {
-    return {
-        fps: state.configStore.config.fps,
-        detections: state.detectionStore.detections.left,
-        target: getTargets(state),
-        openCoefficient: state.detectionStore.eyesOpenCoefficient,
-        videos: getVideos(state),
-    };
-};
+const mapStateToProps = (state: IRootStore) => ({
+    fps: state.configStore.config.fps,
+    detections: state.detectionStore.detections.left,
+    target: getTargets(state),
+    openCoefficient: state.detectionStore.eyesOpenCoefficient,
+    videos: getVideos(state),
+});
 
-const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
-    return {
-        setIdleTarget: (coords: ICoords) => dispatch(setIdleTarget(coords)),
-        setOpen: (openCoefficient: number) =>
-            dispatch(setOpen(openCoefficient)),
-    };
-};
+const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => ({
+    setIdleTarget: (coords: ICoords) => dispatch(setIdleTarget(coords)),
+    setOpen: (openCoefficient: number) => dispatch(setOpen(openCoefficient)),
+});
 
 export default connect(
     mapStateToProps,

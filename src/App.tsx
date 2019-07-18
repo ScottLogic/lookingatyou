@@ -120,21 +120,17 @@ export class App extends React.PureComponent<AppProps, IAppState> {
     }
 }
 
-const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
-    return {
-        deviceIds: getDeviceIds(state),
-        model: state.detectionStore.model,
-    };
-};
+const mapStateToProps = (state: IRootStore): IAppMapStateToProps => ({
+    deviceIds: getDeviceIds(state),
+    model: state.detectionStore.model,
+});
 
 const mapDispatchToProps = (
     dispatch: ThunkDispatch<IRootStore, void, Action>,
-) => {
-    return {
-        loadModel: (init: () => Promise<IObjectDetector>) =>
-            dispatch(loadModel(init)),
-    };
-};
+) => ({
+    loadModel: (init: () => Promise<IObjectDetector>) =>
+        dispatch(loadModel(init)),
+});
 
 export default connect(
     mapStateToProps,

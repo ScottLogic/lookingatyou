@@ -124,12 +124,10 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
     }
 }
 
-const mapStateToProps = (state: IRootStore) => {
-    return {
-        videos: getVideos(state),
-        selections: getSelections(state),
-        detections: getDetections(state),
-    };
-};
+const mapStateToProps = (state: IRootStore) => ({
+    videos: getVideos(state),
+    selections: getSelections(state),
+    detections: getDetections(state),
+});
 
 export default connect(mapStateToProps)(CanvasMenuItem);
