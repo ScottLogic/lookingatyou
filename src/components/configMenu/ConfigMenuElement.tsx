@@ -102,7 +102,7 @@ export const ConfigMenuElement = React.memo(
 
                 <br />
 
-                {props.videos.length > 1 ? (
+                {props.videos.length > 1 && (
                     <CheckBoxMenuItem
                         name={'Swap Eyes'}
                         configName={'swapEyes'}
@@ -110,7 +110,7 @@ export const ConfigMenuElement = React.memo(
                         checked={props.config.swapEyes}
                         onInputChange={props.setConfig}
                     />
-                ) : null}
+                )}
                 <ColorMenuItem
                     name={'Iris Colour'}
                     configName={'irisColor'}
