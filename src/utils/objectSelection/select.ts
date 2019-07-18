@@ -18,13 +18,22 @@ export default function select(
         )
         .map(detection => detection.bbox);
 
-    const xStart =
-        Math.round((coords.x + imageData.width / 2) / imageData.width) - 3;
-    const yStart =
-        Math.round((coords.y + imageData.height / 2) / imageData.height) - 3;
+    if (imageData) {
+        const xStart =
+            Math.round((coords.x + imageData.width / 2) / imageData.width) - 3;
+        const yStart =
+            Math.round((coords.y + imageData.height / 2) / imageData.height) -
+            3;
 
-    avgColour = getAvgColour(xStart, yStart, imageData);
-
+        avgColour = getAvgColour(xStart, yStart, imageData);
+    }
+    console.log(
+        '%c CHOSENCOLOUR',
+        'background-color: #' +
+            Math.round(avgColour.r) +
+            Math.round(avgColour.g) +
+            Math.round(avgColour.b),
+    );
     return personBboxes.reduce<Bbox | undefined>(
         (best, current) =>
             best === undefined || compare(current, best) > 0 ? current : best,
@@ -36,21 +45,26 @@ function getAvgColour(xStart: number, yStart: number, imageData: ImageData) {
     let r = 0;
     let g = 0;
     let b = 0;
-    for (let i = xStart; i < xStart + 6; i += 4) {
-        for (
-            let j = yStart;
-            j < yStart + 6 * 4 * imageData.width;
-            j += imageData.width * 4
-        ) {
-            r = imageData.data[i + j];
-            g = imageData.data[i + j + 1];
-            b = imageData.data[i + j + 2];
+    let counter = 0;
+    if (imageData) {
+        for (let i = xStart; i < xStart + 6 * 4; i += 4) {
+            for (
+                let j = yStart;
+                j < yStart + 6 * 4 * imageData.width;
+                j += imageData.width * 4
+            ) {
+                r = imageData.data[i + j];
+                g = imageData.data[i + j + 1];
+                b = imageData.data[i + j + 2];
+                counter += 1;
+            }
         }
+        console.log(counter);
+        r = r / 36;
+        g = g / 36;
+        b = b / 36;
     }
-    const avgR = r / 36;
-    const avgG = g / 36;
-    const avgB = b / 36;
-    return { r: avgR, g: avgG, b: avgB };
+    return { r, g, b };
 }
 
 export function leftOf(x: number) {
@@ -79,13 +93,13 @@ export function closerToColour(
         const bbox1gDiff = Math.abs(bbox1AvgColour.g - avgColour.g);
         const bbox1bDiff = Math.abs(bbox1AvgColour.b - avgColour.b);
         const bbox1rDiff = Math.abs(bbox1AvgColour.r - avgColour.r);
-        const bbox2rDiff = Math.abs(bbox1AvgColour.r - avgColour.r);
-        const bbox2gDiff = Math.abs(bbox1AvgColour.g - avgColour.g);
-        const bbox2bDiff = Math.abs(bbox1AvgColour.b - avgColour.b);
+        const bbox2rDiff = Math.abs(bbox2AvgColour.r - avgColour.r);
+        const bbox2gDiff = Math.abs(bbox2AvgColour.g - avgColour.g);
+        const bbox2bDiff = Math.abs(bbox2AvgColour.b - avgColour.b);
 
-        const rAccuracy = bbox1rDiff >= bbox2rDiff ? 1 : -1;
-        const gAccuracy = bbox1gDiff >= bbox2gDiff ? 1 : -1;
-        const bAccuracy = bbox1bDiff >= bbox2bDiff ? 1 : -1;
+        const rAccuracy = bbox1rDiff < bbox2rDiff ? 1 : -1;
+        const gAccuracy = bbox1gDiff < bbox2gDiff ? 1 : -1;
+        const bAccuracy = bbox1bDiff < bbox2bDiff ? 1 : -1;
 
         return rAccuracy + gAccuracy + bAccuracy;
     };
