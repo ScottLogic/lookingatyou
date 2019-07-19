@@ -28,7 +28,6 @@
         "typescript": "3.5.1"
     },
     "dependencies": {
-        "@tensorflow-models/coco-ssd": "^1.1.0",
         "@tensorflow-models/posenet": "2.1.0",
         "@tensorflow/tfjs": "^1.2.1",
         "@types/react-tooltip": "^3.9.3",

@@ -1,9 +1,8 @@
-import { Detection } from '../../models/objectDetection';
+import { IDetection } from '../../models/objectDetection';
 import calculateTargetPos, {
     calculateNormalisedPos,
 } from '../objectTracking/calculateFocus';
 import { Bbox, ICoords, ITargets } from '../types';
-import { isPerson } from './detectionSelector';
 
 export interface IColour {
     r: number;
@@ -12,14 +11,12 @@ export interface IColour {
 }
 
 export default function select(
-    detections: Detection[],
+    detections: IDetection[],
     compare: (x: Bbox, y: Bbox) => number,
-    filter?: (d: Detection) => boolean,
+    filter?: (d: IDetection) => boolean,
 ): Bbox | undefined {
     const personBboxes: Bbox[] = detections
-        .filter(
-            detection => isPerson(detection) && (!filter || filter(detection)),
-        )
+        .filter(detection => !filter || filter(detection))
         .map(detection => detection.bbox);
 
     return personBboxes.reduce<Bbox | undefined>(
@@ -88,13 +85,13 @@ export function setPrediction(leftCam: boolean, history: ITargets[]): ICoords {
 }
 
 export function leftOf(x: number) {
-    return (detection: Detection) => {
+    return (detection: IDetection) => {
         return detection.bbox[0] < x;
     };
 }
 
 export function rightOf(x: number) {
-    return (detection: Detection) => {
+    return (detection: IDetection) => {
         return detection.bbox[0] > x;
     };
 }
