@@ -144,8 +144,7 @@ export function getIrisAdjustment(
         ((1 - irisSkewFactor) * (maxDisplacement - displacement)) /
             maxDisplacement;
 
-    let angle =
-        ((Math.atan2(y - height / 2, x - width / 2) * 180) / Math.PI) % 180;
+    let angle = (Math.atan2(y - height / 2, x - width / 2) * 180) / Math.PI;
 
     if (angle - previousAngle < -90) {
         angle = angle + 180;
