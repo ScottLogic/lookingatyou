@@ -16,6 +16,7 @@ import {
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getTargets } from '../../store/selectors/detectionSelectors';
+import { getVideos } from '../../store/selectors/videoSelectors';
 import { ICoords, ITargets } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
@@ -140,13 +141,6 @@ export class MovementHandler extends React.Component<
             this.props.setOpen(eyelidPosition.OPEN);
         }
 
-        if (
-            this.props.openCoefficient === eyelidPosition.CLOSED &&
-            Math.random() < 0.5
-        ) {
-            this.props.setOpen(eyelidPosition.OPEN);
-        }
-
         if (this.props.detections.length > 0) {
             this.wake();
 
@@ -251,25 +245,20 @@ export class MovementHandler extends React.Component<
     }
 }
 
-const mergeStateToProps = (state: IRootStore) => {
-    return {
-        fps: state.configStore.config.fps,
-        detections: state.detectionStore.detections.left,
-        target: getTargets(state),
-        openCoefficient: state.detectionStore.eyesOpenCoefficient,
-        images: state.videoStore.images,
-    };
-};
+const mapStateToProps = (state: IRootStore) => ({
+    fps: state.configStore.config.fps,
+    detections: state.detectionStore.detections.left,
+    target: getTargets(state),
+    openCoefficient: state.detectionStore.eyesOpenCoefficient,
+    videos: getVideos(state),
+});
 
-const mergeDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
-    return {
-        setIdleTarget: (coords: ICoords) => dispatch(setIdleTarget(coords)),
-        setOpen: (openCoefficient: number) =>
-            dispatch(setOpen(openCoefficient)),
-    };
-};
+const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => ({
+    setIdleTarget: (coords: ICoords) => dispatch(setIdleTarget(coords)),
+    setOpen: (openCoefficient: number) => dispatch(setOpen(openCoefficient)),
+});
 
 export default connect(
-    mergeStateToProps,
-    mergeDispatchToProps,
+    mapStateToProps,
+    mapDispatchToProps,
 )(MovementHandler);

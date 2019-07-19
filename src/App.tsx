@@ -32,21 +32,6 @@ interface IAppMapDispatchToProps {
 
 type AppProps = IAppProps & IAppMapStateToProps & IAppMapDispatchToProps;
 
-const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
-    return {
-        model: state.detectionStore.model,
-        webcamAvailable: getWebcamAvailable(state),
-    };
-};
-
-const mapDispatchToProps = (
-    dispatch: ThunkDispatch<IRootStore, void, Action>,
-) => {
-    return {
-        loadModel: () => dispatch(loadModel()),
-    };
-};
-
 export class App extends React.PureComponent<AppProps, IAppState> {
     constructor(props: AppProps) {
         super(props);
@@ -115,6 +100,17 @@ export class App extends React.PureComponent<AppProps, IAppState> {
         );
     }
 }
+
+const mapStateToProps = (state: IRootStore): IAppMapStateToProps => ({
+    model: state.detectionStore.model,
+    webcamAvailable: getWebcamAvailable(state),
+});
+
+const mapDispatchToProps = (
+    dispatch: ThunkDispatch<IRootStore, void, Action>,
+) => ({
+    loadModel: () => dispatch(loadModel()),
+});
 
 export default connect(
     mapStateToProps,

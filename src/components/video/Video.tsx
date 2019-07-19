@@ -19,17 +19,6 @@ interface IDispatchProps {
 
 export type VideoProps = IVideoProps & IVideo & IDispatchProps;
 
-const mapStateToProps = (state: IRootStore, props: IVideoProps) => {
-    return getStreamForDevice(state, props.deviceId);
-};
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-    return {
-        setVideo: (payload: ISetVideoPayload) =>
-            dispatch({ type: SET_VIDEO, payload }),
-    };
-};
-
 export function Video(props: VideoProps) {
     function getVideo(element: HTMLVideoElement | null) {
         if (element && props.stream) {
@@ -52,6 +41,14 @@ export function Video(props: VideoProps) {
         />
     );
 }
+
+const mapStateToProps = (state: IRootStore, props: IVideoProps) =>
+    getStreamForDevice(state, props.deviceId);
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    setVideo: (payload: ISetVideoPayload) =>
+        dispatch({ type: SET_VIDEO, payload }),
+});
 
 export default connect(
     mapStateToProps,

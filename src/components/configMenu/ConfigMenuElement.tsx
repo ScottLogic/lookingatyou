@@ -16,7 +16,7 @@ import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
 import DropDownMenuItem from './menuItems/DropDownMenuItem';
-import TextBoxMenuItem from './menuItems/TextBoxMenuItem';
+import NumberMenuItem from './menuItems/NumberMenuItem';
 
 export interface IConfigMenuElementProps {
     window: Window;
@@ -27,26 +27,9 @@ interface IConfigMenuElementMapStateToProps {
     videos: Array<HTMLVideoElement | undefined>;
 }
 
-const mapStateToProps = (
-    state: IRootStore,
-): IConfigMenuElementMapStateToProps => {
-    return {
-        config: getConfig(state),
-        videos: getVideos(state),
-    };
-};
-
 interface IConfigMenuElementMapDispatchToProps {
     setConfig: (payload: ISetConfigPayload) => void;
 }
-const mapDispatchToProps = (
-    dispatch: ThunkDispatch<IRootStore, void, Action>,
-) => {
-    return {
-        setConfig: (payload: ISetConfigPayload) =>
-            dispatch(updateConfigAction(payload)),
-    };
-};
 
 export type ConfigMenuElementProps = IConfigMenuElementProps &
     IConfigMenuElementMapStateToProps &
@@ -79,37 +62,36 @@ export const ConfigMenuElement = React.memo(
                     helpWith={HelpWith.MODEL}
                 />
 
-                <TextBoxMenuItem
+                <NumberMenuItem
                     name={'FPS'}
                     configName={'fps'}
                     step={1}
                     defaultValue={props.config.fps}
                     onValidInput={props.setConfig}
-                    configParse={parseInt}
                     helpWith={HelpWith.FPS}
+                    min={1}
                 />
 
                 <br />
 
-                <TextBoxMenuItem
+                <NumberMenuItem
                     name={'X Sensitivity'}
                     configName={'xSensitivity'}
                     step={0.1}
                     defaultValue={props.config.xSensitivity}
                     onValidInput={props.setConfig}
-                    configParse={parseFloat}
                     helpWith={HelpWith.X_SENSITIVITY}
+                    min={0}
                 />
-                <TextBoxMenuItem
+                <NumberMenuItem
                     name={'Y Sensitivity'}
                     configName={'ySensitivity'}
                     step={0.1}
                     defaultValue={props.config.ySensitivity}
                     onValidInput={props.setConfig}
-                    configParse={parseFloat}
                     helpWith={HelpWith.Y_SENSITIVITY}
+                    min={0}
                 />
-
                 <ColorMenuItem
                     name={'Iris Colour'}
                     configName={'irisColor'}
@@ -151,10 +133,6 @@ export const ConfigMenuElement = React.memo(
                           );
                       })
                     : null}
-                <br />
-                <p data-tip={true} data-for={HelpWith[HelpWith.APP]}>
-                    Help
-                </p>
 
                 {Object.values(HelpWith).map((type, key: number) => (
                     <Help key={key} problemWith={HelpWith[type] as HelpWith} />
@@ -164,6 +142,20 @@ export const ConfigMenuElement = React.memo(
     },
     (previous, next) => isEqual(previous, next),
 );
+
+const mapStateToProps = (
+    state: IRootStore,
+): IConfigMenuElementMapStateToProps => ({
+    config: getConfig(state),
+    videos: getVideos(state),
+});
+
+const mapDispatchToProps = (
+    dispatch: ThunkDispatch<IRootStore, void, Action>,
+) => ({
+    setConfig: (payload: ISetConfigPayload) =>
+        dispatch(updateConfigAction(payload)),
+});
 
 export default connect(
     mapStateToProps,

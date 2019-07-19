@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { ISetConfigPayload } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 
-export interface ITextBoxMenuItemProps {
+export interface INumberMenuItemProps {
     name: string;
     configName: string;
     step: number;
+    min: number;
     onValidInput: (payload: ISetConfigPayload) => void;
     defaultValue: number;
-    configParse: (text: string) => number;
     helpWith: HelpWith;
 }
-const TextBoxMenuItem = React.memo(
-    (props: ITextBoxMenuItemProps) => {
+const NumberMenuItem = React.memo(
+    (props: INumberMenuItemProps) => {
         const [isValid, setIsValid] = useState(true);
         const [value, setValue] = useState(props.defaultValue);
         const [lastValidValue, setLastValidValue] = useState(
@@ -28,9 +28,9 @@ const TextBoxMenuItem = React.memo(
         }
 
         function onChange(event: React.ChangeEvent<HTMLInputElement>) {
-            const newValue = props.configParse(event.target.value);
+            const newValue = Number(event.target.value);
             setValue(newValue);
-            const newIsValid = !isNaN(newValue);
+            const newIsValid = !isNaN(newValue) && newValue >= props.min;
             setIsValid(newIsValid);
             if (newIsValid) {
                 setLastValidValue(newValue);
@@ -47,7 +47,8 @@ const TextBoxMenuItem = React.memo(
                 <label>{props.name}</label>
                 <input
                     type="number"
-                    value={value || ''}
+                    value={value || 0}
+                    min={props.min}
                     style={{
                         color: isValid ? 'black' : 'red',
                     }}
@@ -62,4 +63,4 @@ const TextBoxMenuItem = React.memo(
         previous.name === next.name &&
         previous.defaultValue === next.defaultValue,
 );
-export default TextBoxMenuItem;
+export default NumberMenuItem;

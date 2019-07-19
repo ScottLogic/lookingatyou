@@ -5,12 +5,12 @@ import ConfigMenu, {
     IConfigMenuProps,
 } from '../../components/configMenu/ConfigMenu';
 import { HelpWith } from '../../components/configMenu/Help';
-import TextBoxMenuItem, {
-    ITextBoxMenuItemProps,
-} from '../../components/configMenu/menuItems/TextBoxMenuItem';
+import NumberMenuItem, {
+    INumberMenuItemProps,
+} from '../../components/configMenu/menuItems/NumberMenuItem';
 
 let props: IConfigMenuProps;
-let textBoxProps: ITextBoxMenuItemProps;
+let numberProps: INumberMenuItemProps;
 let children: React.ReactNode;
 let window: Window;
 let map: { [key: string]: any };
@@ -18,16 +18,16 @@ let map: { [key: string]: any };
 describe('ConfigMenu', () => {
     beforeEach(() => {
         map = {};
-        textBoxProps = {
-            name: 'textBox',
-            configName: 'textBox',
+        numberProps = {
+            name: 'number',
+            configName: 'number',
             defaultValue: 20,
             onValidInput: jest.fn(),
-            configParse: jest.fn(),
             helpWith: HelpWith.FPS,
+            min: 1,
             step: 1,
         };
-        children = <TextBoxMenuItem {...textBoxProps} />;
+        children = <NumberMenuItem {...numberProps} />;
 
         window = new jsdom.JSDOM().window;
         window.addEventListener = jest.fn((event, cb) => {
@@ -38,6 +38,7 @@ describe('ConfigMenu', () => {
             timerLength: 1,
             children,
             window,
+            debugEnabled: false,
         };
     });
 
