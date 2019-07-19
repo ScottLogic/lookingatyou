@@ -109,7 +109,7 @@ const mapDispatchToProps = (
     dispatch: ThunkDispatch<IRootStore, void, Action>,
     ownProps: IAppProps,
 ) => ({
-    loadModel: () => dispatch(loadModel(ownProps.window.document)),
+    loadModel: () => dispatch(loadModel(ownProps.environment.document)),
 });
 
 export default connect(

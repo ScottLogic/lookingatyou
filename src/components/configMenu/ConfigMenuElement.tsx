@@ -8,7 +8,7 @@ import { ISetConfigPayload } from '../../store/actions/config/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
-import ConfigMenu, { IConfigMenuProps } from './ConfigMenu';
+import ConfigMenu from './ConfigMenu';
 import Help, { HelpWith } from './Help';
 import IUserConfig from './IUserConfig';
 import CanvasMenuItem from './menuItems/CanvasMenuItem';
@@ -143,7 +143,7 @@ const mapStateToProps = (
 
 const mapDispatchToProps = (
     dispatch: ThunkDispatch<IRootStore, void, Action>,
-    ownProps: IConfigMenuProps,
+    ownProps: IConfigMenuElementProps,
 ) => ({
     setConfig: (payload: ISetConfigPayload) =>
         dispatch(updateConfigAction(payload, ownProps.window.document)),
