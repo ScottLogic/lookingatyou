@@ -1,9 +1,5 @@
 import { Pose } from '@tensorflow-models/posenet';
-import { Bbox, DetectionImage } from '../utils/types';
-
-export interface IObjectDetector {
-    detect(image: DetectionImage): Promise<IDetection[]>;
-}
+import { Bbox } from '../utils/types';
 
 export type DetectedObject = Pose;
 

@@ -1,12 +1,9 @@
+import * as posenet from '@tensorflow-models/posenet';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import {
-    IDetection,
-    IDetections,
-    IObjectDetector,
-} from '../../../models/objectDetection';
-import Posenet from '../../../utils/objectDetection/posenet';
+import { IDetection, IDetections } from '../../../models/objectDetection';
 import { ICoords, ITargets } from '../../../utils/types';
+import { reshapeDetections } from '../../../utils/utils';
 import { IRootStore } from '../../reducers/rootReducer';
 import { getTargets } from '../../selectors/detectionSelectors';
 import { getVideos } from '../../selectors/videoSelectors';
@@ -21,7 +18,7 @@ import {
     SET_OPEN,
 } from './types';
 
-export function setModel(model: IObjectDetector | null): ISetModelAction {
+export function setModel(model: posenet.PoseNet | null): ISetModelAction {
     return {
         type: SET_MODEL,
         payload: model,
@@ -31,7 +28,7 @@ export function setModel(model: IObjectDetector | null): ISetModelAction {
 export function loadModel() {
     return async (dispatch: ThunkDispatch<IRootStore, void, Action>) => {
         dispatch(setModel(null));
-        const model = await Posenet.init();
+        const model = await posenet.load();
         dispatch(setModel(model));
         dispatch(restartDetection());
     };
@@ -64,13 +61,17 @@ export function handleDetection() {
         let left: IDetection[] = [];
         const leftImage = images[0];
         if (leftImage && model) {
-            left = await model.detect(leftImage);
+            const leftDetections = await model.estimateMultiplePoses(leftImage);
+            left = reshapeDetections(leftDetections);
         }
 
         let right: IDetection[] = [];
         const rightImage = images[1];
-        if (rightImage && model) {
-            right = await model.detect(rightImage);
+        if (rightImage && model && left.length > 0) {
+            const rightDetections = await model.estimateMultiplePoses(
+                rightImage,
+            );
+            right = reshapeDetections(rightDetections);
         }
 
         dispatch(setDetections({ left, right }, getTargets(state)));

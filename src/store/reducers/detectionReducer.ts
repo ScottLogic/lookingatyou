@@ -1,9 +1,5 @@
+import { PoseNet } from '@tensorflow-models/posenet';
 import { eyelidPosition, maxNumTargetsToConsider } from '../../AppConstants';
-import { IObjectDetector } from '../../models/objectDetection';
-import {
-    calculateColourMatch,
-    IColour,
-} from '../../utils/objectSelection/select';
 import { ICoords } from '../../utils/types';
 import {
     DetectionActionType,
@@ -15,7 +11,6 @@ import {
     SET_MODEL,
     SET_OPEN,
 } from '../actions/detections/types';
-import { getPreviousTarget } from '../selectors/detectionSelectors';
 
 export const initialState: IDetectionState = {
     model: null,
@@ -48,7 +43,7 @@ function setModel(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    return { ...state, model: action.payload as IObjectDetector };
+    return { ...state, model: action.payload as PoseNet };
 }
 
 function setDetectionInterval(

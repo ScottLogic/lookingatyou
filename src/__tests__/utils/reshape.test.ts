@@ -1,6 +1,6 @@
-import { getBoundingBox, Pose } from '@tensorflow-models/posenet';
+import { Pose } from '@tensorflow-models/posenet';
 import { IDetection } from '../../models/objectDetection';
-import Posenet from '../../utils/objectDetection/posenet';
+import { reshapeDetections } from '../../utils/utils';
 
 const testPose: Pose = {
     score: 50,
@@ -155,6 +155,6 @@ const testOutput: IDetection[] = [
 
 describe('Posenet', () => {
     it('shapeDetect should return object of shape Detection', () => {
-        expect(Posenet.reshapeDetections(testInput)).toStrictEqual(testOutput);
+        expect(reshapeDetections(testInput)).toStrictEqual(testOutput);
     });
 });
