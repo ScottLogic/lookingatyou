@@ -6,7 +6,6 @@ import {
     ConfigMenuElementProps,
 } from '../../components/configMenu/ConfigMenuElement';
 import IUserConfig from '../../components/configMenu/IUserConfig';
-import { DetectionModelType } from '../../models/objectDetection';
 
 let props: ConfigMenuElementProps;
 let config: IUserConfig;
@@ -15,7 +14,6 @@ let window: Window;
 describe('ConfigMenuElement tests', () => {
     beforeEach(() => {
         config = {
-            model: DetectionModelType.Posenet,
             xSensitivity: 1,
             ySensitivity: 1,
             fps: 30,

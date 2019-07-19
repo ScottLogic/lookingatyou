@@ -6,17 +6,8 @@ describe('selectLargest', () => {
         detections: IDetection[],
     ) => Bbox | undefined = detections => select(detections, largerThan);
 
-    it('return undefined for no  detections', () => {
-        const detections: IDetection[] = [];
-        expect(selectLargest(detections)).toBe(undefined);
-    });
     it('return undefined for no detections', () => {
-        const detections: IDetection[] = [
-            {
-                bbox: [10, 20, 30, 400],
-                info: { score: 0, keypoints: [] },
-            },
-        ];
+        const detections: IDetection[] = [];
         expect(selectLargest(detections)).toBe(undefined);
     });
     it('return largest bounding box', () => {
@@ -59,6 +50,6 @@ describe('selectLargest', () => {
                 info: pose,
             },
         ];
-        expect(selectLargest(detections)).toStrictEqual([10, 0, 1000, 1000]);
+        expect(selectLargest(detections)).toStrictEqual([0, 20, 3000, 3000]);
     });
 });

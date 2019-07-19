@@ -1,4 +1,5 @@
-import { IDetections, IObjectDetector } from '../../../models/objectDetection';
+import { PoseNet } from '@tensorflow-models/posenet';
+import { IDetections } from '../../../models/objectDetection';
 import { ICoords, ITargets } from '../../../utils/types';
 
 export const SET_MODEL = 'SET_MODEL';
@@ -8,7 +9,7 @@ export const SET_DETECTIONS = 'SET_DETECTIONS';
 export const SET_OPEN = 'SET_OPEN';
 
 export interface IDetectionState {
-    model: IObjectDetector | null;
+    model: PoseNet | null;
     detectionInterval: number;
     eyesOpenCoefficient: number;
     detections: IDetections;
@@ -18,7 +19,7 @@ export interface IDetectionState {
 
 export interface ISetModelAction {
     type: 'SET_MODEL';
-    payload: IObjectDetector | null;
+    payload: PoseNet | null;
 }
 
 export interface ISetIntervalAction {
