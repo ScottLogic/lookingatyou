@@ -32,7 +32,7 @@ export default function select(
 export function calculateColourMatch(
     imageData: ImageData,
     coords: ICoords,
-): { r: number; g: number; b: number } {
+): IColour {
     if (imageData) {
         const xStart =
             Math.round((coords.x + imageData.width / 2) / imageData.width) - 3;
@@ -53,15 +53,15 @@ function getAvgColour(
     let g = 0;
     let b = 0;
     if (imageData) {
-        for (let i = xStart; i < xStart + 6 * 4; i += 4) {
-            for (
-                let j = yStart;
-                j < yStart + 6 * 4 * imageData.width;
-                j += imageData.width * 4
-            ) {
-                r = imageData.data[i + j];
-                g = imageData.data[i + j + 1];
-                b = imageData.data[i + j + 2];
+        for (
+            let i = yStart;
+            i < yStart + 6 * 4 * imageData.width;
+            i += imageData.width * 4
+        ) {
+            for (let j = xStart; j < xStart + 6 * 4; j += 4) {
+                r = imageData.data[j + i];
+                g = imageData.data[j + i + 1];
+                b = imageData.data[j + i + 2];
             }
         }
         r = r / 36;

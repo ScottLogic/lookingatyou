@@ -1,10 +1,15 @@
 import { createSelector } from 'reselect';
 import { EyeSide } from '../../AppConstants';
-import { IDetections } from '../../models/objectDetection';
+import {
+    DetectionModelType,
+    IDetections,
+    IPosenetDetection,
+} from '../../models/objectDetection';
 import select, {
     calculateColourMatch,
     closerToPrediction,
     closerVerticallyTo,
+    IColour,
     leftOf,
     setPrediction,
 } from '../../utils/objectSelection/select';
@@ -25,15 +30,13 @@ export const getSelections = createSelector(
         const height = videos[0] ? videos[0]!.height : 1;
         const imageData = imageDataMap[EyeSide.LEFT];
 
-        const avgColour = calculateColourMatch(
-            imageData,
-            previousTargets[previousTargets.length - 1].left,
-        );
         const prediction = setPrediction(leftCam, previousTargets);
+
+        const colour = calculateColourMatch(imageData, { x: 0, y: 0 });
 
         const left = select(
             detections.left,
-            closerToPrediction(prediction, width, height, imageData, avgColour),
+            closerToPrediction(prediction, width, height, imageData, colour),
         );
         const right =
             left === undefined
@@ -98,4 +101,8 @@ export function getIdleTargets(state: IRootStore): ITargets {
 
 export function getOpenCoefficient(state: IRootStore): number {
     return state.detectionStore.eyesOpenCoefficient;
+}
+
+export function getColour(state: IRootStore): IColour {
+    return state.detectionStore.colour;
 }

@@ -1,4 +1,5 @@
 import { IDetections, IObjectDetector } from '../../../models/objectDetection';
+import { IColour } from '../../../utils/objectSelection/select';
 import { ICoords, ITargets } from '../../../utils/types';
 
 export const SET_MODEL = 'SET_MODEL';
@@ -14,6 +15,7 @@ export interface IDetectionState {
     detections: IDetections;
     history: ITargets[];
     idleTarget: ITargets;
+    colour: IColour;
 }
 
 export interface ISetModelAction {
@@ -35,6 +37,7 @@ export interface ISetDetectionsActionPayload {
     detections: IDetections;
     previousTarget: ITargets;
 }
+
 export interface ISetDetectionsAction {
     type: 'SET_DETECTIONS';
     payload: ISetDetectionsActionPayload;
