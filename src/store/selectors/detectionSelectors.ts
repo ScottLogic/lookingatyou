@@ -1,9 +1,10 @@
 import { createSelector } from 'reselect';
 import { IDetections } from '../../models/objectDetection';
 import select, {
-    closerTo,
+    closerToPrediction,
     closerVerticallyTo,
     leftOf,
+    setPrediction,
 } from '../../utils/objectSelection/select';
 import { calculateNormalisedPos } from '../../utils/objectTracking/calculateFocus';
 import { ITargets } from '../../utils/types';
@@ -15,9 +16,16 @@ export function getDetections(state: IRootStore): IDetections {
 }
 
 export const getSelections = createSelector(
-    [getDetections, getPreviousTargets],
-    (detections, previousTarget) => {
-        const left = select(detections.left, closerTo(previousTarget.left));
+    [getDetections, getPreviousTargets, getVideos],
+    (detections, previousTargets, videos) => {
+        const leftCam = true;
+        const prediction = setPrediction(leftCam, previousTargets);
+        const width = videos[0] ? videos[0]!.width : 1;
+        const height = videos[0] ? videos[0]!.height : 1;
+        const left = select(
+            detections.left,
+            closerToPrediction(prediction, width, height),
+        );
         const right =
             left === undefined
                 ? undefined
@@ -65,8 +73,14 @@ export const getTargets = createSelector(
     },
 );
 
-export function getPreviousTargets(state: IRootStore): ITargets {
-    return state.detectionStore.previousTarget;
+export function getPreviousTarget(state: IRootStore): ITargets {
+    return state.detectionStore.history[
+        state.detectionStore.history.length - 1
+    ];
+}
+
+export function getPreviousTargets(state: IRootStore): ITargets[] {
+    return state.detectionStore.history;
 }
 
 export function getIdleTargets(state: IRootStore): ITargets {

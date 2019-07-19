@@ -1,9 +1,10 @@
-import { eyelidPosition } from '../../AppConstants';
-import { IDetections, IObjectDetector } from '../../models/objectDetection';
+import { eyelidPosition, maxNumTargetsToConsider } from '../../AppConstants';
+import { IObjectDetector } from '../../models/objectDetection';
 import { ICoords } from '../../utils/types';
 import {
     DetectionActionType,
     IDetectionState,
+    ISetDetectionsActionPayload,
     SET_DETECTIONS,
     SET_IDLE_TARGET,
     SET_INTERVAL,
@@ -14,10 +15,10 @@ import {
 export const initialState: IDetectionState = {
     model: null,
     idleTarget: { left: { x: 0, y: 0 }, right: { x: 0, y: 0 } },
-    previousTarget: { left: { x: 0, y: 0 }, right: { x: 0, y: 0 } },
     detections: { left: [], right: [] },
     eyesOpenCoefficient: eyelidPosition.OPEN,
     detectionInterval: 0,
+    history: [{ left: { x: 0, y: 0 }, right: { x: 0, y: 0 } }],
 };
 
 const detectionActionMapping = {
@@ -68,7 +69,17 @@ function setDetections(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    return { ...state, detections: action.payload as IDetections };
+    const payload = action.payload as ISetDetectionsActionPayload;
+    const newHistory = [...state.history];
+    if (state.history.length >= maxNumTargetsToConsider) {
+        newHistory.shift();
+    }
+    newHistory.push(payload.previousTarget);
+    return {
+        ...state,
+        detections: payload.detections,
+        history: newHistory,
+    };
 }
 
 function setOpen(

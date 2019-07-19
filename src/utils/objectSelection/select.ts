@@ -1,6 +1,8 @@
 import { Detection } from '../../models/objectDetection';
-import calculateTargetPos from '../objectTracking/calculateFocus';
-import { Bbox, ICoords } from '../types';
+import calculateTargetPos, {
+    calculateNormalisedPos,
+} from '../objectTracking/calculateFocus';
+import { Bbox, ICoords, ITargets } from '../types';
 import { isPerson } from './detectionSelector';
 
 export default function select(
@@ -13,11 +15,28 @@ export default function select(
             detection => isPerson(detection) && (!filter || filter(detection)),
         )
         .map(detection => detection.bbox);
+
     return personBboxes.reduce<Bbox | undefined>(
         (best, current) =>
             best === undefined || compare(current, best) > 0 ? current : best,
         undefined,
     );
+}
+
+export function setPrediction(leftCam: boolean, history: ITargets[]): ICoords {
+    let coordsX: number[] = [];
+    let coordsY: number[] = [];
+    if (leftCam) {
+        coordsX = history.map(target => target.left.x);
+        coordsY = history.map(target => target.left.y);
+    } else {
+        coordsX = history.map(target => (target.right ? target.right.x : 0));
+        coordsY = history.map(target => (target.right ? target.right.y : 0));
+    }
+    const xPrediction = getWeightedPrediction(coordsX);
+    const yPrediction = getWeightedPrediction(coordsY);
+
+    return { x: xPrediction, y: yPrediction };
 }
 
 export function leftOf(x: number) {
@@ -36,15 +55,40 @@ export function largerThan(bbox1: Bbox, bbox2: Bbox): number {
     return bbox1[2] * bbox1[3] - bbox2[2] * bbox2[3];
 }
 
-export function closerTo(
-    coords: ICoords,
+export function closerToPrediction(
+    prediction: ICoords,
+    videoWidth: number,
+    videoHeight: number,
 ): (bbox1: Bbox, bbox2: Bbox) => number {
     return function closerToCoords(bbox1: Bbox, bbox2: Bbox) {
-        return (
-            Math.hypot(bbox2[0] - coords.x, bbox2[1] - coords.y) -
-            Math.hypot(bbox1[0] - coords.x, bbox1[1] - coords.y)
-        );
+        const coords1 = calculateNormalisedPos(bbox1, videoWidth, videoHeight);
+        const coords2 = calculateNormalisedPos(bbox2, videoWidth, videoHeight);
+        const closerToPredictedTarget =
+            Math.hypot(coords2.x - prediction.x, coords2.y - prediction.y) -
+            Math.hypot(coords1.x - prediction.x, coords1.y - prediction.y);
+
+        return closerToPredictedTarget;
     };
+}
+
+function getWeightedPrediction(nums: number[]): number {
+    const weightedNums = [];
+    let decayTotal = 0;
+    const diffNums = [];
+
+    for (let i = 0; i < nums.length - 1; i++) {
+        diffNums.push(nums[i + 1] - nums[i]);
+    }
+
+    for (let i = diffNums.length - 1; i >= 0; i--) {
+        const decay = Math.pow(0.5, diffNums.length - i);
+        weightedNums.push(diffNums[i] * decay);
+        decayTotal += decay;
+    }
+
+    const weightedTotal = weightedNums.reduce((a, b) => a + b, 0) / decayTotal;
+
+    return weightedTotal + nums[nums.length - 1];
 }
 
 export function closerVerticallyTo(

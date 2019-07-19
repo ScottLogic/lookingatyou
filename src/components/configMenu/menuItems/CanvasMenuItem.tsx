@@ -1,5 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import {
+    chosenTargetColour,
+    nonChosenTargetColour,
+} from '../../../AppConstants';
 import { IDetections, ISelections } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import {
@@ -79,15 +83,24 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
 
         this.drawVideoFrame(video);
 
+        let [x, y, width, height] = [0, 0, 0, 0];
+
         if (this.props.selections && detections) {
             detections.forEach(({ bbox }) => {
-                const [x, y, width, height] = bbox;
-                const colour = bbox === focusedBbox ? 'green' : 'red';
+                [x, y, width, height] = bbox;
                 if (this.canvasRef.current) {
-                    this.drawRectangle(colour, { x, y, width, height });
+                    this.drawRectangle(nonChosenTargetColour, {
+                        x,
+                        y,
+                        width,
+                        height,
+                    });
                 }
             });
         }
+
+        [x, y, width, height] = focusedBbox;
+        this.drawRectangle(chosenTargetColour, { x, y, width, height });
     }
 
     render() {

@@ -30,3 +30,6 @@ export const transitionTime = {
 export const neutralBlinkFrequency = 0.25;
 export const irisSkewFactor = 0.8;
 export const maxMoveWithoutBlink = 0.8;
+export const chosenTargetColour = 'green';
+export const nonChosenTargetColour = 'red';
+export const maxNumTargetsToConsider = 5;

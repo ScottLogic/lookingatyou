@@ -8,8 +8,9 @@ import {
 } from '../../../models/objectDetection';
 import CocoSSD from '../../../utils/objectDetection/cocoSSD';
 import Posenet from '../../../utils/objectDetection/posenet';
-import { ICoords } from '../../../utils/types';
+import { ICoords, ITargets } from '../../../utils/types';
 import { IRootStore } from '../../reducers/rootReducer';
+import { getTargets } from '../../selectors/detectionSelectors';
 import { getVideos } from '../../selectors/videoSelectors';
 import {
     ISetDetectionsAction,
@@ -88,7 +89,7 @@ export function handleDetection() {
             right = await model.detect(rightImage);
         }
 
-        dispatch(setDetections({ left, right }));
+        dispatch(setDetections({ left, right }, getTargets(state)));
     };
 }
 
@@ -99,10 +100,13 @@ export function setIdleTarget(coords: ICoords): ISetIdleTargetAction {
     };
 }
 
-export function setDetections(detections: IDetections): ISetDetectionsAction {
+export function setDetections(
+    detections: IDetections,
+    previousTarget: ITargets,
+): ISetDetectionsAction {
     return {
         type: SET_DETECTIONS,
-        payload: detections,
+        payload: { detections, previousTarget },
     };
 }
 
