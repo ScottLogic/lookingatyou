@@ -10,7 +10,6 @@ import { IObjectDetector } from './models/objectDetection';
 import { loadModel } from './store/actions/detections/actions';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getWebcamAvailable } from './store/selectors/videoSelectors';
-import Posenet from './utils/objectDetection/posenet';
 
 interface IAppState {
     width: number;
@@ -28,7 +27,7 @@ interface IAppMapStateToProps {
 }
 
 interface IAppMapDispatchToProps {
-    loadModel: (init: () => Promise<IObjectDetector>) => void;
+    loadModel: () => void;
 }
 
 type AppProps = IAppProps & IAppMapStateToProps & IAppMapDispatchToProps;
@@ -69,7 +68,7 @@ export class App extends React.PureComponent<AppProps, IAppState> {
 
     componentDidUpdate() {
         if (this.props.webcamAvailable && !this.props.model) {
-            this.props.loadModel(Posenet.init);
+            this.props.loadModel();
         }
     }
 
