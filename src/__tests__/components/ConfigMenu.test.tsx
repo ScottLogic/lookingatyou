@@ -10,7 +10,7 @@ import NumberMenuItem, {
 } from '../../components/configMenu/menuItems/NumberMenuItem';
 
 let props: IConfigMenuProps;
-let textBoxProps: INumberMenuItemProps;
+let numberProps: INumberMenuItemProps;
 let children: React.ReactNode;
 let window: Window;
 let map: { [key: string]: any };
@@ -18,16 +18,16 @@ let map: { [key: string]: any };
 describe('ConfigMenu', () => {
     beforeEach(() => {
         map = {};
-        textBoxProps = {
-            name: 'textBox',
-            configName: 'textBox',
+        numberProps = {
+            name: 'number',
+            configName: 'number',
             defaultValue: 20,
             onValidInput: jest.fn(),
             helpWith: HelpWith.FPS,
             min: 1,
             step: 1,
         };
-        children = <NumberMenuItem {...textBoxProps} />;
+        children = <NumberMenuItem {...numberProps} />;
 
         window = new jsdom.JSDOM().window;
         window.addEventListener = jest.fn((event, cb) => {
@@ -38,6 +38,7 @@ describe('ConfigMenu', () => {
             timerLength: 1,
             children,
             window,
+            debugEnabled: false,
         };
     });
 
