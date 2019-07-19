@@ -1,10 +1,6 @@
 import { createSelector } from 'reselect';
 import { EyeSide } from '../../AppConstants';
-import {
-    DetectionModelType,
-    IDetections,
-    IPosenetDetection,
-} from '../../models/objectDetection';
+import { IDetections } from '../../models/objectDetection';
 import select, {
     calculateColourMatch,
     closerToPrediction,

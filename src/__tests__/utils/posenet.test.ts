@@ -1,5 +1,5 @@
 import { getBoundingBox, Pose } from '@tensorflow-models/posenet';
-import { Detection, DetectionModelType } from '../../models/objectDetection';
+import { IDetection } from '../../models/objectDetection';
 import Posenet from '../../utils/objectDetection/posenet';
 
 const testPose: Pose = {
@@ -146,9 +146,8 @@ const testPose: Pose = {
 
 const testInput = [testPose];
 
-const testOutput: Detection[] = [
+const testOutput: IDetection[] = [
     {
-        model: DetectionModelType.Posenet,
         bbox: [245, 75, 10, 0],
         info: testPose,
     },

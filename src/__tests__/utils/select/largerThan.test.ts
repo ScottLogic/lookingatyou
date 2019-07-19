@@ -17,7 +17,7 @@ describe('selectLargest', () => {
                 info: { score: 0, keypoints: [] },
             },
         ];
-        expect(selectLargest(detections)).toBe(undefined);
+        expect(selectLargest(detections)).toStrictEqual([10, 20, 30, 400]);
     });
     it('return largest bounding box', () => {
         const pose = { score: 0, keypoints: [] };
@@ -59,6 +59,6 @@ describe('selectLargest', () => {
                 info: pose,
             },
         ];
-        expect(selectLargest(detections)).toStrictEqual([10, 0, 1000, 1000]);
+        expect(selectLargest(detections)).toStrictEqual([0, 20, 3000, 3000]);
     });
 });

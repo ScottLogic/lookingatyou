@@ -1,8 +1,5 @@
 import { eyelidPosition, maxNumTargetsToConsider } from '../../AppConstants';
-import {
-    IObjectDetector,
-    IPosenetDetection,
-} from '../../models/objectDetection';
+import { IObjectDetector } from '../../models/objectDetection';
 import {
     calculateColourMatch,
     IColour,
@@ -12,7 +9,6 @@ import {
     DetectionActionType,
     IDetectionState,
     ISetDetectionsActionPayload,
-    SET_COLOUR,
     SET_DETECTIONS,
     SET_IDLE_TARGET,
     SET_INTERVAL,
@@ -28,6 +24,7 @@ export const initialState: IDetectionState = {
     eyesOpenCoefficient: eyelidPosition.OPEN,
     detectionInterval: 0,
     history: [{ left: { x: 0, y: 0 }, right: { x: 0, y: 0 } }],
+    colour: { r: 0, g: 0, b: 0 },
 };
 
 const detectionActionMapping = {
