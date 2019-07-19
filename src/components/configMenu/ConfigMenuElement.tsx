@@ -16,7 +16,7 @@ import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
 import DropDownMenuItem from './menuItems/DropDownMenuItem';
-import TextBoxMenuItem from './menuItems/TextBoxMenuItem';
+import NumberMenuItem from './menuItems/NumberMenuItem';
 
 export interface IConfigMenuElementProps {
     window: Window;
@@ -62,37 +62,36 @@ export const ConfigMenuElement = React.memo(
                     helpWith={HelpWith.MODEL}
                 />
 
-                <TextBoxMenuItem
+                <NumberMenuItem
                     name={'FPS'}
                     configName={'fps'}
                     step={1}
                     defaultValue={props.config.fps}
                     onValidInput={props.setConfig}
-                    configParse={parseInt}
                     helpWith={HelpWith.FPS}
+                    min={1}
                 />
 
                 <br />
 
-                <TextBoxMenuItem
+                <NumberMenuItem
                     name={'X Sensitivity'}
                     configName={'xSensitivity'}
                     step={0.1}
                     defaultValue={props.config.xSensitivity}
                     onValidInput={props.setConfig}
-                    configParse={parseFloat}
                     helpWith={HelpWith.X_SENSITIVITY}
+                    min={0}
                 />
-                <TextBoxMenuItem
+                <NumberMenuItem
                     name={'Y Sensitivity'}
                     configName={'ySensitivity'}
                     step={0.1}
                     defaultValue={props.config.ySensitivity}
                     onValidInput={props.setConfig}
-                    configParse={parseFloat}
                     helpWith={HelpWith.Y_SENSITIVITY}
+                    min={0}
                 />
-
                 <ColorMenuItem
                     name={'Iris Colour'}
                     configName={'irisColor'}

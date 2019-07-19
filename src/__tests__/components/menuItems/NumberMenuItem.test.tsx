@@ -1,14 +1,14 @@
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 import Help, { HelpWith } from '../../../components/configMenu/Help';
-import TextBoxMenuItem, {
-    ITextBoxMenuItemProps,
-} from '../../../components/configMenu/menuItems/TextBoxMenuItem';
+import NumberMenuItem, {
+    INumberMenuItemProps,
+} from '../../../components/configMenu/menuItems/NumberMenuItem';
 
-let props: ITextBoxMenuItemProps;
+let props: INumberMenuItemProps;
 let mockParse: jest.Mock;
 
-describe('TextBoxMenuItem tests', () => {
+describe('NumberMenuItem tests', () => {
     beforeEach(() => {
         mockParse = jest.fn();
         props = {
@@ -17,19 +17,19 @@ describe('TextBoxMenuItem tests', () => {
             onValidInput: jest.fn(),
             configName: 'test',
             step: 1,
-            configParse: parseInt,
+            min: 1,
             helpWith: HelpWith.FPS,
         };
     });
 
     it('should render correctly', () => {
-        const wrapper = shallow(<TextBoxMenuItem {...props} />).debug();
+        const wrapper = shallow(<NumberMenuItem {...props} />).debug();
         expect(wrapper).toMatchSnapshot();
     });
 
     it('should call onValidInput when input is valid', () => {
         const value = '5';
-        const wrapper = mount(<TextBoxMenuItem {...props} />);
+        const wrapper = mount(<NumberMenuItem {...props} />);
         wrapper.find('input').simulate('change', { target: { value } });
         expect(wrapper.get(0).props.onValidInput).toHaveBeenCalled();
     });
@@ -37,7 +37,7 @@ describe('TextBoxMenuItem tests', () => {
     it('onBlur should reset input to last valid value when invalid value has been entered', () => {
         const value = 'test';
         mockParse.mockReturnValue(props.defaultValue);
-        const wrapper = mount(<TextBoxMenuItem {...props} />);
+        const wrapper = mount(<NumberMenuItem {...props} />);
         wrapper.find('input').simulate('focus');
         wrapper.find('input').simulate('change', { target: { value } });
         wrapper.find('input').simulate('blur');
