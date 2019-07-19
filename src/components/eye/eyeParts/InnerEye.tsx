@@ -31,6 +31,7 @@ export const InnerEye = React.memo(
             props.width,
             props.scleraRadius,
             props.irisRadius,
+            irisAdjustmentRef.current.angle,
         );
 
         useEffect(() => {
