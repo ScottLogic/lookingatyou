@@ -92,13 +92,6 @@ export const ConfigMenuElement = React.memo(
                     helpWith={HelpWith.Y_SENSITIVITY}
                     min={0}
                 />
-                <ColorMenuItem
-                    name={'Iris Colour'}
-                    configName={'irisColor'}
-                    color={props.config.irisColor}
-                    onInputChange={props.setConfig}
-                    helpWith={HelpWith.IRIS_COLOUR}
-                />
 
                 <br />
 
