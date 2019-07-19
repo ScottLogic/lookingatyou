@@ -6,12 +6,19 @@ export enum HelpWith {
     X_SENSITIVITY = 'X_SENSITIVITY',
     Y_SENSITIVITY = 'Y_SENSITIVITY',
     VIDEO_STREAM = 'VIDEO_STREAM',
-    SWAP_EYES = 'SWAP_EYES',
     IRIS_COLOUR = 'IRIS_COLOUR',
     APP = 'APP',
     DEBUG = 'DEBUG',
     REFLECTION = 'REFLECTION',
     REFLECTION_OPACITY = 'REFLECTION_OPACITY',
+    ARCHITECTURE = 'ARCHITECTURE',
+    OUTPUT_STRIDE = 'OUTPUT_STRIDE',
+    RESOLUTION = 'RESOLUTION',
+    MULTIPLIER = 'MULTIPLIER',
+    DETECTIONS = 'DETECTIONS',
+    FLIP = 'FLIP',
+    MIN_SCORE = 'MIN_SCORE',
+    NMS_RADIUS = 'NMS_RADIUS',
 }
 
 const fps = () => {
@@ -36,15 +43,6 @@ const video = () => {
         <Fragment>
             Displays current webcam feed, outlines the person that is currently
             being tracked.
-        </Fragment>
-    );
-};
-
-const swap = () => {
-    return (
-        <Fragment>
-            Swap the eyes when using two cameras, to correctly set left camera
-            to left eye and right camera to right eye.
         </Fragment>
     );
 };
@@ -92,6 +90,82 @@ const reflection = () => {
     );
 };
 
+const architecture = () => {
+    return (
+        <Fragment>
+            The model determines the speed and accuracy of the detection.
+            <br />
+            MobilNetV1 is faster whereas Resnet50 is more accurate.
+        </Fragment>
+    );
+};
+
+const outputStride = () => {
+    return (
+        <Fragment>
+            Output Stride determines the output resolution of the model
+            detection.
+            <br />A higher output stride results in faster detection.
+        </Fragment>
+    );
+};
+
+const resolution = () => {
+    return (
+        <Fragment>
+            The resolution determines the input resolution to the detection
+            model.
+            <br />
+            Lower resolutions run faster.
+        </Fragment>
+    );
+};
+
+const multiplier = () => {
+    return (
+        <Fragment>
+            The multiplier determines the depth of the CNN.
+            <br />A lower value results in faster detections.
+        </Fragment>
+    );
+};
+
+const detections = () => {
+    return (
+        <Fragment>This value sets the maximum number of detections</Fragment>
+    );
+};
+
+const flip = () => {
+    return (
+        <Fragment>
+            When checked this value horizontally flips the location of the
+            detected target.
+            <br />
+            This is useful for mirroring poses.
+        </Fragment>
+    );
+};
+
+const minScore = () => {
+    return (
+        <Fragment>
+            Sets the minimum certainty to commit to a prediction.
+        </Fragment>
+    );
+};
+
+const nmsRadius = () => {
+    return (
+        <Fragment>
+            This value adjusts the non-maximum-supression radius in pixels. This
+            prevents multiple
+            <br />
+            detections being made in within the specified number of pixels.
+        </Fragment>
+    );
+};
+
 interface IHelpSectionMap {
     [id: string]: () => JSX.Element;
 }
@@ -101,12 +175,19 @@ const helpSections: IHelpSectionMap = {
     X_SENSITIVITY: xSense,
     Y_SENSITIVITY: ySense,
     VIDEO_STREAM: video,
-    SWAP_EYES: swap,
     IRIS_COLOUR: iris,
     APP: app,
     DEBUG: debug,
     REFLECTION: reflection,
     REFLECTION_OPACITY: reflectionOpacity,
+    ARCHITECTURE: architecture,
+    OUTPUT_STRIDE: outputStride,
+    RESOLUTION: resolution,
+    MULTIPLIER: multiplier,
+    DETECTIONS: detections,
+    FLIP: flip,
+    MIN_SCORE: minScore,
+    NMS_RADIUS: nmsRadius,
 };
 
 function text(section: HelpWith) {

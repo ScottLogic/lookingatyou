@@ -41,7 +41,7 @@ const detectionStore = (
     state: IDetectionState = initialState,
     action: DetectionActionType,
 ): IDetectionState => {
-    return action.type in detectionActionMapping
+    return detectionActionMapping.hasOwnProperty(action.type)
         ? detectionActionMapping[action.type](state, action)
         : state;
 };
