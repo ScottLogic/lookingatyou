@@ -76,7 +76,7 @@ function getWeightedPrediction(nums: number[]): number {
     let decayTotal = 0;
     const diffNums = [];
 
-    for (let i = 0; i < nums.length - 2; i++) {
+    for (let i = 0; i < nums.length - 1; i++) {
         diffNums.push(nums[i + 1] - nums[i]);
     }
 
