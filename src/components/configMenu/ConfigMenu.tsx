@@ -47,6 +47,7 @@ export default class ConfigMenu extends React.Component<
     onMouseLeave() {
         this.setState({ isUnderMouse: false });
     }
+
     shouldComponentUpdate(
         nextProps: IConfigMenuProps,
         nextState: IConfigMenuState,
@@ -57,6 +58,7 @@ export default class ConfigMenu extends React.Component<
             nextProps.width !== this.props.width
         );
     }
+
     render() {
         return (
             <div

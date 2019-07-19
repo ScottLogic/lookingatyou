@@ -27,26 +27,9 @@ interface IConfigMenuElementMapStateToProps {
     videos: Array<HTMLVideoElement | undefined>;
 }
 
-const mapStateToProps = (
-    state: IRootStore,
-): IConfigMenuElementMapStateToProps => {
-    return {
-        config: getConfig(state),
-        videos: getVideos(state),
-    };
-};
-
 interface IConfigMenuElementMapDispatchToProps {
     setConfig: (payload: ISetConfigPayload) => void;
 }
-const mapDispatchToProps = (
-    dispatch: ThunkDispatch<IRootStore, void, Action>,
-) => {
-    return {
-        setConfig: (payload: ISetConfigPayload) =>
-            dispatch(updateConfigAction(payload)),
-    };
-};
 
 export type ConfigMenuElementProps = IConfigMenuElementProps &
     IConfigMenuElementMapStateToProps &
@@ -160,6 +143,20 @@ export const ConfigMenuElement = React.memo(
     },
     (previous, next) => isEqual(previous, next),
 );
+
+const mapStateToProps = (
+    state: IRootStore,
+): IConfigMenuElementMapStateToProps => ({
+    config: getConfig(state),
+    videos: getVideos(state),
+});
+
+const mapDispatchToProps = (
+    dispatch: ThunkDispatch<IRootStore, void, Action>,
+) => ({
+    setConfig: (payload: ISetConfigPayload) =>
+        dispatch(updateConfigAction(payload)),
+});
 
 export default connect(
     mapStateToProps,
