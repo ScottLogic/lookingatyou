@@ -14,10 +14,6 @@ exports[`ConfigMenuElement tests should render correctly 1`] = `
   <br />
   <Memo() name=\\"Swap Eyes\\" configName=\\"swapEyes\\" helpWith=\\"SWAP_EYES\\" checked={false} onInputChange={[Function: mockConstructor]} />
   <Memo() name=\\"Toggle Debug\\" configName=\\"toggleDebug\\" helpWith=\\"DEBUG\\" checked={false} onInputChange={[Function: mockConstructor]} />
-  <br />
-  <p data-tip={true} data-for=\\"APP\\">
-    Help
-  </p>
   <Help problemWith=\\"MODEL\\" />
   <Help problemWith=\\"FPS\\" />
   <Help problemWith=\\"X_SENSITIVITY\\" />
