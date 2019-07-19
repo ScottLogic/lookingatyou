@@ -1,7 +1,7 @@
-import { Detection } from '../models/objectDetection';
+import { IDetection } from '../models/objectDetection';
 import { Bbox, ICoords } from './types';
 
-export function getBbox(detection: Detection): Bbox | undefined {
+export function getBbox(detection: IDetection): Bbox | undefined {
     return detection ? detection.bbox : undefined;
 }
 

@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 import ReactTooltip from 'react-tooltip';
 
 export enum HelpWith {
-    MODEL = 'MODEL',
     FPS = 'FPS',
     X_SENSITIVITY = 'X_SENSITIVITY',
     Y_SENSITIVITY = 'Y_SENSITIVITY',
@@ -14,16 +13,6 @@ export enum HelpWith {
     APP = 'APP',
     DEBUG = 'DEBUG',
 }
-
-const model = () => {
-    return (
-        <Fragment>
-            This sets the model running in the background. Posenet runs faster
-            and is more accurate.
-            <br /> CocoSSD is supported for legacy reasons.
-        </Fragment>
-    );
-};
 
 const fps = () => {
     return (
@@ -120,7 +109,6 @@ interface IHelpSectionMap {
 }
 
 const helpSections: IHelpSectionMap = {
-    MODEL: model,
     FPS: fps,
     X_SENSITIVITY: xSense,
     Y_SENSITIVITY: ySense,

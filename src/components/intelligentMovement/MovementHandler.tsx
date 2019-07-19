@@ -7,7 +7,7 @@ import {
     pupilSizes,
     sleepDelay,
 } from '../../AppConstants';
-import { Detection } from '../../models/objectDetection';
+import { IDetection } from '../../models/objectDetection';
 import { setIdleTarget, setOpen } from '../../store/actions/detections/actions';
 import {
     ISetIdleTargetAction,
@@ -30,7 +30,7 @@ interface IMovementProps {
 
 interface IStateProps {
     fps: number;
-    detections: Detection[];
+    detections: IDetection[];
     target: ITargets;
     videos: Array<HTMLVideoElement | undefined>;
     openCoefficient: number;

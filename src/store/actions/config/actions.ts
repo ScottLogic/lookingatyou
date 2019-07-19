@@ -1,7 +1,7 @@
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { IRootStore } from '../../reducers/rootReducer';
-import { loadModel, restartDetection } from '../detections/actions';
+import { restartDetection } from '../detections/actions';
 import {
     ConfigActionTypes,
     ISetConfigPayload,
@@ -12,9 +12,6 @@ import {
 export function updateConfigAction(payload: ISetConfigPayload) {
     return (dispatch: ThunkDispatch<IRootStore, void, Action>) => {
         dispatch(setConfigAction(payload));
-        if (payload.partialConfig.model) {
-            dispatch(loadModel());
-        }
         if (payload.partialConfig.fps) {
             dispatch(restartDetection());
         }

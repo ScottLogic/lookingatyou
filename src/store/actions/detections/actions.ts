@@ -1,12 +1,10 @@
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import {
-    Detection,
-    DetectionModelType,
+    IDetection,
     IDetections,
     IObjectDetector,
 } from '../../../models/objectDetection';
-import CocoSSD from '../../../utils/objectDetection/cocoSSD';
 import Posenet from '../../../utils/objectDetection/posenet';
 import { ICoords, ITargets } from '../../../utils/types';
 import { IRootStore } from '../../reducers/rootReducer';
@@ -31,24 +29,10 @@ export function setModel(model: IObjectDetector | null): ISetModelAction {
 }
 
 export function loadModel() {
-    return async (
-        dispatch: ThunkDispatch<IRootStore, void, Action>,
-        getState: () => IRootStore,
-    ) => {
-        const state = getState();
+    return async (dispatch: ThunkDispatch<IRootStore, void, Action>) => {
         dispatch(setModel(null));
-        let model;
-        switch (state.configStore.config.model) {
-            case DetectionModelType.Posenet:
-                model = await Posenet.init();
-                break;
-            case DetectionModelType.CocoSSD:
-                model = await CocoSSD.init();
-                break;
-        }
-        if (model) {
-            dispatch(setModel(model));
-        }
+        const model = await Posenet.init();
+        dispatch(setModel(model));
         dispatch(restartDetection());
     };
 }
@@ -77,13 +61,13 @@ export function handleDetection() {
         const images = getVideos(state);
         const model = state.detectionStore.model;
 
-        let left: Detection[] = [];
+        let left: IDetection[] = [];
         const leftImage = images[0];
         if (leftImage && model) {
             left = await model.detect(leftImage);
         }
 
-        let right: Detection[] = [];
+        let right: IDetection[] = [];
         const rightImage = images[1];
         if (rightImage && model) {
             right = await model.detect(rightImage);
