@@ -25,3 +25,11 @@ export function getVideos(
         (deviceId: string) => state.videoStore.videos[deviceId].video,
     );
 }
+
+export function getWebcamAvailable(state: IRootStore): boolean {
+    return state.videoStore.webcamAvailable;
+}
+
+export function getImageData(state: IRootStore): { [key: string]: ImageData } {
+    return state.videoStore.images;
+}

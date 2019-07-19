@@ -5,46 +5,37 @@ import { ThunkDispatch } from 'redux-thunk';
 import './App.css';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import MovementHandler from './components/intelligentMovement/MovementHandler';
-import Video from './components/video/Video';
+import VideoHandler from './components/video/VideoHandler';
 import { IObjectDetector } from './models/objectDetection';
 import { loadModel } from './store/actions/detections/actions';
 import { IRootStore } from './store/reducers/rootReducer';
-import { getDeviceIds } from './store/selectors/videoSelectors';
-import { AppStore } from './store/store';
-import Posenet from './utils/objectDetection/posenet';
+import { getWebcamAvailable } from './store/selectors/videoSelectors';
 
 interface IAppState {
     width: number;
     height: number;
-    webcamAvailable: boolean;
 }
 
 interface IAppProps {
     environment: Window;
-    configureStream: (
-        mediaDevices: MediaDevices,
-        onUserMedia: () => void,
-        onUserMediaError: () => void,
-        store: AppStore,
-    ) => void;
-    store: AppStore;
+    mediaDevices: MediaDevices | null;
 }
 
 interface IAppMapStateToProps {
-    deviceIds: string[];
     model: IObjectDetector | null;
+    webcamAvailable: boolean;
 }
 
 interface IAppMapDispatchToProps {
-    loadModel: (init: () => Promise<IObjectDetector>) => void;
+    loadModel: () => void;
 }
 
 type AppProps = IAppProps & IAppMapStateToProps & IAppMapDispatchToProps;
 
 const mapStateToProps = (state: IRootStore): IAppMapStateToProps => {
     return {
-        deviceIds: getDeviceIds(state),
         model: state.detectionStore.model,
+        webcamAvailable: getWebcamAvailable(state),
     };
 };
 
@@ -52,8 +43,7 @@ const mapDispatchToProps = (
     dispatch: ThunkDispatch<IRootStore, void, Action>,
 ) => {
     return {
-        loadModel: (init: () => Promise<IObjectDetector>) =>
-            dispatch(loadModel(init)),
+        loadModel: () => dispatch(loadModel()),
     };
 };
 
@@ -64,12 +54,9 @@ export class App extends React.PureComponent<AppProps, IAppState> {
         this.state = {
             width: this.props.environment.innerWidth,
             height: this.props.environment.innerHeight,
-            webcamAvailable: false,
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);
-        this.onUserMedia = this.onUserMedia.bind(this);
-        this.onUserMediaError = this.onUserMediaError.bind(this);
     }
 
     async componentDidMount() {
@@ -77,12 +64,12 @@ export class App extends React.PureComponent<AppProps, IAppState> {
             'resize',
             this.updateDimensions,
         );
-        this.props.configureStream(
-            this.props.environment.navigator.mediaDevices,
-            this.onUserMedia,
-            this.onUserMediaError,
-            this.props.store,
-        );
+    }
+
+    componentDidUpdate() {
+        if (this.props.webcamAvailable && !this.props.model) {
+            this.props.loadModel();
+        }
     }
 
     componentWillUnmount() {
@@ -99,27 +86,12 @@ export class App extends React.PureComponent<AppProps, IAppState> {
         });
     }
 
-    onUserMedia() {
-        this.setState({
-            webcamAvailable: true,
-        });
-        this.props.loadModel(Posenet.init);
-    }
-
-    onUserMediaError() {
-        this.setState({ webcamAvailable: false });
-    }
-
     render() {
         return (
             <div className="App">
-                <div className="webcam-feed">
-                    {this.props.deviceIds.map((device, key) => (
-                        <Video key={key} deviceId={device} />
-                    ))}
-                </div>
+                <VideoHandler mediaDevices={this.props.mediaDevices} />
 
-                {this.state.webcamAvailable ? (
+                {this.props.webcamAvailable ? (
                     !this.props.model ? (
                         <div className="loading-spinner" />
                     ) : (

@@ -24,7 +24,7 @@
 -   [About the Project](#about-the-project)
 -   [Prerequisites](#prerequisites)
     -   [General](#general)
-    -   [Test](#test)
+    -   [Tests](#tests)
 -   [Running the project (local)](#running-the-project-locally)
 -   [Usage](#usage)
 -   [Testing](#testing)
@@ -76,11 +76,13 @@ When mouse movement is detected on the screen, the configuration menu will open 
 
 | Option        | Description                                                                  |
 | ------------- | ---------------------------------------------------------------------------- |
+| Model         | Sets the model to be used for detection. This affects performance            |
+| FPS           | Sets the FPS for the object detection                                        |
 | X Sensitivity | X axis eyes sensitivity                                                      |
 | Y Sensitivity | Y axis eyes sensitivity                                                      |
+| Iris Colour   | Changes the colour of the Iris                                               |
 | Swap Eyes     | Available when two webcams are detected. Swaps the webcam input for the eyes |
 | Toggle Debug  | Displays the camera feed with bounding boxes                                 |
-| Iris Colour   | Changes the colour of the Iris                                               |
 
 ## Testing
 
@@ -122,7 +124,7 @@ npm install
 npm run build
 ```
 
-Once the project is build, you can deploy it to AWS S3 bucket with following command:
+Once the project is built, you can deploy it to AWS S3 bucket with following command:
 
 ```
 aws s3 sync ./build/ s3://<bucket-name>/ --delete

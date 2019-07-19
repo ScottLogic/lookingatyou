@@ -6,6 +6,7 @@ export interface IConfigMenuProps {
     timerLength: number;
     children: React.ReactNode;
     window: Window;
+    debugEnabled: boolean;
 }
 interface IConfigMenuState {
     leftPosition: string;
@@ -21,7 +22,7 @@ export default class ConfigMenu extends React.Component<
     constructor(props: IConfigMenuProps) {
         super(props);
         this.state = { leftPosition: '0px', isUnderMouse: false };
-        this.onMouseMove = this.onMouseMove.bind(this);
+        this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.mouseMoveHandler = this.mouseMoveHandler.bind(this);
         this.props.window.addEventListener('mousemove', this.mouseMoveHandler);
@@ -30,7 +31,7 @@ export default class ConfigMenu extends React.Component<
     mouseMoveHandler() {
         this.setState({ leftPosition: '0px' });
         clearInterval(this.hideTimeout);
-        if (!this.state.isUnderMouse) {
+        if (!this.state.isUnderMouse && !this.props.debugEnabled) {
             this.hideTimeout = window.setTimeout(
                 () => this.setState({ leftPosition: '-' + this.props.width }),
                 this.props.timerLength,
@@ -38,7 +39,7 @@ export default class ConfigMenu extends React.Component<
         }
     }
 
-    onMouseMove() {
+    onMouseEnter() {
         clearInterval(this.hideTimeout);
         this.setState({ isUnderMouse: true });
     }
@@ -64,7 +65,7 @@ export default class ConfigMenu extends React.Component<
                     left: this.state.leftPosition,
                 }}
                 className={'ConfigMenu'}
-                onMouseMove={this.onMouseMove}
+                onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
             >
                 <h1>Config</h1>

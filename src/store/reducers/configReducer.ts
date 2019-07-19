@@ -1,3 +1,4 @@
+import { DetectionModelType } from '../../models/objectDetection';
 import {
     ConfigActionTypes,
     IConfigState,
@@ -7,12 +8,13 @@ import {
 
 export const initialState: IConfigState = {
     config: {
+        model: DetectionModelType.Posenet,
         xSensitivity: 1,
         ySensitivity: 1,
         fps: 2,
         swapEyes: false,
         toggleDebug: false,
-        irisColor: '#55acee', // must be hex value, as this is passed to colour picker input,
+        irisColor: '#55acee', // must be hex value, as this is passed to colour picker input
     },
 };
 

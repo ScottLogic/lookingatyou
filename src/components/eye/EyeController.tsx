@@ -8,12 +8,17 @@ import {
 } from '../../AppConstants';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
-import { getOpenCoefficient } from '../../store/selectors/detectionSelectors';
+import {
+    getOpenCoefficient,
+    getTargets,
+} from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import { ICoords, ITargets } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
+import { getMaxDisplacement } from './EyeUtils';
 import { Gradients } from './Gradients';
+import { Shadows } from './Shadows';
 
 interface IEyeControllerProps {
     width: number;
@@ -68,7 +73,10 @@ export const EyeController = React.memo(
         const pupilRadius = props.width / 24;
 
         const getEyeCoords = (target: ICoords): ICoords => {
-            const maxDisplacement = scleraRadius - irisRadius;
+            const maxDisplacement = getMaxDisplacement(
+                scleraRadius,
+                irisRadius,
+            );
             const targetY = target.y * props.config.ySensitivity;
             const targetX = -target.x * props.config.xSensitivity; // mirrored
             const polarDistance = Math.hypot(targetY, targetX);
@@ -95,6 +103,8 @@ export const EyeController = React.memo(
             }
         }
 
+        const calculatedEyesOpenCoefficient = getEyesOpenCoefficient();
+
         return (
             <div className="container">
                 {[EyeSide.RIGHT, EyeSide.LEFT].map((eye, index) => {
@@ -109,16 +119,27 @@ export const EyeController = React.memo(
                             irisRadius={irisRadius}
                             pupilRadius={pupilRadius}
                             // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
-                            openCoefficient={getEyesOpenCoefficient()}
+                            openCoefficient={calculatedEyesOpenCoefficient}
                             // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
                             dilatedCoefficient={props.dilation}
                             innerX={eyeCoords[eye].x}
                             innerY={eyeCoords[eye].y}
                             fps={props.config.fps}
+                            bezier={getBezier(
+                                scleraRadius,
+                                calculatedEyesOpenCoefficient,
+                            )}
+                            eyeCoords={getEyeCoordinates(
+                                props.width,
+                                props.height,
+                                scleraRadius,
+                                calculatedEyesOpenCoefficient,
+                            )}
                         />
                     );
                 })}
                 <Gradients irisColor={props.config.irisColor} />
+                <Shadows openCoefficient={props.openCoefficient} />
             </div>
         );
     },
@@ -135,9 +156,41 @@ export const EyeController = React.memo(
 
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     config: getConfig(state),
-    target: state.detectionStore.target,
+    target: getTargets(state),
     videos: getVideos(state),
     openCoefficient: getOpenCoefficient(state),
 });
 
 export default connect(mapStateToProps)(EyeController);
+
+function getBezier(scleraRadius: number, openCoefficient: number) {
+    const curveConstant = 0.55228474983; // (4/3)tan(pi/8)
+    const controlOffset = scleraRadius * curveConstant;
+    const scaledYcontrolOffset = controlOffset * openCoefficient;
+    const scaledXcontrolOffset = controlOffset - scaledYcontrolOffset;
+    return { controlOffset, scaledXcontrolOffset, scaledYcontrolOffset };
+}
+
+function getEyeCoordinates(
+    width: number,
+    height: number,
+    scleraRadius: number,
+    openCoefficient: number,
+) {
+    const middleX = width / 4;
+    const leftX = middleX - scleraRadius;
+    const rightX = middleX + scleraRadius;
+    const middleY = height / 2;
+
+    const topEyelidY = middleY - scleraRadius * openCoefficient;
+    const bottomEyelidY = middleY + scleraRadius * openCoefficient;
+
+    return {
+        middleX,
+        leftX,
+        rightX,
+        middleY,
+        topEyelidY,
+        bottomEyelidY,
+    };
+}

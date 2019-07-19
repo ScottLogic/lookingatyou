@@ -34,16 +34,21 @@
 .ConfigMenu a,
 .ConfigMenu label,
 .ConfigMenu input,
+.ConfigMenu select,
 .ConfigMenu h1 {
     padding: 10px;
-    width: 50%;
+    width: calc(var(--canvas-width) / 2);
     display: inline-block;
 }
 
 .ConfigMenu input {
-    width: 25%;
+    width: calc(var(--canvas-width) / 4);
+}
+
+.ConfigMenu select {
+    width: calc(var(--canvas-width) / 2.9);
 }
 
 .ConfigMenu #canvas {
-    width: 100%;
+    width: var(--canvas-width);
 }

@@ -1,11 +1,11 @@
 import React from 'react';
 import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import {
-    ISetConfigPayload,
-    UPDATE_CONFIG,
-} from '../../store/actions/config/types';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { DetectionModelType } from '../../models/objectDetection';
+import { updateConfigAction } from '../../store/actions/config/actions';
+import { ISetConfigPayload } from '../../store/actions/config/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
@@ -15,6 +15,7 @@ import IUserConfig from './IUserConfig';
 import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
+import DropDownMenuItem from './menuItems/DropDownMenuItem';
 import TextBoxMenuItem from './menuItems/TextBoxMenuItem';
 
 export interface IConfigMenuElementProps {
@@ -23,24 +24,27 @@ export interface IConfigMenuElementProps {
 
 interface IConfigMenuElementMapStateToProps {
     config: IUserConfig;
-    videoCount: number;
+    videos: Array<HTMLVideoElement | undefined>;
 }
+
 const mapStateToProps = (
     state: IRootStore,
 ): IConfigMenuElementMapStateToProps => {
     return {
         config: getConfig(state),
-        videoCount: getVideos(state).length,
+        videos: getVideos(state),
     };
 };
 
 interface IConfigMenuElementMapDispatchToProps {
     setConfig: (payload: ISetConfigPayload) => void;
 }
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapDispatchToProps = (
+    dispatch: ThunkDispatch<IRootStore, void, Action>,
+) => {
     return {
         setConfig: (payload: ISetConfigPayload) =>
-            dispatch({ type: UPDATE_CONFIG, payload }),
+            dispatch(updateConfigAction(payload)),
     };
 };
 
@@ -50,26 +54,29 @@ export type ConfigMenuElementProps = IConfigMenuElementProps &
 
 export const ConfigMenuElement = React.memo(
     (props: ConfigMenuElementProps) => {
-        return (
-            <ConfigMenu width="14em" timerLength={1000} window={props.window}>
-                <TextBoxMenuItem
-                    name={'X Sensitivity'}
-                    configName={'xSensitivity'}
-                    step={0.1}
-                    defaultValue={props.config.xSensitivity}
-                    onValidInput={props.setConfig}
-                    configParse={parseFloat}
-                    helpWith={HelpWith.X_SENSITIVITY}
-                />
+        const canvasData = [
+            { name: 'Left Camera', helpWith: HelpWith.LEFT_VIDEO_STREAM },
+            { name: 'Right Camera', helpWith: HelpWith.RIGHT_VIDEO_STREAM },
+        ];
 
-                <TextBoxMenuItem
-                    name={'Y Sensitivity'}
-                    configName={'ySensitivity'}
-                    step={0.1}
-                    defaultValue={props.config.ySensitivity}
-                    onValidInput={props.setConfig}
-                    configParse={parseFloat}
-                    helpWith={HelpWith.Y_SENSITIVITY}
+        return (
+            <ConfigMenu
+                width="14em"
+                timerLength={1000}
+                window={props.window}
+                debugEnabled={props.config.toggleDebug}
+            >
+                <span data-tip={true} data-for={HelpWith[HelpWith.APP]}>
+                    ?
+                </span>
+
+                <DropDownMenuItem
+                    name={'Model'}
+                    configName={'model'}
+                    onInputChange={props.setConfig}
+                    values={Object.values(DetectionModelType)}
+                    defaultValue={props.config.model}
+                    helpWith={HelpWith.MODEL}
                 />
 
                 <TextBoxMenuItem
@@ -82,12 +89,25 @@ export const ConfigMenuElement = React.memo(
                     helpWith={HelpWith.FPS}
                 />
 
-                <CheckBoxMenuItem
-                    name={'Swap Eyes'}
-                    configName={'swapEyes'}
-                    helpWith={HelpWith.SWAP_EYES}
-                    checked={props.config.swapEyes}
-                    onInputChange={props.setConfig}
+                <br />
+
+                <TextBoxMenuItem
+                    name={'X Sensitivity'}
+                    configName={'xSensitivity'}
+                    step={0.1}
+                    defaultValue={props.config.xSensitivity}
+                    onValidInput={props.setConfig}
+                    configParse={parseFloat}
+                    helpWith={HelpWith.X_SENSITIVITY}
+                />
+                <TextBoxMenuItem
+                    name={'Y Sensitivity'}
+                    configName={'ySensitivity'}
+                    step={0.1}
+                    defaultValue={props.config.ySensitivity}
+                    onValidInput={props.setConfig}
+                    configParse={parseFloat}
+                    helpWith={HelpWith.Y_SENSITIVITY}
                 />
 
                 <ColorMenuItem
@@ -98,6 +118,15 @@ export const ConfigMenuElement = React.memo(
                     helpWith={HelpWith.IRIS_COLOUR}
                 />
 
+                <br />
+
+                <CheckBoxMenuItem
+                    name={'Swap Eyes'}
+                    configName={'swapEyes'}
+                    helpWith={HelpWith.SWAP_EYES}
+                    checked={props.config.swapEyes}
+                    onInputChange={props.setConfig}
+                />
                 <CheckBoxMenuItem
                     name={'Toggle Debug'}
                     configName={'toggleDebug'}
@@ -106,49 +135,30 @@ export const ConfigMenuElement = React.memo(
                     onInputChange={props.setConfig}
                 />
 
-                {props.config.toggleDebug ? (
-                    props.videoCount > 1 ? (
-                        <>
-                            <CanvasMenuItem
-                                name={'L Camera'}
-                                videoIndex={0}
-                                helpWith={HelpWith.LEFT_VIDEO_STREAM}
-                            />
-                            <CanvasMenuItem
-                                name={'R Camera'}
-                                videoIndex={1}
-                                helpWith={HelpWith.RIGHT_VIDEO_STREAM}
-                            />
-
-                            <Help problemWith={HelpWith.LEFT_VIDEO_STREAM} />
-                            <Help problemWith={HelpWith.RIGHT_VIDEO_STREAM} />
-                        </>
-                    ) : (
-                        <>
-                            <CanvasMenuItem
-                                name={'Camera'}
-                                videoIndex={0}
-                                helpWith={HelpWith.VIDEO_STREAM}
-                            />
-
-                            <Help problemWith={HelpWith.VIDEO_STREAM} />
-                        </>
-                    )
-                ) : null}
-
+                {props.config.toggleDebug
+                    ? props.videos.map((ignore, index, videos) => {
+                          return (
+                              <CanvasMenuItem
+                                  name={
+                                      videos.length === 1
+                                          ? 'Camera'
+                                          : canvasData[index].name
+                                  }
+                                  key={index}
+                                  helpWith={canvasData[index].helpWith}
+                                  videoIndex={index}
+                              />
+                          );
+                      })
+                    : null}
                 <br />
-
                 <p data-tip={true} data-for={HelpWith[HelpWith.APP]}>
                     Help
                 </p>
 
-                <Help problemWith={HelpWith.FPS} />
-                <Help problemWith={HelpWith.X_SENSITIVITY} />
-                <Help problemWith={HelpWith.Y_SENSITIVITY} />
-                <Help problemWith={HelpWith.SWAP_EYES} />
-                <Help problemWith={HelpWith.IRIS_COLOUR} />
-                <Help problemWith={HelpWith.APP} />
-                <Help problemWith={HelpWith.DEBUG} />
+                {Object.values(HelpWith).map((type, key: number) => (
+                    <Help key={key} problemWith={HelpWith[type] as HelpWith} />
+                ))}
             </ConfigMenu>
         );
     },

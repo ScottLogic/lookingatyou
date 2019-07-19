@@ -1,13 +1,14 @@
 import {
     IVideo,
     IVideoState,
-    SET_IMAGE_DATA,
     SET_VIDEO,
     SET_VIDEO_STREAMS,
+    TOGGLE_WEBCAM_AVAILABLE,
     VideoActionTypes,
 } from '../actions/video/types';
 
 export const initialState: IVideoState = {
+    webcamAvailable: false,
     videos: {},
     images: {},
 };
@@ -18,15 +19,10 @@ const videoStore = (
 ): IVideoState => {
     switch (action.type) {
         case SET_VIDEO_STREAMS:
-            const newVideos: { [deviceId: string]: IVideo } = {};
-            action.videos.map(
-                (video: IVideo) => (newVideos[video.deviceId] = video),
-            );
             return {
                 ...state,
                 videos: {
-                    ...state.videos,
-                    ...newVideos,
+                    ...action.videos,
                 },
             };
         case SET_VIDEO:
@@ -43,13 +39,10 @@ const videoStore = (
                     ...updatedObject,
                 },
             };
-        case SET_IMAGE_DATA:
+        case TOGGLE_WEBCAM_AVAILABLE:
             return {
                 ...state,
-                images: {
-                    ...state.images,
-                    ...action.images,
-                },
+                webcamAvailable: !state.webcamAvailable,
             };
         default:
             return state;

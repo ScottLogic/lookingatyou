@@ -1,5 +1,5 @@
 import {
-    IVideo,
+    IVideoState,
     SET_VIDEO,
     SET_VIDEO_STREAMS,
     VideoActionTypes,
@@ -25,17 +25,20 @@ const device2 = {
     stream: undefined,
 };
 
-const mockInitialActionPayload: IVideo[] = [device1, device2];
+const mockTwoVideoStreams = {
+    testDevice1: device1,
+    testDevice2: device2,
+};
 
 let mockRootStore: IRootStore;
+let mockVideoStore: IVideoState;
 
 describe('Video Selectors', () => {
     beforeEach(() => {
-        const mockVideoStore = videoStore(
-            { videos: {} },
-            { type: SET_VIDEO_STREAMS, videos: mockInitialActionPayload },
+        mockVideoStore = videoStore(
+            { videos: {}, webcamAvailable: false },
+            { type: SET_VIDEO_STREAMS, videos: mockTwoVideoStreams },
         );
-
         mockRootStore = {
             videoStore: mockVideoStore,
             configStore: initialConfigStore,
