@@ -63,9 +63,4 @@ const NumberMenuItem = React.memo(
         previous.name === next.name &&
         previous.defaultValue === next.defaultValue,
 );
-<<<<<<< HEAD:src/components/configMenu/menuItems/TextBoxMenuItem.tsx
-
-export default TextBoxMenuItem;
-=======
 export default NumberMenuItem;
->>>>>>> fixed snapshots:src/components/configMenu/menuItems/NumberMenuItem.tsx
