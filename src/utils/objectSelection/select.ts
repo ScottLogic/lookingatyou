@@ -126,6 +126,7 @@ export function closerToColour(
     keypoints1: Keypoint[],
     keypoints2: Keypoint[],
 ): number {
+    console.log('CHECKING COLOUR...');
     if (!imageData) {
         return 0;
     }
@@ -222,7 +223,7 @@ export function closerToPrediction(
             Math.hypot(coords2.x - prediction.x, coords2.y - prediction.y) -
             Math.hypot(coords1.x - prediction.x, coords1.y - prediction.y);
 
-        return closerToPredictedTarget > 0.05
+        return Math.abs(closerToPredictedTarget) > 0.1
             ? closerToPredictedTarget
             : closerToColour(
                   imageData,
