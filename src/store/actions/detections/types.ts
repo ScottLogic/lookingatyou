@@ -1,6 +1,5 @@
 import { PoseNet } from '@tensorflow-models/posenet';
-import { IDetections } from '../../../models/objectDetection';
-import { IColour } from '../../../utils/objectSelection/select';
+import { IDetection, IDetections } from '../../../models/objectDetection';
 import { ICoords, ITargets } from '../../../utils/types';
 
 export const SET_MODEL = 'SET_MODEL';
@@ -16,7 +15,7 @@ export interface IDetectionState {
     detections: IDetections;
     history: ITargets[];
     idleTarget: ITargets;
-    colour: IColour;
+    previousPose: IDetection;
 }
 
 export interface ISetModelAction {

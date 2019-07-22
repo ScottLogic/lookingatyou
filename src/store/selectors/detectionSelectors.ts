@@ -98,7 +98,3 @@ export function getIdleTargets(state: IRootStore): ITargets {
 export function getOpenCoefficient(state: IRootStore): number {
     return state.detectionStore.eyesOpenCoefficient;
 }
-
-export function getColour(state: IRootStore): IColour {
-    return state.detectionStore.colour;
-}

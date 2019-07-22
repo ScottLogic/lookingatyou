@@ -222,7 +222,19 @@ export function closerToPrediction(
             Math.hypot(coords2.x - prediction.x, coords2.y - prediction.y) -
             Math.hypot(coords1.x - prediction.x, coords1.y - prediction.y);
 
-        return Math.abs(closerToPredictedTarget) > 0.1
+        console.log(
+            '%c                           ',
+            'background-color: rgb(' +
+                avgColour.r +
+                ',' +
+                avgColour.g +
+                ',' +
+                avgColour.b +
+                ')' +
+                ';',
+        );
+
+        return Math.abs(closerToPredictedTarget) > 2
             ? closerToPredictedTarget
             : closerToColour(
                   imageData,

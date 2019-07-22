@@ -19,7 +19,7 @@ export const initialState: IDetectionState = {
     eyesOpenCoefficient: eyelidPosition.OPEN,
     detectionInterval: 0,
     history: [{ left: { x: 0, y: 0 }, right: { x: 0, y: 0 } }],
-    colour: { r: 0, g: 0, b: 0 },
+    previousPose: { bbox: [0, 0, 0, 0], info: { keypoints: [], score: 0 } },
 };
 
 const detectionActionMapping = {
