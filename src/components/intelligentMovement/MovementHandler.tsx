@@ -250,7 +250,7 @@ const mapStateToProps = (state: IRootStore) => ({
     detections: state.detectionStore.detections.left,
     target: getTargets(state),
     openCoefficient: state.detectionStore.eyesOpenCoefficient,
-    videos: getVideos(state),
+    images: state.videoStore.images,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => ({

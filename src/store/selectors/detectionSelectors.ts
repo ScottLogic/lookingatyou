@@ -28,7 +28,7 @@ export const getSelections = createSelector(
 
         const prediction = setPrediction(leftCam, previousTargets);
 
-        const colour = calculateColourMatch(imageData, { x: 0, y: 0 });
+        const colour = calculateColourMatch(imageData, []);
 
         const left = select(
             detections.left,
