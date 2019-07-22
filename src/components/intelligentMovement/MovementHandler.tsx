@@ -16,7 +16,6 @@ import {
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getTargets } from '../../store/selectors/detectionSelectors';
-import { getVideos } from '../../store/selectors/videoSelectors';
 import { ICoords, ITargets } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';

@@ -1,4 +1,4 @@
-import { Keypoint, Pose } from '@tensorflow-models/posenet';
+import { Keypoint } from '@tensorflow-models/posenet';
 import { IDetection } from '../../models/objectDetection';
 import calculateTargetPos, {
     calculateNormalisedPos,
@@ -125,6 +125,10 @@ export function closerToColour(
     keypoints1: Keypoint[],
     keypoints2: Keypoint[],
 ): number {
+    if (!imageData) {
+        return 0;
+    }
+
     const x1Start = getXStart(keypoints1, imageData.width);
     const x2Start = getXStart(keypoints2, imageData.width);
     const x1End = getXEnd(keypoints1, imageData.width);
