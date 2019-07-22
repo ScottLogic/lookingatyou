@@ -126,7 +126,6 @@ export function closerToColour(
     keypoints1: Keypoint[],
     keypoints2: Keypoint[],
 ): number {
-    console.log('CHECKING COLOUR...');
     if (!imageData) {
         return 0;
     }
