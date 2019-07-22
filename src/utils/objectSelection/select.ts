@@ -1,4 +1,5 @@
 import { Keypoint } from '@tensorflow-models/posenet';
+import { bodyParts } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 import calculateTargetPos, {
     calculateNormalisedPos,
@@ -168,21 +169,21 @@ export function closerToColour(
 
 function getXStart(keypoints: Keypoint[], width: number) {
     const rightShoulder = keypoints.filter(
-        keypoint => keypoint.part === 'rightShoulder',
+        keypoint => keypoint.part === bodyParts.RIGHT_SHOULDER,
     )[0];
     return rightShoulder ? Math.round(rightShoulder.position.x - width / 2) : 0;
 }
 
 function getXEnd(keypoints: Keypoint[], width: number) {
     const leftShoulder = keypoints.filter(
-        keypoint => keypoint.part === 'leftShoulder',
+        keypoint => keypoint.part === bodyParts.LEFT_SHOULDER,
     )[0];
     return leftShoulder ? Math.round(leftShoulder.position.x - width / 2) : 0;
 }
 
 function getYStart(keypoints: Keypoint[], height: number) {
     const rightShoulder = keypoints.filter(
-        keypoint => keypoint.part === 'rightShoulder',
+        keypoint => keypoint.part === bodyParts.RIGHT_SHOULDER,
     )[0];
     return rightShoulder
         ? Math.round(rightShoulder.position.y - height / 2)
@@ -191,7 +192,7 @@ function getYStart(keypoints: Keypoint[], height: number) {
 
 function getYEnd(keypoints: Keypoint[], height: number) {
     const rightHip = keypoints.filter(
-        keypoint => keypoint.part === 'rightHip',
+        keypoint => keypoint.part === bodyParts.RIGHT_HIP,
     )[0];
     return rightHip ? Math.round(rightHip.position.x - height / 2) : 0;
 }

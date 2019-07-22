@@ -33,3 +33,8 @@ export const maxMoveWithoutBlink = 0.8;
 export const chosenTargetColour = 'green';
 export const nonChosenTargetColour = 'red';
 export const maxNumTargetsToConsider = 5;
+export const bodyParts = {
+    RIGHT_SHOULDER: 'rightShoulder',
+    LEFT_SHOULDER: 'leftShoulder',
+    RIGHT_HIP: 'rightHip',
+};
