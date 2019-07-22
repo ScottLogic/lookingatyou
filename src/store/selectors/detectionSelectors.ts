@@ -32,6 +32,14 @@ export const getSelections = createSelector(
     },
 );
 
+function isPose(detections: any, left: any) {
+    console.log('detections', detections);
+    console.log('left', left);
+    return false;
+}
+
+function doAction() {}
+
 export const getTargets = createSelector(
     [getSelections, getVideos, getIdleTargets],
     (selections, videos, idleTargets): ICoords => {
