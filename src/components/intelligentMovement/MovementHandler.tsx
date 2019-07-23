@@ -16,14 +16,12 @@ import {
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getTargets } from '../../store/selectors/detectionSelectors';
-import { getVideos } from '../../store/selectors/videoSelectors';
 import { ICoords } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
 import { analyseLight, naturalMovement } from '../eye/EyeUtils';
 
 interface IMovementProps {
-    document: Document;
     width: number;
     height: number;
     environment: Window;
@@ -33,7 +31,6 @@ interface IStateProps {
     fps: number;
     detections: IDetection[];
     target: ICoords;
-    videos: Array<HTMLVideoElement | undefined>;
     openCoefficient: number;
     images: { [key: string]: ImageData };
 }
@@ -88,7 +85,7 @@ export class MovementHandler extends React.Component<
     }
 
     componentDidMount() {
-        this.movementInterval = window.setInterval(
+        this.movementInterval = this.props.environment.setInterval(
             this.animateEye,
             1000 / this.props.fps,
             this.prevProps,
@@ -116,7 +113,7 @@ export class MovementHandler extends React.Component<
     }
 
     componentWillUnmount() {
-        clearInterval(this.movementInterval);
+        this.props.environment.clearInterval(this.movementInterval);
     }
 
     calculateBrightness() {
@@ -240,8 +237,6 @@ const mapStateToProps = (state: IRootStore) => ({
     detections: state.detectionStore.detections,
     target: getTargets(state),
     openCoefficient: state.detectionStore.eyesOpenCoefficient,
-    videos: getVideos(state),
-
     images: state.videoStore.images,
 });
 

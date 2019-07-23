@@ -34,10 +34,10 @@ export function calculateColourMatch(
         return { r: 0, g: 0, b: 0 };
     }
 
-    const xStart = getXStart(keypoints, imageData.width);
-    const yStart = getYStart(keypoints, imageData.height);
-    const xEnd = getXEnd(keypoints, imageData.width);
-    const yEnd = getYEnd(keypoints, imageData.height);
+    const xStart = getXStart(keypoints);
+    const yStart = getYStart(keypoints);
+    const xEnd = xStart + 10;
+    const yEnd = yStart + 10;
 
     return getAvgColour(xStart, yStart, xEnd, yEnd, imageData);
 }
@@ -57,26 +57,22 @@ function getAvgColour(
     let g = 0;
     let b = 0;
     let counter = 0;
+    const data = imageData.data;
     for (
         let i = yStart;
         i < yEnd * 4 * imageData.width;
         i += imageData.width * 4
     ) {
         for (let j = xStart; j < xEnd * 4; j += 4) {
-            r = imageData.data[j + i];
-            g = imageData.data[j + i + 1];
-            b = imageData.data[j + i + 2];
+            r = data[j + i];
+            g = data[j + i + 1];
+            b = data[j + i + 2];
             counter++;
         }
     }
     r = r / counter;
     g = g / counter;
     b = b / counter;
-
-    console.log(
-        '%c                 ',
-        'background-color: rgb(' + r + ', ' + g + ', ' + b + ');',
-    );
 
     return { r, g, b };
 }
@@ -126,14 +122,14 @@ export function closerToColour(
         return 0;
     }
 
-    const x1Start = getXStart(keypoints1, imageData.width);
-    const x2Start = getXStart(keypoints2, imageData.width);
-    const x1End = getXEnd(keypoints1, imageData.width);
-    const x2End = getXEnd(keypoints2, imageData.width);
-    const y1Start = getYStart(keypoints1, imageData.height);
-    const y2Start = getYStart(keypoints2, imageData.height);
-    const y1End = getYEnd(keypoints1, imageData.height);
-    const y2End = getYEnd(keypoints2, imageData.height);
+    const x1Start = getXStart(keypoints1);
+    const x2Start = getXStart(keypoints2);
+    const x1End = x1Start + 10;
+    const x2End = x2Start + 10;
+    const y1Start = getYStart(keypoints1);
+    const y2Start = getYStart(keypoints2);
+    const y1End = y1Start + 10;
+    const y2End = y2Start + 10;
 
     const bbox1AvgColour = getAvgColour(
         x1Start,
@@ -163,34 +159,25 @@ export function closerToColour(
     return bbox1Diff < bbox2Diff ? 1 : -1;
 }
 
-function getXStart(keypoints: Keypoint[], width: number) {
+function getXStart(keypoints: Keypoint[]) {
     const rightShoulder = keypoints.filter(
         keypoint => keypoint.part === bodyParts.RIGHT_SHOULDER,
     )[0];
-    return rightShoulder ? Math.round(rightShoulder.position.x - width / 2) : 0;
-}
-
-function getXEnd(keypoints: Keypoint[], width: number) {
     const leftShoulder = keypoints.filter(
         keypoint => keypoint.part === bodyParts.LEFT_SHOULDER,
     )[0];
-    return leftShoulder ? Math.round(leftShoulder.position.x - width / 2) : 0;
-}
-
-function getYStart(keypoints: Keypoint[], height: number) {
-    const rightShoulder = keypoints.filter(
-        keypoint => keypoint.part === bodyParts.RIGHT_SHOULDER,
-    )[0];
-    return rightShoulder
-        ? Math.round(rightShoulder.position.y - height / 2)
+    return leftShoulder && rightShoulder
+        ? Math.abs(
+              Math.round(leftShoulder.position.x - rightShoulder.position.x),
+          )
         : 0;
 }
 
-function getYEnd(keypoints: Keypoint[], height: number) {
-    const rightHip = keypoints.filter(
-        keypoint => keypoint.part === bodyParts.RIGHT_HIP,
+function getYStart(keypoints: Keypoint[]) {
+    const rightShoulder = keypoints.filter(
+        keypoint => keypoint.part === bodyParts.RIGHT_SHOULDER,
     )[0];
-    return rightHip ? Math.round(rightHip.position.x - height / 2) : 0;
+    return rightShoulder ? Math.round(rightShoulder.position.y) : 0;
 }
 
 export function closerToPrediction(
@@ -218,7 +205,7 @@ export function closerToPrediction(
             Math.hypot(coords2.x - prediction.x, coords2.y - prediction.y) -
             Math.hypot(coords1.x - prediction.x, coords1.y - prediction.y);
 
-        return Math.abs(closerToPredictedTarget) > 2
+        return Math.abs(closerToPredictedTarget) < 0.1
             ? closerToPredictedTarget
             : closerToColour(
                   imageData,

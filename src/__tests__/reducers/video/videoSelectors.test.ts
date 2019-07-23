@@ -36,7 +36,7 @@ let mockVideoStore: IVideoState;
 describe('Video Selectors', () => {
     beforeEach(() => {
         mockVideoStore = videoStore(
-            { videos: {}, webcamAvailable: false },
+            { videos: {}, webcamAvailable: false, images: {} },
             { type: SET_VIDEO_STREAMS, videos: mockTwoVideoStreams },
         );
         mockRootStore = {
