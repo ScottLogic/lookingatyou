@@ -91,7 +91,6 @@ export function handleDetection() {
             ) {
                 const pose = getPose(target[0]!);
                 if (pose) {
-                    console.log(pose);
                     dispatch(setAnimation(animationMapping[pose]()));
                 }
             }
