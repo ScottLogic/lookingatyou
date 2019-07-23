@@ -154,7 +154,7 @@ function drawReflection(
     ctx.closePath();
     ctx.clip();
     ctx.scale(-1, 1);
-    const sourceBox = getSourceBox(selection, image);
+    const sourceBox = getSourceBox(selection.left, image);
     ctx.drawImage(
         image,
         sourceBox.sx,
@@ -192,8 +192,8 @@ function getSourceBox(selection: ISelections, image: HTMLVideoElement) {
         return {
             sx: 0,
             sy: 0,
-            sWidth: 0,
-            sHeight: 0,
+            sWidth: 1,
+            sHeight: 1,
         };
     }
 }
