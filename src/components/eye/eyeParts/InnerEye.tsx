@@ -44,7 +44,6 @@ export const InnerEye = React.memo(
             props.irisRadius,
             irisAdjustmentRef.current.angle,
         );
-        const dilatedPupilRadius = props.pupilRadius * props.dilatedCoefficient;
 
         useEffect(() => {
             irisAdjustmentRef.current = irisAdjustment;
