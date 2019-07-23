@@ -56,23 +56,26 @@ function getAvgColour(
     let r = 0;
     let g = 0;
     let b = 0;
-    let counter = 0;
+
     const data = imageData.data;
+
+    let counter = 0;
     for (
-        let i = yStart;
-        i < yEnd * 4 * imageData.width;
+        let i = yStart * 4;
+        i < yEnd * 4 + imageData.width * 40;
         i += imageData.width * 4
     ) {
-        for (let j = xStart; j < xEnd * 4; j += 4) {
-            r = data[j + i];
-            g = data[j + i + 1];
-            b = data[j + i + 2];
+        for (let j = xStart * 4; j < xEnd * 4; j += 4) {
+            r += data[j + i];
+            g += data[j + i + 1];
+            b += data[j + i + 2];
             counter++;
         }
     }
-    r = r / counter;
-    g = g / counter;
-    b = b / counter;
+
+    r /= counter;
+    g /= counter;
+    b /= counter;
 
     return { r, g, b };
 }
@@ -168,7 +171,8 @@ function getXStart(keypoints: Keypoint[]) {
     )[0];
     return leftShoulder && rightShoulder
         ? Math.abs(
-              Math.round(leftShoulder.position.x - rightShoulder.position.x),
+              Math.round(leftShoulder.position.x - rightShoulder.position.x) -
+                  5,
           )
         : 0;
 }
