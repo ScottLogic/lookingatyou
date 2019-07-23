@@ -80,17 +80,27 @@ function getAvgColour(
     return { r, g, b };
 }
 
-export function setPrediction(history: ICoords[]): ICoords {
-    let coordsX: number[] = [];
-    let coordsY: number[] = [];
-
-    coordsX = history.map(target => target.x);
-    coordsY = history.map(target => target.y);
+export function setPredictedTarget(history: ICoords[]): ICoords {
+    const coordsX = history.map(target => target.x);
+    const coordsY = history.map(target => target.y);
 
     const xPrediction = getWeightedPrediction(coordsX);
     const yPrediction = getWeightedPrediction(coordsY);
 
     return { x: xPrediction, y: yPrediction };
+}
+
+export function setPredictedColour(history: IColour[]): IColour {
+    const reversedHistory = history.reverse();
+    const rHistory = reversedHistory.map(colour => colour.r);
+    const gHistory = reversedHistory.map(colour => colour.g);
+    const bHistory = reversedHistory.map(colour => colour.b);
+
+    const r = getWeightedAverage(rHistory);
+    const g = getWeightedAverage(gHistory);
+    const b = getWeightedAverage(bHistory);
+
+    return { r, g, b };
 }
 
 export function leftOf(x: number) {
@@ -238,6 +248,21 @@ function getWeightedPrediction(nums: number[]): number {
     const weightedTotal = weightedNums.reduce((a, b) => a + b, 0) / decayTotal;
 
     return weightedTotal + nums[nums.length - 1];
+}
+
+function getWeightedAverage(nums: number[]): number {
+    const weightedNums = [];
+    let decayTotal = 0;
+
+    for (let i = nums.length - 1; i >= 0; i--) {
+        const decay = Math.pow(0.5, nums.length - i);
+        weightedNums.push(nums[i] * decay);
+        decayTotal += decay;
+    }
+
+    const weightedAvg = weightedNums.reduce((a, b) => a + b, 0) / decayTotal;
+
+    return weightedAvg;
 }
 
 export function closerVerticallyTo(
