@@ -5,7 +5,6 @@ exports[`ConfigMenuElement tests should render correctly 1`] = `
   <span data-tip={true} data-for=\\"APP\\">
     ?
   </span>
-  <Memo() name=\\"Model\\" configName=\\"model\\" onInputChange={[Function: mockConstructor]} values={{...}} defaultValue=\\"posenet\\" helpWith=\\"MODEL\\" />
   <Memo() name=\\"FPS\\" configName=\\"fps\\" step={1} defaultValue={30} onValidInput={[Function: mockConstructor]} helpWith=\\"FPS\\" min={1} />
   <br />
   <Memo() name=\\"X Sensitivity\\" configName=\\"xSensitivity\\" step={0.1} defaultValue={1} onValidInput={[Function: mockConstructor]} helpWith=\\"X_SENSITIVITY\\" min={0} />
@@ -13,7 +12,6 @@ exports[`ConfigMenuElement tests should render correctly 1`] = `
   <br />
   <Memo() name=\\"Iris Colour\\" configName=\\"irisColor\\" color=\\"blue\\" onInputChange={[Function: mockConstructor]} helpWith=\\"IRIS_COLOUR\\" />
   <Memo() name=\\"Toggle Debug\\" configName=\\"toggleDebug\\" helpWith=\\"DEBUG\\" checked={false} onInputChange={[Function: mockConstructor]} />
-  <Help problemWith=\\"MODEL\\" />
   <Help problemWith=\\"FPS\\" />
   <Help problemWith=\\"X_SENSITIVITY\\" />
   <Help problemWith=\\"Y_SENSITIVITY\\" />

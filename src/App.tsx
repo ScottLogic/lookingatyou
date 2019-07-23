@@ -1,3 +1,4 @@
+import { PoseNet } from '@tensorflow-models/posenet';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Action } from 'redux';
@@ -6,7 +7,6 @@ import './App.css';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import MovementHandler from './components/intelligentMovement/MovementHandler';
 import VideoHandler from './components/video/VideoHandler';
-import { IObjectDetector } from './models/objectDetection';
 import { loadModel } from './store/actions/detections/actions';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getWebcamAvailable } from './store/selectors/videoSelectors';
@@ -22,7 +22,7 @@ interface IAppProps {
 }
 
 interface IAppMapStateToProps {
-    model: IObjectDetector | null;
+    model: PoseNet | null;
     webcamAvailable: boolean;
 }
 
@@ -91,7 +91,7 @@ export class App extends React.PureComponent<AppProps, IAppState> {
                     )
                 ) : (
                     <div className="Error">
-                        No webcam connected. Please connect a webcam and refresh
+                        No webcam connected. Please connect a webcam.
                     </div>
                 )}
 

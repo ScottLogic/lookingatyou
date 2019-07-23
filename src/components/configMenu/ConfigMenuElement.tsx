@@ -3,7 +3,6 @@ import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { DetectionModelType } from '../../models/objectDetection';
 import { updateConfigAction } from '../../store/actions/config/actions';
 import { ISetConfigPayload } from '../../store/actions/config/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
@@ -15,7 +14,6 @@ import IUserConfig from './IUserConfig';
 import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
-import DropDownMenuItem from './menuItems/DropDownMenuItem';
 import NumberMenuItem from './menuItems/NumberMenuItem';
 
 export interface IConfigMenuElementProps {
@@ -52,15 +50,6 @@ export const ConfigMenuElement = React.memo(
                 <span data-tip={true} data-for={HelpWith[HelpWith.APP]}>
                     ?
                 </span>
-
-                <DropDownMenuItem
-                    name={'Model'}
-                    configName={'model'}
-                    onInputChange={props.setConfig}
-                    values={Object.values(DetectionModelType)}
-                    defaultValue={props.config.model}
-                    helpWith={HelpWith.MODEL}
-                />
 
                 <NumberMenuItem
                     name={'FPS'}

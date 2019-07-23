@@ -1,5 +1,5 @@
+import { PoseNet } from '@tensorflow-models/posenet';
 import { eyelidPosition, maxNumTargetsToConsider } from '../../AppConstants';
-import { IObjectDetector } from '../../models/objectDetection';
 import { ICoords } from '../../utils/types';
 import {
     DetectionActionType,
@@ -42,7 +42,7 @@ function setModel(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    return { ...state, model: action.payload as IObjectDetector };
+    return { ...state, model: action.payload as PoseNet };
 }
 
 function setDetectionInterval(

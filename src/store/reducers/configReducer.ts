@@ -1,4 +1,3 @@
-import { DetectionModelType } from '../../models/objectDetection';
 import {
     ConfigActionTypes,
     IConfigState,
@@ -8,7 +7,6 @@ import {
 
 export const initialState: IConfigState = {
     config: {
-        model: DetectionModelType.Posenet,
         xSensitivity: 1,
         ySensitivity: 1,
         fps: 2,

@@ -76,7 +76,6 @@ When mouse movement is detected on the screen, the configuration menu will open 
 
 | Option        | Description                                                                  |
 | ------------- | ---------------------------------------------------------------------------- |
-| Model         | Sets the model to be used for detection. This affects performance            |
 | FPS           | Sets the FPS for the object detection                                        |
 | X Sensitivity | X axis eyes sensitivity                                                      |
 | Y Sensitivity | Y axis eyes sensitivity                                                      |

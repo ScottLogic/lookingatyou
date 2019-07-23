@@ -1,4 +1,3 @@
-import { DetectionModelType } from '../../../models/objectDetection';
 import {
     resetConfigAction,
     setConfigAction,
@@ -11,7 +10,6 @@ import configStore, {
 describe('Config Reducer tests', () => {
     const testState: IConfigState = {
         config: {
-            model: DetectionModelType.Posenet,
             xSensitivity: 10,
             ySensitivity: 10,
             fps: 5,
@@ -29,7 +27,6 @@ describe('Config Reducer tests', () => {
         const setAction = setConfigAction({ partialConfig });
         const alteredState: IConfigState = {
             config: {
-                model: DetectionModelType.Posenet,
                 xSensitivity: 10,
                 ySensitivity: 10,
                 fps: 555,
