@@ -2,10 +2,10 @@ import * as posenet from '@tensorflow-models/posenet';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { Detections, IDetection } from '../../../models/objectDetection';
-import { ICoords } from '../../../utils/types';
+import { IColour, ICoords } from '../../../utils/types';
 import { reshapeDetections } from '../../../utils/utils';
 import { IRootStore } from '../../reducers/rootReducer';
-import { getTargets } from '../../selectors/detectionSelectors';
+import { getColour, getTargets } from '../../selectors/detectionSelectors';
 import { getVideos } from '../../selectors/videoSelectors';
 import {
     ISetDetectionsAction,
@@ -65,7 +65,7 @@ export function handleDetection() {
             left = reshapeDetections(leftDetections);
         }
 
-        dispatch(setDetections(left, getTargets(state)));
+        dispatch(setDetections(left, getTargets(state), getColour(state)));
     };
 }
 
@@ -79,10 +79,11 @@ export function setIdleTarget(coords: ICoords): ISetIdleTargetAction {
 export function setDetections(
     detections: Detections,
     previousTarget: ICoords,
+    previousColour: IColour,
 ): ISetDetectionsAction {
     return {
         type: SET_DETECTIONS,
-        payload: { detections, previousTarget },
+        payload: { detections, previousTarget, previousColour },
     };
 }
 

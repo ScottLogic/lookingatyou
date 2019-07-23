@@ -1,6 +1,6 @@
 import { PoseNet } from '@tensorflow-models/posenet';
 import { Detections } from '../../../models/objectDetection';
-import { ICoords } from '../../../utils/types';
+import { IColour, ICoords, IHistory } from '../../../utils/types';
 
 export const SET_MODEL = 'SET_MODEL';
 export const SET_INTERVAL = 'SET_INTERVAL';
@@ -13,7 +13,7 @@ export interface IDetectionState {
     detectionInterval: number;
     eyesOpenCoefficient: number;
     detections: Detections;
-    history: ICoords[];
+    history: IHistory[];
     idleTarget: ICoords;
 }
 
@@ -35,6 +35,7 @@ export interface ISetIdleTargetAction {
 export interface ISetDetectionsActionPayload {
     detections: Detections;
     previousTarget: ICoords;
+    previousColour: IColour;
 }
 
 export interface ISetDetectionsAction {

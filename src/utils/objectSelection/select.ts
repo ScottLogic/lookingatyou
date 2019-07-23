@@ -10,7 +10,7 @@ export default function select(
     detections: Detections,
     compare: (x: IDetection, y: IDetection) => number,
     filter?: (d: IDetection) => boolean,
-): Bbox | undefined {
+): IDetection | undefined {
     const personBboxes: Detections = detections.filter(
         detection => !filter || filter(detection),
     );
@@ -22,7 +22,7 @@ export default function select(
     );
 
     if (selectedDetection) {
-        return selectedDetection.bbox;
+        return selectedDetection;
     }
 }
 
@@ -258,6 +258,6 @@ export function closerVerticallyTo(
     };
 }
 
-export function first(bbox1: Bbox, bbox2: Bbox): number {
+export function first(detection1: IDetection, detection2: IDetection): number {
     return 0;
 }

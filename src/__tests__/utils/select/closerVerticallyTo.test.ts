@@ -79,12 +79,9 @@ describe('selectMatching should return', () => {
                 info: personInfo,
             },
         ];
-        expect(matchYPosition(rightEyeDetections)).toStrictEqual([
-            55,
-            40,
-            0,
-            0,
-        ]);
+        expect(
+            (matchYPosition(rightEyeDetections) as IDetection).bbox,
+        ).toStrictEqual([55, 40, 0, 0]);
     });
 
     it('undefined when there are no detections', () => {

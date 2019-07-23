@@ -11,6 +11,11 @@ export interface IColour {
     b: number;
 }
 
+export interface IHistory {
+    colour: IColour;
+    target: ICoords;
+}
+
 export type DetectionImage =
     | HTMLVideoElement
     | HTMLImageElement
