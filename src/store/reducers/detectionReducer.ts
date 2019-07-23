@@ -1,5 +1,6 @@
 import { PoseNet } from '@tensorflow-models/posenet';
 import { eyelidPosition, maxNumTargetsToConsider } from '../../AppConstants';
+import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import {
     DetectionActionType,
@@ -93,7 +94,7 @@ function setAnimation(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    return { ...state, animation: action.payload as any[] };
+    return { ...state, animation: action.payload as Animation };
 }
 
 export default detectionStore;

@@ -2,7 +2,6 @@ import { Detections, IDetection } from '../../models/objectDetection';
 import calculateTargetPos, {
     calculateNormalisedPos,
 } from '../objectTracking/calculateFocus';
-import { getPose } from '../pose/poseDetection';
 import { Bbox, ICoords } from '../types';
 
 export default function select(
@@ -10,32 +9,15 @@ export default function select(
     compare: (x: Bbox, y: Bbox) => number,
     filter?: (d: IDetection) => boolean,
 ): Bbox | undefined {
-    const personBboxes: IDetection[] = detections
+    const personBboxes: Bbox[] = detections
         .filter(detection => !filter || filter(detection))
-        .map(detection => detection);
-    const selection = Object.entries(personBboxes).reduce<
-        [string, IDetection] | undefined
-    >((best, current) => {
-        if (best === undefined) {
-            return current;
-        } else {
-            return compare(current[1].bbox, best[1].bbox) > 0 ? current : best;
-        }
-    }, undefined);
-    if (selection) {
-        const pose = getPose(selection[1]);
-        if (pose) {
-            console.log(pose);
-        }
-        return selection[1].bbox;
-    }
-    return undefined;
-}
+        .map(detection => detection.bbox);
 
-function doAction(action: string) {
-    if (action === WAVE) {
-        const keyFrames = [];
-    }
+    return personBboxes.reduce<Bbox | undefined>(
+        (best, current) =>
+            best === undefined || compare(current, best) > 0 ? current : best,
+        undefined,
+    );
 }
 
 export function setPrediction(history: ICoords[]): ICoords {
