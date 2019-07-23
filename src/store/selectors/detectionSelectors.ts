@@ -4,8 +4,8 @@ import { Detections } from '../../models/objectDetection';
 import select, {
     calculateColourMatch,
     closerToPrediction,
-    setPredictedColour,
-    setPredictedTarget,
+    getPredictedColour,
+    getPredictedTarget,
 } from '../../utils/objectSelection/select';
 import { calculateNormalisedPos } from '../../utils/objectTracking/calculateFocus';
 import { IColour, ICoords } from '../../utils/types';
@@ -29,8 +29,8 @@ export const getSelections = createSelector(
         const height = videos[0] ? videos[0]!.height : 1;
         const imageData = imageDataMap[EyeSide.LEFT];
 
-        const predictedTarget = setPredictedTarget(previousTargets);
-        const predictedColour = setPredictedColour(previousColours);
+        const predictedTarget = getPredictedTarget(previousTargets);
+        const predictedColour = getPredictedColour(previousColours);
 
         const selection = select(
             detections,

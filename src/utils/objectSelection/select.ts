@@ -80,7 +80,7 @@ function getAvgColour(
     return { r, g, b };
 }
 
-export function setPredictedTarget(history: ICoords[]): ICoords {
+export function getPredictedTarget(history: ICoords[]): ICoords {
     const coordsX = history.map(target => target.x);
     const coordsY = history.map(target => target.y);
 
@@ -90,7 +90,7 @@ export function setPredictedTarget(history: ICoords[]): ICoords {
     return { x: xPrediction, y: yPrediction };
 }
 
-export function setPredictedColour(history: IColour[]): IColour {
+export function getPredictedColour(history: IColour[]): IColour {
     const reversedHistory = history.reverse();
     const rHistory = reversedHistory.map(colour => colour.r);
     const gHistory = reversedHistory.map(colour => colour.g);
