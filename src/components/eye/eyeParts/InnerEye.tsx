@@ -7,11 +7,6 @@ import { getVideos } from '../../../store/selectors/videoSelectors';
 import { getIrisAdjustment } from '../EyeUtils';
 
 interface IInnerEyeProps {
-    innerTransitionStyle: { transition: string };
-    circleTransitionStyle: { transition: string };
-    lineTransitionStyle: { transition: string };
-    ellipseTransitionStyle: { transition: string };
-    imageTransitionStyle: { transition: string };
     irisRadius: number;
     innerY: number;
     innerX: number;
@@ -27,12 +22,23 @@ interface IInnerEyeProps {
 
 interface IInnerEyeMapStateToProps {
     image: HTMLVideoElement | undefined;
+    fps: number;
 }
 
 type InnerEyeProps = IInnerEyeProps & IInnerEyeMapStateToProps;
 
 export const InnerEye = React.memo(
     (props: InnerEyeProps) => {
+        const period = 1000 / props.fps;
+        const pupilTransitionStyle = {
+            transition: `r ${period}ms linear, transform ${period}ms`, // cx and cy transitions based on FPS
+        };
+        const innerTransitionStyle = {
+            transition: `transform ${period}ms, x ${period}ms, y ${period}ms`,
+        };
+        const imageTransitionStyle = {
+            transition: `width ${period}ms linear, height ${period}ms linear`,
+        };
         const irisAdjustmentRef = useRef({ scale: 1, angle: 0 });
         const canvasRef: React.RefObject<HTMLCanvasElement> = useRef(null);
         const irisAdjustment = getIrisAdjustment(
@@ -58,8 +64,7 @@ export const InnerEye = React.memo(
                     if (ctx) {
                         const radius =
                             props.pupilRadius * props.dilatedCoefficient;
-                        const diameter = (canvas.width = canvas.height =
-                            radius * 2);
+                        const diameter = radius * 2;
                         ctx.drawImage(props.image, 0, 0, diameter, diameter);
                         ctx.globalCompositeOperation = 'destination-in';
                         ctx.beginPath();
@@ -74,78 +79,75 @@ export const InnerEye = React.memo(
         return (
             <g
                 className="inner"
-                style={props.innerTransitionStyle}
+                style={innerTransitionStyle}
                 transform={`
                     rotate(${irisAdjustment.angle})
                     scale(${irisAdjustment.scale}, 1)
                     rotate(${-irisAdjustment.angle})
+                    translate(${props.innerX},${props.innerY})
                 `}
+                x={props.innerX}
+                y={props.innerY}
             >
                 <circle
                     className={'iris'}
-                    style={props.circleTransitionStyle}
                     r={props.irisRadius}
                     fill={'url(#irisGradient)'}
-                    cx={props.innerX}
-                    cy={props.innerY}
                 />
-                <g className="irisStyling">
-                    <path
-                        d={`M ${props.innerX} ${props.innerY} ${props.innerPath}`}
-                        fill={tinycolor(props.irisColor)
-                            .darken(10)
-                            .toHexString()}
-                        style={props.lineTransitionStyle}
+                <path
+                    className="irisStyling"
+                    d={`M 0 0 ${props.innerPath}`}
+                    fill={tinycolor(props.irisColor)
+                        .darken(10)
+                        .toHexString()}
+                />
+                <g className="pupil" style={pupilTransitionStyle}>
+                    <circle
+                        className={'pupil'}
+                        r={props.pupilRadius * props.dilatedCoefficient}
+                        fill={props.pupilColor}
+                    />
+                    <foreignObject
+                        width={dilatedPupilRadius * 2}
+                        height={dilatedPupilRadius * 2}
+                        x={-dilatedPupilRadius}
+                        y={-dilatedPupilRadius}
+                        style={{
+                            ...imageTransitionStyle,
+                            marginLeft: `-${dilatedPupilRadius}`,
+                            marginTop: `-${dilatedPupilRadius}`,
+                            padding: `0px`,
+                        }}
+                        opacity={0.15}
+                    >
+                        <canvas
+                            ref={canvasRef}
+                            style={{
+                                ...imageTransitionStyle,
+                            }}
+                            width={dilatedPupilRadius * 2}
+                            height={dilatedPupilRadius * 2}
+                        />
+                    </foreignObject>
+                    <ellipse
+                        className={'innerReflection'}
+                        rx={props.pupilRadius * 0.375}
+                        ry={props.pupilRadius * 0.75}
+                        fill={'url(#shineGradient)'}
+                        transform={`skewX(30) translate(${
+                            props.pupilRadius
+                        },${-props.pupilRadius * 0.5})`}
+                    />
+                    <ellipse
+                        className={'outerReflection'}
+                        rx={props.pupilRadius * 0.5}
+                        ry={props.pupilRadius}
+                        fill={'url(#shineGradient)'}
+                        transform={`skewX(30) translate(${
+                            props.irisRadius
+                        },${-props.irisRadius * 0.55})`}
                     />
                 </g>
-                <circle
-                    className={'pupil'}
-                    style={props.circleTransitionStyle}
-                    r={props.pupilRadius * props.dilatedCoefficient}
-                    fill={props.pupilColor}
-                    cx={props.innerX}
-                    cy={props.innerY}
-                />
-                <clipPath id="imageMask">
-                    <circle
-                        style={props.circleTransitionStyle}
-                        r={dilatedPupilRadius}
-                        cx={props.innerX}
-                        cy={props.innerY}
-                    />
-                </clipPath>
-                <foreignObject
-                    width={dilatedPupilRadius * 2}
-                    height={dilatedPupilRadius * 2}
-                    x={props.innerX - dilatedPupilRadius}
-                    y={props.innerY - dilatedPupilRadius}
-                    style={props.imageTransitionStyle}
-                    opacity={0.15}
-                >
-                    <canvas ref={canvasRef} />
-                </foreignObject>
-                <ellipse
-                    className={'innerReflection'}
-                    style={props.ellipseTransitionStyle}
-                    rx={props.pupilRadius * 0.375}
-                    ry={props.pupilRadius * 0.75}
-                    fill={'url(#reflectionGradient)'}
-                    cx={props.innerX + props.pupilRadius * 0.4}
-                    cy={props.innerY - props.pupilRadius * 0.4}
-                    transform={`skewX(20) translate(${(-145 / 960) *
-                        props.width}, ${(5 / 1080) * props.height})`}
-                />
-                <ellipse
-                    className={'outerReflection'}
-                    style={props.ellipseTransitionStyle}
-                    rx={props.pupilRadius * 0.5}
-                    ry={props.pupilRadius}
-                    fill={'url(#reflectionGradient)'}
-                    cx={props.innerX + props.scleraRadius * 0.3}
-                    cy={props.innerY - props.scleraRadius * 0.3}
-                    transform={`skewX(20) translate(${(-140 / 960) *
-                        props.width}, ${(5 / 1080) * props.height})`}
-                />
             </g>
         );
     },
@@ -154,6 +156,7 @@ export const InnerEye = React.memo(
 
 const mapStateToProps = (state: IRootStore): IInnerEyeMapStateToProps => ({
     image: getVideos(state)[0],
+    fps: state.configStore.config.fps,
 });
 
 export default connect(mapStateToProps)(InnerEye);
