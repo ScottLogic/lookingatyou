@@ -192,8 +192,8 @@ function getSourceBox(selection: ISelections, image: HTMLVideoElement) {
         return {
             sx: 0,
             sy: 0,
-            sWidth: image.width,
-            sHeight: image.height,
+            sWidth: 0,
+            sHeight: 0,
         };
     }
 }
