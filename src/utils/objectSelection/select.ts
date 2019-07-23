@@ -13,7 +13,6 @@ export default function select(
     const personBboxes: IDetection[] = detections
         .filter(detection => !filter || filter(detection))
         .map(detection => detection);
-    console.log('personBboxes', personBboxes);
     const selection = Object.entries(personBboxes).reduce<
         [string, IDetection] | undefined
     >((best, current) => {
@@ -23,12 +22,19 @@ export default function select(
             return compare(current[1].bbox, best[1].bbox) > 0 ? current : best;
         }
     }, undefined);
-    if (selection === undefined) {
-        return selection;
-    } else {
-        if (getPose(selection[1])) {
+    if (selection) {
+        const pose = getPose(selection[1]);
+        if (pose) {
+            console.log(pose);
         }
         return selection[1].bbox;
+    }
+    return undefined;
+}
+
+function doAction(action: string) {
+    if (action === WAVE) {
+        const keyFrames = [];
     }
 }
 

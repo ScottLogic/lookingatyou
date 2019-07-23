@@ -7,6 +7,7 @@ export const SET_INTERVAL = 'SET_INTERVAL';
 export const SET_IDLE_TARGET = 'SET_IDLE_TARGET';
 export const SET_DETECTIONS = 'SET_DETECTIONS';
 export const SET_OPEN = 'SET_OPEN';
+export const SET_ANIMATION = 'SET_ANIMATION';
 
 export interface IDetectionState {
     model: PoseNet | null;
@@ -15,6 +16,7 @@ export interface IDetectionState {
     detections: Detections;
     history: ICoords[];
     idleTarget: ICoords;
+    animation: any[];
 }
 
 export interface ISetModelAction {
@@ -46,9 +48,15 @@ export interface ISetOpenAction {
     payload: number;
 }
 
+export interface ISetAnimationAction {
+    type: typeof SET_ANIMATION;
+    payload: any[];
+}
+
 export type DetectionActionType =
     | ISetModelAction
     | ISetIntervalAction
     | ISetIdleTargetAction
     | ISetDetectionsAction
-    | ISetOpenAction;
+    | ISetOpenAction
+    | ISetAnimationAction;
