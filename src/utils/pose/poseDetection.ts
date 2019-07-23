@@ -25,12 +25,6 @@ function wave(selection: IDetection) {
 
 function handsUp(selection: IDetection) {
     const keypoints = selection.info.keypoints;
-    console.log(
-        keypoints[partIds.rightWrist].position.y <
-            keypoints[partIds.rightEye].position.y &&
-            keypoints[partIds.leftWrist].position.y <
-                keypoints[partIds.leftEye].position.y,
-    );
     return (
         keypoints[partIds.rightWrist].position.y <
             keypoints[partIds.rightEye].position.y &&
