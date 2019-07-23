@@ -30,14 +30,8 @@ type InnerEyeProps = IInnerEyeProps & IInnerEyeMapStateToProps;
 export const InnerEye = React.memo(
     (props: InnerEyeProps) => {
         const period = 1000 / props.fps;
-        const pupilTransitionStyle = {
-            transition: `r ${period}ms linear, transform ${period}ms`, // cx and cy transitions based on FPS
-        };
-        const innerTransitionStyle = {
-            transition: `transform ${period}ms, x ${period}ms, y ${period}ms`,
-        };
-        const imageTransitionStyle = {
-            transition: `width ${period}ms linear, height ${period}ms linear`,
+        const transitionStyle = {
+            transition: `transform ${period}ms`, // cx and cy transitions based on FPS
         };
         const irisAdjustmentRef = useRef({ scale: 1, angle: 0 });
         const canvasRef: React.RefObject<HTMLCanvasElement> = useRef(null);
@@ -62,32 +56,45 @@ export const InnerEye = React.memo(
                 if (canvas && props.image) {
                     const ctx = canvas.getContext('2d');
                     if (ctx) {
-                        const radius =
-                            props.pupilRadius * props.dilatedCoefficient;
-                        const diameter = radius * 2;
-                        ctx.drawImage(props.image, 0, 0, diameter, diameter);
-                        ctx.globalCompositeOperation = 'destination-in';
+                        const r = props.pupilRadius;
+                        ctx.save();
                         ctx.beginPath();
-                        ctx.arc(radius, radius, radius, 0, Math.PI * 2);
+                        ctx.arc(r, r, r, 0, Math.PI * 2, true);
                         ctx.closePath();
-                        ctx.fill();
+                        ctx.clip();
+                        ctx.drawImage(
+                            props.image,
+                            0,
+                            0,
+                            canvas.width,
+                            canvas.height,
+                        );
+                        ctx.beginPath();
+                        ctx.arc(0, 0, r, 0, Math.PI * 2, true);
+                        ctx.clip();
+                        ctx.closePath();
+                        ctx.restore();
+                    } else {
+                        console.log('!ctx');
                     }
+                } else {
+                    console.log('!canvas || ! props.image');
                 }
+            } else {
+                console.log('!canvasRef');
             }
         });
 
         return (
             <g
                 className="inner"
-                style={innerTransitionStyle}
+                style={transitionStyle}
                 transform={`
                     rotate(${irisAdjustment.angle})
                     scale(${irisAdjustment.scale}, 1)
                     rotate(${-irisAdjustment.angle})
                     translate(${props.innerX},${props.innerY})
                 `}
-                x={props.innerX}
-                y={props.innerY}
             >
                 <circle
                     className={'iris'}
@@ -101,53 +108,48 @@ export const InnerEye = React.memo(
                         .darken(10)
                         .toHexString()}
                 />
-                <g className="pupil" style={pupilTransitionStyle}>
+                <g
+                    className="pupil"
+                    style={transitionStyle}
+                    transform={`scale(${props.dilatedCoefficient})`}
+                >
                     <circle
                         className={'pupil'}
-                        r={props.pupilRadius * props.dilatedCoefficient}
+                        r={props.pupilRadius}
                         fill={props.pupilColor}
                     />
                     <foreignObject
-                        width={dilatedPupilRadius * 2}
-                        height={dilatedPupilRadius * 2}
-                        x={-dilatedPupilRadius}
-                        y={-dilatedPupilRadius}
-                        style={{
-                            ...imageTransitionStyle,
-                            marginLeft: `-${dilatedPupilRadius}`,
-                            marginTop: `-${dilatedPupilRadius}`,
-                            padding: `0px`,
-                        }}
+                        width={props.pupilRadius * 2}
+                        height={props.pupilRadius * 2}
+                        x={-props.pupilRadius}
+                        y={-props.pupilRadius}
                         opacity={0.15}
                     >
                         <canvas
                             ref={canvasRef}
-                            style={{
-                                ...imageTransitionStyle,
-                            }}
-                            width={dilatedPupilRadius * 2}
-                            height={dilatedPupilRadius * 2}
+                            width={props.pupilRadius * 2}
+                            height={props.pupilRadius * 2}
                         />
                     </foreignObject>
-                    <ellipse
-                        className={'innerReflection'}
-                        rx={props.pupilRadius * 0.375}
-                        ry={props.pupilRadius * 0.75}
-                        fill={'url(#shineGradient)'}
-                        transform={`skewX(30) translate(${
-                            props.pupilRadius
-                        },${-props.pupilRadius * 0.5})`}
-                    />
-                    <ellipse
-                        className={'outerReflection'}
-                        rx={props.pupilRadius * 0.5}
-                        ry={props.pupilRadius}
-                        fill={'url(#shineGradient)'}
-                        transform={`skewX(30) translate(${
-                            props.irisRadius
-                        },${-props.irisRadius * 0.55})`}
-                    />
                 </g>
+                <ellipse
+                    className={'innerReflection'}
+                    rx={props.pupilRadius * 0.375}
+                    ry={props.pupilRadius * 0.75}
+                    fill={'url(#shineGradient)'}
+                    transform={`skewX(30) translate(${
+                        props.pupilRadius
+                    },${-props.pupilRadius * 0.5})`}
+                />
+                <ellipse
+                    className={'outerReflection'}
+                    rx={props.pupilRadius * 0.5}
+                    ry={props.pupilRadius}
+                    fill={'url(#shineGradient)'}
+                    transform={`skewX(30) translate(${
+                        props.irisRadius
+                    },${-props.irisRadius * 0.55})`}
+                />
             </g>
         );
     },
