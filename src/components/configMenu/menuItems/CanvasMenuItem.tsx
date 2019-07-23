@@ -4,7 +4,7 @@ import {
     chosenTargetColour,
     nonChosenTargetColour,
 } from '../../../AppConstants';
-import { Detections } from '../../../models/objectDetection';
+import { Detections, IDetection } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import {
     getDetections,
@@ -22,7 +22,7 @@ interface ICanvasMenuItemProps {
 
 interface IAppMapStateToProps {
     videos: Array<HTMLVideoElement | undefined>;
-    selections: Bbox | undefined;
+    selection: IDetection | undefined;
     detections: Detections;
 }
 
@@ -44,8 +44,8 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
     }
 
     componentDidUpdate() {
-        if (this.props.selections) {
-            this.bbox = this.props.selections;
+        if (this.props.selection) {
+            this.bbox = this.props.selection.bbox;
         }
         this.getStream();
     }
@@ -55,7 +55,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         nextProps: CanvasMenuItemProps,
     ) {
         return (
-            previousProps.selections !== nextProps.selections ||
+            previousProps.selection !== nextProps.selection ||
             previousProps.videoIndex !== nextProps.videoIndex
         );
     }
@@ -72,7 +72,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
 
         let [x, y, width, height] = [0, 0, 0, 0];
 
-        if (this.props.selections && detections) {
+        if (this.props.selection && detections) {
             detections.forEach(({ bbox }) => {
                 [x, y, width, height] = bbox;
                 if (this.canvasRef.current) {
