@@ -74,14 +74,8 @@ export const InnerEye = React.memo(
                         ctx.clip();
                         ctx.closePath();
                         ctx.restore();
-                    } else {
-                        console.log('!ctx');
                     }
-                } else {
-                    console.log('!canvas || ! props.image');
                 }
-            } else {
-                console.log('!canvasRef');
             }
         });
 
