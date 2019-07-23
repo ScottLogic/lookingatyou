@@ -33,6 +33,7 @@ interface IEyeControllerMapStateToProps {
     target: ICoords;
     videos: Array<HTMLVideoElement | undefined>;
     openCoefficient: number;
+    animation: any[];
 }
 
 export type EyeControllerProps = IEyeControllerProps &
@@ -104,6 +105,8 @@ export const EyeController = React.memo(
 
         const calculatedEyesOpenCoefficient = getEyesOpenCoefficient();
 
+        const rollEyes = () => {};
+
         return (
             <div className="container">
                 {[EyeSide.RIGHT, EyeSide.LEFT].map((eye, index) => {
@@ -154,6 +157,7 @@ const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     target: getTargets(state),
     videos: getVideos(state),
     openCoefficient: getOpenCoefficient(state),
+    animation: state.detectionStore.animation,
 });
 
 export default connect(mapStateToProps)(EyeController);
