@@ -1,27 +1,21 @@
 import { Keypoint } from '@tensorflow-models/posenet';
 import { bodyParts } from '../../AppConstants';
-import { IDetection } from '../../models/objectDetection';
+import { Detections, IDetection } from '../../models/objectDetection';
 import calculateTargetPos, {
     calculateNormalisedPos,
 } from '../objectTracking/calculateFocus';
-import { Bbox, ICoords, ITargets } from '../types';
-
-export interface IColour {
-    r: number;
-    g: number;
-    b: number;
-}
+import { Bbox, IColour, ICoords } from '../types';
 
 export default function select(
-    detections: IDetection[],
-    compare: (detection1: IDetection, detection2: IDetection) => number,
+    detections: Detections,
+    compare: (x: IDetection, y: IDetection) => number,
     filter?: (d: IDetection) => boolean,
 ): Bbox | undefined {
-    const filteredDetections: IDetection[] = detections.filter(
+    const personBboxes: Detections = detections.filter(
         detection => !filter || filter(detection),
     );
 
-    const selectedDetection = filteredDetections.reduce<IDetection | undefined>(
+    const selectedDetection = personBboxes.reduce<IDetection | undefined>(
         (best, current) =>
             best === undefined || compare(current, best) > 0 ? current : best,
         undefined,
@@ -82,16 +76,13 @@ function getAvgColour(
     return { r, g, b };
 }
 
-export function setPrediction(leftCam: boolean, history: ITargets[]): ICoords {
+export function setPrediction(history: ICoords[]): ICoords {
     let coordsX: number[] = [];
     let coordsY: number[] = [];
-    if (leftCam) {
-        coordsX = history.map(target => target.left.x);
-        coordsY = history.map(target => target.left.y);
-    } else {
-        coordsX = history.map(target => (target.right ? target.right.x : 0));
-        coordsY = history.map(target => (target.right ? target.right.y : 0));
-    }
+
+    coordsX = history.map(target => target.x);
+    coordsY = history.map(target => target.y);
+
     const xPrediction = getWeightedPrediction(coordsX);
     const yPrediction = getWeightedPrediction(coordsY);
 
@@ -221,18 +212,6 @@ export function closerToPrediction(
         const closerToPredictedTarget =
             Math.hypot(coords2.x - prediction.x, coords2.y - prediction.y) -
             Math.hypot(coords1.x - prediction.x, coords1.y - prediction.y);
-
-        console.log(
-            '%c                           ',
-            'background-color: rgb(' +
-                avgColour.r +
-                ',' +
-                avgColour.g +
-                ',' +
-                avgColour.b +
-                ')' +
-                ';',
-        );
 
         return Math.abs(closerToPredictedTarget) > 2
             ? closerToPredictedTarget

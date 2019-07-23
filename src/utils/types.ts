@@ -5,9 +5,10 @@ export interface ICoords {
     y: number;
 }
 
-export interface ITargets {
-    left: ICoords;
-    right: ICoords;
+export interface IColour {
+    r: number;
+    g: number;
+    b: number;
 }
 
 export type DetectionImage =

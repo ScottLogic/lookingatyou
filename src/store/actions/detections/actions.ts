@@ -1,8 +1,8 @@
 import * as posenet from '@tensorflow-models/posenet';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { IDetection, IDetections } from '../../../models/objectDetection';
-import { ICoords, ITargets } from '../../../utils/types';
+import { Detections, IDetection } from '../../../models/objectDetection';
+import { ICoords } from '../../../utils/types';
 import { reshapeDetections } from '../../../utils/utils';
 import { IRootStore } from '../../reducers/rootReducer';
 import { getTargets } from '../../selectors/detectionSelectors';
@@ -65,16 +65,7 @@ export function handleDetection() {
             left = reshapeDetections(leftDetections);
         }
 
-        let right: IDetection[] = [];
-        const rightImage = images[1];
-        if (rightImage && model && left.length > 0) {
-            const rightDetections = await model.estimateMultiplePoses(
-                rightImage,
-            );
-            right = reshapeDetections(rightDetections);
-        }
-
-        dispatch(setDetections({ left, right }, getTargets(state)));
+        dispatch(setDetections(left, getTargets(state)));
     };
 }
 
@@ -86,8 +77,8 @@ export function setIdleTarget(coords: ICoords): ISetIdleTargetAction {
 }
 
 export function setDetections(
-    detections: IDetections,
-    previousTarget: ITargets,
+    detections: Detections,
+    previousTarget: ICoords,
 ): ISetDetectionsAction {
     return {
         type: SET_DETECTIONS,

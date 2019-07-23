@@ -13,7 +13,7 @@ import {
     getTargets,
 } from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
-import { ICoords, ITargets } from '../../utils/types';
+import { ICoords } from '../../utils/types';
 import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
 import { getMaxDisplacement } from './EyeUtils';
@@ -30,7 +30,7 @@ interface IEyeControllerProps {
 
 interface IEyeControllerMapStateToProps {
     config: IUserConfig;
-    target: ITargets;
+    target: ICoords;
     videos: Array<HTMLVideoElement | undefined>;
     openCoefficient: number;
 }
@@ -86,11 +86,10 @@ export const EyeController = React.memo(
             const y = props.height / 2 + displacement * Math.sin(polarAngle);
             return { x, y };
         };
-        const leftCoords = getEyeCoords(props.target.left);
-        const right = props.target.right;
+        const leftCoords = getEyeCoords(props.target);
         const eyeCoords: { [key in EyeSide]: ICoords } = {
             LEFT: leftCoords,
-            RIGHT: right === null ? leftCoords : getEyeCoords(right),
+            RIGHT: leftCoords,
         };
 
         function getEyesOpenCoefficient(): number {
@@ -146,12 +145,8 @@ export const EyeController = React.memo(
     (previous, next) =>
         previous.dilation === next.dilation &&
         previous.openCoefficient === next.openCoefficient &&
-        previous.target.left.x === next.target.left.x &&
-        previous.target.left.y === next.target.left.y &&
-        previous.target.right === next.target.right &&
-        (previous.target.right === null ||
-            (previous.target.right.x === next.target.right!.x &&
-                previous.target.right.y === next.target.right!.y)),
+        previous.target.x === next.target.x &&
+        previous.target.y === next.target.y,
 );
 
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({

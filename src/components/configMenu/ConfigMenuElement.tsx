@@ -35,11 +35,6 @@ export type ConfigMenuElementProps = IConfigMenuElementProps &
 
 export const ConfigMenuElement = React.memo(
     (props: ConfigMenuElementProps) => {
-        const canvasData = [
-            { name: 'Left Camera', helpWith: HelpWith.LEFT_VIDEO_STREAM },
-            { name: 'Right Camera', helpWith: HelpWith.RIGHT_VIDEO_STREAM },
-        ];
-
         return (
             <ConfigMenu
                 width="14em"
@@ -81,22 +76,15 @@ export const ConfigMenuElement = React.memo(
                     helpWith={HelpWith.Y_SENSITIVITY}
                     min={0}
                 />
+
+                <br />
+
                 <ColorMenuItem
                     name={'Iris Colour'}
                     configName={'irisColor'}
                     color={props.config.irisColor}
                     onInputChange={props.setConfig}
                     helpWith={HelpWith.IRIS_COLOUR}
-                />
-
-                <br />
-
-                <CheckBoxMenuItem
-                    name={'Swap Eyes'}
-                    configName={'swapEyes'}
-                    helpWith={HelpWith.SWAP_EYES}
-                    checked={props.config.swapEyes}
-                    onInputChange={props.setConfig}
                 />
                 <CheckBoxMenuItem
                     name={'Toggle Debug'}
@@ -107,16 +95,12 @@ export const ConfigMenuElement = React.memo(
                 />
 
                 {props.config.toggleDebug
-                    ? props.videos.map((ignore, index, videos) => {
+                    ? props.videos.map((ignore, index) => {
                           return (
                               <CanvasMenuItem
-                                  name={
-                                      videos.length === 1
-                                          ? 'Camera'
-                                          : canvasData[index].name
-                                  }
+                                  name={'Camera'}
                                   key={index}
-                                  helpWith={canvasData[index].helpWith}
+                                  helpWith={HelpWith.VIDEO_STREAM}
                                   videoIndex={index}
                               />
                           );

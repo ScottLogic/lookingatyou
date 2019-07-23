@@ -90,3 +90,34 @@ function moveRight(
 export function getMaxDisplacement(scleraRadius: number, irisRadius: number) {
     return (scleraRadius - irisRadius * irisSkewFactor) / irisSkewFactor;
 }
+
+export function getIrisAdjustment(
+    x: number,
+    y: number,
+    height: number,
+    width: number,
+    scleraRadius: number,
+    irisRadius: number,
+    previousAngle: number = 0,
+) {
+    const displacement = Math.hypot(x - width / 2, y - height / 2);
+    const maxDisplacement = getMaxDisplacement(scleraRadius, irisRadius);
+
+    const scale =
+        irisSkewFactor +
+        ((1 - irisSkewFactor) * (maxDisplacement - displacement)) /
+            maxDisplacement;
+
+    let angle = (Math.atan2(y - height / 2, x - width / 2) * 180) / Math.PI;
+
+    if (angle - previousAngle < -90) {
+        angle = angle + 180;
+    } else if (angle - previousAngle > 90) {
+        angle = angle - 180;
+    }
+
+    return {
+        scale,
+        angle,
+    };
+}

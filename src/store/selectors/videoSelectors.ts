@@ -3,9 +3,6 @@ import { IRootStore } from '../reducers/rootReducer';
 
 export function getDeviceIds(state: IRootStore): string[] {
     const deviceIds = Object.keys(state.videoStore.videos);
-    if (state.configStore.config.swapEyes) {
-        deviceIds.reverse();
-    }
     return deviceIds;
 }
 

@@ -4,7 +4,7 @@ import {
     chosenTargetColour,
     nonChosenTargetColour,
 } from '../../../AppConstants';
-import { IDetections, ISelections } from '../../../models/objectDetection';
+import { Detections } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import {
     getDetections,
@@ -22,8 +22,8 @@ interface ICanvasMenuItemProps {
 
 interface IAppMapStateToProps {
     videos: Array<HTMLVideoElement | undefined>;
-    selections: ISelections;
-    detections: IDetections;
+    selections: Bbox | undefined;
+    detections: Detections;
 }
 
 type CanvasMenuItemProps = ICanvasMenuItemProps & IAppMapStateToProps;
@@ -44,10 +44,8 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
     }
 
     componentDidUpdate() {
-        if (this.props.videoIndex === 0 && this.props.selections.left) {
-            this.bbox = this.props.selections.left;
-        } else if (this.props.videoIndex === 1 && this.props.selections.right) {
-            this.bbox = this.props.selections.right;
+        if (this.props.selections) {
+            this.bbox = this.props.selections;
         }
         this.getStream();
     }
@@ -68,10 +66,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         ] as HTMLVideoElement;
 
         const focusedBbox = this.bbox;
-        const detections =
-            this.props.videoIndex === 0
-                ? this.props.detections.left
-                : this.props.detections.right;
+        const detections = this.props.detections;
 
         this.drawVideoFrame(video);
 
