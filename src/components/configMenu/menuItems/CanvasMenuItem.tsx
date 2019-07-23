@@ -1,7 +1,11 @@
+import { getAdjacentKeyPoints, Keypoint } from '@tensorflow-models/posenet';
 import React from 'react';
 import { connect } from 'react-redux';
 import {
+    canvasLineWidth,
+    canvasScale,
     chosenTargetColour,
+    minConfidence,
     nonChosenTargetColour,
 } from '../../../AppConstants';
 import { Detections, IDetection } from '../../../models/objectDetection';
@@ -11,8 +15,12 @@ import {
     getSelections,
 } from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
-import { Bbox } from '../../../utils/types';
 import { HelpWith } from '../Help';
+
+interface ITuple {
+    y: number;
+    x: number;
+}
 
 interface ICanvasMenuItemProps {
     name: string;
@@ -30,7 +38,7 @@ type CanvasMenuItemProps = ICanvasMenuItemProps & IAppMapStateToProps;
 
 export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
     canvasRef: React.RefObject<HTMLCanvasElement>;
-    private bbox: Bbox = [0, 0, 0, 0];
+    private keypoints: Keypoint[] = [];
     constructor(props: CanvasMenuItemProps) {
         super(props);
 
@@ -45,7 +53,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
 
     componentDidUpdate() {
         if (this.props.selection) {
-            this.bbox = this.props.selection.bbox;
+            this.keypoints = this.props.selection.info.keypoints;
         }
         this.getStream();
     }
@@ -65,29 +73,10 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
             this.props.videoIndex
         ] as HTMLVideoElement;
 
-        const focusedBbox = this.bbox;
+        const focusedPose = this.keypoints;
         const detections = this.props.detections;
 
-        this.drawVideoFrame(video);
-
-        let [x, y, width, height] = [0, 0, 0, 0];
-
-        if (this.props.selection && detections) {
-            detections.forEach(({ bbox }) => {
-                [x, y, width, height] = bbox;
-                if (this.canvasRef.current) {
-                    this.drawRectangle(nonChosenTargetColour, {
-                        x,
-                        y,
-                        width,
-                        height,
-                    });
-                }
-            });
-        }
-
-        [x, y, width, height] = focusedBbox;
-        this.drawRectangle(chosenTargetColour, { x, y, width, height });
+        this.handleDrawing(video, detections, focusedPose);
     }
 
     render() {
@@ -100,36 +89,95 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         );
     }
 
-    drawVideoFrame(image: HTMLVideoElement) {
-        const canvas = this.canvasRef.current;
-        if (canvas && image instanceof HTMLVideoElement) {
-            canvas.height = image.height;
-            canvas.width = image.width;
-
-            const canvasCtx = canvas.getContext('2d');
-
-            if (canvasCtx) {
-                canvasCtx.drawImage(image, 0, 0, canvas.width, canvas.height);
-            }
-        }
-    }
-
-    drawRectangle(
-        colour: string,
-        bbox?: { x: number; y: number; width: number; height: number },
+    private handleDrawing(
+        video: HTMLVideoElement,
+        detections: IDetection[],
+        focusedPose: Keypoint[],
     ) {
-        const canvas = this.canvasRef.current;
-        if (canvas) {
+        if (this.canvasRef.current) {
+            const canvas = this.canvasRef.current;
+            canvas.height = video.height;
+            canvas.width = video.width;
             const canvasCtx = canvas.getContext('2d');
-            if (canvasCtx && bbox) {
-                canvasCtx.beginPath();
-                canvasCtx.lineWidth = 5;
-                canvasCtx.strokeStyle = colour;
-                canvasCtx.rect(bbox.x, bbox.y, bbox.width, bbox.height);
-                canvasCtx.stroke();
+            if (this.props.selection && detections && canvasCtx) {
+                canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                detections
+                    .map(detection => detection.info.keypoints)
+                    .forEach(keypointSet => {
+                        drawPose(keypointSet, canvasCtx, nonChosenTargetColour);
+                    });
+                drawPose(focusedPose, canvasCtx, chosenTargetColour);
             }
         }
     }
+}
+
+function drawPose(
+    keypoints: Keypoint[],
+    canvasCtx: CanvasRenderingContext2D,
+    colour: string,
+) {
+    drawSkeleton(keypoints, canvasCtx, colour);
+    drawKeypoints(keypoints, canvasCtx, colour);
+}
+
+function drawSegment(
+    pair1: ITuple,
+    pair2: ITuple,
+    color: string,
+    scale: number,
+    ctx: CanvasRenderingContext2D,
+) {
+    ctx.beginPath();
+    ctx.moveTo(pair1.x * scale, pair1.y * scale);
+    ctx.lineTo(pair2.x * scale, pair2.y * scale);
+    ctx.lineWidth = canvasLineWidth;
+    ctx.strokeStyle = color;
+    ctx.stroke();
+}
+
+function drawSkeleton(
+    keypoints: Keypoint[],
+    canvasCtx: CanvasRenderingContext2D,
+    colour: string,
+) {
+    const adjacentKeyPoints = getAdjacentKeyPoints(keypoints, minConfidence);
+
+    adjacentKeyPoints.forEach(keypoint => {
+        drawSegment(
+            keypoint[0].position,
+            keypoint[1].position,
+            colour,
+            canvasScale,
+            canvasCtx,
+        );
+    });
+}
+
+function drawKeypoints(
+    keypoints: Keypoint[],
+    ctx: CanvasRenderingContext2D,
+    colour: string,
+) {
+    for (const keypoint of keypoints) {
+        if (keypoint.score >= minConfidence) {
+            const { y, x } = keypoint.position;
+            drawPoint(ctx, y * canvasScale, x * canvasScale, 3, colour);
+        }
+    }
+}
+
+function drawPoint(
+    ctx: CanvasRenderingContext2D,
+    y: number,
+    x: number,
+    r: number,
+    colour: string,
+) {
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, 2 * Math.PI);
+    ctx.fillStyle = colour;
+    ctx.fill();
 }
 
 const mapStateToProps = (state: IRootStore) => ({

@@ -38,3 +38,6 @@ export const bodyParts = {
     LEFT_SHOULDER: 'leftShoulder',
     RIGHT_HIP: 'rightHip',
 };
+export const canvasScale = 1;
+export const canvasLineWidth = 5;
+export const minConfidence = 0.4;
