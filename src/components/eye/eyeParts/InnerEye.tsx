@@ -2,7 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import tinycolor from 'tinycolor2';
+import { ISelections } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
+import { getSelections } from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
 import { getIrisAdjustment } from '../EyeUtils';
 
@@ -23,6 +25,7 @@ interface IInnerEyeProps {
 interface IInnerEyeMapStateToProps {
     image: HTMLVideoElement | undefined;
     fps: number;
+    selection: ISelections;
 }
 
 type InnerEyeProps = IInnerEyeProps & IInnerEyeMapStateToProps;
@@ -55,28 +58,16 @@ export const InnerEye = React.memo(
                 if (canvas && props.image) {
                     const ctx = canvas.getContext('2d');
                     if (ctx) {
-                        const r = props.pupilRadius;
-                        ctx.save();
-                        ctx.beginPath();
-                        ctx.arc(r, r, r, 0, Math.PI * 2, true);
-                        ctx.closePath();
-                        ctx.clip();
-                        ctx.drawImage(
+                        drawReflection(
+                            ctx,
+                            props.pupilRadius,
+                            props.selection,
                             props.image,
-                            0,
-                            0,
-                            canvas.width,
-                            canvas.height,
                         );
-                        ctx.beginPath();
-                        ctx.arc(0, 0, r, 0, Math.PI * 2, true);
-                        ctx.clip();
-                        ctx.closePath();
-                        ctx.restore();
                     }
                 }
             }
-        });
+        }, [props.image, props.pupilRadius, props.selection]);
 
         return (
             <g
@@ -106,17 +97,11 @@ export const InnerEye = React.memo(
                     style={transitionStyle}
                     transform={`scale(${props.dilatedCoefficient})`}
                 >
-                    <circle
-                        className={'pupil'}
-                        r={props.pupilRadius}
-                        fill={props.pupilColor}
-                    />
                     <foreignObject
                         width={props.pupilRadius * 2}
                         height={props.pupilRadius * 2}
                         x={-props.pupilRadius}
                         y={-props.pupilRadius}
-                        opacity={0.15}
                     >
                         <canvas
                             ref={canvasRef}
@@ -124,6 +109,13 @@ export const InnerEye = React.memo(
                             height={props.pupilRadius * 2}
                         />
                     </foreignObject>
+                    <circle
+                        className={'pupil'}
+                        r={props.pupilRadius}
+                        fill={'url(#pupilGradient)'}
+                        stroke={'black'}
+                        strokeWidth={'2'}
+                    />
                 </g>
                 <ellipse
                     className={'innerReflection'}
@@ -149,9 +141,67 @@ export const InnerEye = React.memo(
     (previous, next) => isEqual(previous, next),
 );
 
+function drawReflection(
+    ctx: CanvasRenderingContext2D,
+    radius: number,
+    selection: ISelections,
+    image: HTMLVideoElement,
+) {
+    const r = radius;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(r, r, r, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.clip();
+    ctx.scale(-1, 1);
+    const sourceBox = getSourceBox(selection, image);
+    ctx.drawImage(
+        image,
+        sourceBox.sx,
+        sourceBox.sy,
+        sourceBox.sWidth,
+        sourceBox.sHeight,
+        0,
+        0,
+        -radius * 2,
+        radius * 2,
+    );
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2, true);
+    ctx.clip();
+    ctx.closePath();
+    ctx.restore();
+}
+
+function getSourceBox(selection: ISelections, image: HTMLVideoElement) {
+    if (selection.left) {
+        const boxSize = image.width * 0.4;
+        let sx = selection.left[0] + selection.left[2] / 2 - boxSize / 2;
+        let sy = selection.left[1] + selection.left[3] / 2 - boxSize / 2;
+        sx = Math.min(sx, image.width - boxSize);
+        sx = Math.max(sx, 0);
+        sy = Math.min(sy, image.width - boxSize);
+        sy = Math.max(sy, 0);
+        return {
+            sx,
+            sy,
+            sWidth: boxSize,
+            sHeight: boxSize,
+        };
+    } else {
+        return {
+            sx: 0,
+            sy: 0,
+            sWidth: image.width,
+            sHeight: image.height,
+        };
+    }
+}
+
 const mapStateToProps = (state: IRootStore): IInnerEyeMapStateToProps => ({
     image: getVideos(state)[0],
     fps: state.configStore.config.fps,
+    selection: getSelections(state),
 });
 
 export default connect(mapStateToProps)(InnerEye);

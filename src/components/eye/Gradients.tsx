@@ -62,6 +62,24 @@ export const Gradients = React.memo(
                             stopOpacity={0.05}
                         />
                     </radialGradient>
+
+                    <radialGradient id="pupilGradient">
+                        <stop
+                            offset="0%"
+                            stopColor={'black'}
+                            stopOpacity={0.8}
+                        />
+                        <stop
+                            offset="75%"
+                            stopColor={'black'}
+                            stopOpacity={0.85}
+                        />
+                        <stop
+                            offset="100%"
+                            stopColor={'black'}
+                            stopOpacity={1}
+                        />
+                    </radialGradient>
                 </defs>
             </svg>
         );
