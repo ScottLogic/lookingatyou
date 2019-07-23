@@ -73,6 +73,11 @@ function getAvgColour(
     g = g / counter;
     b = b / counter;
 
+    console.log(
+        '%c                 ',
+        'background-color: rgb(' + r + ', ' + g + ', ' + b + ');',
+    );
+
     return { r, g, b };
 }
 
