@@ -219,7 +219,12 @@ export function closerToPrediction(
             Math.hypot(coords2.x - prediction.x, coords2.y - prediction.y) -
             Math.hypot(coords1.x - prediction.x, coords1.y - prediction.y);
 
-        return Math.abs(closerToPredictedTarget) < 0.1
+        const distanceBetween = Math.hypot(
+            coords1.x - coords2.x,
+            coords1.y - coords2.y,
+        );
+
+        return distanceBetween > 0.1
             ? closerToPredictedTarget
             : closerToColour(
                   imageData,
@@ -246,7 +251,6 @@ function getWeightedPrediction(nums: number[]): number {
     }
 
     const weightedTotal = weightedNums.reduce((a, b) => a + b, 0) / decayTotal;
-
     return weightedTotal + nums[nums.length - 1];
 }
 
