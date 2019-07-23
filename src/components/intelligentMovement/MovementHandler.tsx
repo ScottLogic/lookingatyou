@@ -16,7 +16,7 @@ import {
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getTargets } from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
-import { ICoords, ITargets } from '../../utils/types';
+import { ICoords } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
 import { analyseLight, checkLight, naturalMovement } from '../eye/EyeUtils';
@@ -31,7 +31,7 @@ interface IMovementProps {
 interface IStateProps {
     fps: number;
     detections: IDetection[];
-    target: ITargets;
+    target: ICoords;
     videos: Array<HTMLVideoElement | undefined>;
     openCoefficient: number;
 }
@@ -155,7 +155,7 @@ export class MovementHandler extends React.Component<
             this.sleep();
             this.hasTargetLeft();
 
-            let idleCoords = this.props.target.left;
+            let idleCoords = this.props.target;
 
             if (Math.abs(idleCoords.x) > 1) {
                 idleCoords.x = 0;
@@ -176,23 +176,12 @@ export class MovementHandler extends React.Component<
     checkBlink(prevProps?: MovementHandlerProps) {
         if (prevProps && this.props.target) {
             const leftEyeDist = getLargerDistance(
-                prevProps.target.left,
-                this.props.target.left,
+                prevProps.target,
+                this.props.target,
             );
 
             if (leftEyeDist > maxMoveWithoutBlink) {
                 this.props.setOpen(eyelidPosition.CLOSED);
-            }
-
-            if (prevProps.target.right && this.props.target.right) {
-                const rightEyeDist = getLargerDistance(
-                    prevProps.target.right,
-                    this.props.target.right,
-                );
-
-                if (rightEyeDist > maxMoveWithoutBlink) {
-                    this.props.setOpen(eyelidPosition.CLOSED);
-                }
             }
         }
     }
@@ -249,7 +238,7 @@ export class MovementHandler extends React.Component<
 
 const mapStateToProps = (state: IRootStore) => ({
     fps: state.configStore.config.fps,
-    detections: state.detectionStore.detections.left,
+    detections: state.detectionStore.detections,
     target: getTargets(state),
     openCoefficient: state.detectionStore.eyesOpenCoefficient,
     videos: getVideos(state),

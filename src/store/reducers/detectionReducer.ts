@@ -14,11 +14,11 @@ import {
 
 export const initialState: IDetectionState = {
     model: null,
-    idleTarget: { left: { x: 0, y: 0 }, right: { x: 0, y: 0 } },
-    detections: { left: [], right: [] },
+    idleTarget: { x: 0, y: 0 },
+    detections: [],
     eyesOpenCoefficient: eyelidPosition.OPEN,
     detectionInterval: 0,
-    history: [{ left: { x: 0, y: 0 }, right: { x: 0, y: 0 } }],
+    history: [{ x: 0, y: 0 }],
 };
 
 const detectionActionMapping = {
@@ -58,10 +58,7 @@ function setIdleTarget(
 ): IDetectionState {
     return {
         ...state,
-        idleTarget: {
-            left: action.payload as ICoords,
-            right: action.payload as ICoords,
-        },
+        idleTarget: action.payload as ICoords,
     };
 }
 

@@ -35,11 +35,6 @@ export type ConfigMenuElementProps = IConfigMenuElementProps &
 
 export const ConfigMenuElement = React.memo(
     (props: ConfigMenuElementProps) => {
-        const canvasData = [
-            { name: 'Left Camera', helpWith: HelpWith.LEFT_VIDEO_STREAM },
-            { name: 'Right Camera', helpWith: HelpWith.RIGHT_VIDEO_STREAM },
-        ];
-
         return (
             <ConfigMenu
                 width="14em"
@@ -84,15 +79,6 @@ export const ConfigMenuElement = React.memo(
 
                 <br />
 
-                {props.videos.length > 1 && (
-                    <CheckBoxMenuItem
-                        name={'Swap Eyes'}
-                        configName={'swapEyes'}
-                        helpWith={HelpWith.SWAP_EYES}
-                        checked={props.config.swapEyes}
-                        onInputChange={props.setConfig}
-                    />
-                )}
                 <ColorMenuItem
                     name={'Iris Colour'}
                     configName={'irisColor'}
@@ -109,16 +95,12 @@ export const ConfigMenuElement = React.memo(
                 />
 
                 {props.config.toggleDebug
-                    ? props.videos.map((ignore, index, videos) => {
+                    ? props.videos.map((ignore, index) => {
                           return (
                               <CanvasMenuItem
-                                  name={
-                                      videos.length === 1
-                                          ? 'Camera'
-                                          : canvasData[index].name
-                                  }
+                                  name={'Camera'}
                                   key={index}
-                                  helpWith={canvasData[index].helpWith}
+                                  helpWith={HelpWith.VIDEO_STREAM}
                                   videoIndex={index}
                               />
                           );
