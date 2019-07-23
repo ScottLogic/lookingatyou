@@ -1,5 +1,6 @@
 import { PoseNet } from '@tensorflow-models/posenet';
 import { Detections } from '../../../models/objectDetection';
+import { Animation } from '../../../utils/pose/animations';
 import { IColour, ICoords, IHistory } from '../../../utils/types';
 
 export const SET_MODEL = 'SET_MODEL';
@@ -16,7 +17,7 @@ export interface IDetectionState {
     detections: Detections;
     history: IHistory[];
     idleTarget: ICoords;
-    animation: any[];
+    animation: Animation;
 }
 
 export interface ISetModelAction {
@@ -52,7 +53,7 @@ export interface ISetOpenAction {
 
 export interface ISetAnimationAction {
     type: typeof SET_ANIMATION;
-    payload: any[];
+    payload: Animation;
 }
 
 export type DetectionActionType =

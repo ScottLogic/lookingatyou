@@ -1,10 +1,9 @@
 import { partIds } from '@tensorflow-models/posenet';
+import { Pose } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 
-export const WAVE = 'WAVE';
-
 const poseMapping: { [key: string]: (selection: IDetection) => boolean } = {
-    [WAVE]: wave,
+    [Pose.WAVE]: wave,
 };
 
 export function getPose(selection: IDetection): string | null {
@@ -16,14 +15,8 @@ export function getPose(selection: IDetection): string | null {
 
 function wave(selection: IDetection) {
     const keypoints = selection.info.keypoints;
-    if (
+    return (
         keypoints[partIds.rightWrist].position.y <
-        keypoints[partIds.rightShoulder].position.y
-    ) {
-        console.log('waving');
-        return true;
-    } else {
-        console.log('not waving :(');
-    }
-    return false;
+        keypoints[partIds.rightEye].position.y
+    );
 }

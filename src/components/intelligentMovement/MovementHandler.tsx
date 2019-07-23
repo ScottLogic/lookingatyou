@@ -16,6 +16,11 @@ import {
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getTargets } from '../../store/selectors/detectionSelectors';
+<<<<<<< HEAD
+=======
+import { getVideos } from '../../store/selectors/videoSelectors';
+import { Animation } from '../../utils/pose/animations';
+>>>>>>> implemented the structure for animations for eyes that include coordinates, open coefficient and dilute coefficient.
 import { ICoords } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
@@ -32,7 +37,11 @@ interface IStateProps {
     detections: IDetection[];
     target: ICoords;
     openCoefficient: number;
+<<<<<<< HEAD
     images: { [key: string]: ImageData };
+=======
+    animation: Animation;
+>>>>>>> implemented the structure for animations for eyes that include coordinates, open coefficient and dilute coefficient.
 }
 
 interface IDispatchProps {
@@ -94,11 +103,12 @@ export class MovementHandler extends React.Component<
 
     shouldComponentUpdate(nextProps: MovementHandlerProps) {
         return (
-            this.props.height !== nextProps.height ||
-            this.props.width !== nextProps.width ||
-            this.props.openCoefficient !== nextProps.openCoefficient ||
-            this.props.target !== nextProps.target ||
-            this.props.detections !== nextProps.detections
+            this.props.animation.length === 0 &&
+            (this.props.height !== nextProps.height ||
+                this.props.width !== nextProps.width ||
+                this.props.openCoefficient !== nextProps.openCoefficient ||
+                this.props.target !== nextProps.target ||
+                this.props.detections !== nextProps.detections)
         );
     }
 
@@ -237,7 +247,12 @@ const mapStateToProps = (state: IRootStore) => ({
     detections: state.detectionStore.detections,
     target: getTargets(state),
     openCoefficient: state.detectionStore.eyesOpenCoefficient,
+<<<<<<< HEAD
     images: state.videoStore.images,
+=======
+    videos: getVideos(state),
+    animation: state.detectionStore.animation,
+>>>>>>> implemented the structure for animations for eyes that include coordinates, open coefficient and dilute coefficient.
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => ({

@@ -3,20 +3,29 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { EyeSide } from '../../../AppConstants';
 import { Detections, IDetection } from '../../../models/objectDetection';
+import { Animation, animationMapping } from '../../../utils/pose/animations';
+import { getPose } from '../../../utils/pose/poseDetection';
 import { IColour, ICoords } from '../../../utils/types';
 import {
     getImageDataFromVideos,
     reshapeDetections,
 } from '../../../utils/utils';
 import { IRootStore } from '../../reducers/rootReducer';
-import { getColour, getTargets } from '../../selectors/detectionSelectors';
+import {
+    getColour,
+    getDetections,
+    getSelections,
+    getTargets,
+} from '../../selectors/detectionSelectors';
 import { getVideos } from '../../selectors/videoSelectors';
 import { setImageDataAction } from '../video/actions';
 import {
+    ISetAnimationAction,
     ISetDetectionsAction,
     ISetIdleTargetAction,
     ISetModelAction,
     ISetOpenAction,
+    SET_ANIMATION,
     SET_DETECTIONS,
     SET_IDLE_TARGET,
     SET_MODEL,
@@ -59,25 +68,45 @@ export function handleDetection(document: Document) {
         dispatch: ThunkDispatch<IRootStore, void, Action>,
         getState: () => IRootStore,
     ) => {
-        const state = getState();
-        const videos = getVideos(state);
-        const model = state.detectionStore.model;
+        if (getState().detectionStore.animation.length === 0) {
+            const state = getState();
+            const videos = getVideos(state);
+            const model = state.detectionStore.model;
 
-        if (!videos[0] || !model) {
-            return;
+            if (!videos[0] || !model) {
+                return;
+            }
+
+            const images = getImageDataFromVideos(videos, document);
+            dispatch(setImageDataAction(images));
+
+            let left: IDetection[] = [];
+            const leftImage = images[EyeSide.LEFT];
+            if (leftImage && model) {
+                const leftDetections = await model.estimateMultiplePoses(
+                    leftImage,
+                );
+                left = reshapeDetections(leftDetections);
+            }
+
+            dispatch(setDetections(left, getTargets(state), getColour(state)));
+            const selection = getSelections(getState());
+            const detections = getDetections(getState());
+            const target = detections.filter(
+                detection => detection === selection,
+            );
+
+            if (
+                target &&
+                target[0] &&
+                getState().detectionStore.animation.length === 0
+            ) {
+                const pose = getPose(target[0]!);
+                if (pose) {
+                    dispatch(setAnimation(animationMapping[pose]()));
+                }
+            }
         }
-
-        const images = getImageDataFromVideos(videos, document);
-        dispatch(setImageDataAction(images));
-
-        let left: IDetection[] = [];
-        const leftImage = images[EyeSide.LEFT];
-        if (leftImage && model) {
-            const leftDetections = await model.estimateMultiplePoses(leftImage);
-            left = reshapeDetections(leftDetections);
-        }
-
-        dispatch(setDetections(left, getTargets(state), getColour(state)));
     };
 }
 
@@ -103,5 +132,12 @@ export function setOpen(openCoefficient: number): ISetOpenAction {
     return {
         type: SET_OPEN,
         payload: openCoefficient,
+    };
+}
+
+export function setAnimation(animation: Animation): ISetAnimationAction {
+    return {
+        type: SET_ANIMATION,
+        payload: animation,
     };
 }
