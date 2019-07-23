@@ -3,7 +3,7 @@ import { EyeSide, transitionTime } from '../../AppConstants';
 import './Eye.css';
 import { BlackFill } from './eyeParts/BlackFill';
 import { Eyelids } from './eyeParts/Eyelids';
-import { InnerEye } from './eyeParts/InnerEye';
+import InnerEye from './eyeParts/InnerEye';
 import { Sclera } from './eyeParts/Sclera';
 import { getInnerPath } from './getInnerPath';
 
@@ -58,6 +58,9 @@ export default function Eye(props: IEyeProps) {
     const lineTransitionStyle = {
         transition: `d ${1000 / props.fps}ms`,
     };
+    const imageTransitionStyle = {
+        transition: `all ${1000 / props.fps}ms`,
+    };
     const cornerShape = getCornerShape(props);
 
     const scaledResolution = props.width / 960;
@@ -80,6 +83,7 @@ export default function Eye(props: IEyeProps) {
                 circleTransitionStyle={circleTransitionStyle}
                 lineTransitionStyle={lineTransitionStyle}
                 ellipseTransitionStyle={ellipseTransitionStyle}
+                imageTransitionStyle={imageTransitionStyle}
                 irisRadius={props.irisRadius}
                 irisColor={props.irisColor}
                 innerY={props.innerY}

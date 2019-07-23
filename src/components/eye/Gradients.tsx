@@ -49,7 +49,7 @@ export const Gradients = React.memo(
                         href={'#lgrad'}
                     />
 
-                    <radialGradient id="reflectionGradient">
+                    <radialGradient id="shineGradient">
                         <stop offset="0%" stopColor={'white'} stopOpacity={1} />
                         <stop
                             offset="20%"
