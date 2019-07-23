@@ -1,11 +1,8 @@
-import { getAdjacentKeyPoints, Keypoint } from '@tensorflow-models/posenet';
+import { Keypoint } from '@tensorflow-models/posenet';
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-    canvasLineWidth,
-    canvasScale,
     chosenTargetColour,
-    minConfidence,
     nonChosenTargetColour,
 } from '../../../AppConstants';
 import { Detections, IDetection } from '../../../models/objectDetection';
@@ -15,12 +12,8 @@ import {
     getSelections,
 } from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
+import { drawPose } from '../DrawPoseUtils';
 import { HelpWith } from '../Help';
-
-interface ITuple {
-    y: number;
-    x: number;
-}
 
 interface ICanvasMenuItemProps {
     name: string;
@@ -110,74 +103,6 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
             }
         }
     }
-}
-
-function drawPose(
-    keypoints: Keypoint[],
-    canvasCtx: CanvasRenderingContext2D,
-    colour: string,
-) {
-    drawSkeleton(keypoints, canvasCtx, colour);
-    drawKeypoints(keypoints, canvasCtx, colour);
-}
-
-function drawSegment(
-    pair1: ITuple,
-    pair2: ITuple,
-    color: string,
-    scale: number,
-    ctx: CanvasRenderingContext2D,
-) {
-    ctx.beginPath();
-    ctx.moveTo(pair1.x * scale, pair1.y * scale);
-    ctx.lineTo(pair2.x * scale, pair2.y * scale);
-    ctx.lineWidth = canvasLineWidth;
-    ctx.strokeStyle = color;
-    ctx.stroke();
-}
-
-function drawSkeleton(
-    keypoints: Keypoint[],
-    canvasCtx: CanvasRenderingContext2D,
-    colour: string,
-) {
-    const adjacentKeyPoints = getAdjacentKeyPoints(keypoints, minConfidence);
-
-    adjacentKeyPoints.forEach(keypoint => {
-        drawSegment(
-            keypoint[0].position,
-            keypoint[1].position,
-            colour,
-            canvasScale,
-            canvasCtx,
-        );
-    });
-}
-
-function drawKeypoints(
-    keypoints: Keypoint[],
-    ctx: CanvasRenderingContext2D,
-    colour: string,
-) {
-    for (const keypoint of keypoints) {
-        if (keypoint.score >= minConfidence) {
-            const { y, x } = keypoint.position;
-            drawPoint(ctx, y * canvasScale, x * canvasScale, 3, colour);
-        }
-    }
-}
-
-function drawPoint(
-    ctx: CanvasRenderingContext2D,
-    y: number,
-    x: number,
-    r: number,
-    colour: string,
-) {
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, 2 * Math.PI);
-    ctx.fillStyle = colour;
-    ctx.fill();
 }
 
 const mapStateToProps = (state: IRootStore) => ({
