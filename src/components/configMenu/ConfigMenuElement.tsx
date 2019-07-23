@@ -92,22 +92,24 @@ export const ConfigMenuElement = React.memo(
                     helpWith={HelpWith.Y_SENSITIVITY}
                     min={0}
                 />
+
+                <br />
+
+                {props.videos.length > 1 && (
+                    <CheckBoxMenuItem
+                        name={'Swap Eyes'}
+                        configName={'swapEyes'}
+                        helpWith={HelpWith.SWAP_EYES}
+                        checked={props.config.swapEyes}
+                        onInputChange={props.setConfig}
+                    />
+                )}
                 <ColorMenuItem
                     name={'Iris Colour'}
                     configName={'irisColor'}
                     color={props.config.irisColor}
                     onInputChange={props.setConfig}
                     helpWith={HelpWith.IRIS_COLOUR}
-                />
-
-                <br />
-
-                <CheckBoxMenuItem
-                    name={'Swap Eyes'}
-                    configName={'swapEyes'}
-                    helpWith={HelpWith.SWAP_EYES}
-                    checked={props.config.swapEyes}
-                    onInputChange={props.setConfig}
                 />
                 <CheckBoxMenuItem
                     name={'Toggle Debug'}
