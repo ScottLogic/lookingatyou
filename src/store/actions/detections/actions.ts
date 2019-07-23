@@ -1,10 +1,13 @@
 import * as posenet from '@tensorflow-models/posenet';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { IDetection, IDetections } from '../../../models/objectDetection';
 import { EyeSide } from '../../../AppConstants';
+import { IDetection, IDetections } from '../../../models/objectDetection';
 import { ICoords, ITargets } from '../../../utils/types';
-import { reshapeDetections, getImageDataFromVideos } from '../../../utils/utils';
+import {
+    getImageDataFromVideos,
+    reshapeDetections,
+} from '../../../utils/utils';
 import { IRootStore } from '../../reducers/rootReducer';
 import { getTargets } from '../../selectors/detectionSelectors';
 import { getVideos } from '../../selectors/videoSelectors';
@@ -81,6 +84,7 @@ export function handleDetection(document: Document) {
                 rightImage,
             );
             right = reshapeDetections(rightDetections);
+        }
 
         dispatch(setDetections({ left, right }, getTargets(state)));
     };
