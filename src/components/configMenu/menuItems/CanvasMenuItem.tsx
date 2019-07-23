@@ -134,7 +134,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
 
 const mapStateToProps = (state: IRootStore) => ({
     videos: getVideos(state),
-    selections: getSelections(state),
+    selection: getSelections(state),
     detections: getDetections(state),
 });
 

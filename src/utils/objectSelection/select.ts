@@ -4,7 +4,7 @@ import { Detections, IDetection } from '../../models/objectDetection';
 import calculateTargetPos, {
     calculateNormalisedPos,
 } from '../objectTracking/calculateFocus';
-import { Bbox, IColour, ICoords } from '../types';
+import { IColour, ICoords } from '../types';
 
 export default function select(
     detections: Detections,
