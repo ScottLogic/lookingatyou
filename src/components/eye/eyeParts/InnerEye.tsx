@@ -154,7 +154,7 @@ function drawReflection(
     ctx.closePath();
     ctx.clip();
     ctx.scale(-1, 1);
-    const sourceBox = getSourceBox(selection.left, image);
+    const sourceBox = getSourceBox(selection, image);
     ctx.drawImage(
         image,
         sourceBox.sx,
