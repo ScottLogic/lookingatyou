@@ -12,6 +12,7 @@ export type Animation = IAnimationFrame[];
 
 export const animationMapping: { [key: string]: () => Animation } = {
     [Pose.WAVE]: rollEyes,
+    [Pose.HANDS_UP]: blink,
 };
 
 export function blink(): Animation {
@@ -53,8 +54,6 @@ export function rollEyes(): Animation {
 
         path.push({ coords: { x, y }, duration: 100 });
     }
-    path.push({ coords: { x: 0, y: 0 }, duration: 100 });
-    path.push({ dilation: 1.5, duration: 200 });
 
     return path;
 }

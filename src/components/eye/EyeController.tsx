@@ -56,9 +56,7 @@ export const EyeController = React.memo(
         const [eyesOpenCoefficient] = useState(eyelidPosition.OPEN); // Will change based on camera feed e.g. higher coefficient to show surprise
 
         useEffect(() => {
-            console.log('effect main');
             if (props.animation.length === 0) {
-                console.log('test');
                 let blink = props.environment.setInterval(() => {
                     if (isBlinking) {
                         setIsBlinking(false);
@@ -86,7 +84,6 @@ export const EyeController = React.memo(
         ]);
 
         useEffect(() => {
-            console.log('effect');
             if (props.animation.length > 0) {
                 const animation = [...props.animation];
                 const timer = props.environment.setTimeout(() => {
