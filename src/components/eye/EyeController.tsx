@@ -170,6 +170,22 @@ export const EyeController = React.memo(
         return (
             <div className="container">
                 {[EyeSide.RIGHT, EyeSide.LEFT].map((eye, index) => {
+                    const bezier = getBezier(
+                        scleraRadius,
+                        typeof calculatedEyesOpenCoefficient === 'number'
+                            ? calculatedEyesOpenCoefficient
+                            : calculatedEyesOpenCoefficient[eye],
+                    );
+
+                    const eyeCoordsItem = getEyeCoordinates(
+                        props.width,
+                        props.height,
+                        scleraRadius,
+                        typeof calculatedEyesOpenCoefficient === 'number'
+                            ? calculatedEyesOpenCoefficient
+                            : calculatedEyesOpenCoefficient[eye],
+                    );
+
                     return (
                         <Eye
                             class={eye}
@@ -180,23 +196,13 @@ export const EyeController = React.memo(
                             scleraRadius={scleraRadius}
                             irisRadius={irisRadius}
                             pupilRadius={pupilRadius}
-                            // 1 is neutral eye position; 0 or less is fully closed; larger than 1 makes eye look shocked
-                            openCoefficient={calculatedEyesOpenCoefficient}
                             // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
                             dilatedCoefficient={dilatedCoefficient}
                             innerX={eyeCoords[eye].x}
                             innerY={eyeCoords[eye].y}
                             fps={props.config.fps}
-                            bezier={getBezier(
-                                scleraRadius,
-                                calculatedEyesOpenCoefficient,
-                            )}
-                            eyeCoords={getEyeCoordinates(
-                                props.width,
-                                props.height,
-                                scleraRadius,
-                                calculatedEyesOpenCoefficient,
-                            )}
+                            bezier={bezier}
+                            eyeCoords={eyeCoordsItem}
                         />
                     );
                 })}
