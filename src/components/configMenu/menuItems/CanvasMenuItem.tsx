@@ -92,15 +92,35 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
             canvas.height = video.height;
             canvas.width = video.width;
             const canvasCtx = canvas.getContext('2d');
-            if (this.props.selection && detections && canvasCtx) {
-                canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                detections
-                    .map(detection => detection.info.keypoints)
-                    .forEach(keypointSet => {
-                        drawPose(keypointSet, canvasCtx, nonChosenTargetColour);
-                    });
-                drawPose(focusedPose, canvasCtx, chosenTargetColour);
-            }
+
+            this.drawVideo(canvasCtx, video, canvas);
+
+            this.drawPoses(detections, canvasCtx, focusedPose);
+        }
+    }
+
+    private drawPoses(
+        detections: IDetection[],
+        canvasCtx: CanvasRenderingContext2D | null,
+        focusedPose: Keypoint[],
+    ) {
+        if (this.props.selection && detections && canvasCtx) {
+            detections
+                .map(detection => detection.info.keypoints)
+                .forEach(keypointSet => {
+                    drawPose(keypointSet, canvasCtx, nonChosenTargetColour);
+                });
+            drawPose(focusedPose, canvasCtx, chosenTargetColour);
+        }
+    }
+
+    private drawVideo(
+        canvasCtx: CanvasRenderingContext2D | null,
+        video: HTMLVideoElement,
+        canvas: HTMLCanvasElement,
+    ) {
+        if (canvasCtx) {
+            canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
         }
     }
 }
