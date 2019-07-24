@@ -130,13 +130,14 @@ export function generateInnerPath(radius: number, sectors: number) {
 
     let currInnerPath = 'M 0 0';
     for (let i = 0; i < sectors; i++) {
+        const currRadianStep = radianStep * i;
         const lineOut = `L ${outerRadius *
-            Math.cos(radianStep * i + innerOffset)} ${outerRadius *
-            Math.sin(radianStep * i + innerOffset)}`;
+            Math.cos(currRadianStep + innerOffset)} ${outerRadius *
+            Math.sin(currRadianStep + innerOffset)}`;
 
         const lineIn = `L ${innerRadius *
-            Math.cos(radianStep * i)} ${innerRadius *
-            Math.sin(radianStep * i)}`;
+            Math.cos(currRadianStep)} ${innerRadius *
+            Math.sin(currRadianStep)}`;
 
         currInnerPath += lineOut;
         currInnerPath += lineIn;
