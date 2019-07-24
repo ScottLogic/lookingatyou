@@ -1,89 +1,62 @@
 import { createSelector } from 'reselect';
-import { IDetections } from '../../models/objectDetection';
+import { Detections } from '../../models/objectDetection';
 import select, {
     closerToPrediction,
-    closerVerticallyTo,
-    leftOf,
     setPrediction,
 } from '../../utils/objectSelection/select';
 import { calculateNormalisedPos } from '../../utils/objectTracking/calculateFocus';
-import { ITargets } from '../../utils/types';
+import { ICoords } from '../../utils/types';
 import { IRootStore } from '../reducers/rootReducer';
 import { getVideos } from './videoSelectors';
 
-export function getDetections(state: IRootStore): IDetections {
+export function getDetections(state: IRootStore): Detections {
     return state.detectionStore.detections;
 }
 
 export const getSelections = createSelector(
     [getDetections, getPreviousTargets, getVideos],
     (detections, previousTargets, videos) => {
-        const leftCam = true;
-        const prediction = setPrediction(leftCam, previousTargets);
+        const prediction = setPrediction(previousTargets);
         const width = videos[0] ? videos[0]!.width : 1;
         const height = videos[0] ? videos[0]!.height : 1;
-        const left = select(
-            detections.left,
+        const selection = select(
+            detections,
             closerToPrediction(prediction, width, height),
         );
-        const right =
-            left === undefined
-                ? undefined
-                : select(
-                      detections.right,
-                      closerVerticallyTo(left[1]),
-                      leftOf(left[0] + left[2] / 2),
-                  );
-        return {
-            left,
-            right,
-        };
+        return selection;
     },
 );
 
 export const getTargets = createSelector(
     [getSelections, getVideos, getIdleTargets],
-    (selections, videos, idleTargets): ITargets => {
+    (selections, videos, idleTargets): ICoords => {
         const left =
-            selections.left === undefined || !videos[0]
+            selections === undefined || !videos[0]
                 ? undefined
                 : calculateNormalisedPos(
-                      selections.left,
+                      selections,
                       videos[0]!.width,
                       videos[0]!.height,
                   );
-        const right =
-            selections.right === undefined || !videos[1]
-                ? left
-                : calculateNormalisedPos(
-                      selections.right,
-                      videos[1]!.width,
-                      videos[1]!.height,
-                  );
-        if (left && right) {
-            const y = (left.y + right.y) / 2;
-            left.y = right.y = y;
-            return {
-                left,
-                right,
-            };
+        if (left) {
+            return left;
         } else {
             return idleTargets;
         }
     },
 );
 
-export function getPreviousTarget(state: IRootStore): ITargets {
+export function getPreviousTarget(state: IRootStore): ICoords {
     return state.detectionStore.history[
         state.detectionStore.history.length - 1
     ];
 }
 
-export function getPreviousTargets(state: IRootStore): ITargets[] {
+export function getPreviousTargets(state: IRootStore): ICoords[] {
     return state.detectionStore.history;
 }
 
-export function getIdleTargets(state: IRootStore): ITargets {
+export function getIdleTargets(state: IRootStore): ICoords {
     return state.detectionStore.idleTarget;
 }
 

@@ -6,8 +6,6 @@ export enum HelpWith {
     X_SENSITIVITY = 'X_SENSITIVITY',
     Y_SENSITIVITY = 'Y_SENSITIVITY',
     VIDEO_STREAM = 'VIDEO_STREAM',
-    LEFT_VIDEO_STREAM = 'LEFT_VIDEO_STREAM',
-    RIGHT_VIDEO_STREAM = 'RIGHT_VIDEO_STREAM',
     SWAP_EYES = 'SWAP_EYES',
     IRIS_COLOUR = 'IRIS_COLOUR',
     APP = 'APP',
@@ -77,24 +75,6 @@ const app = () => {
     );
 };
 
-const leftVid = () => {
-    return (
-        <Fragment>
-            This shows you the current webcam feed from the left camera, and
-            outlines the person that is currently being tracked.
-        </Fragment>
-    );
-};
-
-const rightVid = () => {
-    return (
-        <Fragment>
-            This shows you the current webcam feed from the right camera, and
-            outlines the person that is currently being tracked.
-        </Fragment>
-    );
-};
-
 const debug = () => {
     return (
         <Fragment>
@@ -126,8 +106,6 @@ const helpSections: IHelpSectionMap = {
     SWAP_EYES: swap,
     IRIS_COLOUR: iris,
     APP: app,
-    LEFT_VIDEO_STREAM: leftVid,
-    RIGHT_VIDEO_STREAM: rightVid,
     DEBUG: debug,
     REFLECTION: reflection,
 };

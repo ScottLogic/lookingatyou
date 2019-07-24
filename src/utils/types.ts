@@ -5,11 +5,6 @@ export interface ICoords {
     y: number;
 }
 
-export interface ITargets {
-    left: ICoords;
-    right: ICoords;
-}
-
 export type DetectionImage =
     | HTMLVideoElement
     | HTMLImageElement
