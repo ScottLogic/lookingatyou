@@ -90,17 +90,15 @@ export function handleDetection(document: Document) {
             }
 
             dispatch(setDetections(left, getTargets(state), getColour(state)));
+
+            // The way we get target will change once #273 is implemented
+            // For now I compare selection bounding box to existing detections and select a target from there
             const selection = getSelections(getState());
-            const detections = getDetections(getState());
-            const target = detections.filter(
+            const target = getDetections(getState()).filter(
                 detection => detection === selection,
             );
 
-            if (
-                target &&
-                target[0] &&
-                getState().detectionStore.animation.length === 0
-            ) {
+            if (target && target[0]) {
                 const pose = getPose(target[0]!);
                 if (pose) {
                     dispatch(setAnimation(animationMapping[pose]()));
