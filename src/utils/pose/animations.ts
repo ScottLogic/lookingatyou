@@ -33,10 +33,6 @@ export function doubleBlink(): Animation {
             openCoefficient: eyelidPosition.OPEN,
             duration: 200,
         },
-        {
-            dilation: 1.5,
-            duration: 500,
-        },
     ];
 }
 
