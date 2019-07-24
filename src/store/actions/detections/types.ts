@@ -57,10 +57,12 @@ export interface ISetAnimationAction {
     type: typeof SET_ANIMATION;
     payload: Animation;
 }
+
 export interface ISwapSelectionActionPayload {
     selection: IDetection | undefined;
     nextSelectionSwapTime: number;
 }
+
 export interface ISwapSelectionAction {
     type: 'SWAP_SELECTION';
     payload: ISwapSelectionActionPayload;
