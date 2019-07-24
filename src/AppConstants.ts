@@ -38,3 +38,5 @@ export const bodyParts = {
     LEFT_SHOULDER: 'leftShoulder',
     RIGHT_HIP: 'rightHip',
 };
+export const yOffset = 10;
+export const xOffset = 10;

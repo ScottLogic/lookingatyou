@@ -17,16 +17,8 @@ export function getDetections(state: IRootStore): Detections {
 }
 
 export const getSelections = createSelector(
-    [
-        getDetections,
-        getPreviousTargets,
-        getPreviousColours,
-        getVideos,
-        getImageData,
-    ],
-    (detections, previousTargets, previousColours, videos, imageDataMap) => {
-        const width = videos[0] ? videos[0]!.width : 1;
-        const height = videos[0] ? videos[0]!.height : 1;
+    [getDetections, getPreviousTargets, getPreviousColours, getImageData],
+    (detections, previousTargets, previousColours, imageDataMap) => {
         const imageData = imageDataMap[EyeSide.LEFT];
 
         const predictedTarget = getPredictedTarget(previousTargets);
@@ -34,13 +26,7 @@ export const getSelections = createSelector(
 
         const selection = select(
             detections,
-            closerToPrediction(
-                predictedTarget,
-                width,
-                height,
-                imageData,
-                predictedColour,
-            ),
+            closerToPrediction(predictedTarget, imageData, predictedColour),
         );
         return selection;
     },
@@ -70,7 +56,11 @@ export const getColour = createSelector(
     (selection, imageDataMap): IColour => {
         const imageData = imageDataMap[EyeSide.LEFT];
         if (selection) {
-            return calculateColourMatch(imageData, selection.info.keypoints);
+            const colour = calculateColourMatch(
+                imageData,
+                selection.info.keypoints,
+            );
+            return colour;
         }
         return { r: 0, g: 0, b: 0 };
     },
