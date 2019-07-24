@@ -60,7 +60,7 @@ function drawKeypoints(
     for (const keypoint of keypoints) {
         if (keypoint.score >= minConfidence) {
             const { y, x } = keypoint.position;
-            drawPoint(ctx, y * canvasScale, x * canvasScale, 3, colour);
+            drawPoint(ctx, y * canvasScale, x * canvasScale, 6, colour);
         }
     }
 }
