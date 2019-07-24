@@ -4,5 +4,6 @@ export default interface IUserConfig {
     fps: number;
     swapEyes: boolean;
     toggleDebug: boolean;
+    toggleReflection: boolean;
     irisColor: string;
 }

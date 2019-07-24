@@ -26,6 +26,7 @@ interface IInnerEyeMapStateToProps {
     image: HTMLVideoElement | undefined;
     fps: number;
     selection: ISelections;
+    showReflection: boolean;
 }
 
 type InnerEyeProps = IInnerEyeProps & IInnerEyeMapStateToProps;
@@ -53,7 +54,7 @@ export const InnerEye = React.memo(
         }, [irisAdjustment]);
 
         useEffect(() => {
-            if (canvasRef) {
+            if (canvasRef && props.showReflection) {
                 const canvas = canvasRef.current;
                 if (canvas && props.image) {
                     const ctx = canvas.getContext('2d');
@@ -67,7 +68,12 @@ export const InnerEye = React.memo(
                     }
                 }
             }
-        }, [props.image, props.pupilRadius, props.selection]);
+        }, [
+            props.image,
+            props.pupilRadius,
+            props.selection,
+            props.showReflection,
+        ]);
 
         return (
             <g
@@ -103,11 +109,14 @@ export const InnerEye = React.memo(
                         x={-props.pupilRadius}
                         y={-props.pupilRadius}
                     >
-                        <canvas
-                            ref={canvasRef}
-                            width={props.pupilRadius * 2}
-                            height={props.pupilRadius * 2}
-                        />
+                        {props.showReflection && (
+                            <canvas
+                                ref={canvasRef}
+                                width={props.pupilRadius * 2}
+                                height={props.pupilRadius * 2}
+                            />
+                        )}
+                        
                     </foreignObject>
                     <circle
                         className={'pupil'}
@@ -202,6 +211,7 @@ const mapStateToProps = (state: IRootStore): IInnerEyeMapStateToProps => ({
     image: getVideos(state)[0],
     fps: state.configStore.config.fps,
     selection: getSelections(state),
+    showReflection: state.configStore.config.toggleReflection,
 });
 
 export default connect(mapStateToProps)(InnerEye);

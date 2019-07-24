@@ -100,6 +100,14 @@ export const ConfigMenuElement = React.memo(
                     onInputChange={props.setConfig}
                     helpWith={HelpWith.IRIS_COLOUR}
                 />
+
+                <CheckBoxMenuItem
+                    name={'Show Target'}
+                    configName={'toggleReflection'}
+                    helpWith={HelpWith.REFLECTION}
+                    checked={props.config.toggleReflection}
+                    onInputChange={props.setConfig}
+                />
                 <CheckBoxMenuItem
                     name={'Toggle Debug'}
                     configName={'toggleDebug'}
