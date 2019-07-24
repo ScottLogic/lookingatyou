@@ -4,6 +4,7 @@ import { Detections } from '../../models/objectDetection';
 import select, {
     calculateColourMatch,
     closerToPrediction,
+    first,
     getPredictedColour,
     getPredictedTarget,
 } from '../../utils/objectSelection/select';
@@ -20,15 +21,17 @@ export const getSelections = createSelector(
     [getDetections, getPreviousTargets, getPreviousColours, getImageData],
     (detections, previousTargets, previousColours, imageDataMap) => {
         const imageData = imageDataMap[EyeSide.LEFT];
+        if (previousTargets.length > 0) {
+            const predictedTarget = getPredictedTarget(previousTargets);
+            const predictedColour = getPredictedColour(previousColours);
 
-        const predictedTarget = getPredictedTarget(previousTargets);
-        const predictedColour = getPredictedColour(previousColours);
-
-        const selection = select(
-            detections,
-            closerToPrediction(predictedTarget, imageData, predictedColour),
-        );
-        return selection;
+            return select(
+                detections,
+                closerToPrediction(predictedTarget, imageData, predictedColour),
+            );
+        } else {
+            return select(detections, first);
+        }
     },
 );
 

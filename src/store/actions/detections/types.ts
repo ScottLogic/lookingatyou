@@ -1,5 +1,5 @@
 import { PoseNet } from '@tensorflow-models/posenet';
-import { Detections } from '../../../models/objectDetection';
+import { Detections, IDetection } from '../../../models/objectDetection';
 import { Animation } from '../../../utils/pose/animations';
 import { IColour, ICoords, IHistory } from '../../../utils/types';
 
@@ -9,6 +9,7 @@ export const SET_IDLE_TARGET = 'SET_IDLE_TARGET';
 export const SET_DETECTIONS = 'SET_DETECTIONS';
 export const SET_OPEN = 'SET_OPEN';
 export const SET_ANIMATION = 'SET_ANIMATION';
+export const SWAP_SELECTION = 'SWAP_SELECTION';
 
 export interface IDetectionState {
     model: PoseNet | null;
@@ -18,6 +19,7 @@ export interface IDetectionState {
     history: IHistory[];
     idleTarget: ICoords;
     animation: Animation;
+    nextSelectionSwapTime: number;
 }
 
 export interface ISetModelAction {
@@ -55,6 +57,14 @@ export interface ISetAnimationAction {
     type: typeof SET_ANIMATION;
     payload: Animation;
 }
+export interface ISwapSelectionActionPayload {
+    selection: IDetection | undefined;
+    nextSelectionSwapTime: number;
+}
+export interface ISwapSelectionAction {
+    type: 'SWAP_SELECTION';
+    payload: ISwapSelectionActionPayload;
+}
 
 export type DetectionActionType =
     | ISetModelAction
@@ -62,4 +72,5 @@ export type DetectionActionType =
     | ISetIdleTargetAction
     | ISetDetectionsAction
     | ISetOpenAction
-    | ISetAnimationAction;
+    | ISetAnimationAction
+    | ISwapSelectionAction;
