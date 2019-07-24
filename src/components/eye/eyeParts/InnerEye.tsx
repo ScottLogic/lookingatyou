@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import tinycolor from 'tinycolor2';
 import { IDetection } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
+import { getFPS } from '../../../store/selectors/configSelectors';
 import { getSelections } from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
 import { Bbox } from '../../../utils/types';
@@ -210,7 +211,7 @@ function getSourceBox(selection: Bbox, image: HTMLVideoElement) {
 
 const mapStateToProps = (state: IRootStore): IInnerEyeMapStateToProps => ({
     image: getVideos(state)[0],
-    fps: state.configStore.config.fps,
+    fps: getFPS(state),
     selection: getSelections(state),
     showReflection: state.configStore.config.toggleReflection,
     reflectionOpacity: state.configStore.config.toggleReflection
