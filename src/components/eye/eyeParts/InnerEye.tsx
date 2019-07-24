@@ -95,7 +95,7 @@ export const InnerEye = React.memo(
                 />
                 <path
                     className="irisStyling"
-                    d={`M 0 0 ${props.innerPath}`}
+                    d={props.innerPath}
                     fill={tinycolor(props.irisColor)
                         .darken(10)
                         .toHexString()}

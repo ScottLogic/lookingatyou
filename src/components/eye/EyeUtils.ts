@@ -121,3 +121,25 @@ export function getIrisAdjustment(
         angle,
     };
 }
+
+export function generateInnerPath(radius: number, sectors: number) {
+    const innerRadius = radius * 0.1;
+    const outerRadius = radius * 0.9;
+    const radianStep = (2 * Math.PI) / sectors;
+    const innerOffset = -radianStep / 2;
+
+    let currInnerPath = 'M 0 0';
+    for (let i = 0; i < sectors; i++) {
+        const lineOut = `L ${outerRadius *
+            Math.cos(radianStep * i + innerOffset)} ${outerRadius *
+            Math.sin(radianStep * i + innerOffset)}`;
+
+        const lineIn = `L ${innerRadius *
+            Math.cos(radianStep * i)} ${innerRadius *
+            Math.sin(radianStep * i)}`;
+
+        currInnerPath += lineOut;
+        currInnerPath += lineIn;
+    }
+    return currInnerPath;
+}
