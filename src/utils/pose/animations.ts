@@ -1,9 +1,11 @@
-import { eyelidPosition, Pose } from '../../AppConstants';
+import { eyelidPosition, EyeSide, Pose } from '../../AppConstants';
 import { ICoords } from '../types';
 
 interface IAnimationFrame {
     coords?: ICoords;
-    openCoefficient?: number;
+    openCoefficient?:
+        | number
+        | { [EyeSide.LEFT]: number; [EyeSide.RIGHT]: number };
     dilation?: number;
     duration: number;
 }
@@ -11,27 +13,22 @@ interface IAnimationFrame {
 export type Animation = IAnimationFrame[];
 
 export const animationMapping: { [key: string]: () => Animation } = {
-    [Pose.WAVE]: rollEyes,
-    [Pose.HANDS_UP]: doubleBlink,
+    [Pose.WAVE]: wink,
+    [Pose.HANDS_UP]: rollEyes,
 };
 
-export function doubleBlink(): Animation {
+export function wink(): Animation {
     return [
         {
-            openCoefficient: eyelidPosition.CLOSED,
-            duration: 200,
+            openCoefficient: {
+                [EyeSide.LEFT]: eyelidPosition.CLOSED,
+                [EyeSide.RIGHT]: eyelidPosition.OPEN,
+            },
+            duration: 500,
         },
         {
             openCoefficient: eyelidPosition.OPEN,
-            duration: 200,
-        },
-        {
-            openCoefficient: eyelidPosition.CLOSED,
-            duration: 200,
-        },
-        {
-            openCoefficient: eyelidPosition.OPEN,
-            duration: 200,
+            duration: 500,
         },
     ];
 }
