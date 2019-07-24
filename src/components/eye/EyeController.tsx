@@ -55,9 +55,11 @@ export const EyeController = React.memo(
         const [isBlinking, setIsBlinking] = useState(false); // Will change based on camera feed e.g. blink less when object in frame
         const [eyesOpenCoefficient] = useState(eyelidPosition.OPEN); // Will change based on camera feed e.g. higher coefficient to show surprise
 
+        const { environment, updateAnimation, animation } = props;
+
         useEffect(() => {
-            if (props.animation.length === 0) {
-                let blink = props.environment.setInterval(() => {
+            if (animation.length === 0) {
+                let blink = environment.setInterval(() => {
                     if (isBlinking) {
                         setIsBlinking(false);
                     } else {
@@ -71,29 +73,28 @@ export const EyeController = React.memo(
                     }
                 }, transitionTime.blink);
                 return () => {
-                    props.environment.clearInterval(blink);
+                    environment.clearInterval(blink);
                     blink = 0;
                 };
             }
         }, [
             props.detected,
-            props.environment,
+            environment,
             isBlinking,
             blinkFrequencyCoefficient,
-            props.animation,
+            animation,
         ]);
 
         useEffect(() => {
-            if (props.animation.length > 0) {
-                const animation = [...props.animation];
-                const timer = props.environment.setTimeout(() => {
-                    animation!.shift();
-                    props.updateAnimation(animation);
+            if (animation.length > 0) {
+                const timer = environment.setTimeout(() => {
+                    const myAnimation = [...animation];
+                    myAnimation!.shift();
+                    updateAnimation(myAnimation);
                 }, animation[0].duration);
-                console.log(timer);
-                return () => props.environment.clearTimeout(timer);
+                return () => environment.clearTimeout(timer);
             }
-        }, [props.animation, props.updateAnimation]);
+        }, [animation, updateAnimation, environment]);
 
         const scleraRadius = props.width / 4.5;
         const irisRadius = props.width / 10;

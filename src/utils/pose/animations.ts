@@ -12,10 +12,10 @@ export type Animation = IAnimationFrame[];
 
 export const animationMapping: { [key: string]: () => Animation } = {
     [Pose.WAVE]: rollEyes,
-    [Pose.HANDS_UP]: blink,
+    [Pose.HANDS_UP]: doubleBlink,
 };
 
-export function blink(): Animation {
+export function doubleBlink(): Animation {
     return [
         {
             openCoefficient: eyelidPosition.CLOSED,
