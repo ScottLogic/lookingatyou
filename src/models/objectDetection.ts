@@ -8,10 +8,7 @@ export interface IDetection {
     info: Pose;
 }
 
-export interface IDetections {
-    left: IDetection[];
-    right: IDetection[];
-}
+export type Detections = IDetection[];
 
 export interface ISelections {
     left?: Bbox;

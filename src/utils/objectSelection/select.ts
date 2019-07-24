@@ -1,11 +1,11 @@
-import { IDetection } from '../../models/objectDetection';
+import { Detections, IDetection } from '../../models/objectDetection';
 import calculateTargetPos, {
     calculateNormalisedPos,
 } from '../objectTracking/calculateFocus';
-import { Bbox, ICoords, ITargets } from '../types';
+import { Bbox, ICoords } from '../types';
 
 export default function select(
-    detections: IDetection[],
+    detections: Detections,
     compare: (x: Bbox, y: Bbox) => number,
     filter?: (d: IDetection) => boolean,
 ): Bbox | undefined {
@@ -20,16 +20,13 @@ export default function select(
     );
 }
 
-export function setPrediction(leftCam: boolean, history: ITargets[]): ICoords {
+export function setPrediction(history: ICoords[]): ICoords {
     let coordsX: number[] = [];
     let coordsY: number[] = [];
-    if (leftCam) {
-        coordsX = history.map(target => target.left.x);
-        coordsY = history.map(target => target.left.y);
-    } else {
-        coordsX = history.map(target => (target.right ? target.right.x : 0));
-        coordsY = history.map(target => (target.right ? target.right.y : 0));
-    }
+
+    coordsX = history.map(target => target.x);
+    coordsY = history.map(target => target.y);
+
     const xPrediction = getWeightedPrediction(coordsX);
     const yPrediction = getWeightedPrediction(coordsY);
 
