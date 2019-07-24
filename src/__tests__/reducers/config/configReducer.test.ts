@@ -18,6 +18,8 @@ describe('Config Reducer tests', () => {
         toggleDebug: false,
         modelConfig: initalModelConfig,
         detectionConfig: initialDetectionConfig,
+        toggleReflection: false,
+        reflectionOpacity: 0,
     };
     it('update config with partial state, so some values are updated and others are as they were before', () => {
         const partialConfig = { fps: 555, toggleDebug: true, irisColor: 'red' };
@@ -33,6 +35,8 @@ describe('Config Reducer tests', () => {
             toggleDebug: true,
             modelConfig: initalModelConfig,
             detectionConfig: initialDetectionConfig,
+            toggleReflection: false,
+            reflectionOpacity: 0,
         };
         expect(configStore(testState, setAction)).toStrictEqual(alteredState);
     });
