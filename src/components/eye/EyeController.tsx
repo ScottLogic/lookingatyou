@@ -235,7 +235,7 @@ export default connect(
     mapDispatchToProps,
 )(EyeController);
 
-function getBezier(scleraRadius: number, openCoefficient: number) {
+export function getBezier(scleraRadius: number, openCoefficient: number) {
     const curveConstant = 0.55228474983; // (4/3)tan(pi/8)
     const controlOffset = scleraRadius * curveConstant;
     const scaledYcontrolOffset = controlOffset * openCoefficient;
@@ -243,7 +243,7 @@ function getBezier(scleraRadius: number, openCoefficient: number) {
     return { controlOffset, scaledXcontrolOffset, scaledYcontrolOffset };
 }
 
-function getEyeCoordinates(
+export function getEyeCoordinates(
     width: number,
     height: number,
     scleraRadius: number,
