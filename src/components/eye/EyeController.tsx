@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
     eyelidPosition,
+    eyeRatio,
     EyeSide,
     neutralBlinkFrequency,
     transitionTime,
@@ -96,9 +97,9 @@ export const EyeController = React.memo(
             }
         }, [animation, updateAnimation, environment]);
 
-        const scleraRadius = props.width / 4.5;
-        const irisRadius = props.width / 10;
-        const pupilRadius = props.width / 24;
+        const scleraRadius = props.width / eyeRatio.sclera;
+        const irisRadius = props.width / eyeRatio.iris;
+        const pupilRadius = props.width / eyeRatio.pupil;
 
         const getEyeCoords = (target: ICoords): ICoords => {
             const maxDisplacement = getMaxDisplacement(

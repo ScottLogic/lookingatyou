@@ -2,14 +2,7 @@ import React from 'react';
 import isEqual from 'react-fast-compare';
 
 interface IBlackFillProps {
-    eyeCoords: {
-        leftX: number;
-        rightX: number;
-        middleY: number;
-        middleX: number;
-        topEyelidY: number;
-        bottomEyelidY: number;
-    };
+    leftX: number;
     scleraRadius: number;
     width: number;
     height: number;
@@ -20,10 +13,12 @@ export const BlackFill = React.memo(
         return (
             <svg className="BlackFill">
                 <path
-                    d={`M 0 ${props.eyeCoords.middleY},
-                         H ${props.eyeCoords.leftX},
-                         A ${props.scleraRadius} ${props.scleraRadius} 0 0 1 ${props.eyeCoords.rightX} ${props.eyeCoords.middleY}
-                         A ${props.scleraRadius} ${props.scleraRadius} 0 1 1 ${props.eyeCoords.leftX} ${props.eyeCoords.middleY}
+                    d={`M 0 ${props.height / 2},
+                         H ${props.leftX},
+                         A ${props.scleraRadius} ${props.scleraRadius} 0 1 1 ${
+                        props.leftX
+                    } ${props.height / 2 + 1}
+                         v -1
                          H 0
                          V 0
                          H ${props.width}

@@ -78,7 +78,7 @@ export default function Eye(props: IEyeProps) {
                 scleraRadius={props.scleraRadius}
             />
             <BlackFill
-                eyeCoords={props.eyeCoords}
+                leftX={props.eyeCoords.leftX}
                 scleraRadius={props.scleraRadius}
                 height={props.height}
                 width={props.width}
