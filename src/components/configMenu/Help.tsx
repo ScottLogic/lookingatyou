@@ -17,7 +17,7 @@ export enum HelpWith {
 const fps = () => {
     return (
         <Fragment>
-            How often the eyes will update in Frames per second. Effects
+            How often the eyes will update in Frames per second. Affects
             performance.
         </Fragment>
     );
@@ -77,7 +77,7 @@ const debug = () => {
 const reflectionOpacity = () => {
     return (
         <Fragment>
-            Configure the opacity of the reflection. This does not effect
+            Configure the opacity of the reflection. This does not affect
             performance.
         </Fragment>
     );
