@@ -144,14 +144,14 @@ export function closerToColour(
     const y1End = y1Start + 10;
     const y2End = y2Start + 10;
 
-    const bbox1AvgColour = getAvgColour(
+    const box1AvgColour = getAvgColour(
         x1Start,
         y1Start,
         x1End,
         y1End,
         imageData,
     );
-    const bbox2AvgColour = getAvgColour(
+    const box2AvgColour = getAvgColour(
         x2Start,
         y2Start,
         x2End,
@@ -159,17 +159,17 @@ export function closerToColour(
         imageData,
     );
 
-    const bbox1gDiff = Math.pow(bbox1AvgColour.g - avgColour.g, 2);
-    const bbox1bDiff = Math.pow(bbox1AvgColour.b - avgColour.b, 2);
-    const bbox1rDiff = Math.pow(bbox1AvgColour.r - avgColour.r, 2);
-    const bbox2rDiff = Math.pow(bbox2AvgColour.r - avgColour.r, 2);
-    const bbox2gDiff = Math.pow(bbox2AvgColour.g - avgColour.g, 2);
-    const bbox2bDiff = Math.pow(bbox2AvgColour.b - avgColour.b, 2);
+    const box1GreenDelta = Math.pow(box1AvgColour.g - avgColour.g, 2);
+    const box1BlueDelta = Math.pow(box1AvgColour.b - avgColour.b, 2);
+    const box1RedDelta = Math.pow(box1AvgColour.r - avgColour.r, 2);
+    const box2RedDelta = Math.pow(box2AvgColour.r - avgColour.r, 2);
+    const box2GreenDelta = Math.pow(box2AvgColour.g - avgColour.g, 2);
+    const box2BlueDelta = Math.pow(box2AvgColour.b - avgColour.b, 2);
 
-    const bbox1Diff = bbox1rDiff + bbox1gDiff + bbox1bDiff;
-    const bbox2Diff = bbox2rDiff + bbox2gDiff + bbox2bDiff;
+    const box1Variance = box1RedDelta + box1GreenDelta + box1BlueDelta;
+    const box2Variance = box2RedDelta + box2GreenDelta + box2BlueDelta;
 
-    return bbox1Diff < bbox2Diff ? 1 : -1;
+    return box2Variance - box1Variance;
 }
 
 function getXStart(keypoints: Keypoint[]) {
@@ -224,14 +224,14 @@ export function closerToPrediction(
             coords1.y - coords2.y,
         );
 
-        return distanceBetween > 0.1
+        return distanceBetween > 0.25
             ? closerToPredictedTarget
             : closerToColour(
                   imageData,
                   avgColour,
                   detection1.info.keypoints,
                   detection2.info.keypoints,
-              );
+              ) + closerToPredictedTarget;
     };
 }
 
