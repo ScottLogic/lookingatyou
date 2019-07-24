@@ -198,7 +198,10 @@ export const EyeController = React.memo(
                         />
                     );
                 })}
-                <Gradients irisColor={props.config.irisColor} />
+                <Gradients
+                    irisColor={props.config.irisColor}
+                    reflectionOpacity={props.config.reflectionOpacity}
+                />
                 <Shadows openCoefficient={props.openCoefficient} />
             </div>
         );

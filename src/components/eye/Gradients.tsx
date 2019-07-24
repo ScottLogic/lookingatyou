@@ -4,6 +4,7 @@ import './Gradients.css';
 
 export interface IGradientsProps {
     irisColor: string;
+    reflectionOpacity: number;
 }
 
 const lighterFactor = 30;
@@ -19,7 +20,7 @@ export const Gradients = React.memo(
             .toHexString();
 
         return (
-            <svg className={'collapse'}>
+            <svg className="collapse">
                 <defs>
                     <linearGradient
                         id="lgrad"
@@ -33,32 +34,32 @@ export const Gradients = React.memo(
                         <stop offset="100%" stopColor={darkIrisColor} />
                     </linearGradient>
 
-                    <radialGradient id={'scleraGradient'} cx={'50%'} cy={'50%'}>
-                        <stop offset={'0%'} stopColor={'white'} />
-                        <stop offset={'20%'} stopColor="#f7f7f7" />
-                        <stop offset={'40%'} stopColor="#ebebeb" />
-                        <stop offset={'60%'} stopColor="#e0e0e0" />
-                        <stop offset={'80%'} stopColor="#b3b3b3" />
-                        <stop offset={'100%'} stopColor="#333333" />
+                    <radialGradient id="scleraGradient" cx="50%" cy="50%">
+                        <stop offset="0%" stopColor="white" />
+                        <stop offset="20%" stopColor="#f7f7f7" />
+                        <stop offset="40%" stopColor="#ebebeb" />
+                        <stop offset="60%" stopColor="#e0e0e0" />
+                        <stop offset="80%" stopColor="#b3b3b3" />
+                        <stop offset="100%" stopColor="#333333" />
                     </radialGradient>
 
                     <radialGradient
                         id="irisGradient"
-                        cx={'50%'}
-                        cy={'50%'}
-                        href={'#lgrad'}
+                        cx="50%"
+                        cy="50%"
+                        href="#lgrad"
                     />
 
                     <radialGradient id="shineGradient">
-                        <stop offset="0%" stopColor={'white'} stopOpacity={1} />
+                        <stop offset="0%" stopColor="white" stopOpacity={1} />
                         <stop
                             offset="20%"
-                            stopColor={'white'}
+                            stopColor="white"
                             stopOpacity={0.7}
                         />
                         <stop
                             offset="40%"
-                            stopColor={'white'}
+                            stopColor="white"
                             stopOpacity={0.05}
                         />
                     </radialGradient>
@@ -66,23 +67,21 @@ export const Gradients = React.memo(
                     <radialGradient id="pupilGradient">
                         <stop
                             offset="0%"
-                            stopColor={'black'}
-                            stopOpacity={0.8}
+                            stopColor="black"
+                            stopOpacity={1 - props.reflectionOpacity}
                         />
                         <stop
                             offset="75%"
-                            stopColor={'black'}
-                            stopOpacity={0.85}
+                            stopColor="black"
+                            stopOpacity={1 - 0.75 * props.reflectionOpacity}
                         />
-                        <stop
-                            offset="100%"
-                            stopColor={'black'}
-                            stopOpacity={1}
-                        />
+                        <stop offset="100%" stopColor="black" stopOpacity={1} />
                     </radialGradient>
                 </defs>
             </svg>
         );
     },
-    (previous, next) => previous.irisColor === next.irisColor,
+    (previous, next) =>
+        previous.irisColor === next.irisColor &&
+        previous.reflectionOpacity === next.reflectionOpacity,
 );

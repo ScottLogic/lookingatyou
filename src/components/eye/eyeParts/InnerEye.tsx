@@ -28,6 +28,7 @@ interface IInnerEyeMapStateToProps {
     fps: number;
     showReflection: boolean;
     selection: IDetection | undefined;
+    reflectionOpacity: number;
 }
 
 type InnerEyeProps = IInnerEyeProps & IInnerEyeMapStateToProps;
@@ -212,6 +213,9 @@ const mapStateToProps = (state: IRootStore): IInnerEyeMapStateToProps => ({
     fps: state.configStore.config.fps,
     selection: getSelections(state),
     showReflection: state.configStore.config.toggleReflection,
+    reflectionOpacity: state.configStore.config.toggleReflection
+        ? state.configStore.config.reflectionOpacity
+        : 1,
 });
 
 export default connect(mapStateToProps)(InnerEye);

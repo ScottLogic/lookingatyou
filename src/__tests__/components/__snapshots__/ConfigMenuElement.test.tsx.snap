@@ -11,7 +11,11 @@ exports[`ConfigMenuElement tests should render correctly 1`] = `
   <Memo() name=\\"Y Sensitivity\\" configName=\\"ySensitivity\\" step={0.1} defaultValue={1} onValidInput={[Function: mockConstructor]} helpWith=\\"Y_SENSITIVITY\\" min={0} />
   <br />
   <Memo() name=\\"Iris Colour\\" configName=\\"irisColor\\" color=\\"blue\\" onInputChange={[Function: mockConstructor]} helpWith=\\"IRIS_COLOUR\\" />
+<<<<<<< HEAD
   <Memo() name=\\"Show Target\\" configName=\\"toggleReflection\\" helpWith=\\"REFLECTION\\" checked={[undefined]} onInputChange={[Function: mockConstructor]} />
+=======
+  <Memo() name=\\"Reflect Opacity\\" configName=\\"reflectionOpacity\\" step={0.01} defaultValue={[undefined]} onValidInput={[Function: mockConstructor]} helpWith=\\"REFLECTION_OPACITY\\" min={0.01} max={1} />
+>>>>>>> Can now configure reflection opacity on config menu. Changed config menu tooltips to be more concise.
   <Memo() name=\\"Toggle Debug\\" configName=\\"toggleDebug\\" helpWith=\\"DEBUG\\" checked={false} onInputChange={[Function: mockConstructor]} />
   <Help problemWith=\\"FPS\\" />
   <Help problemWith=\\"X_SENSITIVITY\\" />
@@ -21,6 +25,10 @@ exports[`ConfigMenuElement tests should render correctly 1`] = `
   <Help problemWith=\\"IRIS_COLOUR\\" />
   <Help problemWith=\\"APP\\" />
   <Help problemWith=\\"DEBUG\\" />
+<<<<<<< HEAD
   <Help problemWith=\\"REFLECTION\\" />
+=======
+  <Help problemWith=\\"REFLECTION_OPACITY\\" />
+>>>>>>> Can now configure reflection opacity on config menu. Changed config menu tooltips to be more concise.
 </ConfigMenu>"
 `;

@@ -13,6 +13,7 @@ export const initialState: IConfigState = {
         toggleReflection: true,
         toggleDebug: false,
         irisColor: '#55acee', // must be hex value, as this is passed to colour picker input
+        reflectionOpacity: 0.2,
     },
 };
 
