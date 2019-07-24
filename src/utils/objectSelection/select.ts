@@ -219,12 +219,7 @@ export function closerToPrediction(
             Math.hypot(coords2.x - prediction.x, coords2.y - prediction.y) -
             Math.hypot(coords1.x - prediction.x, coords1.y - prediction.y);
 
-        const distanceBetween = Math.hypot(
-            coords1.x - coords2.x,
-            coords1.y - coords2.y,
-        );
-
-        return distanceBetween > 0.25
+        return Math.abs(closerToPredictedTarget) > 0.2
             ? closerToPredictedTarget
             : closerToColour(
                   imageData,
