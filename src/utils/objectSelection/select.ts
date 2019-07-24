@@ -216,17 +216,20 @@ export function closerToPrediction(
             imageData.height,
         );
 
-        const person2DistanceFromPrediction = 
-              Math.hypot(coords2.x - prediction.x, coords2.y - prediction.y);
-        const person1DistanceFromPrediction = 
-              Math.hypot(coords1.x - prediction.x, coords1.y - prediction.y);
-        
+        const person2DistanceFromPrediction = Math.hypot(
+            coords2.x - prediction.x,
+            coords2.y - prediction.y,
+        );
+        const person1DistanceFromPrediction = Math.hypot(
+            coords1.x - prediction.x,
+            coords1.y - prediction.y,
+        );
+
         const closerToPredictedTarget =
-            person2DistanceFromPrediction -
-            person1DistanceFromPrediction;
-        
-        return (person1DistanceFromPrediction > 0.2 || 
-                person2DistanceFromPrediction > 0.2) 
+            person2DistanceFromPrediction - person1DistanceFromPrediction;
+
+        return person1DistanceFromPrediction > 0.2 ||
+            person2DistanceFromPrediction > 0.2
             ? closerToPredictedTarget
             : closerToColour(
                   imageData,
@@ -267,9 +270,7 @@ function getWeightedAverage(nums: number[]): number {
         decayTotal += decay;
     }
 
-    const weightedAvg = weightedNums.reduce((a, b) => a + b, 0) / decayTotal;
-
-    return weightedAvg;
+    return weightedNums.reduce((a, b) => a + b, 0) / decayTotal;
 }
 
 export function closerVerticallyTo(
