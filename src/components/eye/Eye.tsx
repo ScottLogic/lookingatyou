@@ -3,7 +3,7 @@ import { EyeSide, transitionTime } from '../../AppConstants';
 import './Eye.css';
 import { BlackFill } from './eyeParts/BlackFill';
 import { Eyelids } from './eyeParts/Eyelids';
-import { InnerEye } from './eyeParts/InnerEye';
+import InnerEye from './eyeParts/InnerEye';
 import { Sclera } from './eyeParts/Sclera';
 import { getInnerPath } from './getInnerPath';
 
@@ -38,25 +38,8 @@ export interface IEyeProps {
 const pupilColor = 'black';
 
 export default function Eye(props: IEyeProps) {
-    const circleTransitionStyle = {
-        transition: `r ${transitionTime.dilate}ms, cx ${1000 /
-            props.fps}ms, cy ${1000 / props.fps}ms,
-            transform ${1000 / props.fps}ms`, // cx and cy transitions based on FPS
-    };
-    const ellipseTransitionStyle = {
-        transition: `rx ${transitionTime.dilate}ms, ry ${
-            transitionTime.dilate
-        }ms, cx ${1000 / props.fps}ms, cy ${1000 /
-            props.fps}ms, transform ${1000 / props.fps}ms`, // cx and cy transitions based on FPS
-    };
-    const innerTransitionStyle = {
-        transition: `transform ${1000 / props.fps}ms`,
-    };
     const eyelidTransitionStyle = {
         transition: `d ${transitionTime.blink}ms`,
-    };
-    const lineTransitionStyle = {
-        transition: `d ${1000 / props.fps}ms`,
     };
     const cornerShape = getCornerShape(props);
 
@@ -70,16 +53,11 @@ export default function Eye(props: IEyeProps) {
     return (
         <svg className={props.class} width={props.width} height={props.height}>
             <Sclera
-                style={circleTransitionStyle}
                 radius={props.scleraRadius}
                 width={props.width / 2}
                 height={props.height / 2}
             />
             <InnerEye
-                innerTransitionStyle={innerTransitionStyle}
-                circleTransitionStyle={circleTransitionStyle}
-                lineTransitionStyle={lineTransitionStyle}
-                ellipseTransitionStyle={ellipseTransitionStyle}
                 irisRadius={props.irisRadius}
                 irisColor={props.irisColor}
                 innerY={props.innerY}

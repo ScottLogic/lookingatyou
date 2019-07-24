@@ -25,7 +25,6 @@ export const dilationOffset = 0.7;
 export const sleepDelay = 25000;
 export const transitionTime = {
     blink: 200,
-    dilate: 750,
 };
 export const neutralBlinkFrequency = 0.25;
 export const irisSkewFactor = 0.8;

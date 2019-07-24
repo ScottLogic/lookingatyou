@@ -32,7 +32,7 @@ interface IAppMapDispatchToProps {
 
 type AppProps = IAppProps & IAppMapStateToProps & IAppMapDispatchToProps;
 
-export class App extends React.PureComponent<AppProps, IAppState> {
+export class App extends React.Component<AppProps, IAppState> {
     constructor(props: AppProps) {
         super(props);
 
@@ -61,6 +61,15 @@ export class App extends React.PureComponent<AppProps, IAppState> {
         this.props.environment.removeEventListener(
             'resize',
             this.updateDimensions,
+        );
+    }
+
+    shouldComponentUpdate(nextProps: AppProps, nextState: IAppState) {
+        return (
+            this.props.webcamAvailable !== nextProps.webcamAvailable ||
+            this.props.model !== nextProps.model ||
+            this.state.height !== nextState.height ||
+            this.state.width !== nextState.width
         );
     }
 
