@@ -4,7 +4,8 @@ import { Detections } from '../../models/objectDetection';
 import select, {
     calculateColourMatch,
     closerToPrediction,
-    setPrediction,
+    getPredictedColour,
+    getPredictedTarget,
 } from '../../utils/objectSelection/select';
 import { calculateNormalisedPos } from '../../utils/objectTracking/calculateFocus';
 import { IColour, ICoords } from '../../utils/types';
@@ -16,29 +17,16 @@ export function getDetections(state: IRootStore): Detections {
 }
 
 export const getSelections = createSelector(
-    [
-        getDetections,
-        getPreviousTargets,
-        getPreviousColour,
-        getVideos,
-        getImageData,
-    ],
-    (detections, previousTargets, previousColour, videos, imageDataMap) => {
-        const width = videos[0] ? videos[0]!.width : 1;
-        const height = videos[0] ? videos[0]!.height : 1;
+    [getDetections, getPreviousTargets, getPreviousColours, getImageData],
+    (detections, previousTargets, previousColours, imageDataMap) => {
         const imageData = imageDataMap[EyeSide.LEFT];
 
-        const prediction = setPrediction(previousTargets);
+        const predictedTarget = getPredictedTarget(previousTargets);
+        const predictedColour = getPredictedColour(previousColours);
 
         const selection = select(
             detections,
-            closerToPrediction(
-                prediction,
-                width,
-                height,
-                imageData,
-                previousColour,
-            ),
+            closerToPrediction(predictedTarget, imageData, predictedColour),
         );
         return selection;
     },
@@ -68,7 +56,11 @@ export const getColour = createSelector(
     (selection, imageDataMap): IColour => {
         const imageData = imageDataMap[EyeSide.LEFT];
         if (selection) {
-            return calculateColourMatch(imageData, selection.info.keypoints);
+            const colour = calculateColourMatch(
+                imageData,
+                selection.info.keypoints,
+            );
+            return colour;
         }
         return { r: 0, g: 0, b: 0 };
     },
@@ -86,6 +78,10 @@ export function getPreviousTargets(state: IRootStore): ICoords[] {
 export function getPreviousColour(state: IRootStore): IColour {
     return state.detectionStore.history[state.detectionStore.history.length - 1]
         .colour;
+}
+
+export function getPreviousColours(state: IRootStore): IColour[] {
+    return state.detectionStore.history.map(history => history.colour);
 }
 
 export function getIdleTargets(state: IRootStore): ICoords {
