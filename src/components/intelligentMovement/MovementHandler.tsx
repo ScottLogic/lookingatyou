@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
+    blinkConsts,
     eyelidPosition,
     EyeSide,
-    maxMoveWithoutBlink,
+    intervals,
     pupilSizes,
-    sleepDelay,
 } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 import { setIdleTarget, setOpen } from '../../store/actions/detections/actions';
@@ -179,7 +179,7 @@ export class MovementHandler extends React.Component<
                 this.props.target,
             );
 
-            if (leftEyeDist > maxMoveWithoutBlink) {
+            if (leftEyeDist > blinkConsts.movementThreshold) {
                 this.props.setOpen(eyelidPosition.CLOSED);
             }
         }
@@ -218,7 +218,7 @@ export class MovementHandler extends React.Component<
         if (this.sleepTimeout === null) {
             this.sleepTimeout = setTimeout(() => {
                 this.props.setOpen(eyelidPosition.CLOSED);
-            }, sleepDelay);
+            }, intervals.sleep);
         }
     }
 

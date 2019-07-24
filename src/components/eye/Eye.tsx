@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { EyeSide, transitionTime } from '../../AppConstants';
+import { EyeSide, transitionTimes } from '../../AppConstants';
 import './Eye.css';
 import { BlackFill } from './eyeParts/BlackFill';
 import { Eyelids } from './eyeParts/Eyelids';
@@ -38,7 +38,7 @@ const pupilColor = 'black';
 
 export default function Eye(props: IEyeProps) {
     const eyelidTransitionStyle = {
-        transition: `d ${transitionTime.blink}ms`,
+        transition: `d ${transitionTimes.blink}ms`,
     };
     const cornerShape = getCornerShape(props);
 
