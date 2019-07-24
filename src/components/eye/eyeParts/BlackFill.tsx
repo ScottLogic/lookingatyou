@@ -21,19 +21,15 @@ export const BlackFill = React.memo(
             <svg className="BlackFill">
                 <path
                     d={`M 0 ${props.eyeCoords.middleY},
-                         L ${props.eyeCoords.leftX} ${props.eyeCoords.middleY},
+                         H ${props.eyeCoords.leftX},
                          A ${props.scleraRadius} ${props.scleraRadius} 0 0 1 ${props.eyeCoords.rightX} ${props.eyeCoords.middleY}
-                         L ${props.width} ${props.eyeCoords.middleY},
-                         L ${props.width} 0
-                         L 0 0`}
-                />
-                <path
-                    d={`M 0 ${props.eyeCoords.middleY},
-                         L ${props.eyeCoords.leftX} ${props.eyeCoords.middleY},
-                         A ${props.scleraRadius} ${props.scleraRadius} 0 0 0 ${props.eyeCoords.rightX} ${props.eyeCoords.middleY}
-                         L ${props.width} ${props.eyeCoords.middleY},
-                         L ${props.width} ${props.height}
-                         L 0 ${props.height}`}
+                         A ${props.scleraRadius} ${props.scleraRadius} 0 1 1 ${props.eyeCoords.leftX} ${props.eyeCoords.middleY}
+                         H 0
+                         V 0
+                         H ${props.width}
+                         V ${props.height}
+                         H 0
+                         Z`}
                 />
             </svg>
         );
