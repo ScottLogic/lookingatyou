@@ -24,7 +24,7 @@ const DropDownMenuItem = React.memo(
                 <label>{props.name}</label>
                 <select onChange={onChange} value={props.defaultValue}>
                     {props.values.map((value, index) => (
-                        <option value={1} key={index}>
+                        <option value={value} key={index}>
                             {value}
                         </option>
                     ))}
