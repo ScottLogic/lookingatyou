@@ -88,8 +88,8 @@ const debug = () => {
 const reflection = () => {
     return (
         <Fragment>
-            This checkbox allows you to view the current selected target inside
-            the pupil as a reflection.
+            This checkbox allows you to view the currently selected target
+            inside the pupil as a reflection.
         </Fragment>
     );
 };
