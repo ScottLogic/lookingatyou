@@ -2,10 +2,10 @@ import React, { useEffect, useRef } from 'react';
 import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import tinycolor from 'tinycolor2';
-import { ISelections } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import { getSelections } from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
+import { Bbox } from '../../../utils/types';
 import { getIrisAdjustment } from '../EyeUtils';
 
 interface IInnerEyeProps {
@@ -25,7 +25,7 @@ interface IInnerEyeProps {
 interface IInnerEyeMapStateToProps {
     image: HTMLVideoElement | undefined;
     fps: number;
-    selection: ISelections;
+    selection: Bbox | undefined;
 }
 
 type InnerEyeProps = IInnerEyeProps & IInnerEyeMapStateToProps;
@@ -57,7 +57,7 @@ export const InnerEye = React.memo(
                 const canvas = canvasRef.current;
                 if (canvas && props.image) {
                     const ctx = canvas.getContext('2d');
-                    if (ctx) {
+                    if (ctx && props.selection) {
                         drawReflection(
                             ctx,
                             props.pupilRadius,
@@ -144,7 +144,7 @@ export const InnerEye = React.memo(
 function drawReflection(
     ctx: CanvasRenderingContext2D,
     radius: number,
-    selection: ISelections,
+    selection: Bbox,
     image: HTMLVideoElement,
 ) {
     const r = radius;
@@ -173,11 +173,11 @@ function drawReflection(
     ctx.restore();
 }
 
-function getSourceBox(selection: ISelections, image: HTMLVideoElement) {
-    if (selection.left) {
+function getSourceBox(selection: Bbox, image: HTMLVideoElement) {
+    if (selection) {
         const boxSize = image.width * 0.4;
-        let sx = selection.left[0] + selection.left[2] / 2 - boxSize / 2;
-        let sy = selection.left[1] + selection.left[3] / 2 - boxSize / 2;
+        let sx = selection[0] + selection[2] / 2 - boxSize / 2;
+        let sy = selection[1] + selection[3] / 2 - boxSize / 2;
         sx = Math.min(sx, image.width - boxSize);
         sx = Math.max(sx, 0);
         sy = Math.min(sy, image.width - boxSize);
