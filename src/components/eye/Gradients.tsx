@@ -49,7 +49,7 @@ export const Gradients = React.memo(
                         href={'#lgrad'}
                     />
 
-                    <radialGradient id="reflectionGradient">
+                    <radialGradient id="shineGradient">
                         <stop offset="0%" stopColor={'white'} stopOpacity={1} />
                         <stop
                             offset="20%"
@@ -60,6 +60,24 @@ export const Gradients = React.memo(
                             offset="40%"
                             stopColor={'white'}
                             stopOpacity={0.05}
+                        />
+                    </radialGradient>
+
+                    <radialGradient id="pupilGradient">
+                        <stop
+                            offset="0%"
+                            stopColor={'black'}
+                            stopOpacity={0.8}
+                        />
+                        <stop
+                            offset="75%"
+                            stopColor={'black'}
+                            stopOpacity={0.85}
+                        />
+                        <stop
+                            offset="100%"
+                            stopColor={'black'}
+                            stopOpacity={1}
                         />
                     </radialGradient>
                 </defs>

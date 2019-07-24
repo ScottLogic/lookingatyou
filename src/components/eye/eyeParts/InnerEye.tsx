@@ -1,13 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import isEqual from 'react-fast-compare';
+import { connect } from 'react-redux';
 import tinycolor from 'tinycolor2';
+import { ISelections } from '../../../models/objectDetection';
+import { IRootStore } from '../../../store/reducers/rootReducer';
+import { getSelections } from '../../../store/selectors/detectionSelectors';
+import { getVideos } from '../../../store/selectors/videoSelectors';
 import { getIrisAdjustment } from '../EyeUtils';
 
 interface IInnerEyeProps {
-    innerTransitionStyle: { transition: string };
-    circleTransitionStyle: { transition: string };
-    lineTransitionStyle: { transition: string };
-    ellipseTransitionStyle: { transition: string };
     irisRadius: number;
     innerY: number;
     innerX: number;
@@ -21,9 +22,22 @@ interface IInnerEyeProps {
     height: number;
 }
 
+interface IInnerEyeMapStateToProps {
+    image: HTMLVideoElement | undefined;
+    fps: number;
+    selection: ISelections;
+}
+
+type InnerEyeProps = IInnerEyeProps & IInnerEyeMapStateToProps;
+
 export const InnerEye = React.memo(
-    (props: IInnerEyeProps) => {
+    (props: InnerEyeProps) => {
+        const period = 1000 / props.fps;
+        const transitionStyle = {
+            transition: `transform ${period}ms`, // cx and cy transitions based on FPS
+        };
         const irisAdjustmentRef = useRef({ scale: 1, angle: 0 });
+        const canvasRef: React.RefObject<HTMLCanvasElement> = useRef(null);
         const irisAdjustment = getIrisAdjustment(
             props.innerX,
             props.innerY,
@@ -38,65 +52,156 @@ export const InnerEye = React.memo(
             irisAdjustmentRef.current = irisAdjustment;
         }, [irisAdjustment]);
 
+        useEffect(() => {
+            if (canvasRef) {
+                const canvas = canvasRef.current;
+                if (canvas && props.image) {
+                    const ctx = canvas.getContext('2d');
+                    if (ctx) {
+                        drawReflection(
+                            ctx,
+                            props.pupilRadius,
+                            props.selection,
+                            props.image,
+                        );
+                    }
+                }
+            }
+        }, [props.image, props.pupilRadius, props.selection]);
+
         return (
             <g
                 className="inner"
-                style={props.innerTransitionStyle}
+                style={transitionStyle}
                 transform={`
                     rotate(${irisAdjustment.angle})
                     scale(${irisAdjustment.scale}, 1)
                     rotate(${-irisAdjustment.angle})
+                    translate(${props.innerX},${props.innerY})
                 `}
             >
                 <circle
                     className={'iris'}
-                    style={props.circleTransitionStyle}
                     r={props.irisRadius}
                     fill={'url(#irisGradient)'}
-                    cx={props.innerX}
-                    cy={props.innerY}
                 />
-                <g className="irisStyling">
-                    <path
-                        d={`M ${props.innerX} ${props.innerY} ${props.innerPath}`}
-                        fill={tinycolor(props.irisColor)
-                            .darken(10)
-                            .toHexString()}
-                        style={props.lineTransitionStyle}
+                <path
+                    className="irisStyling"
+                    d={`M 0 0 ${props.innerPath}`}
+                    fill={tinycolor(props.irisColor)
+                        .darken(10)
+                        .toHexString()}
+                />
+                <g
+                    className="pupil"
+                    style={transitionStyle}
+                    transform={`scale(${props.dilatedCoefficient})`}
+                >
+                    <foreignObject
+                        width={props.pupilRadius * 2}
+                        height={props.pupilRadius * 2}
+                        x={-props.pupilRadius}
+                        y={-props.pupilRadius}
+                    >
+                        <canvas
+                            ref={canvasRef}
+                            width={props.pupilRadius * 2}
+                            height={props.pupilRadius * 2}
+                        />
+                    </foreignObject>
+                    <circle
+                        className={'pupil'}
+                        r={props.pupilRadius}
+                        fill={'url(#pupilGradient)'}
+                        stroke={'black'}
+                        strokeWidth={'2'}
                     />
                 </g>
-                <circle
-                    className={'pupil'}
-                    style={props.circleTransitionStyle}
-                    r={props.pupilRadius * props.dilatedCoefficient}
-                    fill={props.pupilColor}
-                    cx={props.innerX}
-                    cy={props.innerY}
-                />
                 <ellipse
                     className={'innerReflection'}
-                    style={props.ellipseTransitionStyle}
                     rx={props.pupilRadius * 0.375}
                     ry={props.pupilRadius * 0.75}
-                    fill={'url(#reflectionGradient)'}
-                    cx={props.innerX + props.pupilRadius * 0.4}
-                    cy={props.innerY - props.pupilRadius * 0.4}
-                    transform={`skewX(20) translate(${(-145 / 960) *
-                        props.width}, ${(5 / 1080) * props.height})`}
+                    fill={'url(#shineGradient)'}
+                    transform={`skewX(30) translate(${
+                        props.pupilRadius
+                    },${-props.pupilRadius * 0.5})`}
                 />
                 <ellipse
                     className={'outerReflection'}
-                    style={props.ellipseTransitionStyle}
                     rx={props.pupilRadius * 0.5}
                     ry={props.pupilRadius}
-                    fill={'url(#reflectionGradient)'}
-                    cx={props.innerX + props.scleraRadius * 0.3}
-                    cy={props.innerY - props.scleraRadius * 0.3}
-                    transform={`skewX(20) translate(${(-140 / 960) *
-                        props.width}, ${(5 / 1080) * props.height})`}
+                    fill={'url(#shineGradient)'}
+                    transform={`skewX(30) translate(${
+                        props.irisRadius
+                    },${-props.irisRadius * 0.55})`}
                 />
             </g>
         );
     },
     (previous, next) => isEqual(previous, next),
 );
+
+function drawReflection(
+    ctx: CanvasRenderingContext2D,
+    radius: number,
+    selection: ISelections,
+    image: HTMLVideoElement,
+) {
+    const r = radius;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(r, r, r, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.clip();
+    ctx.scale(-1, 1);
+    const sourceBox = getSourceBox(selection, image);
+    ctx.drawImage(
+        image,
+        sourceBox.sx,
+        sourceBox.sy,
+        sourceBox.sWidth,
+        sourceBox.sHeight,
+        0,
+        0,
+        -radius * 2,
+        radius * 2,
+    );
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2, true);
+    ctx.clip();
+    ctx.closePath();
+    ctx.restore();
+}
+
+function getSourceBox(selection: ISelections, image: HTMLVideoElement) {
+    if (selection.left) {
+        const boxSize = image.width * 0.4;
+        let sx = selection.left[0] + selection.left[2] / 2 - boxSize / 2;
+        let sy = selection.left[1] + selection.left[3] / 2 - boxSize / 2;
+        sx = Math.min(sx, image.width - boxSize);
+        sx = Math.max(sx, 0);
+        sy = Math.min(sy, image.width - boxSize);
+        sy = Math.max(sy, 0);
+        return {
+            sx,
+            sy,
+            sWidth: boxSize,
+            sHeight: boxSize,
+        };
+    } else {
+        return {
+            sx: 0,
+            sy: 0,
+            sWidth: 1,
+            sHeight: 1,
+        };
+    }
+}
+
+const mapStateToProps = (state: IRootStore): IInnerEyeMapStateToProps => ({
+    image: getVideos(state)[0],
+    fps: state.configStore.config.fps,
+    selection: getSelections(state),
+});
+
+export default connect(mapStateToProps)(InnerEye);
