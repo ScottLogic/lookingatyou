@@ -68,7 +68,7 @@ function isWristAtShoulderHeight(
     shoulder: number,
 ): boolean {
     return (
-        keypoints[wrist].position.y < keypoints[shoulder].position.y + 25 &&
-        keypoints[wrist].position.y > keypoints[shoulder].position.y - 25
+        keypoints[wrist].position.y > keypoints[shoulder].position.y + 25 &&
+        keypoints[wrist].position.y < keypoints[shoulder].position.y - 25
     );
 }
