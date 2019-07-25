@@ -180,7 +180,7 @@ function getSourceBox(selection: Bbox, image: HTMLVideoElement) {
         let sy = selection[1] + selection[3] / 2 - boxSize / 2;
         sx = Math.min(sx, image.width - boxSize);
         sx = Math.max(sx, 0);
-        sy = Math.min(sy, image.width - boxSize);
+        sy = Math.min(sy, image.height - boxSize);
         sy = Math.max(sy, 0);
         return {
             sx,
