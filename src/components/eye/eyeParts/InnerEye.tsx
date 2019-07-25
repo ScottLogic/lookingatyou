@@ -189,7 +189,6 @@ function drawReflection(
         index++;
     }
     const result = fisheye(pixelsCopy, radius * 2, radius * 2);
-    // const result = pixelsCopy;
     for (let i = 0; i < result.length; i++) {
         index = 4 * i;
         if (result[i] !== undefined) {
