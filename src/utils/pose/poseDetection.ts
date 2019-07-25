@@ -41,23 +41,23 @@ function armsOutToSide(selection: IDetection) {
         keypoints[partIds.leftWrist].position.x >
             keypoints[partIds.leftElbow].position.x &&
         keypoints[partIds.leftElbow].position.x >
-            keypoints[partIds.leftShoulder].position.x &&
-        isWristAtShoulderHeight(
+            keypoints[partIds.leftShoulder].position.x;
+        /*isWristAtShoulderHeight(
             keypoints,
             partIds.leftWrist,
             partIds.leftShoulder,
-        );
+        );*/
 
     const rightArmOut =
         keypoints[partIds.rightWrist].position.x <
             keypoints[partIds.rightElbow].position.x &&
         keypoints[partIds.rightElbow].position.x <
-            keypoints[partIds.rightShoulder].position.x &&
-        isWristAtShoulderHeight(
+            keypoints[partIds.rightShoulder].position.x;
+        /*isWristAtShoulderHeight(
             keypoints,
             partIds.rightWrist,
             partIds.rightShoulder,
-        );
+        );*/
 
     return leftArmOut && rightArmOut;
 }
