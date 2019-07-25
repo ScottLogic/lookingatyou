@@ -61,14 +61,3 @@ function armsOutToSide(selection: IDetection) {
 
     return leftArmOut && rightArmOut;
 }
-
-function isWristAtShoulderHeight(
-    keypoints: Keypoint[],
-    wrist: number,
-    shoulder: number,
-): boolean {
-    return (
-        keypoints[wrist].position.y > keypoints[shoulder].position.y + 25 &&
-        keypoints[wrist].position.y < keypoints[shoulder].position.y - 25
-    );
-}
