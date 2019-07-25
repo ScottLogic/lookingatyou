@@ -7,6 +7,7 @@ interface IAnimationFrame {
         | number
         | { [EyeSide.LEFT]: number; [EyeSide.RIGHT]: number };
     dilation?: number;
+    irisColour?: string;
     duration: number;
 }
 
@@ -15,6 +16,7 @@ export type Animation = IAnimationFrame[];
 export const animationMapping: { [key: string]: () => Animation } = {
     [Pose.WAVE]: wink,
     [Pose.HANDS_UP]: rollEyes,
+    [Pose.DAB]: dab,
 };
 
 export function wink(): Animation {
@@ -49,4 +51,17 @@ export function rollEyes(): Animation {
     }
 
     return path;
+}
+
+export function dab(): Animation {
+    const animation = [];
+    for (let i = 0; i < 10; i++) {
+        animation.push({
+            irisColour: '#' + (((1 << 24) * Math.random()) | 0).toString(16),
+            duration: 250,
+            openCoefficient:
+                eyelidPosition.OPEN + (eyelidPosition.OPEN * i) / 10,
+        });
+    }
+    return animation;
 }
