@@ -55,12 +55,12 @@ export function rollEyes(): Animation {
 
 export function dab(): Animation {
     const animation = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
         animation.push({
             irisColour: '#' + (((1 << 24) * Math.random()) | 0).toString(16),
             duration: 250,
             openCoefficient:
-                eyelidPosition.OPEN + (eyelidPosition.OPEN * i) / 10,
+                eyelidPosition.OPEN + (eyelidPosition.OPEN * i) / 20,
         });
     }
     return animation;
