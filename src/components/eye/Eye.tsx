@@ -37,18 +37,16 @@ export interface IEyeProps {
 const pupilColor = 'black';
 
 export default function Eye(props: IEyeProps) {
+    const cornerShape = getCornerShape(props);
+    const [innerPath, setInnerPath] = useState();
     const eyelidTransitionStyle = {
         transition: `d ${transitionTime.blink}ms`,
     };
-    const cornerShape = getCornerShape(props);
-
-    const scaledResolution = props.width / 960;
-    const [innerPath, setInnerPath] = useState();
 
     useEffect(() => {
         const value = generateInnerPath(props.irisRadius, 100);
         setInnerPath(value);
-    }, [scaledResolution, props.irisRadius]);
+    }, [props.irisRadius]);
 
     return (
         <svg className={props.class} width={props.width} height={props.height}>
