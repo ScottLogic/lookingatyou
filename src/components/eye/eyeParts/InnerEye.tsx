@@ -202,32 +202,39 @@ function drawReflection(
     ctx.restore();
 }
 
-function fisheye(srcpixels: number[][], w: number, h: number) {
+function fisheye(srcpixels: number[][], width: number, height: number) {
     const dstpixels = srcpixels.slice();
 
-    for (let y = 0; y < h; y++) {
-        const ny = (2 * y) / h - 1;
-        const ny2 = ny * ny;
+    for (let currRow = 0; currRow < height; currRow++) {
+        const normalisedY = (2 * currRow) / height - 1; // a
+        const normalYSquared = normalisedY * normalisedY; // a2
 
-        for (let x = 0; x < w; x++) {
-            const nx = (2 * x) / w - 1;
-            const nx2 = nx * nx;
-            const r = Math.sqrt(nx2 + ny2);
+        for (let currColumn = 0; currColumn < width; currColumn++) {
+            const normalisedX = (2 * currColumn) / width - 1; // b
+            const normalXSquared = normalisedX * normalisedX; // b2
 
-            if (0.0 <= r && r <= 1.0) {
-                let nr = Math.sqrt(1.0 - r * r);
-                nr = (r + (1.0 - nr)) / 2.0;
+            const normalisedRadius = Math.sqrt(normalXSquared + normalYSquared); // c=sqrt(a2 + b2)
 
-                if (nr <= 1.0) {
-                    const theta = Math.atan2(ny, nx);
-                    const nxn = nr * Math.cos(theta);
-                    const nyn = nr * Math.sin(theta);
-                    const x2 = Math.floor(((nxn + 1) * w) / 2);
-                    const y2 = Math.floor(((nyn + 1) * h) / 2);
-                    const srcpos = Math.floor(y2 * w + x2);
-                    if (srcpos >= 0 && srcpos < w * h) {
-                        dstpixels[Math.floor(y * w + x)] = srcpixels[srcpos];
-                    }
+            // For any point in the circle
+            if (0.0 <= normalisedRadius && normalisedRadius <= 1.0) {
+                // The closer to the center it is, the larger the value
+                let radiusScaling = Math.sqrt(
+                    1.0 - normalisedRadius * normalisedRadius,
+                );
+                radiusScaling =
+                    (normalisedRadius + (1.0 - radiusScaling)) / 2.0;
+                // Exponential curve between 0 and 1, ie pixels closer to the center have a much lower scaling value
+
+                const theta = Math.atan2(normalisedY, normalisedX); // angle to point from center of circle
+                const scaledNormalisedX = radiusScaling * Math.cos(theta);
+                const scaledNormalisedY = radiusScaling * Math.sin(theta);
+                const newX = Math.floor(((scaledNormalisedX + 1) * width) / 2); // normalise x to size of circle
+                const newY = Math.floor(((scaledNormalisedY + 1) * height) / 2); // normalise y to size of circle
+                const srcpos = newY * width + newX; // New pixel position in array
+                // If new pixel position is in array
+                if (srcpos >= 0 && srcpos < width * height) {
+                    dstpixels[Math.floor(currRow * width + currColumn)] =
+                        srcpixels[srcpos];
                 }
             }
         }
