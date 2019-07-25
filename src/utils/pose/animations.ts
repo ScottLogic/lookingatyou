@@ -13,19 +13,36 @@ interface IAnimationFrame {
 export type Animation = IAnimationFrame[];
 
 export const animationMapping: { [key: string]: () => Animation } = {
-    [Pose.WAVE]: wink,
+    [Pose.LEFT_WAVE]: leftWink,
+    [Pose.RIGHT_WAVE]: rightWink,
     [Pose.HANDS_UP]: rollEyes,
 };
 
-export function wink(): Animation {
-    return [
-        {
-            openCoefficient: {
-                [EyeSide.LEFT]: eyelidPosition.CLOSED,
-                [EyeSide.RIGHT]: eyelidPosition.OPEN,
-            },
-            duration: 500,
+export function leftWink(): Animation {
+    const left = {
+        openCoefficient: {
+            [EyeSide.LEFT]: eyelidPosition.CLOSED,
+            [EyeSide.RIGHT]: eyelidPosition.OPEN,
         },
+        duration: 500,
+    };
+    return wink(left);
+}
+
+export function rightWink(): Animation {
+    const right = {
+        openCoefficient: {
+            [EyeSide.RIGHT]: eyelidPosition.CLOSED,
+            [EyeSide.LEFT]: eyelidPosition.OPEN,
+        },
+        duration: 500,
+    };
+    return wink(right);
+}
+
+function wink(animation: IAnimationFrame): Animation {
+    return [
+        animation,
         {
             openCoefficient: eyelidPosition.OPEN,
             duration: 500,

@@ -3,7 +3,8 @@ export enum EyeSide {
     LEFT = 'LEFT',
 }
 export enum Pose {
-    WAVE = 'WAVE',
+    LEFT_WAVE = 'LEFT_WAVE',
+    RIGHT_WAVE = 'RIGHT_WAVE',
     HANDS_UP = 'HANDS_UP',
 }
 export const eyelidPosition = {
