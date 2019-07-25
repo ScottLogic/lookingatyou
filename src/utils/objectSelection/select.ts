@@ -1,4 +1,5 @@
 import { Keypoint } from '@tensorflow-models/posenet';
+import convert from 'color-convert';
 import { bodyParts, xOffset, yOffset } from '../../AppConstants';
 import { Detections, IDetection } from '../../models/objectDetection';
 import calculateTargetPos, {
@@ -53,8 +54,8 @@ export function getAvgColour(
         return { r: 0, g: 0, b: 0 };
     }
 
-    let r = 0;
-    let g = 0;
+    let L = 0;
+    let a = 0;
     let b = 0;
 
     const data = imageData.data;
@@ -67,18 +68,28 @@ export function getAvgColour(
         i += imageData.width * 4
     ) {
         for (let j = xStart * 4; j < xEnd * 4; j += 4) {
-            r += data[j + i];
-            g += data[j + i + 1];
-            b += data[j + i + 2];
+            const imgR = data[j + i];
+            const imgG = data[j + i + 1];
+            const imgB = data[j + i + 2];
+            const [pixelL, pixela, pixelb] = convert.rgb.lab([
+                imgR,
+                imgG,
+                imgB,
+            ]);
+            L += pixelL;
+            a += pixela;
+            b += pixelb;
             counter++;
         }
     }
 
-    r = Math.round(r / counter);
-    g = Math.round(g / counter);
-    b = Math.round(b / counter);
+    L = L / counter;
+    a = a / counter;
+    b = b / counter;
 
-    return { r, g, b };
+    const [avgR, avgG, avgB] = convert.lab.rgb([L, a, b]);
+
+    return { r: avgR, g: avgG, b: avgB };
 }
 
 export function getPredictedTarget(history: ICoords[]): ICoords {
