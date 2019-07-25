@@ -1,4 +1,4 @@
-import { partIds } from '@tensorflow-models/posenet';
+import { Keypoint, partIds } from '@tensorflow-models/posenet';
 import { Pose } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 
@@ -42,22 +42,29 @@ function armsOutToSide(selection: IDetection) {
             keypoints[partIds.leftElbow].position.x &&
         keypoints[partIds.leftElbow].position.x >
             keypoints[partIds.leftShoulder].position.x;
-        /*isWristAtShoulderHeight(
-            keypoints,
-            partIds.leftWrist,
-            partIds.leftShoulder,
-        );*/
+    isWristAtShoulderHeight(keypoints, partIds.leftWrist, partIds.leftShoulder);
 
     const rightArmOut =
         keypoints[partIds.rightWrist].position.x <
             keypoints[partIds.rightElbow].position.x &&
         keypoints[partIds.rightElbow].position.x <
             keypoints[partIds.rightShoulder].position.x;
-        /*isWristAtShoulderHeight(
-            keypoints,
-            partIds.rightWrist,
-            partIds.rightShoulder,
-        );*/
+    isWristAtShoulderHeight(
+        keypoints,
+        partIds.rightWrist,
+        partIds.rightShoulder,
+    );
 
     return leftArmOut && rightArmOut;
+}
+
+function isWristAtShoulderHeight(
+    keypoints: Keypoint[],
+    wrist: number,
+    shoulder: number,
+): boolean {
+    return (
+        keypoints[wrist].position.y < keypoints[shoulder].position.y + 25 &&
+        keypoints[wrist].position.y > keypoints[shoulder].position.y - 25
+    );
 }
