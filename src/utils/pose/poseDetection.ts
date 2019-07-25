@@ -51,7 +51,32 @@ function dab(selection: IDetection) {
     const bendWristAboveNose =
         keypoints[partIds.rightWrist].position.y <
         keypoints[partIds.rightElbow].position.y;
-    return (
-        eyesBetweenWristAndShoulder && armPointingToTheSky && bendWristAboveNose
-    );
+
+    const leftDab =
+        eyesBetweenWristAndShoulder &&
+        armPointingToTheSky &&
+        bendWristAboveNose;
+
+    const rightEyesBetweenWristAndShoulder =
+        keypoints[partIds.rightWrist].position.x <
+        keypoints[partIds.leftEye].position.x;
+    const rightArmPointingToTheSky =
+        keypoints[partIds.leftWrist].position.x <
+            keypoints[partIds.leftElbow].position.x &&
+        keypoints[partIds.leftElbow].position.x <
+            keypoints[partIds.leftShoulder].position.x &&
+        keypoints[partIds.leftWrist].position.y <
+            keypoints[partIds.leftElbow].position.y &&
+        keypoints[partIds.leftElbow].position.y <
+            keypoints[partIds.leftShoulder].position.y;
+    const rightBendWristAboveNose =
+        keypoints[partIds.rightWrist].position.y <
+        keypoints[partIds.rightElbow].position.y;
+
+    const rightDab =
+        rightArmPointingToTheSky &&
+        rightBendWristAboveNose &&
+        rightEyesBetweenWristAndShoulder;
+
+    return leftDab || rightDab;
 }
