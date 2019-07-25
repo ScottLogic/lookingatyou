@@ -1,4 +1,4 @@
-import { partIds } from '@tensorflow-models/posenet';
+import { Keypoint, partIds } from '@tensorflow-models/posenet';
 import { Pose } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 
@@ -36,47 +36,77 @@ function handsUp(selection: IDetection) {
 
 function dab(selection: IDetection) {
     const keypoints = selection.info.keypoints;
+
+    const leftDab = checkLeftDab(keypoints);
+    const rightDab = checkRightDab(keypoints);
+
+    return leftDab || rightDab;
+}
+
+function checkRightDab(keypoints: Keypoint[]): boolean {
     const eyesBetweenWristAndShoulder =
-        keypoints[partIds.rightWrist].position.x >
+        keypoints[partIds.rightWrist].position.x <
         keypoints[partIds.leftEye].position.x;
+
+    const armPointingToTheSky =
+        keypoints[partIds.rightWrist].position.x <
+            keypoints[partIds.rightElbow].position.x &&
+        keypoints[partIds.rightElbow].position.x <
+            keypoints[partIds.rightShoulder].position.x &&
+        armPointingUp(
+            keypoints,
+            partIds.rightWrist,
+            partIds.rightElbow,
+            partIds.rightShoulder,
+        );
+
+    const bentWristAboveShoulder =
+        keypoints[partIds.leftWrist].position.y <
+        keypoints[partIds.rightShoulder].position.y;
+
+    return (
+        eyesBetweenWristAndShoulder &&
+        armPointingToTheSky &&
+        bentWristAboveShoulder
+    );
+}
+
+function checkLeftDab(keypoints: Keypoint[]): boolean {
+    const eyesBetweenWristAndShoulder =
+        keypoints[partIds.leftWrist].position.x >
+        keypoints[partIds.rightEye].position.x;
+
     const armPointingToTheSky =
         keypoints[partIds.leftWrist].position.x >
             keypoints[partIds.leftElbow].position.x &&
         keypoints[partIds.leftElbow].position.x >
             keypoints[partIds.leftShoulder].position.x &&
-        keypoints[partIds.leftWrist].position.y <
-            keypoints[partIds.leftElbow].position.y &&
-        keypoints[partIds.leftElbow].position.y <
-            keypoints[partIds.leftShoulder].position.y;
-    const bendWristAboveNose =
-        keypoints[partIds.rightWrist].position.y <
-        keypoints[partIds.rightElbow].position.y;
+        armPointingUp(
+            keypoints,
+            partIds.leftWrist,
+            partIds.leftElbow,
+            partIds.leftShoulder,
+        );
 
-    const leftDab =
+    const bendWristAboveOppositeShoulder =
+        keypoints[partIds.rightWrist].position.y <
+        keypoints[partIds.leftShoulder].position.y;
+
+    return (
         eyesBetweenWristAndShoulder &&
         armPointingToTheSky &&
-        bendWristAboveNose;
+        bendWristAboveOppositeShoulder
+    );
+}
 
-    const rightEyesBetweenWristAndShoulder =
-        keypoints[partIds.rightWrist].position.x <
-        keypoints[partIds.leftEye].position.x;
-    const rightArmPointingToTheSky =
-        keypoints[partIds.leftWrist].position.x <
-            keypoints[partIds.leftElbow].position.x &&
-        keypoints[partIds.leftElbow].position.x <
-            keypoints[partIds.leftShoulder].position.x &&
-        keypoints[partIds.leftWrist].position.y <
-            keypoints[partIds.leftElbow].position.y &&
-        keypoints[partIds.leftElbow].position.y <
-            keypoints[partIds.leftShoulder].position.y;
-    const rightBendWristAboveNose =
-        keypoints[partIds.rightWrist].position.y <
-        keypoints[partIds.rightElbow].position.y;
-
-    const rightDab =
-        rightArmPointingToTheSky &&
-        rightBendWristAboveNose &&
-        rightEyesBetweenWristAndShoulder;
-
-    return leftDab || rightDab;
+function armPointingUp(
+    keypoints: Keypoint[],
+    wrist: number,
+    elbow: number,
+    shoulder: number,
+) {
+    return (
+        keypoints[wrist].position.y < keypoints[elbow].position.y &&
+        keypoints[elbow].position.y < keypoints[shoulder].position.y
+    );
 }
