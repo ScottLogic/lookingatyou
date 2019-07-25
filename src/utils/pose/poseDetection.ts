@@ -1,10 +1,11 @@
-import { partIds } from '@tensorflow-models/posenet';
+import { Keypoint, partIds } from '@tensorflow-models/posenet';
 import { Pose } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 
 const poseMapping: { [key: string]: (selection: IDetection) => boolean } = {
     [Pose.WAVE]: wave,
     [Pose.HANDS_UP]: handsUp,
+    [Pose.ARMS_OUT]: armsOutToSide,
 };
 
 export function getPose(selection: IDetection): string | undefined {
@@ -30,5 +31,44 @@ function handsUp(selection: IDetection) {
             keypoints[partIds.rightEye].position.y &&
         keypoints[partIds.leftWrist].position.y <
             keypoints[partIds.leftEye].position.y
+    );
+}
+
+function armsOutToSide(selection: IDetection) {
+    const keypoints = selection.info.keypoints;
+
+    const leftArmOut =
+        keypoints[partIds.leftWrist].position.x >
+            keypoints[partIds.leftElbow].position.x &&
+        keypoints[partIds.leftElbow].position.x >
+            keypoints[partIds.leftShoulder].position.x &&
+        isWristAtShoulderHeight(
+            keypoints,
+            partIds.leftWrist,
+            partIds.leftShoulder,
+        );
+
+    const rightArmOut =
+        keypoints[partIds.rightWrist].position.x <
+            keypoints[partIds.rightElbow].position.x &&
+        keypoints[partIds.rightElbow].position.x <
+            keypoints[partIds.rightShoulder].position.x &&
+        isWristAtShoulderHeight(
+            keypoints,
+            partIds.rightWrist,
+            partIds.rightShoulder,
+        );
+
+    return leftArmOut && rightArmOut;
+}
+
+function isWristAtShoulderHeight(
+    keypoints: Keypoint[],
+    wrist: number,
+    shoulder: number,
+): boolean {
+    return (
+        keypoints[wrist].position.y < keypoints[shoulder].position.y + 25 &&
+        keypoints[wrist].position.y > keypoints[shoulder].position.y - 25
     );
 }

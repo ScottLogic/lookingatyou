@@ -1,4 +1,4 @@
-import { eyelidPosition, EyeSide, Pose } from '../../AppConstants';
+import { eyelidPosition, EyeSide, Pose, pupilSizes } from '../../AppConstants';
 import { ICoords } from '../types';
 
 interface IAnimationFrame {
@@ -15,6 +15,7 @@ export type Animation = IAnimationFrame[];
 export const animationMapping: { [key: string]: () => Animation } = {
     [Pose.WAVE]: wink,
     [Pose.HANDS_UP]: rollEyes,
+    [Pose.ARMS_OUT]: shock,
 };
 
 export function wink(): Animation {
@@ -49,4 +50,30 @@ export function rollEyes(): Animation {
     }
 
     return path;
+}
+
+export function shock(): Animation {
+    const constricted = {
+        dilation: pupilSizes.constricted,
+        openCoefficient: eyelidPosition.SHOCKED,
+        duration: 100,
+    };
+
+    const dilated = {
+        dilation: pupilSizes.dilated,
+        openCoefficient: eyelidPosition.SQUINT,
+        duration: 100,
+    };
+
+    return [
+        {
+            dilation: pupilSizes.dilated,
+            openCoefficient: eyelidPosition.SQUINT,
+            duration: 500,
+        },
+        constricted,
+        dilated,
+        constricted,
+        dilated,
+    ];
 }
