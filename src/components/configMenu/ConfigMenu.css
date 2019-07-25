@@ -52,3 +52,14 @@
 .ConfigMenu #canvas {
     width: var(--canvas-width);
 }
+
+.icon {
+    width: 2em;
+    border-radius: 25%;
+    color: #fff;
+    line-height: 2em;
+    text-align: center;
+    background: rgb(61, 61, 61);
+    display: inline-block;
+    top: -0.25em;
+}

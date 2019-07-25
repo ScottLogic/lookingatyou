@@ -42,7 +42,11 @@ export const ConfigMenuElement = React.memo(
                 window={props.window}
                 debugEnabled={props.config.toggleDebug}
             >
-                <span data-tip={true} data-for={HelpWith[HelpWith.APP]}>
+                <span
+                    className="icon"
+                    data-tip={true}
+                    data-for={HelpWith[HelpWith.APP]}
+                >
                     ?
                 </span>
 
