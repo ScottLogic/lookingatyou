@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import tinycolor from 'tinycolor2';
+import { fisheyeConsts } from '../../../AppConstants';
 import { IDetection } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import { getSelections } from '../../../store/selectors/detectionSelectors';
@@ -224,6 +225,10 @@ function fisheye(srcpixels: number[][], width: number, height: number) {
                 radiusScaling =
                     (normalisedRadius + (1.0 - radiusScaling)) / 2.0;
                 // Exponential curve between 0 and 1, ie pixels closer to the center have a much lower scaling value
+
+                radiusScaling =
+                    radiusScaling * fisheyeConsts.intensity +
+                    normalisedRadius * (1 - fisheyeConsts.intensity);
 
                 const theta = Math.atan2(normalisedY, normalisedX); // angle to point from center of circle
                 const scaledNormalisedX = radiusScaling * Math.cos(theta);
