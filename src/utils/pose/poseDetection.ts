@@ -1,4 +1,4 @@
-import { Keypoint, partIds } from '@tensorflow-models/posenet';
+import { partIds } from '@tensorflow-models/posenet';
 import { Pose } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 
