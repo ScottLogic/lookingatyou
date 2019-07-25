@@ -7,6 +7,7 @@ interface IAnimationFrame {
         | number
         | { [EyeSide.LEFT]: number; [EyeSide.RIGHT]: number };
     dilation?: number;
+    irisColour?: string;
     duration: number;
 }
 
