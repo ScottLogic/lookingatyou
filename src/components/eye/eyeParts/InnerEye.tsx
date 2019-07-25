@@ -157,14 +157,14 @@ function drawReflection(
     selection: Bbox,
     image: HTMLVideoElement,
 ) {
-    const r = radius;
     ctx.save();
     ctx.beginPath();
-    ctx.arc(r, r, r, 0, Math.PI * 2, true);
+    ctx.arc(radius, radius, radius, 0, Math.PI * 2, true);
     ctx.closePath();
     ctx.clip();
-    ctx.scale(-1, 1);
     const sourceBox = getSourceBox(selection, image);
+    ctx.scale(-1, 1);
+    ctx.filter = 'blur(1px)';
     ctx.drawImage(
         image,
         sourceBox.sx,
@@ -176,11 +176,64 @@ function drawReflection(
         -radius * 2,
         radius * 2,
     );
-    ctx.beginPath();
-    ctx.arc(0, 0, r, 0, Math.PI * 2, true);
-    ctx.clip();
-    ctx.closePath();
+    const imgData = ctx.getImageData(0, 0, radius * 2, radius * 2);
+    const pixelsCopy = [];
+    let index = 0;
+    for (let i = 0; i <= imgData.data.length; i += 4) {
+        pixelsCopy[index] = [
+            imgData.data[i],
+            imgData.data[i + 1],
+            imgData.data[i + 2],
+            imgData.data[i + 3],
+        ];
+        index++;
+    }
+    const result = fisheye(pixelsCopy, radius * 2, radius * 2);
+    // const result = pixelsCopy;
+    for (let i = 0; i < result.length; i++) {
+        index = 4 * i;
+        if (result[i] !== undefined) {
+            imgData.data[index + 0] = result[i][0];
+            imgData.data[index + 1] = result[i][1];
+            imgData.data[index + 2] = result[i][2];
+            imgData.data[index + 3] = result[i][3];
+        }
+    }
+    ctx.putImageData(imgData, 0, 0);
     ctx.restore();
+}
+
+function fisheye(srcpixels: number[][], w: number, h: number) {
+    const dstpixels = srcpixels.slice();
+
+    for (let y = 0; y < h; y++) {
+        const ny = (2 * y) / h - 1;
+        const ny2 = ny * ny;
+
+        for (let x = 0; x < w; x++) {
+            const nx = (2 * x) / w - 1;
+            const nx2 = nx * nx;
+            const r = Math.sqrt(nx2 + ny2);
+
+            if (0.0 <= r && r <= 1.0) {
+                let nr = Math.sqrt(1.0 - r * r);
+                nr = (r + (1.0 - nr)) / 2.0;
+
+                if (nr <= 1.0) {
+                    const theta = Math.atan2(ny, nx);
+                    const nxn = nr * Math.cos(theta);
+                    const nyn = nr * Math.sin(theta);
+                    const x2 = Math.floor(((nxn + 1) * w) / 2);
+                    const y2 = Math.floor(((nyn + 1) * h) / 2);
+                    const srcpos = Math.floor(y2 * w + x2);
+                    if (srcpos >= 0 && srcpos < w * h) {
+                        dstpixels[Math.floor(y * w + x)] = srcpixels[srcpos];
+                    }
+                }
+            }
+        }
+    }
+    return dstpixels;
 }
 
 function getSourceBox(selection: Bbox, image: HTMLVideoElement) {
