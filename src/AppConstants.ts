@@ -49,5 +49,5 @@ export const xOffset = 10;
 export const minTargetInterval = 4000;
 export const maxTargetInterval = 7000;
 export const fisheyeConsts = {
-    intensity: 0.5,
+    intensity: 0.6,
 };

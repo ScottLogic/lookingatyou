@@ -163,48 +163,34 @@ function drawReflection(
     ctx.arc(radius, radius, radius, 0, Math.PI * 2, true);
     ctx.closePath();
     ctx.clip();
-    const sourceBox = getSourceBox(selection, image);
+    const crop = getCrop(selection, image);
     ctx.scale(-1, 1);
     ctx.filter = 'blur(1px)';
+    const diameter = radius * 2;
     ctx.drawImage(
         image,
-        sourceBox.sx,
-        sourceBox.sy,
-        sourceBox.sWidth,
-        sourceBox.sHeight,
+        crop.sx,
+        crop.sy,
+        crop.sWidth,
+        crop.sHeight,
         0,
         0,
-        -radius * 2,
-        radius * 2,
+        -diameter,
+        diameter,
     );
-    const imgData = ctx.getImageData(0, 0, radius * 2, radius * 2);
-    const pixelsCopy = [];
-    let index = 0;
-    for (let i = 0; i <= imgData.data.length; i += 4) {
-        pixelsCopy[index] = [
-            imgData.data[i],
-            imgData.data[i + 1],
-            imgData.data[i + 2],
-            imgData.data[i + 3],
-        ];
-        index++;
-    }
-    const result = fisheye(pixelsCopy, radius * 2, radius * 2);
-    for (let i = 0; i < result.length; i++) {
-        index = 4 * i;
-        if (result[i] !== undefined) {
-            imgData.data[index + 0] = result[i][0];
-            imgData.data[index + 1] = result[i][1];
-            imgData.data[index + 2] = result[i][2];
-            imgData.data[index + 3] = result[i][3];
-        }
-    }
+    const imgData = ctx.getImageData(0, 0, diameter, diameter);
+    const result: Uint8ClampedArray = fisheye(imgData.data, diameter, diameter);
+    imgData.data.set(result);
     ctx.putImageData(imgData, 0, 0);
     ctx.restore();
 }
 
-function fisheye(srcpixels: number[][], width: number, height: number) {
-    const dstpixels = srcpixels.slice();
+function fisheye(
+    srcpixels: Uint8ClampedArray,
+    width: number,
+    height: number,
+): Uint8ClampedArray {
+    const dstpixels = new Uint8ClampedArray(srcpixels.length);
 
     for (let currRow = 0; currRow < height; currRow++) {
         const normalisedY = (2 * currRow) / height - 1; // a
@@ -236,10 +222,12 @@ function fisheye(srcpixels: number[][], width: number, height: number) {
                 const newX = Math.floor(((scaledNormalisedX + 1) * width) / 2); // normalise x to size of circle
                 const newY = Math.floor(((scaledNormalisedY + 1) * height) / 2); // normalise y to size of circle
                 const srcpos = newY * width + newX; // New pixel position in array
-                // If new pixel position is in array
                 if (srcpos >= 0 && srcpos < width * height) {
-                    dstpixels[Math.floor(currRow * width + currColumn)] =
-                        srcpixels[srcpos];
+                    for (let i = 0; i < 4; i++) {
+                        dstpixels[
+                            4 * Math.floor(currRow * width + currColumn) + i
+                        ] = srcpixels[srcpos * 4 + i];
+                    }
                 }
             }
         }
@@ -247,7 +235,7 @@ function fisheye(srcpixels: number[][], width: number, height: number) {
     return dstpixels;
 }
 
-function getSourceBox(selection: Bbox, image: HTMLVideoElement) {
+function getCrop(selection: Bbox, image: HTMLVideoElement) {
     if (selection) {
         const boxSize = image.width * 0.4;
         let sx = selection[0] + selection[2] / 2 - boxSize / 2;
