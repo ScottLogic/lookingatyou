@@ -45,7 +45,7 @@ function dab(selection: IDetection) {
 
 function checkRightDab(keypoints: Keypoint[]): boolean {
     const eyesBetweenWristAndShoulder =
-        keypoints[partIds.lefttWrist].position.x <
+        keypoints[partIds.leftWrist].position.x <
         keypoints[partIds.rightEye].position.x;
 
     const armPointingToTheSky =
