@@ -8,12 +8,9 @@ import {
     neutralBlinkFrequency,
     transitionTime,
 } from '../../AppConstants';
-<<<<<<< HEAD
+import { IConfigState } from '../../store/actions/config/types';
 import { setAnimation } from '../../store/actions/detections/actions';
 import { ISetAnimationAction } from '../../store/actions/detections/types';
-=======
-import { IConfigState } from '../../store/actions/config/types';
->>>>>>> Added developer config menu for models
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
 import {
