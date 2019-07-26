@@ -10,6 +10,7 @@ export enum HelpWith {
     IRIS_COLOUR = 'IRIS_COLOUR',
     APP = 'APP',
     DEBUG = 'DEBUG',
+    REFLECTION = 'REFLECTION',
 }
 
 const fps = () => {
@@ -84,6 +85,15 @@ const debug = () => {
     );
 };
 
+const reflection = () => {
+    return (
+        <Fragment>
+            This checkbox allows you to view the currently selected target
+            inside the pupil as a reflection.
+        </Fragment>
+    );
+};
+
 interface IHelpSectionMap {
     [id: string]: () => JSX.Element;
 }
@@ -97,6 +107,7 @@ const helpSections: IHelpSectionMap = {
     IRIS_COLOUR: iris,
     APP: app,
     DEBUG: debug,
+    REFLECTION: reflection,
 };
 
 function text(section: HelpWith) {
