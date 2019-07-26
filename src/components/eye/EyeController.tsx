@@ -127,20 +127,12 @@ export const EyeController = React.memo(
         function centerAnimationCoords() {
             return {
                 LEFT: {
-                    x:
-                        props.width / 4 +
-                        (props.width / 4) * props.animation[0].coords!.x,
-                    y:
-                        props.height / 2 +
-                        (props.height / 2) * props.animation[0].coords!.y,
+                    x: (props.width * (1 + props.animation[0].coords!.x)) / 4,
+                    y: (props.width * (1 + props.animation[0].coords!.y)) / 4,
                 },
                 RIGHT: {
-                    x:
-                        props.width / 4 +
-                        (props.width / 4) * props.animation[0].coords!.x,
-                    y:
-                        props.height / 2 +
-                        (props.height / 2) * props.animation[0].coords!.y,
+                    x: (props.width * (1 + props.animation[0].coords!.x)) / 4,
+                    y: (props.width * (1 + props.animation[0].coords!.y)) / 4,
                 },
             };
         }
