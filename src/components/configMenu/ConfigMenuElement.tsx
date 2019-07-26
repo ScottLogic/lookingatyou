@@ -88,12 +88,25 @@ export const ConfigMenuElement = React.memo(
                 />
 
                 <CheckBoxMenuItem
-                    name={'Show Target'}
+                    name={'Show Reflect'}
                     configName={'toggleReflection'}
                     helpWith={HelpWith.REFLECTION}
                     checked={props.config.toggleReflection}
                     onInputChange={props.setConfig}
                 />
+                {props.config.toggleReflection && (
+                    <NumberMenuItem
+                        name={'Reflect Opacity'}
+                        configName={'reflectionOpacity'}
+                        step={0.01}
+                        defaultValue={props.config.reflectionOpacity}
+                        onValidInput={props.setConfig}
+                        helpWith={HelpWith.REFLECTION_OPACITY}
+                        min={0.01}
+                        max={1.0}
+                    />
+                )}
+
                 <CheckBoxMenuItem
                     name={'Toggle Debug'}
                     configName={'toggleDebug'}

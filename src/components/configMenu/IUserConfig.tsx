@@ -5,4 +5,5 @@ export default interface IUserConfig {
     toggleDebug: boolean;
     toggleReflection: boolean;
     irisColor: string;
+    reflectionOpacity: number;
 }

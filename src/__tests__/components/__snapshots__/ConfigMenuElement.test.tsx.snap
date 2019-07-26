@@ -11,7 +11,7 @@ exports[`ConfigMenuElement tests should render correctly 1`] = `
   <Memo() name=\\"Y Sensitivity\\" configName=\\"ySensitivity\\" step={0.1} defaultValue={1} onValidInput={[Function: mockConstructor]} helpWith=\\"Y_SENSITIVITY\\" min={0} />
   <br />
   <Memo() name=\\"Iris Colour\\" configName=\\"irisColor\\" color=\\"blue\\" onInputChange={[Function: mockConstructor]} helpWith=\\"IRIS_COLOUR\\" />
-  <Memo() name=\\"Show Target\\" configName=\\"toggleReflection\\" helpWith=\\"REFLECTION\\" checked={[undefined]} onInputChange={[Function: mockConstructor]} />
+  <Memo() name=\\"Show Reflect\\" configName=\\"toggleReflection\\" helpWith=\\"REFLECTION\\" checked={[undefined]} onInputChange={[Function: mockConstructor]} />
   <Memo() name=\\"Toggle Debug\\" configName=\\"toggleDebug\\" helpWith=\\"DEBUG\\" checked={false} onInputChange={[Function: mockConstructor]} />
   <Help problemWith=\\"FPS\\" />
   <Help problemWith=\\"X_SENSITIVITY\\" />
@@ -22,5 +22,6 @@ exports[`ConfigMenuElement tests should render correctly 1`] = `
   <Help problemWith=\\"APP\\" />
   <Help problemWith=\\"DEBUG\\" />
   <Help problemWith=\\"REFLECTION\\" />
+  <Help problemWith=\\"REFLECTION_OPACITY\\" />
 </ConfigMenu>"
 `;
