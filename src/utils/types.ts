@@ -5,6 +5,17 @@ export interface ICoords {
     y: number;
 }
 
+export interface IColour {
+    r: number;
+    g: number;
+    b: number;
+}
+
+export interface IHistory {
+    colour: IColour;
+    target: ICoords;
+}
+
 export type DetectionImage =
     | HTMLVideoElement
     | HTMLImageElement

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import tinycolor from 'tinycolor2';
+import { IDetection } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import { getSelections } from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
@@ -26,7 +27,7 @@ interface IInnerEyeMapStateToProps {
     image: HTMLVideoElement | undefined;
     fps: number;
     showReflection: boolean;
-    selection: Bbox | undefined;
+    selection: IDetection | undefined;
 }
 
 type InnerEyeProps = IInnerEyeProps & IInnerEyeMapStateToProps;
@@ -62,7 +63,7 @@ export const InnerEye = React.memo(
                         drawReflection(
                             ctx,
                             props.pupilRadius,
-                            props.selection,
+                            props.selection.bbox,
                             props.image,
                         );
                     }

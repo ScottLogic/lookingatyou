@@ -91,7 +91,6 @@ export class App extends React.Component<AppProps, IAppState> {
                     ) : (
                         <div>
                             <MovementHandler
-                                document={document}
                                 width={this.state.width}
                                 height={this.state.height}
                                 environment={this.props.environment}
@@ -117,8 +116,9 @@ const mapStateToProps = (state: IRootStore): IAppMapStateToProps => ({
 
 const mapDispatchToProps = (
     dispatch: ThunkDispatch<IRootStore, void, Action>,
+    ownProps: IAppProps,
 ) => ({
-    loadModel: () => dispatch(loadModel()),
+    loadModel: () => dispatch(loadModel(ownProps.environment.document)),
 });
 
 export default connect(

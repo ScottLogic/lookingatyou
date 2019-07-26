@@ -20,7 +20,11 @@ describe('selectFirstOfType should return', () => {
         expect(selectFirst([])).toBeUndefined();
     });
     it('Bbox of first detection if arg:detections.length > 0', () => {
-        expect(selectFirst([detection])).toBe(detection.bbox);
-        expect(selectFirst([detection, otherDetection])).toBe(detection.bbox);
+        expect((selectFirst([detection]) as IDetection).bbox).toBe(
+            detection.bbox,
+        );
+        expect(
+            (selectFirst([detection, otherDetection]) as IDetection).bbox,
+        ).toBe(detection.bbox);
     });
 });

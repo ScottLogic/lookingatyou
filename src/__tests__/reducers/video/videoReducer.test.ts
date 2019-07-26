@@ -1,3 +1,5 @@
+import { EyeSide } from '../../../AppConstants';
+import { setImageDataAction } from '../../../store/actions/video/actions';
 import {
     IVideo,
     IVideoState,
@@ -39,7 +41,7 @@ let mockStore: IVideoState;
 describe('Video Reducer', () => {
     beforeEach(() => {
         mockStore = videoStore(
-            { videos: {}, webcamAvailable: false },
+            { videos: {}, webcamAvailable: false, images: {} },
             { type: SET_VIDEO_STREAMS, videos: mockInitialState },
         );
     });
@@ -48,6 +50,7 @@ describe('Video Reducer', () => {
         const expectedState: IVideoState = {
             videos: mockInitialState,
             webcamAvailable: false,
+            images: {},
         };
         expect(mockStore).toEqual(expectedState);
     });
@@ -63,6 +66,7 @@ describe('Video Reducer', () => {
                 testDevice2: testDevice2Video,
             },
             webcamAvailable: false,
+            images: {},
         };
         expect(newState).toEqual(expectedState);
     });
