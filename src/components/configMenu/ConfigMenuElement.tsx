@@ -124,7 +124,12 @@ export const ConfigMenuElement = React.memo(
                         name={'Output Stride'}
                         configName={'outputStride'}
                         onInputChange={props.updateModelConfig}
-                        values={['8', '16', '32']}
+                        values={
+                            props.config.modelConfig.architecture ===
+                            'MobileNetV1'
+                                ? ['8', '16']
+                                : ['16', '32']
+                        }
                         defaultValue={props.config.modelConfig.outputStride.toString()}
                         helpWith={HelpWith.OUTPUT_STRIDE}
                     />
@@ -149,14 +154,17 @@ export const ConfigMenuElement = React.memo(
                         defaultValue={props.config.modelConfig.inputResolution.toString()}
                         helpWith={HelpWith.RESOLUTION}
                     />
-                    <DropDownMenuItem
-                        name={'Multiplier'}
-                        configName={'multiplier'}
-                        onInputChange={props.updateModelConfig}
-                        values={['0.50', '0.75', '1.0']}
-                        defaultValue={props.config.modelConfig.multiplier.toString()}
-                        helpWith={HelpWith.MULTIPLIER}
-                    />
+                    {props.config.modelConfig.architecture ===
+                        'MobileNetV1' && (
+                        <DropDownMenuItem
+                            name={'Multiplier'}
+                            configName={'multiplier'}
+                            onInputChange={props.updateModelConfig}
+                            values={['0.50', '0.75', '1']}
+                            defaultValue={props.config.modelConfig.multiplier.toString()}
+                            helpWith={HelpWith.MULTIPLIER}
+                        />
+                    )}
 
                     <h3>Detection Config</h3>
                     <NumberMenuItem

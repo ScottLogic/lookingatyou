@@ -28,6 +28,13 @@ export function updateConfigAction(
                 }
                 break;
             case ConfigSetAction.MODEL:
+                if (payload.hasOwnProperty('architecture')) {
+                    dispatch(
+                        setConfigAction(ConfigSetAction.MODEL, {
+                            outputStride: '16',
+                        }),
+                    );
+                }
                 dispatch(loadModel(document));
                 break;
         }
@@ -35,16 +42,24 @@ export function updateConfigAction(
 }
 
 export function setConfigAction(type: ConfigSetAction, payload: PartialConfig) {
-    let partialConfig = payload;
-    if (type === ConfigSetAction.MODEL) {
-        partialConfig = parseModelConfig(payload as Partial<
-            IModelStringConfig
-        >);
+    switch (type) {
+        case ConfigSetAction.APP:
+            return { type, partialAppConfig: payload };
+        case ConfigSetAction.MODEL:
+            return {
+                type,
+                partialModelConfig: parseModelConfig(payload as Partial<
+                    IModelStringConfig
+                >),
+            };
+        case ConfigSetAction.DETECTION:
+            return { type, partialDetectionConfig: payload };
     }
-    return { type, partialConfig };
 }
 
-function parseModelConfig(modelConfig: Partial<IModelStringConfig>) {
+function parseModelConfig(
+    modelConfig: Partial<IModelStringConfig>,
+): Partial<IModelConfig> {
     const parsedConfig: Partial<IModelConfig> = {};
     if (modelConfig.architecture) {
         parsedConfig.architecture = modelConfig.architecture;

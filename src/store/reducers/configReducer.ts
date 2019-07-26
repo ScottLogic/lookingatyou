@@ -4,6 +4,9 @@ import {
     IConfigState,
     IDetectionConfig,
     IModelConfig,
+    ISetAppConfigAction,
+    ISetDetectionConfigAction,
+    ISetModelConfigAction,
 } from '../actions/config/types';
 
 export const initalModelConfig: IModelConfig = {
@@ -48,7 +51,7 @@ const configStore = (
 };
 
 function setAppConfig(state: IConfigState, action: ConfigAction): IConfigState {
-    return { ...state, ...action.partialConfig };
+    return { ...state, ...(action as ISetAppConfigAction).partialAppConfig };
 }
 
 function setModelConfig(
@@ -57,7 +60,10 @@ function setModelConfig(
 ): IConfigState {
     return {
         ...state,
-        modelConfig: { ...state.modelConfig, ...action.partialConfig },
+        modelConfig: {
+            ...state.modelConfig,
+            ...(action as ISetModelConfigAction).partialModelConfig,
+        },
     };
 }
 
@@ -67,7 +73,10 @@ function setDetectionConfig(
 ): IConfigState {
     return {
         ...state,
-        detectionConfig: { ...state.detectionConfig, ...action.partialConfig },
+        detectionConfig: {
+            ...state.detectionConfig,
+            ...(action as ISetDetectionConfigAction).partialDetectionConfig,
+        },
     };
 }
 
