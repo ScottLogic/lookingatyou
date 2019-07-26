@@ -18,6 +18,7 @@ export const animationMapping: { [key: string]: () => Animation } = {
     [Pose.RIGHT_WAVE]: rightWink,
     [Pose.HANDS_UP]: rollEyes,
     [Pose.ARMS_OUT]: shock,
+    [Pose.DAB]: dab,
 };
 
 export function leftWink(): Animation {
@@ -94,4 +95,21 @@ export function shock(): Animation {
         constricted,
         dilated,
     ];
+}
+
+export function dab(): Animation {
+    const animation = [];
+    for (let i = 0; i < 20; i++) {
+        animation.push({
+            coords: {
+                x: Math.random() * 2 - 1,
+                y: Math.random() * 2 - 1,
+            },
+            irisColour: '#' + (((1 << 24) * Math.random()) | 0).toString(16),
+            duration: 150,
+            openCoefficient:
+                eyelidPosition.OPEN + (eyelidPosition.OPEN * i) / 20,
+        });
+    }
+    return animation;
 }

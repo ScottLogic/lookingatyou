@@ -7,6 +7,7 @@ export enum Pose {
     RIGHT_WAVE = 'RIGHT_WAVE',
     HANDS_UP = 'HANDS_UP',
     ARMS_OUT = 'ARMS_OUT',
+    DAB = 'DAB',
 }
 export const eyelidPosition = {
     OPEN: 0.45,
