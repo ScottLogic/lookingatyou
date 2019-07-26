@@ -70,7 +70,6 @@ export default class ConfigMenu extends React.Component<
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
             >
-                <h1>Config</h1>
                 {this.props.children}
             </div>
         );
