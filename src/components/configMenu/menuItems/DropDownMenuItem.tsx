@@ -32,7 +32,12 @@ const DropDownMenuItem = React.memo(
             </div>
         );
     },
-    (previous, next) => previous.defaultValue === next.defaultValue,
+    (previous, next) =>
+        previous.defaultValue === next.defaultValue &&
+        previous.values.length === next.values.length &&
+        previous.values.every(
+            (element, index) => element === next.values[index],
+        ),
 );
 
 export default DropDownMenuItem;
