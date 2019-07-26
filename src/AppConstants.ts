@@ -37,5 +37,8 @@ export const bodyParts = {
     LEFT_SHOULDER: 'leftShoulder',
     RIGHT_HIP: 'rightHip',
 };
+export const canvasScale = 1;
+export const canvasLineWidth = 5;
+export const minConfidence = 0.2;
 export const yOffset = 10;
 export const xOffset = 10;
