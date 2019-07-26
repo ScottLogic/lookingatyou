@@ -2,7 +2,10 @@
 
 exports[`ConfigMenuElement tests should render correctly 1`] = `
 "<ConfigMenu width=\\"14em\\" timerLength={1000} window={{...}} debugEnabled={false}>
-  <span data-tip={true} data-for=\\"APP\\">
+  <h1>
+    Config
+  </h1>
+  <span className=\\"icon\\" data-tip={true} data-for=\\"APP\\">
     ?
   </span>
   <Memo() name=\\"FPS\\" configName=\\"fps\\" step={1} defaultValue={30} onValidInput={[Function: mockConstructor]} helpWith=\\"FPS\\" min={1} />
