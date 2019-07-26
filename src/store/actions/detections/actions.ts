@@ -1,7 +1,11 @@
 import * as posenet from '@tensorflow-models/posenet';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { EyeSide } from '../../../AppConstants';
+import {
+    EyeSide,
+    maxTargetInterval,
+    minTargetInterval,
+} from '../../../AppConstants';
 import { Detections, IDetection } from '../../../models/objectDetection';
 import { Animation, animationMapping } from '../../../utils/pose/animations';
 import { getPose } from '../../../utils/pose/poseDetection';
@@ -25,11 +29,13 @@ import {
     ISetIdleTargetAction,
     ISetModelAction,
     ISetOpenAction,
+    ISwapSelectionAction,
     SET_ANIMATION,
     SET_DETECTIONS,
     SET_IDLE_TARGET,
     SET_MODEL,
     SET_OPEN,
+    SWAP_SELECTION,
 } from './types';
 
 export function setModel(model: posenet.PoseNet | null): ISetModelAction {
@@ -89,7 +95,13 @@ export function handleDetection(document: Document) {
                 left = reshapeDetections(leftDetections);
             }
 
-            dispatch(setDetections(left, getTargets(state), getColour(state)));
+            dispatch(
+                setDetectionsAndMaybeSwapTarget(
+                    left,
+                    getTargets(state),
+                    getColour(state),
+                ),
+            );
 
             // The way we get target will change once #273 is implemented
             // For now I compare selection bounding box to existing detections and select a target from there
@@ -115,6 +127,39 @@ export function setIdleTarget(coords: ICoords): ISetIdleTargetAction {
     };
 }
 
+export function setDetectionsAndMaybeSwapTarget(
+    detections: Detections,
+    previousTarget: ICoords,
+    previousColour: IColour,
+) {
+    return (
+        dispatch: ThunkDispatch<IRootStore, void, Action>,
+        getState: () => IRootStore,
+    ) => {
+        const state = getState();
+        const now = new Date().getTime();
+        if (now < state.detectionStore.nextSelectionSwapTime) {
+            dispatch(setDetections(detections, previousTarget, previousColour));
+        } else {
+            const selectionIndex = Math.floor(
+                Math.random() * (detections.length - 1),
+            );
+            const nextTargetSwapTime =
+                now +
+                minTargetInterval +
+                (maxTargetInterval - minTargetInterval) * Math.random();
+            dispatch(
+                swapSelection(
+                    detections.length > 0
+                        ? detections[selectionIndex]
+                        : undefined,
+                    nextTargetSwapTime,
+                ),
+            );
+        }
+    };
+}
+
 export function setDetections(
     detections: Detections,
     previousTarget: ICoords,
@@ -123,6 +168,16 @@ export function setDetections(
     return {
         type: SET_DETECTIONS,
         payload: { detections, previousTarget, previousColour },
+    };
+}
+
+export function swapSelection(
+    selection: IDetection | undefined,
+    nextSelectionSwapTime: number,
+): ISwapSelectionAction {
+    return {
+        type: SWAP_SELECTION,
+        payload: { selection, nextSelectionSwapTime },
     };
 }
 

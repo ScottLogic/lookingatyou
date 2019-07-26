@@ -253,6 +253,9 @@ export function closerToPrediction(
 }
 
 function getWeightedPrediction(nums: number[]): number {
+    if (nums.length === 1) {
+        return nums[0];
+    }
     const weightedNums = [];
     let decayTotal = 0;
     const diffNums = [];

@@ -6,12 +6,14 @@ import {
     DetectionActionType,
     IDetectionState,
     ISetDetectionsActionPayload,
+    ISwapSelectionActionPayload,
     SET_ANIMATION,
     SET_DETECTIONS,
     SET_IDLE_TARGET,
     SET_INTERVAL,
     SET_MODEL,
     SET_OPEN,
+    SWAP_SELECTION,
 } from '../actions/detections/types';
 
 export const initialState: IDetectionState = {
@@ -20,8 +22,9 @@ export const initialState: IDetectionState = {
     detections: [],
     eyesOpenCoefficient: eyelidPosition.OPEN,
     detectionInterval: 0,
-    history: [{ colour: { r: 0, g: 0, b: 0 }, target: { x: 0, y: 0 } }],
     animation: [],
+    nextSelectionSwapTime: -1,
+    history: [],
 };
 
 const detectionActionMapping = {
@@ -31,6 +34,7 @@ const detectionActionMapping = {
     [SET_DETECTIONS]: setDetections,
     [SET_OPEN]: setOpen,
     [SET_ANIMATION]: setAnimation,
+    [SWAP_SELECTION]: swapSelection,
 };
 
 const detectionStore = (
@@ -84,6 +88,19 @@ function setDetections(
         ...state,
         detections: payload.detections,
         history: newHistory,
+    };
+}
+
+function swapSelection(
+    state: IDetectionState,
+    action: DetectionActionType,
+): IDetectionState {
+    const payload = action.payload as ISwapSelectionActionPayload;
+    return {
+        ...state,
+        history: initialState.history,
+        detections: payload.selection ? [payload.selection] : [],
+        nextSelectionSwapTime: payload.nextSelectionSwapTime,
     };
 }
 
