@@ -18,7 +18,7 @@ export const initialState: IDetectionState = {
     detections: [],
     eyesOpenCoefficient: eyelidPosition.OPEN,
     detectionInterval: 0,
-    history: [{ x: 0, y: 0 }],
+    history: [{ colour: { r: 0, g: 0, b: 0 }, target: { x: 0, y: 0 } }],
 };
 
 const detectionActionMapping = {
@@ -71,7 +71,11 @@ function setDetections(
     if (state.history.length >= maxNumTargetsToConsider) {
         newHistory.shift();
     }
-    newHistory.push(payload.previousTarget);
+    newHistory.push({
+        target: payload.previousTarget,
+        colour: payload.previousColour,
+    });
+
     return {
         ...state,
         detections: payload.detections,
