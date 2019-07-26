@@ -125,9 +125,10 @@ const mapStateToProps = (
 
 const mapDispatchToProps = (
     dispatch: ThunkDispatch<IRootStore, void, Action>,
+    ownProps: IConfigMenuElementProps,
 ) => ({
     setConfig: (payload: ISetConfigPayload) =>
-        dispatch(updateConfigAction(payload)),
+        dispatch(updateConfigAction(payload, ownProps.window.document)),
 });
 
 export default connect(

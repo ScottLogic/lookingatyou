@@ -1,6 +1,7 @@
 import {
     IVideo,
     IVideoState,
+    SET_IMAGE_DATA,
     SET_VIDEO,
     SET_VIDEO_STREAMS,
     TOGGLE_WEBCAM_AVAILABLE,
@@ -10,6 +11,7 @@ import {
 export const initialState: IVideoState = {
     webcamAvailable: false,
     videos: {},
+    images: {},
 };
 
 const videoStore = (
@@ -42,6 +44,14 @@ const videoStore = (
             return {
                 ...state,
                 webcamAvailable: !state.webcamAvailable,
+            };
+        case SET_IMAGE_DATA:
+            return {
+                ...state,
+                images: {
+                    ...state.images,
+                    ...action.images,
+                },
             };
         default:
             return state;
