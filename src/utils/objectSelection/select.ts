@@ -184,12 +184,12 @@ export function closerToColour(
 }
 
 export function getXStart(keypoints: Keypoint[]) {
-    const rightShoulder = keypoints.filter(
+    const rightShoulder = keypoints.find(
         keypoint => keypoint.part === bodyParts.RIGHT_SHOULDER,
-    )[0];
-    const leftShoulder = keypoints.filter(
+    );
+    const leftShoulder = keypoints.find(
         keypoint => keypoint.part === bodyParts.LEFT_SHOULDER,
-    )[0];
+    );
     return leftShoulder && rightShoulder
         ? Math.abs(
               Math.round(
@@ -201,9 +201,9 @@ export function getXStart(keypoints: Keypoint[]) {
 }
 
 export function getYStart(keypoints: Keypoint[]) {
-    const rightShoulder = keypoints.filter(
+    const rightShoulder = keypoints.find(
         keypoint => keypoint.part === bodyParts.RIGHT_SHOULDER,
-    )[0];
+    );
     return rightShoulder ? Math.round(rightShoulder.position.y) + yOffset : 0;
 }
 
