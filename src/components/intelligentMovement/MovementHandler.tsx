@@ -16,6 +16,7 @@ import {
 } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getTargets } from '../../store/selectors/detectionSelectors';
+import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
@@ -33,6 +34,7 @@ interface IStateProps {
     target: ICoords;
     openCoefficient: number;
     images: { [key: string]: ImageData };
+    animation: Animation;
 }
 
 interface IDispatchProps {
@@ -94,11 +96,12 @@ export class MovementHandler extends React.Component<
 
     shouldComponentUpdate(nextProps: MovementHandlerProps) {
         return (
-            this.props.height !== nextProps.height ||
-            this.props.width !== nextProps.width ||
-            this.props.openCoefficient !== nextProps.openCoefficient ||
-            this.props.target !== nextProps.target ||
-            this.props.detections !== nextProps.detections
+            this.props.animation.length === 0 &&
+            (this.props.height !== nextProps.height ||
+                this.props.width !== nextProps.width ||
+                this.props.openCoefficient !== nextProps.openCoefficient ||
+                this.props.target !== nextProps.target ||
+                this.props.detections !== nextProps.detections)
         );
     }
 
@@ -238,6 +241,7 @@ const mapStateToProps = (state: IRootStore) => ({
     target: getTargets(state),
     openCoefficient: state.detectionStore.eyesOpenCoefficient,
     images: state.videoStore.images,
+    animation: state.detectionStore.animation,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => ({

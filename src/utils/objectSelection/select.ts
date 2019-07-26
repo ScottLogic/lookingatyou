@@ -25,6 +25,7 @@ export default function select(
     if (selectedDetection) {
         return selectedDetection;
     }
+    return undefined;
 }
 
 export function calculateColourMatch(

@@ -1,10 +1,12 @@
 import { PoseNet } from '@tensorflow-models/posenet';
 import { eyelidPosition, maxNumTargetsToConsider } from '../../AppConstants';
+import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import {
     DetectionActionType,
     IDetectionState,
     ISetDetectionsActionPayload,
+    SET_ANIMATION,
     SET_DETECTIONS,
     SET_IDLE_TARGET,
     SET_INTERVAL,
@@ -19,6 +21,7 @@ export const initialState: IDetectionState = {
     eyesOpenCoefficient: eyelidPosition.OPEN,
     detectionInterval: 0,
     history: [{ colour: { r: 0, g: 0, b: 0 }, target: { x: 0, y: 0 } }],
+    animation: [],
 };
 
 const detectionActionMapping = {
@@ -27,6 +30,7 @@ const detectionActionMapping = {
     [SET_IDLE_TARGET]: setIdleTarget,
     [SET_DETECTIONS]: setDetections,
     [SET_OPEN]: setOpen,
+    [SET_ANIMATION]: setAnimation,
 };
 
 const detectionStore = (
@@ -88,6 +92,13 @@ function setOpen(
     action: DetectionActionType,
 ): IDetectionState {
     return { ...state, eyesOpenCoefficient: action.payload as number };
+}
+
+function setAnimation(
+    state: IDetectionState,
+    action: DetectionActionType,
+): IDetectionState {
+    return { ...state, animation: action.payload as Animation };
 }
 
 export default detectionStore;

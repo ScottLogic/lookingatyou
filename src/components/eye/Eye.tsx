@@ -15,7 +15,6 @@ export interface IEyeProps {
     scleraRadius: number;
     irisRadius: number;
     pupilRadius: number;
-    openCoefficient: number;
     dilatedCoefficient: number;
     innerX: number;
     innerY: number;
