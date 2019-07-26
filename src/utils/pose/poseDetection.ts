@@ -1,5 +1,5 @@
 import { Keypoint, partIds } from '@tensorflow-models/posenet';
-import { Pose } from '../../AppConstants';
+import { minConfidence, Pose } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 
 const poseMapping: { [key: string]: (selection: IDetection) => boolean } = {
@@ -65,26 +65,40 @@ function handsUp(selection: IDetection) {
 function armsOutToSide(selection: IDetection) {
     const keypoints = selection.info.keypoints;
 
+    const rightWrist = keypoints[partIds.rightWrist];
+    const rightElbow = keypoints[partIds.rightElbow];
+    const rightShoulder = keypoints[partIds.rightShoulder];
+    const leftWrist = keypoints[partIds.leftWrist];
+    const leftElbow = keypoints[partIds.leftElbow];
+    const leftShoulder = keypoints[partIds.leftShoulder];
+
+    const points = [
+        leftElbow,
+        leftShoulder,
+        leftWrist,
+        rightWrist,
+        rightElbow,
+        rightShoulder,
+    ];
+
+    if (!checkKeypoints(points)) {
+        return false;
+    }
+
     const leftArmOut =
-        keypoints[partIds.leftWrist].position.x >
-            keypoints[partIds.leftElbow].position.x &&
-        keypoints[partIds.leftElbow].position.x >
-            keypoints[partIds.leftShoulder].position.x;
+        leftWrist.position.x > leftElbow.position.x &&
+        leftElbow.position.x > leftShoulder.position.x;
     const leftWristShoulderHeight = isWristAtShoulderHeight(
-        keypoints,
-        partIds.leftWrist,
-        partIds.leftShoulder,
+        leftWrist,
+        leftShoulder,
     );
 
     const rightArmOut =
-        keypoints[partIds.rightWrist].position.x <
-            keypoints[partIds.rightElbow].position.x &&
-        keypoints[partIds.rightElbow].position.x <
-            keypoints[partIds.rightShoulder].position.x;
+        rightWrist.position.x < rightElbow.position.x &&
+        rightElbow.position.x < rightShoulder.position.x;
     const rightWristShoulderHeight = isWristAtShoulderHeight(
-        keypoints,
-        partIds.rightWrist,
-        partIds.rightShoulder,
+        rightWrist,
+        rightShoulder,
     );
 
     return (
@@ -95,14 +109,10 @@ function armsOutToSide(selection: IDetection) {
     );
 }
 
-function isWristAtShoulderHeight(
-    keypoints: Keypoint[],
-    wrist: number,
-    shoulder: number,
-): boolean {
+function isWristAtShoulderHeight(wrist: Keypoint, shoulder: Keypoint): boolean {
     return (
-        keypoints[wrist].position.y < keypoints[shoulder].position.y + 25 &&
-        keypoints[wrist].position.y > keypoints[shoulder].position.y - 25
+        wrist.position.y < shoulder.position.y + 25 &&
+        wrist.position.y > shoulder.position.y - 25
     );
 }
 
@@ -116,25 +126,28 @@ function dab(selection: IDetection) {
 }
 
 function checkRightDab(keypoints: Keypoint[]): boolean {
+    const leftWrist = keypoints[partIds.leftWrist];
+    const rightEye = keypoints[partIds.rightEye];
+    const rightWrist = keypoints[partIds.rightWrist];
+    const rightElbow = keypoints[partIds.rightElbow];
+    const rightShoulder = keypoints[partIds.rightShoulder];
+
+    const points = [leftWrist, rightEye, rightWrist, rightElbow, rightShoulder];
+
+    if (!checkKeypoints(points)) {
+        return false;
+    }
+
     const eyesBetweenWristAndShoulder =
-        keypoints[partIds.leftWrist].position.x <
-        keypoints[partIds.rightEye].position.x;
+        leftWrist.position.x < rightEye.position.x;
 
     const armPointingToTheSky =
-        keypoints[partIds.rightWrist].position.x <
-            keypoints[partIds.rightElbow].position.x &&
-        keypoints[partIds.rightElbow].position.x <
-            keypoints[partIds.rightShoulder].position.x &&
-        armPointingUp(
-            keypoints,
-            partIds.rightWrist,
-            partIds.rightElbow,
-            partIds.rightShoulder,
-        );
+        rightWrist.position.x < rightElbow.position.x &&
+        rightElbow.position.x < rightShoulder.position.x &&
+        armPointingUp(rightWrist, rightElbow, rightShoulder);
 
     const bentWristAboveShoulder =
-        keypoints[partIds.leftWrist].position.y <
-        keypoints[partIds.rightShoulder].position.y;
+        leftWrist.position.y < rightShoulder.position.y;
 
     return (
         eyesBetweenWristAndShoulder &&
@@ -144,25 +157,28 @@ function checkRightDab(keypoints: Keypoint[]): boolean {
 }
 
 function checkLeftDab(keypoints: Keypoint[]): boolean {
+    const rightWrist = keypoints[partIds.rightWrist];
+    const leftEye = keypoints[partIds.leftEye];
+    const leftWrist = keypoints[partIds.leftWrist];
+    const leftElbow = keypoints[partIds.leftElbow];
+    const leftShoulder = keypoints[partIds.leftShoulder];
+
+    const points = [leftWrist, leftEye, rightWrist, leftShoulder, leftElbow];
+
+    if (!checkKeypoints(points)) {
+        return false;
+    }
+
     const eyesBetweenWristAndShoulder =
-        keypoints[partIds.rightWrist].position.x >
-        keypoints[partIds.leftEye].position.x;
+        rightWrist.position.x > leftEye.position.x;
 
     const armPointingToTheSky =
-        keypoints[partIds.leftWrist].position.x >
-            keypoints[partIds.leftElbow].position.x &&
-        keypoints[partIds.leftElbow].position.x >
-            keypoints[partIds.leftShoulder].position.x &&
-        armPointingUp(
-            keypoints,
-            partIds.leftWrist,
-            partIds.leftElbow,
-            partIds.leftShoulder,
-        );
+        leftWrist.position.x > leftElbow.position.x &&
+        leftElbow.position.x > leftShoulder.position.x &&
+        armPointingUp(leftWrist, leftElbow, leftShoulder);
 
     const bendWristAboveOppositeShoulder =
-        keypoints[partIds.rightWrist].position.y <
-        keypoints[partIds.leftShoulder].position.y;
+        rightWrist.position.y < leftShoulder.position.y;
 
     return (
         eyesBetweenWristAndShoulder &&
@@ -171,14 +187,19 @@ function checkLeftDab(keypoints: Keypoint[]): boolean {
     );
 }
 
-function armPointingUp(
-    keypoints: Keypoint[],
-    wrist: number,
-    elbow: number,
-    shoulder: number,
-) {
+function armPointingUp(wrist: Keypoint, elbow: Keypoint, shoulder: Keypoint) {
     return (
-        keypoints[wrist].position.y < keypoints[elbow].position.y &&
-        keypoints[elbow].position.y < keypoints[shoulder].position.y
+        wrist.position.y < elbow.position.y &&
+        elbow.position.y < shoulder.position.y
     );
+}
+
+function checkKeypoints(points: Keypoint[]): boolean {
+    points.forEach(point => {
+        if (point.score < minConfidence) {
+            return false;
+        }
+    });
+
+    return true;
 }
