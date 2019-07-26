@@ -1,11 +1,7 @@
 import { PoseNet } from '@tensorflow-models/posenet';
 import { Detections } from '../../../models/objectDetection';
 import { Animation } from '../../../utils/pose/animations';
-<<<<<<< HEAD
-import { ICoords } from '../../../utils/types';
-=======
 import { IColour, ICoords, IHistory } from '../../../utils/types';
->>>>>>> master
 
 export const SET_MODEL = 'SET_MODEL';
 export const SET_INTERVAL = 'SET_INTERVAL';

@@ -5,12 +5,6 @@ import { EyeSide } from '../../../AppConstants';
 import { Detections, IDetection } from '../../../models/objectDetection';
 import { Animation, animationMapping } from '../../../utils/pose/animations';
 import { getPose } from '../../../utils/pose/poseDetection';
-<<<<<<< HEAD
-import { ICoords } from '../../../utils/types';
-import { reshapeDetections } from '../../../utils/utils';
-import { IRootStore } from '../../reducers/rootReducer';
-import {
-=======
 import { IColour, ICoords } from '../../../utils/types';
 import {
     getImageDataFromVideos,
@@ -19,7 +13,6 @@ import {
 import { IRootStore } from '../../reducers/rootReducer';
 import {
     getColour,
->>>>>>> master
     getDetections,
     getSelections,
     getTargets,
@@ -77,13 +70,6 @@ export function handleDetection(document: Document) {
     ) => {
         if (getState().detectionStore.animation.length === 0) {
             const state = getState();
-<<<<<<< HEAD
-            const images = getVideos(state);
-            const model = state.detectionStore.model;
-
-            let left: IDetection[] = [];
-            const leftImage = images[0];
-=======
             const videos = getVideos(state);
             const model = state.detectionStore.model;
 
@@ -96,7 +82,6 @@ export function handleDetection(document: Document) {
 
             let left: IDetection[] = [];
             const leftImage = images[EyeSide.LEFT];
->>>>>>> master
             if (leftImage && model) {
                 const leftDetections = await model.estimateMultiplePoses(
                     leftImage,
@@ -104,17 +89,6 @@ export function handleDetection(document: Document) {
                 left = reshapeDetections(leftDetections);
             }
 
-<<<<<<< HEAD
-            dispatch(setDetections(left, getTargets(state)));
-
-            // The way we get target will change once #273 is implemented
-            // For now I compare selection bounding box to existing detections and select a target from there
-            const selection = getSelections(getState());
-            const target = getDetections(getState()).filter(
-                detection => detection.bbox === selection,
-            );
-
-=======
             dispatch(setDetections(left, getTargets(state), getColour(state)));
 
             // The way we get target will change once #273 is implemented
@@ -124,7 +98,6 @@ export function handleDetection(document: Document) {
                 detection => detection === selection,
             );
 
->>>>>>> master
             if (target && target[0]) {
                 const pose = getPose(target[0]!);
                 if (pose) {
