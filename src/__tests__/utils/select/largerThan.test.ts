@@ -1,10 +1,9 @@
 import { IDetection } from '../../../models/objectDetection';
 import select, { largerThan } from '../../../utils/objectSelection/select';
-import { Bbox } from '../../../utils/types';
 describe('selectLargest', () => {
     const selectLargest: (
         detections: IDetection[],
-    ) => Bbox | undefined = detections => select(detections, largerThan);
+    ) => IDetection | undefined = detections => select(detections, largerThan);
 
     it('return undefined for no detections', () => {
         const detections: IDetection[] = [];
@@ -50,6 +49,11 @@ describe('selectLargest', () => {
                 info: pose,
             },
         ];
-        expect(selectLargest(detections)).toStrictEqual([0, 20, 3000, 3000]);
+        expect((selectLargest(detections) as IDetection).bbox).toStrictEqual([
+            0,
+            20,
+            3000,
+            3000,
+        ]);
     });
 });

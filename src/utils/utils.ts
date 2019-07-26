@@ -1,4 +1,5 @@
 import { getBoundingBox, partIds, Pose } from '@tensorflow-models/posenet';
+import { EyeSide } from '../AppConstants';
 import { IDetection } from '../models/objectDetection';
 import { Bbox, ICoords } from './types';
 
@@ -30,4 +31,39 @@ export function reshapeDetections(detections: Pose[]): IDetection[] {
             info: detection,
         };
     });
+}
+
+export function getImageDataFromVideos(
+    videos: Array<HTMLVideoElement | undefined>,
+    document: Document,
+): { [key: string]: ImageData } {
+    let images: { [key: string]: ImageData } = {};
+    const leftImage = getImageData(videos[0], document);
+    if (leftImage) {
+        images = { [EyeSide.LEFT]: leftImage };
+        if (videos[1]) {
+            const rightImage = getImageData(videos[1], document);
+            if (rightImage) {
+                images[EyeSide.RIGHT] = rightImage;
+            }
+        }
+    }
+    return images;
+}
+
+function getImageData(
+    video: HTMLVideoElement | undefined,
+    document: Document,
+): ImageData | null {
+    if (video) {
+        const canvas = document.createElement('canvas');
+        canvas.height = video.height;
+        canvas.width = video.width;
+        const canvasCtx = canvas.getContext('2d');
+        if (canvasCtx) {
+            canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            return canvasCtx.getImageData(0, 0, canvas.width, canvas.height);
+        }
+    }
+    return null;
 }

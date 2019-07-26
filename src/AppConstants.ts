@@ -36,4 +36,14 @@ export const irisSkewFactor = 0.8;
 export const maxMoveWithoutBlink = 0.8;
 export const chosenTargetColour = 'green';
 export const nonChosenTargetColour = 'red';
-export const maxNumTargetsToConsider = 5;
+export const maxNumTargetsToConsider = 8;
+export const bodyParts = {
+    RIGHT_SHOULDER: 'rightShoulder',
+    LEFT_SHOULDER: 'leftShoulder',
+    RIGHT_HIP: 'rightHip',
+};
+export const canvasScale = 1;
+export const canvasLineWidth = 5;
+export const minConfidence = 0.2;
+export const yOffset = 10;
+export const xOffset = 10;
