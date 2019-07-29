@@ -101,7 +101,7 @@ export function dab(): Animation {
     const animation = [];
     for (let i = 0; i < 20; i++) {
         animation.push({
-            coords: {
+            normalisedCoords: {
                 x: Math.random() * 2 - 1,
                 y: Math.random() * 2 - 1,
             },

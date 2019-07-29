@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -9,19 +9,28 @@ import {
     EyeSide,
     transitionTimes,
 } from '../../AppConstants';
+import { IDetection } from '../../models/objectDetection';
 import { IConfigState } from '../../store/actions/config/types';
 import { setAnimation } from '../../store/actions/detections/actions';
 import { ISetAnimationAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
-import { getTargets } from '../../store/selectors/detectionSelectors';
+import {
+    getSelections,
+    getTargets,
+} from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import Eye from './Eye';
-import { getMaxDisplacement } from './EyeUtils';
 import { Gradients } from './Gradients';
 import { Shadows } from './Shadows';
+import {
+    generateInnerPath,
+    getIrisAdjustment,
+    getMaxDisplacement,
+} from './utils/EyeUtils';
+import { getReflection } from './utils/ReflectionUtils';
 
 interface IEyeControllerProps {
     width: number;
@@ -35,7 +44,8 @@ interface IEyeControllerProps {
 interface IEyeControllerMapStateToProps {
     config: IConfigState;
     target: ICoords;
-    videos: Array<HTMLVideoElement | undefined>;
+    image: HTMLVideoElement | undefined;
+    selection: IDetection | undefined;
     animation: Animation;
 }
 
@@ -98,7 +108,27 @@ export const EyeController = React.memo(
         const irisRadius = props.width / eyeRatio.iris;
         const pupilRadius = props.width / eyeRatio.pupil;
 
-        const getEyeCoords = (target: ICoords): ICoords => {
+        const reflectionRef = useRef<ImageData | undefined>(undefined);
+        useEffect(() => {
+            if (
+                props.config.toggleReflection &&
+                props.selection &&
+                props.image
+            ) {
+                reflectionRef.current = getReflection(
+                    pupilRadius,
+                    props.selection.bbox,
+                    props.image,
+                );
+            }
+        }, [
+            props.selection,
+            props.image,
+            props.config.toggleReflection,
+            pupilRadius,
+        ]);
+
+        const getEyeCoords = (target: ICoords) => {
             const maxDisplacement = getMaxDisplacement(
                 scleraRadius,
                 irisRadius,
@@ -110,42 +140,22 @@ export const EyeController = React.memo(
             const displacement = Math.min(1, polarDistance) * maxDisplacement;
             const x = props.width / 4 + displacement * Math.cos(polarAngle);
             const y = props.height / 2 + displacement * Math.sin(polarAngle);
-            return { x, y };
+            return { innerX: x, innerY: y };
         };
-        const leftCoords = getEyeCoords(props.target);
-        const eyeCoords: { [key in EyeSide]: ICoords } =
+        const { innerX, innerY } =
             props.animation.length > 0 &&
-            props.animation[0].dilation !== undefined
-                ? centerAnimationCoords()
-                : {
-                      LEFT: leftCoords,
-                      RIGHT: leftCoords,
-                  };
-
-        function centerAnimationCoords() {
-            return {
-                LEFT: {
-                    x:
-                        (props.width *
-                            (1 + props.animation[0].normalisedCoords!.x)) /
-                        4,
-                    y:
-                        (props.width *
-                            (1 + props.animation[0].normalisedCoords!.y)) /
-                        4,
-                },
-                RIGHT: {
-                    x:
-                        (props.width *
-                            (1 + props.animation[0].normalisedCoords!.x)) /
-                        4,
-                    y:
-                        (props.width *
-                            (1 + props.animation[0].normalisedCoords!.y)) /
-                        4,
-                },
-            };
-        }
+            props.animation[0].normalisedCoords !== undefined
+                ? {
+                      innerX:
+                          (props.width *
+                              (1 + props.animation[0].normalisedCoords!.x)) /
+                          4,
+                      innerY:
+                          (props.width *
+                              (1 + props.animation[0].normalisedCoords!.y)) /
+                          4,
+                  }
+                : getEyeCoords(props.target);
 
         function getEyesOpenCoefficient(): number {
             if (props.openCoefficient !== eyesOpenCoefficient) {
@@ -171,6 +181,28 @@ export const EyeController = React.memo(
             props.animation.length > 0 && props.animation[0].irisColor
                 ? props.animation[0].irisColor
                 : props.config.irisColor;
+        const irisAdjustmentRef = useRef({
+            scale: 1,
+            angle: 0,
+        });
+        useEffect(() => {
+            irisAdjustmentRef.current = getIrisAdjustment(
+                innerX,
+                innerY,
+                props.height,
+                props.width / 2,
+                scleraRadius,
+                irisRadius,
+                irisAdjustmentRef.current.angle,
+            );
+        });
+
+        const [innerPath, setInnerPath] = useState(
+            generateInnerPath(irisRadius, 100),
+        );
+        useEffect(() => {
+            setInnerPath(generateInnerPath(irisRadius, 100));
+        }, [irisRadius]);
 
         return (
             <div className="container">
@@ -182,7 +214,7 @@ export const EyeController = React.memo(
                             : calculatedEyesOpenCoefficient[eye],
                     );
 
-                    const eyeCoordsItem = getEyeCoordinates(
+                    const eyeCoordsItem = getEyelidCoords(
                         props.width,
                         props.height,
                         scleraRadius,
@@ -201,13 +233,15 @@ export const EyeController = React.memo(
                             scleraRadius={scleraRadius}
                             irisRadius={irisRadius}
                             pupilRadius={pupilRadius}
-                            // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
                             dilatedCoefficient={dilatedCoefficient}
-                            innerX={eyeCoords[eye].x}
-                            innerY={eyeCoords[eye].y}
+                            innerX={innerX}
+                            innerY={innerY}
                             fps={props.config.fps}
                             bezier={bezier}
                             eyeCoords={eyeCoordsItem}
+                            reflection={reflectionRef.current}
+                            irisAdjustment={irisAdjustmentRef.current}
+                            innerPath={innerPath}
                         />
                     );
                 })}
@@ -227,26 +261,7 @@ export const EyeController = React.memo(
         previous.target.y === next.target.y,
 );
 
-const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
-    config: getConfig(state),
-    target: getTargets(state),
-    videos: getVideos(state),
-    animation: state.detectionStore.animation,
-});
-
-const mapDispatchToProps = (
-    dispatch: Dispatch,
-): IEyeControllerMapDispatchToState => ({
-    updateAnimation: (animation: Animation) =>
-        dispatch(setAnimation(animation)),
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(EyeController);
-
-export function getBezier(scleraRadius: number, openCoefficient: number) {
+function getBezier(scleraRadius: number, openCoefficient: number) {
     const curveConstant = 0.55228474983; // (4/3)tan(pi/8)
     const controlOffset = scleraRadius * curveConstant;
     const scaledYcontrolOffset = controlOffset * openCoefficient;
@@ -254,7 +269,7 @@ export function getBezier(scleraRadius: number, openCoefficient: number) {
     return { controlOffset, scaledXcontrolOffset, scaledYcontrolOffset };
 }
 
-export function getEyeCoordinates(
+function getEyelidCoords(
     width: number,
     height: number,
     scleraRadius: number,
@@ -277,3 +292,23 @@ export function getEyeCoordinates(
         bottomEyelidY,
     };
 }
+
+const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
+    config: getConfig(state),
+    target: getTargets(state),
+    image: getVideos(state)[0],
+    selection: getSelections(state),
+    animation: state.detectionStore.animation,
+});
+
+const mapDispatchToProps = (
+    dispatch: Dispatch,
+): IEyeControllerMapDispatchToState => ({
+    updateAnimation: (animation: Animation) =>
+        dispatch(setAnimation(animation)),
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(EyeController);

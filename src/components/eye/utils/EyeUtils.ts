@@ -3,7 +3,7 @@ import {
     idleMovementConsts,
     irisSkewFactor,
     lightConsts,
-} from '../../AppConstants';
+} from '../../../AppConstants';
 
 export function analyseLight(
     image: ImageData,
@@ -95,6 +95,10 @@ export function getMaxDisplacement(scleraRadius: number, irisRadius: number) {
     return (scleraRadius - irisRadius * irisSkewFactor) / irisSkewFactor;
 }
 
+export interface IIrisAdjustment {
+    scale: number;
+    angle: number;
+}
 export function getIrisAdjustment(
     x: number,
     y: number,
@@ -103,7 +107,7 @@ export function getIrisAdjustment(
     scleraRadius: number,
     irisRadius: number,
     previousAngle: number = 0,
-) {
+): IIrisAdjustment {
     const displacement = Math.hypot(x - width / 2, y - height / 2);
     const maxDisplacement = getMaxDisplacement(scleraRadius, irisRadius);
 

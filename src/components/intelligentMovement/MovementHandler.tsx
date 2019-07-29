@@ -21,7 +21,7 @@ import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
-import { analyseLight, naturalMovement } from '../eye/EyeUtils';
+import { analyseLight, naturalMovement } from '../eye/utils/EyeUtils';
 
 interface IMovementProps {
     width: number;

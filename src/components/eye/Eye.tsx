@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { EyeSide, transitionTimes } from '../../AppConstants';
 import './Eye.css';
 import { BlackFill } from './eyeParts/BlackFill';
 import { Eyelids } from './eyeParts/Eyelids';
 import InnerEye from './eyeParts/InnerEye';
 import { Sclera } from './eyeParts/Sclera';
-import { generateInnerPath } from './EyeUtils';
+import { IIrisAdjustment } from './utils/EyeUtils';
 
 export interface IEyeProps {
     class: EyeSide;
@@ -32,21 +32,18 @@ export interface IEyeProps {
         topEyelidY: number;
         bottomEyelidY: number;
     };
+    reflection: ImageData | undefined;
+    irisAdjustment: IIrisAdjustment;
+    innerPath: string;
 }
 
 const pupilColor = 'black';
 
 export default function Eye(props: IEyeProps) {
     const cornerShape = getCornerShape(props);
-    const [innerPath, setInnerPath] = useState();
     const eyelidTransitionStyle = {
         transition: `d ${transitionTimes.blink}ms`,
     };
-
-    useEffect(() => {
-        const value = generateInnerPath(props.irisRadius, 100);
-        setInnerPath(value);
-    }, [props.irisRadius]);
 
     return (
         <svg className={props.class} width={props.width} height={props.height}>
@@ -60,13 +57,15 @@ export default function Eye(props: IEyeProps) {
                 irisColor={props.irisColor}
                 innerY={props.innerY}
                 innerX={props.innerX}
-                innerPath={innerPath}
+                innerPath={props.innerPath}
+                irisAdjustment={props.irisAdjustment}
                 pupilRadius={props.pupilRadius}
                 pupilColor={pupilColor}
                 dilatedCoefficient={props.dilatedCoefficient}
                 scleraRadius={props.scleraRadius}
                 width={props.width}
                 height={props.height}
+                reflection={props.reflection}
             />
             <Eyelids
                 transitionStyle={eyelidTransitionStyle}
