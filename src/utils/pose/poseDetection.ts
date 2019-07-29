@@ -2,7 +2,21 @@ import { Keypoint, partIds } from '@tensorflow-models/posenet';
 import { minConfidence, Pose } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 
-const poseMapping: { [key: string]: (selection: IDetection) => boolean } = {
+interface IPoseKeypoints {
+    nose: Keypoint;
+    leftEye: Keypoint;
+    rightEye: Keypoint;
+    leftEar: Keypoint;
+    rightEar: Keypoint;
+    leftShoulder: Keypoint;
+    rightShoulder: Keypoint;
+    leftElbow: Keypoint;
+    rightElbow: Keypoint;
+    leftWrist: Keypoint;
+    rightWrist: Keypoint;
+}
+
+const poseMapping: { [key: string]: (selection: IPoseKeypoints) => boolean } = {
     [Pose.DAB]: dab,
     [Pose.LEFT_WAVE]: leftWave,
     [Pose.RIGHT_WAVE]: rightWave,
@@ -11,31 +25,36 @@ const poseMapping: { [key: string]: (selection: IDetection) => boolean } = {
 };
 
 export function getPose(selection: IDetection): string | undefined {
+    const poseKeypoints = getPoseKeypoints(selection);
     return Object.keys(poseMapping).find(element =>
-        poseMapping[element](selection),
+        poseMapping[element](poseKeypoints),
     );
 }
 
-function leftWave(selection: IDetection) {
+function getPoseKeypoints(selection: IDetection): IPoseKeypoints {
     const keypoints = selection.info.keypoints;
 
-    const rightWrist = keypoints[partIds.rightWrist];
-    const rightEye = keypoints[partIds.rightEye];
-    const leftWrist = keypoints[partIds.leftWrist];
-    const leftEye = keypoints[partIds.leftEye];
-
-    return wave(rightWrist, rightEye, leftWrist, leftEye);
+    return {
+        nose: keypoints[partIds.nose],
+        leftEye: keypoints[partIds.leftEye],
+        rightEye: keypoints[partIds.rightEye],
+        leftEar: keypoints[partIds.leftEar],
+        rightEar: keypoints[partIds.rightEar],
+        leftShoulder: keypoints[partIds.leftShoulder],
+        rightShoulder: keypoints[partIds.rightShoulder],
+        leftElbow: keypoints[partIds.leftElbow],
+        rightElbow: keypoints[partIds.rightElbow],
+        leftWrist: keypoints[partIds.leftWrist],
+        rightWrist: keypoints[partIds.rightWrist],
+    };
 }
 
-function rightWave(selection: IDetection) {
-    const keypoints = selection.info.keypoints;
+function leftWave(pose: IPoseKeypoints) {
+    return wave(pose.rightWrist, pose.rightEye, pose.leftWrist, pose.leftEye);
+}
 
-    const rightWrist = keypoints[partIds.rightWrist];
-    const rightEye = keypoints[partIds.rightEye];
-    const leftWrist = keypoints[partIds.leftWrist];
-    const leftEye = keypoints[partIds.leftEye];
-
-    return wave(leftWrist, leftEye, rightWrist, rightEye);
+function rightWave(pose: IPoseKeypoints) {
+    return wave(pose.leftWrist, pose.leftEye, pose.rightWrist, pose.rightEye);
 }
 
 function wave(
@@ -51,58 +70,47 @@ function wave(
     );
 }
 
-function handsUp(selection: IDetection) {
-    const keypoints = selection.info.keypoints;
-
-    const rightWrist = keypoints[partIds.rightWrist];
-    const rightEye = keypoints[partIds.rightEye];
-    const leftWrist = keypoints[partIds.leftWrist];
-    const leftEye = keypoints[partIds.leftEye];
-
+function handsUp(pose: IPoseKeypoints) {
     return (
-        checkKeypoints(leftEye, leftWrist, rightEye, rightWrist) &&
-        rightWrist.position.y < rightEye.position.y &&
-        leftWrist.position.y < leftEye.position.y
+        checkKeypoints(
+            pose.leftEye,
+            pose.leftWrist,
+            pose.rightEye,
+            pose.rightWrist,
+        ) &&
+        pose.rightWrist.position.y < pose.rightEye.position.y &&
+        pose.leftWrist.position.y < pose.leftEye.position.y
     );
 }
 
-function armsOutToSide(selection: IDetection) {
-    const keypoints = selection.info.keypoints;
-
-    const rightWrist = keypoints[partIds.rightWrist];
-    const rightElbow = keypoints[partIds.rightElbow];
-    const rightShoulder = keypoints[partIds.rightShoulder];
-    const leftWrist = keypoints[partIds.leftWrist];
-    const leftElbow = keypoints[partIds.leftElbow];
-    const leftShoulder = keypoints[partIds.leftShoulder];
-
+function armsOutToSide(pose: IPoseKeypoints) {
     if (
         !checkKeypoints(
-            leftElbow,
-            leftShoulder,
-            leftWrist,
-            rightWrist,
-            rightElbow,
-            rightShoulder,
+            pose.leftElbow,
+            pose.leftShoulder,
+            pose.leftWrist,
+            pose.rightWrist,
+            pose.rightElbow,
+            pose.rightShoulder,
         )
     ) {
         return false;
     }
 
     const leftArmOut =
-        leftWrist.position.x > leftElbow.position.x &&
-        leftElbow.position.x > leftShoulder.position.x;
+        pose.leftWrist.position.x > pose.leftElbow.position.x &&
+        pose.leftElbow.position.x > pose.leftShoulder.position.x;
     const leftWristShoulderHeight = isWristAtShoulderHeight(
-        leftWrist,
-        leftShoulder,
+        pose.leftWrist,
+        pose.leftShoulder,
     );
 
     const rightArmOut =
-        rightWrist.position.x < rightElbow.position.x &&
-        rightElbow.position.x < rightShoulder.position.x;
+        pose.rightWrist.position.x < pose.rightElbow.position.x &&
+        pose.rightElbow.position.x < pose.rightShoulder.position.x;
     const rightWristShoulderHeight = isWristAtShoulderHeight(
-        rightWrist,
-        rightShoulder,
+        pose.rightWrist,
+        pose.rightShoulder,
     );
 
     return (
@@ -120,44 +128,36 @@ function isWristAtShoulderHeight(wrist: Keypoint, shoulder: Keypoint): boolean {
     );
 }
 
-function dab(selection: IDetection) {
-    const keypoints = selection.info.keypoints;
-
-    const leftDab = checkLeftDab(keypoints);
-    const rightDab = checkRightDab(keypoints);
+function dab(pose: IPoseKeypoints) {
+    const leftDab = checkLeftDab(pose);
+    const rightDab = checkRightDab(pose);
 
     return leftDab || rightDab;
 }
 
-function checkRightDab(keypoints: Keypoint[]): boolean {
-    const leftWrist = keypoints[partIds.leftWrist];
-    const rightEye = keypoints[partIds.rightEye];
-    const rightWrist = keypoints[partIds.rightWrist];
-    const rightElbow = keypoints[partIds.rightElbow];
-    const rightShoulder = keypoints[partIds.rightShoulder];
-
+function checkRightDab(pose: IPoseKeypoints): boolean {
     if (
         !checkKeypoints(
-            leftWrist,
-            rightEye,
-            rightWrist,
-            rightElbow,
-            rightShoulder,
+            pose.leftWrist,
+            pose.rightEye,
+            pose.rightWrist,
+            pose.rightElbow,
+            pose.rightShoulder,
         )
     ) {
         return false;
     }
 
     const eyesBetweenWristAndShoulder =
-        leftWrist.position.x < rightEye.position.x;
+        pose.leftWrist.position.x < pose.rightEye.position.x;
 
     const armPointingToTheSky =
-        rightWrist.position.x < rightElbow.position.x &&
-        rightElbow.position.x < rightShoulder.position.x &&
-        armPointingUp(rightWrist, rightElbow, rightShoulder);
+        pose.rightWrist.position.x < pose.rightElbow.position.x &&
+        pose.rightElbow.position.x < pose.rightShoulder.position.x &&
+        armPointingUp(pose.rightWrist, pose.rightElbow, pose.rightShoulder);
 
     const bentWristAboveShoulder =
-        leftWrist.position.y < rightShoulder.position.y;
+        pose.leftWrist.position.y < pose.rightShoulder.position.y;
 
     return (
         eyesBetweenWristAndShoulder &&
@@ -166,29 +166,29 @@ function checkRightDab(keypoints: Keypoint[]): boolean {
     );
 }
 
-function checkLeftDab(keypoints: Keypoint[]): boolean {
-    const rightWrist = keypoints[partIds.rightWrist];
-    const leftEye = keypoints[partIds.leftEye];
-    const leftWrist = keypoints[partIds.leftWrist];
-    const leftElbow = keypoints[partIds.leftElbow];
-    const leftShoulder = keypoints[partIds.leftShoulder];
-
+function checkLeftDab(pose: IPoseKeypoints): boolean {
     if (
-        !checkKeypoints(leftWrist, leftEye, rightWrist, leftShoulder, leftElbow)
+        !checkKeypoints(
+            pose.leftWrist,
+            pose.leftEye,
+            pose.rightWrist,
+            pose.leftShoulder,
+            pose.leftElbow,
+        )
     ) {
         return false;
     }
 
     const eyesBetweenWristAndShoulder =
-        rightWrist.position.x > leftEye.position.x;
+        pose.rightWrist.position.x > pose.leftEye.position.x;
 
     const armPointingToTheSky =
-        leftWrist.position.x > leftElbow.position.x &&
-        leftElbow.position.x > leftShoulder.position.x &&
-        armPointingUp(leftWrist, leftElbow, leftShoulder);
+        pose.leftWrist.position.x > pose.leftElbow.position.x &&
+        pose.leftElbow.position.x > pose.leftShoulder.position.x &&
+        armPointingUp(pose.leftWrist, pose.leftElbow, pose.leftShoulder);
 
     const bendWristAboveOppositeShoulder =
-        rightWrist.position.y < leftShoulder.position.y;
+        pose.rightWrist.position.y < pose.leftShoulder.position.y;
 
     return (
         eyesBetweenWristAndShoulder &&
