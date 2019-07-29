@@ -51,11 +51,13 @@ export type EyeControllerProps = IEyeControllerProps &
 
 export const EyeController = React.memo(
     (props: EyeControllerProps) => {
-        const [blinkFrequencyCoefficient] = useState(1); // Will change based on camera feed e.g. lower coefficient when object in frame
         const [isBlinking, setIsBlinking] = useState(false); // Will change based on camera feed e.g. blink less when object in frame
-        const [eyesOpenCoefficient] = useState(eyelidPosition.OPEN); // Will change based on camera feed e.g. higher coefficient to show surprise
 
         const { environment, updateAnimation, animation } = props;
+
+        const scleraRadius = props.width / 4.5;
+        const irisRadius = props.width / 10;
+        const pupilRadius = props.width / 24;
 
         useEffect(() => {
             if (animation.length === 0) {
@@ -67,8 +69,7 @@ export const EyeController = React.memo(
                             ? neutralBlinkFrequency / 4
                             : neutralBlinkFrequency;
                         const blinkProbability =
-                            (blinkFrequency * blinkFrequencyCoefficient) /
-                            (1000 / transitionTime.blink);
+                            blinkFrequency / (1000 / transitionTime.blink);
                         setIsBlinking(Math.random() < blinkProbability);
                     }
                 }, transitionTime.blink);
@@ -77,13 +78,7 @@ export const EyeController = React.memo(
                     blink = 0;
                 };
             }
-        }, [
-            props.detected,
-            environment,
-            isBlinking,
-            blinkFrequencyCoefficient,
-            animation,
-        ]);
+        }, [props.detected, environment, isBlinking, animation]);
 
         useEffect(() => {
             if (animation.length > 0) {
@@ -95,10 +90,6 @@ export const EyeController = React.memo(
                 return () => environment.clearTimeout(timer);
             }
         }, [animation, updateAnimation, environment]);
-
-        const scleraRadius = props.width / 4.5;
-        const irisRadius = props.width / 10;
-        const pupilRadius = props.width / 24;
 
         const getEyeCoords = (target: ICoords): ICoords => {
             const maxDisplacement = getMaxDisplacement(
@@ -114,44 +105,22 @@ export const EyeController = React.memo(
             const y = props.height / 2 + displacement * Math.sin(polarAngle);
             return { x, y };
         };
-        const leftCoords = getEyeCoords(props.target);
-        const eyeCoords: { [key in EyeSide]: ICoords } =
+
+        const eyeCoords =
             props.animation.length > 0 &&
             props.animation[0].coords !== undefined
-                ? centerAnimationCoords()
-                : {
-                      LEFT: leftCoords,
-                      RIGHT: leftCoords,
-                  };
-
-        function centerAnimationCoords() {
-            return {
-                LEFT: {
-                    x: (props.width * (1 + props.animation[0].coords!.x)) / 4,
-                    y: (props.width * (1 + props.animation[0].coords!.y)) / 4,
-                },
-                RIGHT: {
-                    x: (props.width * (1 + props.animation[0].coords!.x)) / 4,
-                    y: (props.width * (1 + props.animation[0].coords!.y)) / 4,
-                },
-            };
-        }
-
-        function getEyesOpenCoefficient(): number {
-            if (props.openCoefficient !== eyesOpenCoefficient) {
-                return props.openCoefficient;
-            } else if (isBlinking) {
-                return 0;
-            } else {
-                return eyesOpenCoefficient;
-            }
-        }
+                ? {
+                      x: (props.width * (1 + props.animation[0].coords!.x)) / 4,
+                      y: (props.width * (1 + props.animation[0].coords!.y)) / 4,
+                  }
+                : getEyeCoords(props.target);
 
         const calculatedEyesOpenCoefficient =
-            props.animation.length > 0 &&
-            props.animation[0].openCoefficient !== undefined
+            props.animation.length > 0 && props.animation[0].openCoefficient
                 ? props.animation[0].openCoefficient
-                : getEyesOpenCoefficient();
+                : isBlinking
+                ? eyelidPosition.CLOSED
+                : props.openCoefficient;
 
         const dilatedCoefficient =
             props.animation.length > 0 &&
@@ -169,7 +138,7 @@ export const EyeController = React.memo(
                             : calculatedEyesOpenCoefficient[eye],
                     );
 
-                    const eyeCoordsItem = getEyeCoordinates(
+                    const eyeShape = getEyeShape(
                         props.width,
                         props.height,
                         scleraRadius,
@@ -188,13 +157,12 @@ export const EyeController = React.memo(
                             scleraRadius={scleraRadius}
                             irisRadius={irisRadius}
                             pupilRadius={pupilRadius}
-                            // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
                             dilatedCoefficient={dilatedCoefficient}
-                            innerX={eyeCoords[eye].x}
-                            innerY={eyeCoords[eye].y}
+                            innerX={eyeCoords.x}
+                            innerY={eyeCoords.y}
                             fps={props.config.fps}
                             bezier={bezier}
-                            eyeCoords={eyeCoordsItem}
+                            eyeShape={eyeShape}
                         />
                     );
                 })}
@@ -214,26 +182,6 @@ export const EyeController = React.memo(
         previous.target.y === next.target.y,
 );
 
-const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
-    config: getConfig(state),
-    target: getTargets(state),
-    videos: getVideos(state),
-    openCoefficient: getOpenCoefficient(state),
-    animation: state.detectionStore.animation,
-});
-
-const mapDispatchToProps = (
-    dispatch: Dispatch,
-): IEyeControllerMapDispatchToState => ({
-    updateAnimation: (animation: Animation) =>
-        dispatch(setAnimation(animation)),
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(EyeController);
-
 function getBezier(scleraRadius: number, openCoefficient: number) {
     const curveConstant = 0.55228474983; // (4/3)tan(pi/8)
     const controlOffset = scleraRadius * curveConstant;
@@ -242,7 +190,7 @@ function getBezier(scleraRadius: number, openCoefficient: number) {
     return { controlOffset, scaledXcontrolOffset, scaledYcontrolOffset };
 }
 
-function getEyeCoordinates(
+function getEyeShape(
     width: number,
     height: number,
     scleraRadius: number,
@@ -265,3 +213,23 @@ function getEyeCoordinates(
         bottomEyelidY,
     };
 }
+
+const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
+    config: getConfig(state),
+    target: getTargets(state),
+    videos: getVideos(state),
+    openCoefficient: getOpenCoefficient(state),
+    animation: state.detectionStore.animation,
+});
+
+const mapDispatchToProps = (
+    dispatch: Dispatch,
+): IEyeControllerMapDispatchToState => ({
+    updateAnimation: (animation: Animation) =>
+        dispatch(setAnimation(animation)),
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(EyeController);
