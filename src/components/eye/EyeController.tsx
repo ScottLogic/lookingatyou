@@ -116,7 +116,7 @@ export const EyeController = React.memo(
         const leftCoords = getEyeCoords(props.target);
         const eyeCoords: { [key in EyeSide]: ICoords } =
             props.animation.length > 0 &&
-            props.animation[0].coords !== undefined
+            props.animation[0].dilation !== undefined
                 ? centerAnimationCoords()
                 : {
                       LEFT: leftCoords,
@@ -126,12 +126,24 @@ export const EyeController = React.memo(
         function centerAnimationCoords() {
             return {
                 LEFT: {
-                    x: (props.width * (1 + props.animation[0].coords!.x)) / 4,
-                    y: (props.width * (1 + props.animation[0].coords!.y)) / 4,
+                    x:
+                        (props.width *
+                            (1 + props.animation[0].normalisedCoords!.x)) /
+                        4,
+                    y:
+                        (props.width *
+                            (1 + props.animation[0].normalisedCoords!.y)) /
+                        4,
                 },
                 RIGHT: {
-                    x: (props.width * (1 + props.animation[0].coords!.x)) / 4,
-                    y: (props.width * (1 + props.animation[0].coords!.y)) / 4,
+                    x:
+                        (props.width *
+                            (1 + props.animation[0].normalisedCoords!.x)) /
+                        4,
+                    y:
+                        (props.width *
+                            (1 + props.animation[0].normalisedCoords!.y)) /
+                        4,
                 },
             };
         }
