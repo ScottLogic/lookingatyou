@@ -1,11 +1,11 @@
 import React from 'react';
-import { ISetConfigPayload } from '../../../store/actions/config/types';
+import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 
 export interface IColorMenuItemProps {
     name: string;
     configName: string;
-    onInputChange: (payload: ISetConfigPayload) => void;
+    onInputChange: (payload: PartialConfig) => void;
     color: string;
     helpWith: HelpWith;
 }
@@ -14,7 +14,7 @@ const ColorMenuItem = React.memo(
     (props: IColorMenuItemProps) => {
         function onChange(event: React.ChangeEvent<HTMLInputElement>) {
             props.onInputChange({
-                partialConfig: { [props.configName]: event.target.value },
+                [props.configName]: event.target.value,
             });
         }
         return (
