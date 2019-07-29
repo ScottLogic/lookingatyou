@@ -112,7 +112,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
             detections
                 .map(detection => detection.info.keypoints)
                 .forEach(keypointSet => {
-                    if (keypointSet !== this.keypoints) {
+                    if (noMatchingPoint(keypointSet, this.keypoints)) {
                         drawPose(keypointSet, canvasCtx, nonChosenTargetColour);
                     }
                 });
@@ -129,6 +129,20 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
             canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
         }
     }
+}
+
+function noMatchingPoint(keypoints1: Keypoint[], keypoints2: Keypoint[]) {
+    for (const point1 of keypoints1) {
+        for (const point2 of keypoints2) {
+            if (
+                point1.position.x === point2.position.x &&
+                point1.position.y === point2.position.y
+            ) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 const mapStateToProps = (state: IRootStore) => ({
