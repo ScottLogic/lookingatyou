@@ -3,5 +3,7 @@ export default interface IUserConfig {
     ySensitivity: number;
     fps: number;
     toggleDebug: boolean;
+    toggleReflection: boolean;
     irisColor: string;
+    reflectionOpacity: number;
 }

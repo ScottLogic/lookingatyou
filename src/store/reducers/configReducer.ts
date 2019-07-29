@@ -10,8 +10,10 @@ export const initialState: IConfigState = {
         xSensitivity: 1,
         ySensitivity: 1,
         fps: 2,
+        toggleReflection: true,
         toggleDebug: false,
         irisColor: '#55acee', // must be hex value, as this is passed to colour picker input
+        reflectionOpacity: 0.2,
     },
 };
 

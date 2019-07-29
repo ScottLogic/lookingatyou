@@ -26,7 +26,9 @@ interface IInnerEyeProps {
 interface IInnerEyeMapStateToProps {
     image: HTMLVideoElement | undefined;
     fps: number;
+    showReflection: boolean;
     selection: IDetection | undefined;
+    reflectionOpacity: number;
 }
 
 type InnerEyeProps = IInnerEyeProps & IInnerEyeMapStateToProps;
@@ -54,7 +56,7 @@ export const InnerEye = React.memo(
         }, [irisAdjustment]);
 
         useEffect(() => {
-            if (canvasRef) {
+            if (canvasRef && props.showReflection) {
                 const canvas = canvasRef.current;
                 if (canvas && props.image) {
                     const ctx = canvas.getContext('2d');
@@ -68,7 +70,12 @@ export const InnerEye = React.memo(
                     }
                 }
             }
-        }, [props.image, props.pupilRadius, props.selection]);
+        }, [
+            props.image,
+            props.pupilRadius,
+            props.selection,
+            props.showReflection,
+        ]);
 
         return (
             <g
@@ -104,11 +111,13 @@ export const InnerEye = React.memo(
                         x={-props.pupilRadius}
                         y={-props.pupilRadius}
                     >
-                        <canvas
-                            ref={canvasRef}
-                            width={props.pupilRadius * 2}
-                            height={props.pupilRadius * 2}
-                        />
+                        {props.showReflection && (
+                            <canvas
+                                ref={canvasRef}
+                                width={props.pupilRadius * 2}
+                                height={props.pupilRadius * 2}
+                            />
+                        )}
                     </foreignObject>
                     <circle
                         className={'pupil'}
@@ -181,7 +190,7 @@ function getSourceBox(selection: Bbox, image: HTMLVideoElement) {
         let sy = selection[1] + selection[3] / 2 - boxSize / 2;
         sx = Math.min(sx, image.width - boxSize);
         sx = Math.max(sx, 0);
-        sy = Math.min(sy, image.width - boxSize);
+        sy = Math.min(sy, image.height - boxSize);
         sy = Math.max(sy, 0);
         return {
             sx,
@@ -203,6 +212,10 @@ const mapStateToProps = (state: IRootStore): IInnerEyeMapStateToProps => ({
     image: getVideos(state)[0],
     fps: state.configStore.config.fps,
     selection: getSelections(state),
+    showReflection: state.configStore.config.toggleReflection,
+    reflectionOpacity: state.configStore.config.toggleReflection
+        ? state.configStore.config.reflectionOpacity
+        : 1,
 });
 
 export default connect(mapStateToProps)(InnerEye);

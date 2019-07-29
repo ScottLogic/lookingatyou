@@ -10,38 +10,32 @@ export enum HelpWith {
     IRIS_COLOUR = 'IRIS_COLOUR',
     APP = 'APP',
     DEBUG = 'DEBUG',
+    REFLECTION = 'REFLECTION',
+    REFLECTION_OPACITY = 'REFLECTION_OPACITY',
 }
 
 const fps = () => {
     return (
         <Fragment>
-            This number sets how often the eyes will update in Frames per
-            Second.
+            How often the eyes will update in Frames per second. Affects
+            performance.
         </Fragment>
     );
 };
 
 const xSense = () => {
-    return (
-        <Fragment>
-            This number sets how sensitive the eyes will be from left to right.
-        </Fragment>
-    );
+    return <Fragment>How sensitively the eyes move horizontally.</Fragment>;
 };
 
 const ySense = () => {
-    return (
-        <Fragment>
-            This number sets how sensitive the eyes will be from top to bottom.
-        </Fragment>
-    );
+    return <Fragment>How sensitively the eyes move vertically.</Fragment>;
 };
 
 const video = () => {
     return (
         <Fragment>
-            This shows you the current webcam feed, and outlines the person that
-            is currently being tracked.
+            Displays current webcam feed, outlines the person that is currently
+            being tracked.
         </Fragment>
     );
 };
@@ -49,18 +43,14 @@ const video = () => {
 const swap = () => {
     return (
         <Fragment>
-            This allows you to swap the eyes when using two cameras so you can
-            correctly set the left and the right.
+            Swap the eyes when using two cameras, to correctly set left camera
+            to left eye and right camera to right eye.
         </Fragment>
     );
 };
 
 const iris = () => {
-    return (
-        <Fragment>
-            This button allows you to select the colour of the eyes.
-        </Fragment>
-    );
+    return <Fragment>Customise eye colour.</Fragment>;
 };
 
 const app = () => {
@@ -77,9 +67,27 @@ const app = () => {
 const debug = () => {
     return (
         <Fragment>
-            This checkbox allows you to view the current camera feed from either
-            one or two cameras.
-            <br /> It will also show you what object is being tracked.
+            View the current camera feed, with tracked object highlighted.
+            <br />
+            Useful for setting up your cameras and environment.
+        </Fragment>
+    );
+};
+
+const reflectionOpacity = () => {
+    return (
+        <Fragment>
+            Configure the opacity of the reflection. This does not affect
+            performance.
+        </Fragment>
+    );
+};
+
+const reflection = () => {
+    return (
+        <Fragment>
+            This checkbox allows you to view the currently selected target
+            inside the pupil as a reflection.
         </Fragment>
     );
 };
@@ -97,6 +105,8 @@ const helpSections: IHelpSectionMap = {
     IRIS_COLOUR: iris,
     APP: app,
     DEBUG: debug,
+    REFLECTION: reflection,
+    REFLECTION_OPACITY: reflectionOpacity,
 };
 
 function text(section: HelpWith) {

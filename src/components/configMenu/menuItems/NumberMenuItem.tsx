@@ -6,7 +6,8 @@ export interface INumberMenuItemProps {
     name: string;
     configName: string;
     step: number;
-    min: number;
+    min?: number;
+    max?: number;
     onValidInput: (payload: ISetConfigPayload) => void;
     defaultValue: number;
     helpWith: HelpWith;
@@ -30,7 +31,10 @@ const NumberMenuItem = React.memo(
         function onChange(event: React.ChangeEvent<HTMLInputElement>) {
             const newValue = Number(event.target.value);
             setValue(newValue);
-            const newIsValid = !isNaN(newValue) && newValue >= props.min;
+            const newIsValid =
+                !isNaN(newValue) &&
+                (!props.min || newValue >= props.min) &&
+                (!props.max || newValue <= props.max);
             setIsValid(newIsValid);
             if (newIsValid) {
                 setLastValidValue(newValue);
@@ -49,6 +53,7 @@ const NumberMenuItem = React.memo(
                     type="number"
                     value={value || 0}
                     min={props.min}
+                    max={props.max}
                     style={{
                         color: isValid ? 'black' : 'red',
                     }}

@@ -42,7 +42,12 @@ export const ConfigMenuElement = React.memo(
                 window={props.window}
                 debugEnabled={props.config.toggleDebug}
             >
-                <span data-tip={true} data-for={HelpWith[HelpWith.APP]}>
+                <h1>Config</h1>
+                <span
+                    className="icon"
+                    data-tip={true}
+                    data-for={HelpWith[HelpWith.APP]}
+                >
                     ?
                 </span>
 
@@ -86,6 +91,27 @@ export const ConfigMenuElement = React.memo(
                     onInputChange={props.setConfig}
                     helpWith={HelpWith.IRIS_COLOUR}
                 />
+
+                <CheckBoxMenuItem
+                    name={'Show Reflect'}
+                    configName={'toggleReflection'}
+                    helpWith={HelpWith.REFLECTION}
+                    checked={props.config.toggleReflection}
+                    onInputChange={props.setConfig}
+                />
+                {props.config.toggleReflection && (
+                    <NumberMenuItem
+                        name={'Reflect Opacity'}
+                        configName={'reflectionOpacity'}
+                        step={0.01}
+                        defaultValue={props.config.reflectionOpacity}
+                        onValidInput={props.setConfig}
+                        helpWith={HelpWith.REFLECTION_OPACITY}
+                        min={0.01}
+                        max={1.0}
+                    />
+                )}
+
                 <CheckBoxMenuItem
                     name={'Toggle Debug'}
                     configName={'toggleDebug'}
