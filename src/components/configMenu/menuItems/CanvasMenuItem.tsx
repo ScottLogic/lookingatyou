@@ -107,8 +107,8 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
     ) {
         if (this.props.selection && detections && canvasCtx) {
             detections
-                .filter(detection => detection.info.keypoints !== focusedPose)
                 .map(detection => detection.info.keypoints)
+                .filter(keypoint => keypoint !== focusedPose)
                 .forEach(keypointSet => {
                     if (noMatchingPoint(keypointSet, this.keypoints)) {
                         drawPose(keypointSet, canvasCtx, debugFeedColors.other);
@@ -130,16 +130,13 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
 }
 
 function noMatchingPoint(keypoints1: Keypoint[], keypoints2: Keypoint[]) {
-    for (let i = 0; i < Math.min(keypoints1.length, keypoints2.length); i++) {
-        if (
-            keypoints1[i].position.x === keypoints2[i].position.x &&
-            keypoints1[i].position.y === keypoints2[i].position.y
-        ) {
-            return false;
-        }
-    }
+    const anyMatchingPoint = keypoints1.every(
+        (keypoint, i) =>
+            keypoint.position.x !== keypoints2[i].position.x &&
+            keypoint.position.y !== keypoints2[i].position.y,
+    );
 
-    return true;
+    return anyMatchingPoint;
 }
 
 const mapStateToProps = (state: IRootStore) => ({
