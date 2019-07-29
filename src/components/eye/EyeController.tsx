@@ -147,16 +147,19 @@ export const EyeController = React.memo(
         }
 
         const calculatedEyesOpenCoefficient =
-            props.animation.length > 0 &&
-            props.animation[0].openCoefficient !== undefined
+            props.animation.length > 0 && props.animation[0].openCoefficient
                 ? props.animation[0].openCoefficient
                 : getEyesOpenCoefficient();
 
         const dilatedCoefficient =
-            props.animation.length > 0 &&
-            props.animation[0].dilation !== undefined
+            props.animation.length > 0 && props.animation[0].dilation
                 ? props.animation[0].dilation
                 : props.dilation;
+
+        const irisColor =
+            props.animation.length > 0 && props.animation[0].irisColor
+                ? props.animation[0].irisColor
+                : props.config.irisColor;
 
         return (
             <div className="container">
@@ -183,7 +186,7 @@ export const EyeController = React.memo(
                             key={index}
                             width={props.width / 2}
                             height={props.height}
-                            irisColor={props.config.irisColor}
+                            irisColor={irisColor}
                             scleraRadius={scleraRadius}
                             irisRadius={irisRadius}
                             pupilRadius={pupilRadius}
@@ -198,7 +201,7 @@ export const EyeController = React.memo(
                     );
                 })}
                 <Gradients
-                    irisColor={props.config.irisColor}
+                    irisColor={irisColor}
                     reflectionOpacity={props.config.reflectionOpacity}
                 />
                 <Shadows openCoefficient={props.openCoefficient} />
