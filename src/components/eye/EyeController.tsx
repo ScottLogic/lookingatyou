@@ -3,23 +3,21 @@ import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
+    blinkConsts,
     eyelidPosition,
+    eyeRatio,
     EyeSide,
-    neutralBlinkFrequency,
-    transitionTime,
+    transitionTimes,
 } from '../../AppConstants';
+import { IConfigState } from '../../store/actions/config/types';
 import { setAnimation } from '../../store/actions/detections/actions';
 import { ISetAnimationAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
-import {
-    getOpenCoefficient,
-    getTargets,
-} from '../../store/selectors/detectionSelectors';
+import { getTargets } from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
-import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
 import { getMaxDisplacement } from './EyeUtils';
 import { Gradients } from './Gradients';
@@ -31,13 +29,13 @@ interface IEyeControllerProps {
     environment: Window;
     dilation: number;
     detected: boolean;
+    openCoefficient: number;
 }
 
 interface IEyeControllerMapStateToProps {
-    config: IUserConfig;
+    config: IConfigState;
     target: ICoords;
     videos: Array<HTMLVideoElement | undefined>;
-    openCoefficient: number;
     animation: Animation;
 }
 
@@ -64,14 +62,14 @@ export const EyeController = React.memo(
                         setIsBlinking(false);
                     } else {
                         const blinkFrequency = props.detected
-                            ? neutralBlinkFrequency / 4
-                            : neutralBlinkFrequency;
+                            ? blinkConsts.frequency / 4
+                            : blinkConsts.frequency;
                         const blinkProbability =
                             (blinkFrequency * blinkFrequencyCoefficient) /
-                            (1000 / transitionTime.blink);
+                            (1000 / transitionTimes.blink);
                         setIsBlinking(Math.random() < blinkProbability);
                     }
-                }, transitionTime.blink);
+                }, transitionTimes.blink);
                 return () => {
                     environment.clearInterval(blink);
                     blink = 0;
@@ -96,9 +94,9 @@ export const EyeController = React.memo(
             }
         }, [animation, updateAnimation, environment]);
 
-        const scleraRadius = props.width / 4.5;
-        const irisRadius = props.width / 10;
-        const pupilRadius = props.width / 24;
+        const scleraRadius = props.width / eyeRatio.sclera;
+        const irisRadius = props.width / eyeRatio.iris;
+        const pupilRadius = props.width / eyeRatio.pupil;
 
         const getEyeCoords = (target: ICoords): ICoords => {
             const maxDisplacement = getMaxDisplacement(
@@ -221,7 +219,6 @@ const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     config: getConfig(state),
     target: getTargets(state),
     videos: getVideos(state),
-    openCoefficient: getOpenCoefficient(state),
     animation: state.detectionStore.animation,
 });
 
@@ -237,7 +234,7 @@ export default connect(
     mapDispatchToProps,
 )(EyeController);
 
-function getBezier(scleraRadius: number, openCoefficient: number) {
+export function getBezier(scleraRadius: number, openCoefficient: number) {
     const curveConstant = 0.55228474983; // (4/3)tan(pi/8)
     const controlOffset = scleraRadius * curveConstant;
     const scaledYcontrolOffset = controlOffset * openCoefficient;
@@ -245,7 +242,7 @@ function getBezier(scleraRadius: number, openCoefficient: number) {
     return { controlOffset, scaledXcontrolOffset, scaledYcontrolOffset };
 }
 
-function getEyeCoordinates(
+export function getEyeCoordinates(
     width: number,
     height: number,
     scleraRadius: number,

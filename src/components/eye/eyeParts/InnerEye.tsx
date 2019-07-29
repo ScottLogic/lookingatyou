@@ -2,8 +2,10 @@ import React, { useEffect, useRef } from 'react';
 import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import tinycolor from 'tinycolor2';
+import { fisheyeConsts } from '../../../AppConstants';
 import { IDetection } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
+import { getFPS } from '../../../store/selectors/configSelectors';
 import { getSelections } from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
 import { Bbox } from '../../../utils/types';
@@ -95,7 +97,7 @@ export const InnerEye = React.memo(
                 />
                 <path
                     className="irisStyling"
-                    d={`M 0 0 ${props.innerPath}`}
+                    d={props.innerPath}
                     fill={tinycolor(props.irisColor)
                         .darken(10)
                         .toHexString()}
@@ -122,7 +124,11 @@ export const InnerEye = React.memo(
                     <circle
                         className={'pupil'}
                         r={props.pupilRadius}
-                        fill={'url(#pupilGradient)'}
+                        fill={
+                            props.showReflection
+                                ? 'url(#pupilGradient)'
+                                : 'black'
+                        }
                         stroke={'black'}
                         strokeWidth={'2'}
                     />
@@ -157,33 +163,84 @@ function drawReflection(
     selection: Bbox,
     image: HTMLVideoElement,
 ) {
-    const r = radius;
     ctx.save();
     ctx.beginPath();
-    ctx.arc(r, r, r, 0, Math.PI * 2, true);
+    ctx.arc(radius, radius, radius, 0, Math.PI * 2, true);
     ctx.closePath();
     ctx.clip();
+    const crop = getCrop(selection, image);
     ctx.scale(-1, 1);
-    const sourceBox = getSourceBox(selection, image);
+    ctx.filter = 'blur(1px)';
+    const diameter = radius * 2;
     ctx.drawImage(
         image,
-        sourceBox.sx,
-        sourceBox.sy,
-        sourceBox.sWidth,
-        sourceBox.sHeight,
+        crop.sx,
+        crop.sy,
+        crop.sWidth,
+        crop.sHeight,
         0,
         0,
-        -radius * 2,
-        radius * 2,
+        -diameter,
+        diameter,
     );
-    ctx.beginPath();
-    ctx.arc(0, 0, r, 0, Math.PI * 2, true);
-    ctx.clip();
-    ctx.closePath();
+    const imgData = ctx.getImageData(0, 0, diameter, diameter);
+    const result: Uint8ClampedArray = fisheye(imgData.data, diameter, diameter);
+    imgData.data.set(result);
+    ctx.putImageData(imgData, 0, 0);
     ctx.restore();
 }
 
-function getSourceBox(selection: Bbox, image: HTMLVideoElement) {
+function fisheye(
+    srcpixels: Uint8ClampedArray,
+    width: number,
+    height: number,
+): Uint8ClampedArray {
+    const dstpixels = new Uint8ClampedArray(srcpixels.length);
+
+    for (let currRow = 0; currRow < height; currRow++) {
+        const normalisedY = (2 * currRow) / height - 1; // a
+        const normalYSquared = normalisedY * normalisedY; // a2
+
+        for (let currColumn = 0; currColumn < width; currColumn++) {
+            const normalisedX = (2 * currColumn) / width - 1; // b
+            const normalXSquared = normalisedX * normalisedX; // b2
+
+            const normalisedRadius = Math.sqrt(normalXSquared + normalYSquared); // c=sqrt(a2 + b2)
+
+            // For any point in the circle
+            if (0.0 <= normalisedRadius && normalisedRadius <= 1.0) {
+                // The closer to the center it is, the larger the value
+                let radiusScaling = Math.sqrt(
+                    1.0 - normalisedRadius * normalisedRadius,
+                );
+                radiusScaling =
+                    (normalisedRadius + (1.0 - radiusScaling)) / 2.0;
+                // Exponential curve between 0 and 1, ie pixels closer to the center have a much lower scaling value
+
+                radiusScaling =
+                    radiusScaling * fisheyeConsts.intensity +
+                    normalisedRadius * (1 - fisheyeConsts.intensity);
+
+                const theta = Math.atan2(normalisedY, normalisedX); // angle to point from center of circle
+                const scaledNormalisedX = radiusScaling * Math.cos(theta);
+                const scaledNormalisedY = radiusScaling * Math.sin(theta);
+                const newX = Math.floor(((scaledNormalisedX + 1) * width) / 2); // normalise x to size of circle
+                const newY = Math.floor(((scaledNormalisedY + 1) * height) / 2); // normalise y to size of circle
+                const srcpos = newY * width + newX; // New pixel position in array
+                if (srcpos >= 0 && srcpos < width * height) {
+                    for (let i = 0; i < 4; i++) {
+                        dstpixels[
+                            4 * Math.floor(currRow * width + currColumn) + i
+                        ] = srcpixels[srcpos * 4 + i];
+                    }
+                }
+            }
+        }
+    }
+    return dstpixels;
+}
+
+function getCrop(selection: Bbox, image: HTMLVideoElement) {
     if (selection) {
         const boxSize = image.width * 0.4;
         let sx = selection[0] + selection[2] / 2 - boxSize / 2;
@@ -210,11 +267,11 @@ function getSourceBox(selection: Bbox, image: HTMLVideoElement) {
 
 const mapStateToProps = (state: IRootStore): IInnerEyeMapStateToProps => ({
     image: getVideos(state)[0],
-    fps: state.configStore.config.fps,
+    fps: getFPS(state),
     selection: getSelections(state),
-    showReflection: state.configStore.config.toggleReflection,
-    reflectionOpacity: state.configStore.config.toggleReflection
-        ? state.configStore.config.reflectionOpacity
+    showReflection: state.configStore.toggleReflection,
+    reflectionOpacity: state.configStore.toggleReflection
+        ? state.configStore.reflectionOpacity
         : 1,
 });
 

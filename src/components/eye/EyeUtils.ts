@@ -1,12 +1,8 @@
 import {
-    buffer,
-    dilationMultipler,
-    dilationOffset,
+    eyeCoords,
+    idleMovementConsts,
     irisSkewFactor,
-    maxBrightness,
-    middleX,
-    moveSize,
-    xIncrement,
+    lightConsts,
 } from '../../AppConstants';
 
 export function analyseLight(
@@ -23,15 +19,17 @@ export function analyseLight(
         }
         let brightness = Math.floor(colorSum / (image.width * image.height));
 
-        if (brightness > maxBrightness) {
+        if (brightness > lightConsts.maxBrightness) {
             tooBright = true;
-            brightness = maxBrightness;
+            brightness = lightConsts.maxBrightness;
         } else if (tooBright) {
             tooBright = false;
         }
         const scaledPupilSize =
-            ((maxBrightness - brightness) / maxBrightness) * dilationMultipler +
-            dilationOffset;
+            ((lightConsts.maxBrightness - brightness) /
+                lightConsts.maxBrightness) *
+                lightConsts.dilationMultipler +
+            lightConsts.dilationOffset;
 
         return { tooBright, scaledPupilSize };
     }
@@ -42,7 +40,7 @@ export function naturalMovement(
     currentX: number,
     isMovingLeft: boolean,
 ): { newX: number; isMovingLeft: boolean } {
-    if (currentX === middleX) {
+    if (currentX === eyeCoords.middleX) {
         if (Math.random() < 0.1) {
             return moveEye(currentX, isMovingLeft);
         }
@@ -67,10 +65,13 @@ function moveLeft(
     currentX: number,
     isMovingLeft: boolean,
 ): { newX: number; isMovingLeft: boolean } {
-    if (currentX > middleX - xIncrement + buffer) {
-        return { newX: currentX - moveSize, isMovingLeft };
+    if (currentX > eyeCoords.middleX - 1 + idleMovementConsts.sideBuffer) {
+        return { newX: currentX - idleMovementConsts.xDelta, isMovingLeft };
     } else if (Math.random() < 0.5) {
-        return { newX: currentX + moveSize, isMovingLeft: !isMovingLeft };
+        return {
+            newX: currentX + idleMovementConsts.xDelta,
+            isMovingLeft: !isMovingLeft,
+        };
     }
     return { newX: currentX, isMovingLeft };
 }
@@ -79,10 +80,13 @@ function moveRight(
     currentX: number,
     isMovingLeft: boolean,
 ): { newX: number; isMovingLeft: boolean } {
-    if (currentX < middleX + xIncrement - buffer) {
-        return { newX: currentX + moveSize, isMovingLeft };
+    if (currentX < eyeCoords.middleX + 1 - idleMovementConsts.sideBuffer) {
+        return { newX: currentX + idleMovementConsts.xDelta, isMovingLeft };
     } else if (Math.random() < 0.5) {
-        return { newX: currentX - moveSize, isMovingLeft: !isMovingLeft };
+        return {
+            newX: currentX - idleMovementConsts.xDelta,
+            isMovingLeft: !isMovingLeft,
+        };
     }
     return { newX: currentX, isMovingLeft };
 }
@@ -120,4 +124,27 @@ export function getIrisAdjustment(
         scale,
         angle,
     };
+}
+
+export function generateInnerPath(radius: number, sectors: number) {
+    const innerRadius = radius * 0.1;
+    const outerRadius = radius * 0.9;
+    const radianStep = (2 * Math.PI) / sectors;
+    const innerOffset = -radianStep / 2;
+
+    let currInnerPath = 'M 0 0';
+    for (let i = 0; i < sectors; i++) {
+        const currRadianStep = radianStep * i;
+        const lineOut = `L ${outerRadius *
+            Math.cos(currRadianStep + innerOffset)} ${outerRadius *
+            Math.sin(currRadianStep + innerOffset)}`;
+
+        const lineIn = `L ${innerRadius *
+            Math.cos(currRadianStep)} ${innerRadius *
+            Math.sin(currRadianStep)}`;
+
+        currInnerPath += lineOut;
+        currInnerPath += lineIn;
+    }
+    return currInnerPath;
 }

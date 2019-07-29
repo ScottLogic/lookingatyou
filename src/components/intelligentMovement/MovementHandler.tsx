@@ -2,20 +2,21 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
+    blinkConsts,
     eyelidPosition,
     EyeSide,
-    maxMoveWithoutBlink,
+    intervals,
     pupilSizes,
-    sleepDelay,
 } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
-import { setIdleTarget, setOpen } from '../../store/actions/detections/actions';
-import {
-    ISetIdleTargetAction,
-    ISetOpenAction,
-} from '../../store/actions/detections/types';
+import { setIdleTarget } from '../../store/actions/detections/actions';
+import { ISetIdleTargetAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
-import { getTargets } from '../../store/selectors/detectionSelectors';
+import { getFPS } from '../../store/selectors/configSelectors';
+import {
+    getDetections,
+    getTargets,
+} from '../../store/selectors/detectionSelectors';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
@@ -32,14 +33,12 @@ interface IStateProps {
     fps: number;
     detections: IDetection[];
     target: ICoords;
-    openCoefficient: number;
     images: { [key: string]: ImageData };
     animation: Animation;
 }
 
 interface IDispatchProps {
     setIdleTarget: (coords: ICoords) => ISetIdleTargetAction;
-    setOpen: (openCoefficient: number) => ISetOpenAction;
 }
 
 interface IMovementState {
@@ -61,6 +60,7 @@ export class MovementHandler extends React.Component<
     private squinting: boolean;
     private personDetected: boolean;
     private prevProps: MovementHandlerProps | null;
+    private openCoefficient: number;
 
     constructor(props: MovementHandlerProps) {
         super(props);
@@ -76,6 +76,7 @@ export class MovementHandler extends React.Component<
         this.personDetected = false;
         this.squinting = false;
         this.prevProps = null;
+        this.openCoefficient = eyelidPosition.OPEN;
 
         this.animateEye = this.animateEye.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
@@ -99,7 +100,6 @@ export class MovementHandler extends React.Component<
             this.props.animation.length === 0 &&
             (this.props.height !== nextProps.height ||
                 this.props.width !== nextProps.width ||
-                this.props.openCoefficient !== nextProps.openCoefficient ||
                 this.props.target !== nextProps.target ||
                 this.props.detections !== nextProps.detections)
         );
@@ -127,10 +127,10 @@ export class MovementHandler extends React.Component<
             );
             if (tooBright) {
                 this.tooBright = true;
-                this.props.setOpen(eyelidPosition.CLOSED);
+                this.openCoefficient = eyelidPosition.CLOSED;
             } else if (this.tooBright) {
                 this.tooBright = false;
-                this.props.setOpen(eyelidPosition.OPEN);
+                this.openCoefficient = eyelidPosition.OPEN;
             }
             this.setState({ dilationCoefficient: scaledPupilSize });
         }
@@ -139,14 +139,14 @@ export class MovementHandler extends React.Component<
     checkSelection() {
         if (this.squinting && Math.random() < 0.1) {
             this.squinting = false;
-            this.props.setOpen(eyelidPosition.OPEN);
+            this.openCoefficient = eyelidPosition.OPEN;
         }
 
         if (this.props.detections.length > 0) {
             this.wake();
 
             if (this.squinting) {
-                this.props.setOpen(eyelidPosition.OPEN);
+                this.openCoefficient = eyelidPosition.OPEN;
             }
 
             this.isNewTarget();
@@ -179,8 +179,8 @@ export class MovementHandler extends React.Component<
                 this.props.target,
             );
 
-            if (leftEyeDist > maxMoveWithoutBlink) {
-                this.props.setOpen(eyelidPosition.CLOSED);
+            if (leftEyeDist > blinkConsts.movementThreshold) {
+                this.openCoefficient = eyelidPosition.CLOSED;
             }
         }
     }
@@ -201,7 +201,7 @@ export class MovementHandler extends React.Component<
             this.setState({
                 dilationCoefficient: pupilSizes.constricted,
             });
-            this.props.setOpen(eyelidPosition.SQUINT);
+            this.openCoefficient = eyelidPosition.SQUINT;
             this.props.setIdleTarget({ x: 0, y: 0 });
         }
     }
@@ -210,15 +210,15 @@ export class MovementHandler extends React.Component<
         if (this.sleepTimeout !== null) {
             clearTimeout(this.sleepTimeout);
             this.sleepTimeout = null;
-            this.props.setOpen(eyelidPosition.OPEN);
+            this.openCoefficient = eyelidPosition.OPEN;
         }
     }
 
     sleep() {
         if (this.sleepTimeout === null) {
             this.sleepTimeout = setTimeout(() => {
-                this.props.setOpen(eyelidPosition.CLOSED);
-            }, sleepDelay);
+                this.openCoefficient = eyelidPosition.CLOSED;
+            }, intervals.sleep);
         }
     }
 
@@ -229,6 +229,7 @@ export class MovementHandler extends React.Component<
                 height={this.props.height}
                 environment={this.props.environment}
                 dilation={this.state.dilationCoefficient}
+                openCoefficient={this.openCoefficient}
                 detected={this.personDetected}
             />
         );
@@ -236,17 +237,15 @@ export class MovementHandler extends React.Component<
 }
 
 const mapStateToProps = (state: IRootStore) => ({
-    fps: state.configStore.config.fps,
-    detections: state.detectionStore.detections,
+    fps: getFPS(state),
+    detections: getDetections(state),
     target: getTargets(state),
-    openCoefficient: state.detectionStore.eyesOpenCoefficient,
     images: state.videoStore.images,
     animation: state.detectionStore.animation,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => ({
     setIdleTarget: (coords: ICoords) => dispatch(setIdleTarget(coords)),
-    setOpen: (openCoefficient: number) => dispatch(setOpen(openCoefficient)),
 });
 
 export default connect(
