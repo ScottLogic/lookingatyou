@@ -22,6 +22,7 @@ import { ICoords } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
 import { analyseLight, naturalMovement } from '../eye/EyeUtils';
+import FadeInText from '../fadeIntext/FadeInText';
 
 interface IMovementProps {
     width: number;
@@ -43,6 +44,7 @@ interface IDispatchProps {
 
 interface IMovementState {
     dilationCoefficient: number;
+    showText: boolean;
 }
 
 export type MovementHandlerProps = IMovementProps &
@@ -67,6 +69,7 @@ export class MovementHandler extends React.Component<
 
         this.state = {
             dilationCoefficient: pupilSizes.neutral,
+            showText: false,
         };
 
         this.movementInterval = 0;
@@ -224,14 +227,74 @@ export class MovementHandler extends React.Component<
 
     render() {
         return (
-            <EyeController
-                width={this.props.width}
-                height={this.props.height}
-                environment={this.props.environment}
-                dilation={this.state.dilationCoefficient}
-                openCoefficient={this.openCoefficient}
-                detected={this.personDetected}
-            />
+            <>
+                <div>
+                    <div>
+                        <EyeController
+                            width={this.props.width / 2}
+                            height={this.props.height / 4}
+                            environment={this.props.environment}
+                            dilation={this.state.dilationCoefficient}
+                            detected={this.personDetected}
+                        />
+                        <EyeController
+                            width={this.props.width / 2}
+                            height={this.props.height / 4}
+                            environment={this.props.environment}
+                            dilation={this.state.dilationCoefficient}
+                            detected={this.personDetected}
+                        />
+                        <EyeController
+                            width={this.props.width / 2}
+                            height={this.props.height / 4}
+                            environment={this.props.environment}
+                            dilation={this.state.dilationCoefficient}
+                            detected={this.personDetected}
+                        />
+                        <EyeController
+                            width={this.props.width / 2}
+                            height={this.props.height / 4}
+                            environment={this.props.environment}
+                            dilation={this.state.dilationCoefficient}
+                            detected={this.personDetected}
+                        />
+                    </div>
+                    <div>
+                        <EyeController
+                            width={this.props.width / 2}
+                            height={this.props.height / 4}
+                            environment={this.props.environment}
+                            dilation={this.state.dilationCoefficient}
+                            detected={this.personDetected}
+                        />
+                        <EyeController
+                            width={this.props.width / 2}
+                            height={this.props.height / 4}
+                            environment={this.props.environment}
+                            dilation={this.state.dilationCoefficient}
+                            detected={this.personDetected}
+                        />
+                        <EyeController
+                            width={this.props.width / 2}
+                            height={this.props.height / 4}
+                            environment={this.props.environment}
+                            dilation={this.state.dilationCoefficient}
+                            detected={this.personDetected}
+                        />
+                        <EyeController
+                            width={this.props.width / 2}
+                            height={this.props.height / 4}
+                            environment={this.props.environment}
+                            dilation={this.state.dilationCoefficient}
+                            detected={this.personDetected}
+                        />
+                    </div>
+                </div>
+                <FadeInText
+                    text={'I WANT TO PLAY A GAME'}
+                    show={this.state.showText}
+                />
+            </>
         );
     }
 }

@@ -102,7 +102,6 @@ export class App extends React.Component<AppProps, IAppState> {
                         No webcam connected. Please connect a webcam.
                     </div>
                 )}
-
                 <ConfigMenuElement window={this.props.environment.window} />
             </div>
         );
