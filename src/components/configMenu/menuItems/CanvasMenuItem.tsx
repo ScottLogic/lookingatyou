@@ -69,7 +69,9 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
         const focusedPose = this.keypoints;
         const detections = this.props.detections;
 
-        this.handleDrawing(video, detections, focusedPose);
+        if (video) {
+            this.handleDrawing(video, detections, focusedPose);
+        }
     }
 
     render() {

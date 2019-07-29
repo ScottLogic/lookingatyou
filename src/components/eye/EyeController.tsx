@@ -148,20 +148,17 @@ export const EyeController = React.memo(
         }
 
         const calculatedEyesOpenCoefficient =
-            props.animation.length > 0 &&
-            props.animation[0].openCoefficient !== undefined
+            props.animation.length > 0 && props.animation[0].openCoefficient
                 ? props.animation[0].openCoefficient
                 : getEyesOpenCoefficient();
 
         const dilatedCoefficient =
-            props.animation.length > 0 &&
-            props.animation[0].dilation !== undefined
+            props.animation.length > 0 && props.animation[0].dilation
                 ? props.animation[0].dilation
                 : props.dilation;
 
         const irisColor =
-            props.animation.length > 0 &&
-            props.animation[0].irisColour !== undefined
+            props.animation.length > 0 && props.animation[0].irisColour
                 ? props.animation[0].irisColour
                 : props.config.irisColor;
 
