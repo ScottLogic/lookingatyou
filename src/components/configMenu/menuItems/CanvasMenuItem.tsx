@@ -110,6 +110,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
     ) {
         if (this.props.selection && detections && canvasCtx) {
             detections
+                .filter(detection => detection.info.keypoints !== focusedPose)
                 .map(detection => detection.info.keypoints)
                 .forEach(keypointSet => {
                     if (noMatchingPoint(keypointSet, this.keypoints)) {
