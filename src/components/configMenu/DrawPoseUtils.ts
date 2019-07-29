@@ -1,9 +1,5 @@
 import { getAdjacentKeyPoints, Keypoint } from '@tensorflow-models/posenet';
-import {
-    canvasLineWidth,
-    canvasScale,
-    minConfidence,
-} from '../../AppConstants';
+import { debugFeedConsts } from '../../AppConstants';
 
 interface ITuple {
     y: number;
@@ -29,7 +25,7 @@ function drawSegment(
     ctx.beginPath();
     ctx.moveTo(pair1.x * scale, pair1.y * scale);
     ctx.lineTo(pair2.x * scale, pair2.y * scale);
-    ctx.lineWidth = canvasLineWidth;
+    ctx.lineWidth = debugFeedConsts.lineWidth;
     ctx.strokeStyle = color;
     ctx.stroke();
 }
@@ -39,14 +35,17 @@ function drawSkeleton(
     canvasCtx: CanvasRenderingContext2D,
     colour: string,
 ) {
-    const adjacentKeyPoints = getAdjacentKeyPoints(keypoints, minConfidence);
+    const adjacentKeyPoints = getAdjacentKeyPoints(
+        keypoints,
+        debugFeedConsts.minConfidence,
+    );
 
     adjacentKeyPoints.forEach(keypoint => {
         drawSegment(
             keypoint[0].position,
             keypoint[1].position,
             colour,
-            canvasScale,
+            debugFeedConsts.canvasScale,
             canvasCtx,
         );
     });
@@ -58,9 +57,15 @@ function drawKeypoints(
     colour: string,
 ) {
     for (const keypoint of keypoints) {
-        if (keypoint.score >= minConfidence) {
+        if (keypoint.score >= debugFeedConsts.minConfidence) {
             const { y, x } = keypoint.position;
-            drawPoint(ctx, y * canvasScale, x * canvasScale, 6, colour);
+            drawPoint(
+                ctx,
+                y * debugFeedConsts.canvasScale,
+                x * debugFeedConsts.canvasScale,
+                6,
+                colour,
+            );
         }
     }
 }

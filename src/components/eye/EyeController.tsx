@@ -3,10 +3,10 @@ import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
+    blinkConsts,
     eyelidPosition,
     EyeSide,
-    neutralBlinkFrequency,
-    transitionTime,
+    transitionTimes,
 } from '../../AppConstants';
 import { IConfigState } from '../../store/actions/config/types';
 import { setAnimation } from '../../store/actions/detections/actions';
@@ -64,14 +64,14 @@ export const EyeController = React.memo(
                         setIsBlinking(false);
                     } else {
                         const blinkFrequency = props.detected
-                            ? neutralBlinkFrequency / 4
-                            : neutralBlinkFrequency;
+                            ? blinkConsts.frequency / 4
+                            : blinkConsts.frequency;
                         const blinkProbability =
                             (blinkFrequency * blinkFrequencyCoefficient) /
-                            (1000 / transitionTime.blink);
+                            (1000 / transitionTimes.blink);
                         setIsBlinking(Math.random() < blinkProbability);
                     }
-                }, transitionTime.blink);
+                }, transitionTimes.blink);
                 return () => {
                     environment.clearInterval(blink);
                     blink = 0;

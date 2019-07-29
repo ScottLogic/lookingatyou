@@ -1,11 +1,7 @@
 import { load, PoseNet } from '@tensorflow-models/posenet';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import {
-    EyeSide,
-    maxTargetInterval,
-    minTargetInterval,
-} from '../../../AppConstants';
+import { EyeSide, targetingConsts } from '../../../AppConstants';
 import { Detections, IDetection } from '../../../models/objectDetection';
 import { Animation, animationMapping } from '../../../utils/pose/animations';
 import { getPose } from '../../../utils/pose/poseDetection';
@@ -153,8 +149,9 @@ export function setDetectionsAndMaybeSwapTarget(
             );
             const nextTargetSwapTime =
                 now +
-                minTargetInterval +
-                (maxTargetInterval - minTargetInterval) * Math.random();
+                targetingConsts.minInterval +
+                (targetingConsts.maxInterval - targetingConsts.minInterval) *
+                    Math.random();
             dispatch(
                 swapSelection(
                     detections.length > 0

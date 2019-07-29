@@ -1,5 +1,5 @@
 import { PoseNet } from '@tensorflow-models/posenet';
-import { eyelidPosition, maxNumTargetsToConsider } from '../../AppConstants';
+import { eyelidPosition, targetingConsts } from '../../AppConstants';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import {
@@ -76,7 +76,7 @@ function setDetections(
 ): IDetectionState {
     const payload = action.payload as ISetDetectionsActionPayload;
     const newHistory = [...state.history];
-    if (state.history.length >= maxNumTargetsToConsider) {
+    if (state.history.length >= targetingConsts.maxNum) {
         newHistory.shift();
     }
     newHistory.push({

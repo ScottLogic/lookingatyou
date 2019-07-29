@@ -1,6 +1,6 @@
 import { Keypoint } from '@tensorflow-models/posenet';
 import convert from 'color-convert';
-import { bodyParts, xOffset, yOffset } from '../../AppConstants';
+import { bodyParts, colourCheckConsts } from '../../AppConstants';
 import { Detections, IDetection } from '../../models/objectDetection';
 import calculateTargetPos, {
     calculateNormalisedPos,
@@ -149,12 +149,12 @@ export function closerToColour(
 
     const x1Start = getXStart(keypoints1);
     const x2Start = getXStart(keypoints2);
-    const x1End = x1Start + xOffset;
-    const x2End = x2Start + xOffset;
+    const x1End = x1Start + colourCheckConsts.xOffset;
+    const x2End = x2Start + colourCheckConsts.xOffset;
     const y1Start = getYStart(keypoints1);
     const y2Start = getYStart(keypoints2);
-    const y1End = y1Start + yOffset;
-    const y2End = y2Start + yOffset;
+    const y1End = y1Start + colourCheckConsts.yOffset;
+    const y2End = y2Start + colourCheckConsts.yOffset;
 
     const box1AvgColour = getAvgColour(
         x1Start,
@@ -205,7 +205,9 @@ export function getYStart(keypoints: Keypoint[]) {
     const rightShoulder = keypoints.find(
         keypoint => keypoint.part === bodyParts.RIGHT_SHOULDER,
     );
-    return rightShoulder ? Math.round(rightShoulder.position.y) + yOffset : 0;
+    return rightShoulder
+        ? Math.round(rightShoulder.position.y) + colourCheckConsts.yOffset
+        : 0;
 }
 
 export function closerToPrediction(
