@@ -5,6 +5,7 @@ import tinycolor from 'tinycolor2';
 import { fisheyeConsts } from '../../../AppConstants';
 import { IDetection } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
+import { getFPS } from '../../../store/selectors/configSelectors';
 import { getSelections } from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
 import { Bbox } from '../../../utils/types';
@@ -266,11 +267,11 @@ function getCrop(selection: Bbox, image: HTMLVideoElement) {
 
 const mapStateToProps = (state: IRootStore): IInnerEyeMapStateToProps => ({
     image: getVideos(state)[0],
-    fps: state.configStore.config.fps,
+    fps: getFPS(state),
     selection: getSelections(state),
-    showReflection: state.configStore.config.toggleReflection,
-    reflectionOpacity: state.configStore.config.toggleReflection
-        ? state.configStore.config.reflectionOpacity
+    showReflection: state.configStore.toggleReflection,
+    reflectionOpacity: state.configStore.toggleReflection
+        ? state.configStore.reflectionOpacity
         : 1,
 });
 

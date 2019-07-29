@@ -1,4 +1,4 @@
-import * as posenet from '@tensorflow-models/posenet';
+import { load, PoseNet } from '@tensorflow-models/posenet';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import {
@@ -15,6 +15,7 @@ import {
     reshapeDetections,
 } from '../../../utils/utils';
 import { IRootStore } from '../../reducers/rootReducer';
+import { getConfig, getFPS } from '../../selectors/configSelectors';
 import {
     getColour,
     getDetections,
@@ -38,7 +39,7 @@ import {
     SWAP_SELECTION,
 } from './types';
 
-export function setModel(model: posenet.PoseNet | null): ISetModelAction {
+export function setModel(model: PoseNet | null): ISetModelAction {
     return {
         type: SET_MODEL,
         payload: model,
@@ -46,9 +47,13 @@ export function setModel(model: posenet.PoseNet | null): ISetModelAction {
 }
 
 export function loadModel(document: Document) {
-    return async (dispatch: ThunkDispatch<IRootStore, void, Action>) => {
+    return async (
+        dispatch: ThunkDispatch<IRootStore, void, Action>,
+        getState: () => IRootStore,
+    ) => {
         dispatch(setModel(null));
-        const model = await posenet.load();
+        const config = getConfig(getState());
+        const model = await load(config.modelConfig);
         dispatch(setModel(model));
         dispatch(restartDetection(document));
     };
@@ -63,7 +68,7 @@ export function restartDetection(document: Document) {
         clearInterval(state.detectionStore.detectionInterval);
         const id = setInterval(
             () => dispatch(handleDetection(document)),
-            1000 / state.configStore.config.fps,
+            1000 / getFPS(state),
         );
         dispatch({ type: 'SET_INTERVAL', payload: id });
     };
@@ -78,6 +83,7 @@ export function handleDetection(document: Document) {
             const state = getState();
             const videos = getVideos(state);
             const model = state.detectionStore.model;
+            const detectionConfig = getConfig(state).detectionConfig;
 
             if (!videos[0] || !model) {
                 return;
@@ -91,6 +97,7 @@ export function handleDetection(document: Document) {
             if (leftImage && model) {
                 const leftDetections = await model.estimateMultiplePoses(
                     leftImage,
+                    detectionConfig,
                 );
                 left = reshapeDetections(leftDetections);
             }

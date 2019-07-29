@@ -1,11 +1,11 @@
 import React from 'react';
-import { ISetConfigPayload } from '../../../store/actions/config/types';
+import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 
 export interface IDropDownMenuItemProps {
     name: string;
     configName: string;
-    onInputChange: (payload: ISetConfigPayload) => void;
+    onInputChange: (payload: PartialConfig) => void;
     values: string[];
     defaultValue: string;
     helpWith: HelpWith;
@@ -15,7 +15,7 @@ const DropDownMenuItem = React.memo(
     (props: IDropDownMenuItemProps) => {
         function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
             props.onInputChange({
-                partialConfig: { [props.configName]: event.target.value },
+                [props.configName]: event.target.value,
             });
         }
 
@@ -32,7 +32,12 @@ const DropDownMenuItem = React.memo(
             </div>
         );
     },
-    (previous, next) => previous.defaultValue === next.defaultValue,
+    (previous, next) =>
+        previous.defaultValue === next.defaultValue &&
+        previous.values.length === next.values.length &&
+        previous.values.every(
+            (element, index) => element === next.values[index],
+        ),
 );
 
 export default DropDownMenuItem;

@@ -8,6 +8,7 @@ import {
     neutralBlinkFrequency,
     transitionTime,
 } from '../../AppConstants';
+import { IConfigState } from '../../store/actions/config/types';
 import { setAnimation } from '../../store/actions/detections/actions';
 import { ISetAnimationAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
@@ -19,7 +20,6 @@ import {
 import { getVideos } from '../../store/selectors/videoSelectors';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
-import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
 import { getMaxDisplacement } from './EyeUtils';
 import { Gradients } from './Gradients';
@@ -34,7 +34,7 @@ interface IEyeControllerProps {
 }
 
 interface IEyeControllerMapStateToProps {
-    config: IUserConfig;
+    config: IConfigState;
     target: ICoords;
     videos: Array<HTMLVideoElement | undefined>;
     openCoefficient: number;
