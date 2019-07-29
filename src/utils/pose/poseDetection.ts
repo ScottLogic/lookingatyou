@@ -18,47 +18,51 @@ export function getPose(selection: IDetection): string | undefined {
 
 function leftWave(selection: IDetection) {
     const keypoints = selection.info.keypoints;
-    return wave(
-        keypoints,
-        partIds.rightWrist,
-        partIds.rightEye,
-        partIds.leftWrist,
-        partIds.leftEye,
-    );
+
+    const rightWrist = keypoints[partIds.rightWrist];
+    const rightEye = keypoints[partIds.rightEye];
+    const leftWrist = keypoints[partIds.leftWrist];
+    const leftEye = keypoints[partIds.leftEye];
+
+    return wave(rightWrist, rightEye, leftWrist, leftEye);
 }
 
 function rightWave(selection: IDetection) {
     const keypoints = selection.info.keypoints;
-    return wave(
-        keypoints,
-        partIds.leftWrist,
-        partIds.leftEye,
-        partIds.rightWrist,
-        partIds.rightEye,
-    );
+
+    const rightWrist = keypoints[partIds.rightWrist];
+    const rightEye = keypoints[partIds.rightEye];
+    const leftWrist = keypoints[partIds.leftWrist];
+    const leftEye = keypoints[partIds.leftEye];
+
+    return wave(leftWrist, leftEye, rightWrist, rightEye);
 }
 
 function wave(
-    keypoints: Keypoint[],
-    waveWrist: number,
-    waveEye: number,
-    stationaryWrist: number,
-    stationaryEye: number,
+    waveWrist: Keypoint,
+    waveEye: Keypoint,
+    stationaryWrist: Keypoint,
+    stationaryEye: Keypoint,
 ) {
     return (
-        keypoints[waveWrist].position.y > keypoints[waveEye].position.y &&
-        keypoints[stationaryWrist].position.y <
-            keypoints[stationaryEye].position.y
+        checkKeypoints(waveWrist, waveEye, stationaryEye, stationaryWrist) &&
+        (waveWrist.position.y > waveEye.position.y &&
+            stationaryWrist.position.y < stationaryEye.position.y)
     );
 }
 
 function handsUp(selection: IDetection) {
     const keypoints = selection.info.keypoints;
+
+    const rightWrist = keypoints[partIds.rightWrist];
+    const rightEye = keypoints[partIds.rightEye];
+    const leftWrist = keypoints[partIds.leftWrist];
+    const leftEye = keypoints[partIds.leftEye];
+
     return (
-        keypoints[partIds.rightWrist].position.y <
-            keypoints[partIds.rightEye].position.y &&
-        keypoints[partIds.leftWrist].position.y <
-            keypoints[partIds.leftEye].position.y
+        checkKeypoints(leftEye, leftWrist, rightEye, rightWrist) &&
+        rightWrist.position.y < rightEye.position.y &&
+        leftWrist.position.y < leftEye.position.y
     );
 }
 
@@ -72,16 +76,16 @@ function armsOutToSide(selection: IDetection) {
     const leftElbow = keypoints[partIds.leftElbow];
     const leftShoulder = keypoints[partIds.leftShoulder];
 
-    const points = [
-        leftElbow,
-        leftShoulder,
-        leftWrist,
-        rightWrist,
-        rightElbow,
-        rightShoulder,
-    ];
-
-    if (!checkKeypoints(points)) {
+    if (
+        !checkKeypoints(
+            leftElbow,
+            leftShoulder,
+            leftWrist,
+            rightWrist,
+            rightElbow,
+            rightShoulder,
+        )
+    ) {
         return false;
     }
 
@@ -132,9 +136,15 @@ function checkRightDab(keypoints: Keypoint[]): boolean {
     const rightElbow = keypoints[partIds.rightElbow];
     const rightShoulder = keypoints[partIds.rightShoulder];
 
-    const points = [leftWrist, rightEye, rightWrist, rightElbow, rightShoulder];
-
-    if (!checkKeypoints(points)) {
+    if (
+        !checkKeypoints(
+            leftWrist,
+            rightEye,
+            rightWrist,
+            rightElbow,
+            rightShoulder,
+        )
+    ) {
         return false;
     }
 
@@ -163,9 +173,9 @@ function checkLeftDab(keypoints: Keypoint[]): boolean {
     const leftElbow = keypoints[partIds.leftElbow];
     const leftShoulder = keypoints[partIds.leftShoulder];
 
-    const points = [leftWrist, leftEye, rightWrist, leftShoulder, leftElbow];
-
-    if (!checkKeypoints(points)) {
+    if (
+        !checkKeypoints(leftWrist, leftEye, rightWrist, leftShoulder, leftElbow)
+    ) {
         return false;
     }
 
@@ -194,12 +204,6 @@ function armPointingUp(wrist: Keypoint, elbow: Keypoint, shoulder: Keypoint) {
     );
 }
 
-function checkKeypoints(points: Keypoint[]): boolean {
-    for (const point of points) {
-        if (point.score < minConfidence) {
-            return false;
-        }
-    }
-
-    return true;
+function checkKeypoints(...points: Keypoint[]): boolean {
+    return !points.some(point => point.score < minConfidence);
 }
