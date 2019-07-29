@@ -7,7 +7,7 @@ interface IAnimationFrame {
         | number
         | { [EyeSide.LEFT]: number; [EyeSide.RIGHT]: number };
     dilation?: number;
-    irisColour?: string;
+    irisColor?: string;
     duration: number;
 }
 
@@ -105,7 +105,7 @@ export function dab(): Animation {
                 x: Math.random() * 2 - 1,
                 y: Math.random() * 2 - 1,
             },
-            irisColour: '#' + (((1 << 24) * Math.random()) | 0).toString(16),
+            irisColor: '#' + (((1 << 24) * Math.random()) | 0).toString(16),
             duration: 150,
             openCoefficient:
                 eyelidPosition.OPEN + (eyelidPosition.OPEN * i) / 20,

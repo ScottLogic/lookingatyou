@@ -158,8 +158,8 @@ export const EyeController = React.memo(
                 : props.dilation;
 
         const irisColor =
-            props.animation.length > 0 && props.animation[0].irisColour
-                ? props.animation[0].irisColour
+            props.animation.length > 0 && props.animation[0].irisColor
+                ? props.animation[0].irisColor
                 : props.config.irisColor;
 
         return (
@@ -202,7 +202,7 @@ export const EyeController = React.memo(
                     );
                 })}
                 <Gradients
-                    irisColor={props.config.irisColor}
+                    irisColor={irisColor}
                     reflectionOpacity={props.config.reflectionOpacity}
                 />
                 <Shadows openCoefficient={props.openCoefficient} />
