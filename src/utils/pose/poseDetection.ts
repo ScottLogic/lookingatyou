@@ -195,11 +195,11 @@ function armPointingUp(wrist: Keypoint, elbow: Keypoint, shoulder: Keypoint) {
 }
 
 function checkKeypoints(points: Keypoint[]): boolean {
-    points.forEach(point => {
+    for (const point of points) {
         if (point.score < minConfidence) {
             return false;
         }
-    });
+    }
 
     return true;
 }
