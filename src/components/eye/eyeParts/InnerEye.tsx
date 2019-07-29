@@ -122,7 +122,11 @@ export const InnerEye = React.memo(
                     <circle
                         className={'pupil'}
                         r={props.pupilRadius}
-                        fill={'url(#pupilGradient)'}
+                        fill={
+                            props.showReflection
+                                ? 'url(#pupilGradient)'
+                                : 'black'
+                        }
                         stroke={'black'}
                         strokeWidth={'2'}
                     />
