@@ -95,10 +95,9 @@ export const EyeController = React.memo(
                 return () => environment.clearTimeout(timer);
             }
         }, [animation, updateAnimation, environment]);
-
-        const scleraRadius = props.width / 4.5;
-        const irisRadius = props.width / 10;
-        const pupilRadius = props.width / 24;
+        const scleraRadius = Math.floor(props.width / 4.5);
+        const irisRadius = Math.floor(props.width / 10);
+        const pupilRadius = Math.floor(props.width / 24);
 
         const getEyeCoords = (target: ICoords): ICoords => {
             const maxDisplacement = getMaxDisplacement(
