@@ -3,12 +3,12 @@ import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import tinycolor from 'tinycolor2';
 import { fisheyeConsts } from '../../../AppConstants';
-import { IDetection } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import { getFPS } from '../../../store/selectors/configSelectors';
-import { getSelections } from '../../../store/selectors/detectionSelectors';
+import { getTargets } from '../../../store/selectors/detectionSelectors';
 import { getVideos } from '../../../store/selectors/videoSelectors';
-import { Bbox } from '../../../utils/types';
+import { normalise } from '../../../utils/objectTracking/calculateFocus';
+import { ICoords } from '../../../utils/types';
 import { getIrisAdjustment } from '../EyeUtils';
 
 interface IInnerEyeProps {
@@ -29,7 +29,7 @@ interface IInnerEyeMapStateToProps {
     image: HTMLVideoElement | undefined;
     fps: number;
     showReflection: boolean;
-    selection: IDetection | undefined;
+    target: ICoords;
     reflectionOpacity: number;
 }
 
@@ -62,11 +62,11 @@ export const InnerEye = React.memo(
                 const canvas = canvasRef.current;
                 if (canvas && props.image) {
                     const ctx = canvas.getContext('2d');
-                    if (ctx && props.selection) {
+                    if (ctx && props.target) {
                         drawReflection(
                             ctx,
                             props.pupilRadius,
-                            props.selection.bbox,
+                            props.target,
                             props.image,
                         );
                     }
@@ -75,7 +75,7 @@ export const InnerEye = React.memo(
         }, [
             props.image,
             props.pupilRadius,
-            props.selection,
+            props.target,
             props.showReflection,
         ]);
 
@@ -160,7 +160,7 @@ export const InnerEye = React.memo(
 function drawReflection(
     ctx: CanvasRenderingContext2D,
     radius: number,
-    selection: Bbox,
+    target: ICoords,
     image: HTMLVideoElement,
 ) {
     ctx.save();
@@ -168,7 +168,7 @@ function drawReflection(
     ctx.arc(radius, radius, radius, 0, Math.PI * 2, true);
     ctx.closePath();
     ctx.clip();
-    const crop = getCrop(selection, image);
+    const crop = getCrop(target, image);
     ctx.scale(-1, 1);
     ctx.filter = 'blur(1px)';
     const diameter = radius * 2;
@@ -240,35 +240,26 @@ function fisheye(
     return dstpixels;
 }
 
-function getCrop(selection: Bbox, image: HTMLVideoElement) {
-    if (selection) {
-        const boxSize = image.width * 0.4;
-        let sx = selection[0] + selection[2] / 2 - boxSize / 2;
-        let sy = selection[1] + selection[3] / 2 - boxSize / 2;
-        sx = Math.min(sx, image.width - boxSize);
-        sx = Math.max(sx, 0);
-        sy = Math.min(sy, image.height - boxSize);
-        sy = Math.max(sy, 0);
-        return {
-            sx,
-            sy,
-            sWidth: boxSize,
-            sHeight: boxSize,
-        };
-    } else {
-        return {
-            sx: 0,
-            sy: 0,
-            sWidth: 1,
-            sHeight: 1,
-        };
-    }
+function getCrop(target: ICoords, image: HTMLVideoElement) {
+    const boxSize = image.width * 0.4;
+    let sx = normalise(target.x, 1, -1, image.width, 0) - boxSize / 2;
+    let sy = normalise(target.y, 1, -1, image.height, 0) - boxSize / 2;
+    sx = Math.min(sx, image.width - boxSize);
+    sx = Math.max(sx, 0);
+    sy = Math.min(sy, image.height - boxSize);
+    sy = Math.max(sy, 0);
+    return {
+        sx,
+        sy,
+        sWidth: boxSize,
+        sHeight: boxSize,
+    };
 }
 
 const mapStateToProps = (state: IRootStore): IInnerEyeMapStateToProps => ({
     image: getVideos(state)[0],
     fps: getFPS(state),
-    selection: getSelections(state),
+    target: getTargets(state),
     showReflection: state.configStore.toggleReflection,
     reflectionOpacity: state.configStore.toggleReflection
         ? state.configStore.reflectionOpacity
