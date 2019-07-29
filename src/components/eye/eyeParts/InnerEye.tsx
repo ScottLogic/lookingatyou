@@ -100,7 +100,7 @@ export const InnerEye = React.memo(
                     />
                 </g>
                 <ellipse
-                    className={'innerReflection'}
+                    className={'innerShine'}
                     rx={props.pupilRadius * 0.375}
                     ry={props.pupilRadius * 0.75}
                     fill={'url(#shineGradient)'}
@@ -109,7 +109,7 @@ export const InnerEye = React.memo(
                     },${-props.pupilRadius * 0.5})`}
                 />
                 <ellipse
-                    className={'outerReflection'}
+                    className={'outerShine'}
                     rx={props.pupilRadius * 0.5}
                     ry={props.pupilRadius}
                     fill={'url(#shineGradient)'}

@@ -24,7 +24,7 @@ export interface IEyeProps {
         scaledXcontrolOffset: number;
         scaledYcontrolOffset: number;
     };
-    eyeCoords: {
+    eyeShape: {
         leftX: number;
         rightX: number;
         middleY: number;
@@ -69,13 +69,13 @@ export default function Eye(props: IEyeProps) {
             />
             <Eyelids
                 transitionStyle={eyelidTransitionStyle}
-                eyeCoords={props.eyeCoords}
+                eyeShape={props.eyeShape}
                 cornerShape={cornerShape}
                 bezier={props.bezier}
                 scleraRadius={props.scleraRadius}
             />
             <BlackFill
-                leftX={props.eyeCoords.leftX}
+                leftX={props.eyeShape.leftX}
                 scleraRadius={props.scleraRadius}
                 height={props.height}
                 width={props.width}

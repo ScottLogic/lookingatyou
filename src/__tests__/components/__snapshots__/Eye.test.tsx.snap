@@ -9,8 +9,13 @@ exports[`Eye should render correctly 1`] = `
   <Memo() leftX={25} scleraRadius={100} height={500} width={500} />
 =======
   <Connect(Component) irisRadius={50} irisColor=\\"blue\\" innerY={250} innerX={250} innerPath={[undefined]} irisAdjustment={[undefined]} pupilRadius={20} pupilColor=\\"black\\" dilatedCoefficient={1} scleraRadius={100} width={500} height={500} reflection={[undefined]} />
+<<<<<<< HEAD
   <Memo() transitionStyle={{...}} eyeCoords={[undefined]} cornerShape={{...}} bezier={[undefined]} scleraRadius={100} />
   <Memo() eyeCoords={[undefined]} scleraRadius={100} height={500} width={500} />
 >>>>>>> pulled functionality into EyeController
+=======
+  <Memo() transitionStyle={{...}} eyeShape={[undefined]} cornerShape={{...}} bezier={[undefined]} scleraRadius={100} />
+  <Memo() eyeShape={[undefined]} scleraRadius={100} height={500} width={500} />
+>>>>>>> tidied up EyeController
 </svg>"
 `;
