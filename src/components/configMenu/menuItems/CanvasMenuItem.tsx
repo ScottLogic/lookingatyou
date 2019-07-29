@@ -1,10 +1,7 @@
 import { Keypoint } from '@tensorflow-models/posenet';
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-    chosenTargetColour,
-    nonChosenTargetColour,
-} from '../../../AppConstants';
+import { debugFeedColors } from '../../../AppConstants';
 import { Detections, IDetection } from '../../../models/objectDetection';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import {
@@ -62,14 +59,14 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
     }
 
     getStream() {
-        const video = this.props.videos[
-            this.props.videoIndex
-        ] as HTMLVideoElement;
+        const video = this.props.videos[this.props.videoIndex];
 
         const focusedPose = this.keypoints;
         const detections = this.props.detections;
 
-        this.handleDrawing(video, detections, focusedPose);
+        if (video) {
+            this.handleDrawing(video, detections, focusedPose);
+        }
     }
 
     render() {
@@ -114,10 +111,10 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
                 .map(detection => detection.info.keypoints)
                 .forEach(keypointSet => {
                     if (noMatchingPoint(keypointSet, this.keypoints)) {
-                        drawPose(keypointSet, canvasCtx, nonChosenTargetColour);
+                        drawPose(keypointSet, canvasCtx, debugFeedColors.other);
                     }
                 });
-            drawPose(focusedPose, canvasCtx, chosenTargetColour);
+            drawPose(focusedPose, canvasCtx, debugFeedColors.chosen);
         }
     }
 

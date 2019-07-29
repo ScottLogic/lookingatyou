@@ -1,4 +1,4 @@
-import { eyelidPosition, EyeSide, Pose } from '../../AppConstants';
+import { eyelidPosition, EyeSide, Pose, pupilSizes } from '../../AppConstants';
 import { ICoords } from '../types';
 
 interface IAnimationFrame {
@@ -7,25 +7,45 @@ interface IAnimationFrame {
         | number
         | { [EyeSide.LEFT]: number; [EyeSide.RIGHT]: number };
     dilation?: number;
+    irisColor?: string;
     duration: number;
 }
 
 export type Animation = IAnimationFrame[];
 
 export const animationMapping: { [key: string]: () => Animation } = {
-    [Pose.WAVE]: wink,
+    [Pose.LEFT_WAVE]: leftWink,
+    [Pose.RIGHT_WAVE]: rightWink,
     [Pose.HANDS_UP]: rollEyes,
+    [Pose.ARMS_OUT]: shock,
+    [Pose.DAB]: dab,
 };
 
-export function wink(): Animation {
-    return [
-        {
-            openCoefficient: {
-                [EyeSide.LEFT]: eyelidPosition.CLOSED,
-                [EyeSide.RIGHT]: eyelidPosition.OPEN,
-            },
-            duration: 500,
+export function leftWink(): Animation {
+    const left = {
+        openCoefficient: {
+            [EyeSide.LEFT]: eyelidPosition.CLOSED,
+            [EyeSide.RIGHT]: eyelidPosition.OPEN,
         },
+        duration: 500,
+    };
+    return wink(left);
+}
+
+export function rightWink(): Animation {
+    const right = {
+        openCoefficient: {
+            [EyeSide.RIGHT]: eyelidPosition.CLOSED,
+            [EyeSide.LEFT]: eyelidPosition.OPEN,
+        },
+        duration: 500,
+    };
+    return wink(right);
+}
+
+function wink(animation: IAnimationFrame): Animation {
+    return [
+        animation,
         {
             openCoefficient: eyelidPosition.OPEN,
             duration: 500,
@@ -49,4 +69,47 @@ export function rollEyes(): Animation {
     }
 
     return path;
+}
+
+export function shock(): Animation {
+    const constricted = {
+        dilation: pupilSizes.constricted,
+        openCoefficient: eyelidPosition.SHOCKED,
+        duration: 100,
+    };
+
+    const dilated = {
+        dilation: pupilSizes.dilated,
+        openCoefficient: eyelidPosition.SQUINT,
+        duration: 100,
+    };
+
+    return [
+        {
+            dilation: pupilSizes.dilated,
+            openCoefficient: eyelidPosition.SQUINT,
+            duration: 500,
+        },
+        constricted,
+        dilated,
+        constricted,
+        dilated,
+    ];
+}
+
+export function dab(): Animation {
+    const animation = [];
+    for (let i = 0; i < 20; i++) {
+        animation.push({
+            coords: {
+                x: Math.random() * 2 - 1,
+                y: Math.random() * 2 - 1,
+            },
+            irisColor: '#' + (((1 << 24) * Math.random()) | 0).toString(16),
+            duration: 150,
+            openCoefficient:
+                eyelidPosition.OPEN + (eyelidPosition.OPEN * i) / 20,
+        });
+    }
+    return animation;
 }

@@ -6,6 +6,7 @@
 
 .BlackFill path {
     fill: black;
+    fill-rule: evenodd;
     stroke: black;
     stroke-width: 2;
 }

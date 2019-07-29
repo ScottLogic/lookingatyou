@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ISetConfigPayload } from '../../../store/actions/config/types';
+import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 
 export interface INumberMenuItemProps {
@@ -8,7 +8,7 @@ export interface INumberMenuItemProps {
     step: number;
     min?: number;
     max?: number;
-    onValidInput: (payload: ISetConfigPayload) => void;
+    onValidInput: (payload: PartialConfig) => void;
     defaultValue: number;
     helpWith: HelpWith;
 }
@@ -39,9 +39,7 @@ const NumberMenuItem = React.memo(
             if (newIsValid) {
                 setLastValidValue(newValue);
                 props.onValidInput({
-                    partialConfig: {
-                        [props.configName]: newValue,
-                    },
+                    [props.configName]: newValue,
                 });
             }
         }

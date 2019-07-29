@@ -3,11 +3,13 @@ import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
+    blinkConsts,
     eyelidPosition,
+    eyeRatio,
     EyeSide,
-    neutralBlinkFrequency,
-    transitionTime,
+    transitionTimes,
 } from '../../AppConstants';
+import { IConfigState } from '../../store/actions/config/types';
 import { setAnimation } from '../../store/actions/detections/actions';
 import { ISetAnimationAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
@@ -19,7 +21,6 @@ import {
 import { getVideos } from '../../store/selectors/videoSelectors';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
-import IUserConfig from '../configMenu/IUserConfig';
 import Eye from './Eye';
 import { getMaxDisplacement } from './EyeUtils';
 import { Gradients } from './Gradients';
@@ -34,7 +35,7 @@ interface IEyeControllerProps {
 }
 
 interface IEyeControllerMapStateToProps {
-    config: IUserConfig;
+    config: IConfigState;
     target: ICoords;
     videos: Array<HTMLVideoElement | undefined>;
     openCoefficient: number;
@@ -64,14 +65,14 @@ export const EyeController = React.memo(
                         setIsBlinking(false);
                     } else {
                         const blinkFrequency = props.detected
-                            ? neutralBlinkFrequency / 4
-                            : neutralBlinkFrequency;
+                            ? blinkConsts.frequency / 4
+                            : blinkConsts.frequency;
                         const blinkProbability =
                             (blinkFrequency * blinkFrequencyCoefficient) /
-                            (1000 / transitionTime.blink);
+                            (1000 / transitionTimes.blink);
                         setIsBlinking(Math.random() < blinkProbability);
                     }
-                }, transitionTime.blink);
+                }, transitionTimes.blink);
                 return () => {
                     environment.clearInterval(blink);
                     blink = 0;
@@ -96,9 +97,9 @@ export const EyeController = React.memo(
             }
         }, [animation, updateAnimation, environment]);
 
-        const scleraRadius = props.width / 4.5;
-        const irisRadius = props.width / 10;
-        const pupilRadius = props.width / 24;
+        const scleraRadius = props.width / eyeRatio.sclera;
+        const irisRadius = props.width / eyeRatio.iris;
+        const pupilRadius = props.width / eyeRatio.pupil;
 
         const getEyeCoords = (target: ICoords): ICoords => {
             const maxDisplacement = getMaxDisplacement(
@@ -148,16 +149,19 @@ export const EyeController = React.memo(
         }
 
         const calculatedEyesOpenCoefficient =
-            props.animation.length > 0 &&
-            props.animation[0].openCoefficient !== undefined
+            props.animation.length > 0 && props.animation[0].openCoefficient
                 ? props.animation[0].openCoefficient
                 : getEyesOpenCoefficient();
 
         const dilatedCoefficient =
-            props.animation.length > 0 &&
-            props.animation[0].dilation !== undefined
+            props.animation.length > 0 && props.animation[0].dilation
                 ? props.animation[0].dilation
                 : props.dilation;
+
+        const irisColor =
+            props.animation.length > 0 && props.animation[0].irisColor
+                ? props.animation[0].irisColor
+                : props.config.irisColor;
 
         return (
             <div className="container">
@@ -184,7 +188,7 @@ export const EyeController = React.memo(
                             key={index}
                             width={props.width / 2}
                             height={props.height}
-                            irisColor={props.config.irisColor}
+                            irisColor={irisColor}
                             scleraRadius={scleraRadius}
                             irisRadius={irisRadius}
                             pupilRadius={pupilRadius}
@@ -199,7 +203,7 @@ export const EyeController = React.memo(
                     );
                 })}
                 <Gradients
-                    irisColor={props.config.irisColor}
+                    irisColor={irisColor}
                     reflectionOpacity={props.config.reflectionOpacity}
                 />
                 <Shadows openCoefficient={props.openCoefficient} />
@@ -234,7 +238,7 @@ export default connect(
     mapDispatchToProps,
 )(EyeController);
 
-function getBezier(scleraRadius: number, openCoefficient: number) {
+export function getBezier(scleraRadius: number, openCoefficient: number) {
     const curveConstant = 0.55228474983; // (4/3)tan(pi/8)
     const controlOffset = scleraRadius * curveConstant;
     const scaledYcontrolOffset = controlOffset * openCoefficient;
@@ -242,7 +246,7 @@ function getBezier(scleraRadius: number, openCoefficient: number) {
     return { controlOffset, scaledXcontrolOffset, scaledYcontrolOffset };
 }
 
-function getEyeCoordinates(
+export function getEyeCoordinates(
     width: number,
     height: number,
     scleraRadius: number,

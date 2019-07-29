@@ -74,14 +74,14 @@ When you first access the application, you will be asked for the permission to a
 
 When mouse movement is detected on the screen, the configuration menu will open where certain settings can be adjusted. Following options are currently available:
 
-| Option        | Description                                                                  |
-| ------------- | ---------------------------------------------------------------------------- |
-| FPS           | Sets the FPS for the object detection                                        |
-| X Sensitivity | X axis eyes sensitivity                                                      |
-| Y Sensitivity | Y axis eyes sensitivity                                                      |
-| Iris Colour   | Changes the colour of the Iris                                               |
-| Swap Eyes     | Available when two webcams are detected. Swaps the webcam input for the eyes |
-| Toggle Debug  | Displays the camera feed with bounding boxes                                 |
+| Option          | Description                                            |
+| --------------- | ------------------------------------------------------ |
+| FPS             | Sets the FPS for the object detection                  |
+| X Sensitivity   | X axis eyes sensitivity                                |
+| Y Sensitivity   | Y axis eyes sensitivity                                |
+| Iris Colour     | Changes the colour of the Iris                         |
+| Toggle Debug    | Displays the camera feed with all detected poses drawn |
+| Show Reflection | Draws the face of the selected target in the iris      |
 
 ## Testing
 
