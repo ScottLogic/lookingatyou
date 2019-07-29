@@ -14,10 +14,7 @@ import { setAnimation } from '../../store/actions/detections/actions';
 import { ISetAnimationAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
-import {
-    getOpenCoefficient,
-    getTargets,
-} from '../../store/selectors/detectionSelectors';
+import { getTargets } from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
@@ -32,13 +29,13 @@ interface IEyeControllerProps {
     environment: Window;
     dilation: number;
     detected: boolean;
+    openCoefficient: number;
 }
 
 interface IEyeControllerMapStateToProps {
     config: IConfigState;
     target: ICoords;
     videos: Array<HTMLVideoElement | undefined>;
-    openCoefficient: number;
     animation: Animation;
 }
 
@@ -222,7 +219,6 @@ const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     config: getConfig(state),
     target: getTargets(state),
     videos: getVideos(state),
-    openCoefficient: getOpenCoefficient(state),
     animation: state.detectionStore.animation,
 });
 
