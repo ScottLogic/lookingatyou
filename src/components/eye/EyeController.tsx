@@ -254,7 +254,7 @@ export const EyeController = React.memo(
         previous.target.y === next.target.y,
 );
 
-function getBezier(scleraRadius: number, openCoefficient: number) {
+export function getBezier(scleraRadius: number, openCoefficient: number) {
     const curveConstant = 0.55228474983; // (4/3)tan(pi/8)
     const controlOffset = scleraRadius * curveConstant;
     const scaledYcontrolOffset = controlOffset * openCoefficient;
@@ -262,7 +262,7 @@ function getBezier(scleraRadius: number, openCoefficient: number) {
     return { controlOffset, scaledXcontrolOffset, scaledYcontrolOffset };
 }
 
-function getEyeShape(
+export function getEyeShape(
     width: number,
     height: number,
     scleraRadius: number,
