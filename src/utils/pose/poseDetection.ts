@@ -1,5 +1,5 @@
 import { Keypoint, partIds } from '@tensorflow-models/posenet';
-import { minConfidence, Pose } from '../../AppConstants';
+import { minPoseConfidence, Pose } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 
 interface IPoseKeypoints {
@@ -205,5 +205,5 @@ function armPointingUp(wrist: Keypoint, elbow: Keypoint, shoulder: Keypoint) {
 }
 
 function checkKeypoints(...points: Keypoint[]): boolean {
-    return !points.some(point => point.score < minConfidence);
+    return !points.some(point => point.score < minPoseConfidence);
 }
