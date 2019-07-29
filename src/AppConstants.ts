@@ -9,6 +9,12 @@ export enum Pose {
     ARMS_OUT = 'ARMS_OUT',
     DAB = 'DAB',
 }
+export const eyeRatio = {
+    sclera: 4.5,
+    iris: 10,
+    pupil: 24,
+};
+
 export const eyelidPosition = {
     OPEN: 0.45,
     CLOSED: 0,

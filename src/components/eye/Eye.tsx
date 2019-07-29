@@ -5,7 +5,7 @@ import { BlackFill } from './eyeParts/BlackFill';
 import { Eyelids } from './eyeParts/Eyelids';
 import InnerEye from './eyeParts/InnerEye';
 import { Sclera } from './eyeParts/Sclera';
-import { getInnerPath } from './getInnerPath';
+import { generateInnerPath } from './EyeUtils';
 
 export interface IEyeProps {
     class: EyeSide;
@@ -37,17 +37,16 @@ export interface IEyeProps {
 const pupilColor = 'black';
 
 export default function Eye(props: IEyeProps) {
+    const cornerShape = getCornerShape(props);
+    const [innerPath, setInnerPath] = useState();
     const eyelidTransitionStyle = {
         transition: `d ${transitionTimes.blink}ms`,
     };
-    const cornerShape = getCornerShape(props);
-
-    const scaledResolution = props.width / 960;
-    const [innerPath, setInnerPath] = useState(getInnerPath(scaledResolution));
 
     useEffect(() => {
-        setInnerPath(getInnerPath(scaledResolution));
-    }, [scaledResolution]);
+        const value = generateInnerPath(props.irisRadius, 100);
+        setInnerPath(value);
+    }, [props.irisRadius]);
 
     return (
         <svg className={props.class} width={props.width} height={props.height}>
@@ -77,7 +76,7 @@ export default function Eye(props: IEyeProps) {
                 scleraRadius={props.scleraRadius}
             />
             <BlackFill
-                eyeCoords={props.eyeCoords}
+                leftX={props.eyeCoords.leftX}
                 scleraRadius={props.scleraRadius}
                 height={props.height}
                 width={props.width}

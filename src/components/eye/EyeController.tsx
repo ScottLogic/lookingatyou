@@ -5,6 +5,7 @@ import { Dispatch } from 'redux';
 import {
     blinkConsts,
     eyelidPosition,
+    eyeRatio,
     EyeSide,
     transitionTimes,
 } from '../../AppConstants';
@@ -95,9 +96,10 @@ export const EyeController = React.memo(
                 return () => environment.clearTimeout(timer);
             }
         }, [animation, updateAnimation, environment]);
-        const scleraRadius = Math.floor(props.width / 4.5);
-        const irisRadius = Math.floor(props.width / 10);
-        const pupilRadius = Math.floor(props.width / 24);
+
+        const scleraRadius = props.width / eyeRatio.sclera;
+        const irisRadius = props.width / eyeRatio.iris;
+        const pupilRadius = props.width / eyeRatio.pupil;
 
         const getEyeCoords = (target: ICoords): ICoords => {
             const maxDisplacement = getMaxDisplacement(
@@ -236,7 +238,7 @@ export default connect(
     mapDispatchToProps,
 )(EyeController);
 
-function getBezier(scleraRadius: number, openCoefficient: number) {
+export function getBezier(scleraRadius: number, openCoefficient: number) {
     const curveConstant = 0.55228474983; // (4/3)tan(pi/8)
     const controlOffset = scleraRadius * curveConstant;
     const scaledYcontrolOffset = controlOffset * openCoefficient;
@@ -244,7 +246,7 @@ function getBezier(scleraRadius: number, openCoefficient: number) {
     return { controlOffset, scaledXcontrolOffset, scaledYcontrolOffset };
 }
 
-function getEyeCoordinates(
+export function getEyeCoordinates(
     width: number,
     height: number,
     scleraRadius: number,
