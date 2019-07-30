@@ -40,11 +40,11 @@ export function naturalMovement(currentX: number, isMovingLeft: boolean) {
     const eyeBoundary = 1 - idleMovementConsts.sideBuffer;
 
     if (currentX === eyeCoords.middleX) {
-        return Math.random() < 0.1
+        return Math.random() < idleMovementConsts.moveCenterChance
             ? newEyePos(currentX, isMovingLeft)
             : { newX: currentX, isMovingLeft };
     } else if (currentX >= eyeBoundary) {
-        return Math.random() < 0.5
+        return Math.random() < idleMovementConsts.moveSideChance
             ? newEyePos(currentX, !isMovingLeft)
             : { newX: currentX, isMovingLeft };
     } else {

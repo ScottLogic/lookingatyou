@@ -41,6 +41,8 @@ export const eyeCoords = {
     middleY: 0,
 };
 export const idleMovementConsts = {
+    moveCenterChance: 0.1,
+    moveSideChance: 0.5,
     xDelta: 0.4, // move this distance between frames when scanning the room
     sideBuffer: 0.2, // do not move the iris closer than this distance to the edge of the sclera
 };
