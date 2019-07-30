@@ -38,7 +38,7 @@ export const getSelections = createSelector(
 export const getTargets = createSelector(
     [getSelections, getVideos, getIdleTargets],
     (selections, videos, idleTargets): ICoords => {
-        const left =
+        const normalisedTarget =
             selections === undefined || !videos[0]
                 ? undefined
                 : calculateNormalisedPos(
@@ -46,8 +46,8 @@ export const getTargets = createSelector(
                       videos[0]!.width,
                       videos[0]!.height,
                   );
-        if (left) {
-            return left;
+        if (normalisedTarget) {
+            return normalisedTarget;
         } else {
             return idleTargets;
         }

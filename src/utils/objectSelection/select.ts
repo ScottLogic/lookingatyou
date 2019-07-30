@@ -94,11 +94,11 @@ export function getAvgColour(
 }
 
 export function getPredictedTarget(history: ICoords[]): ICoords {
-    const coordsX = history.map(target => target.x);
-    const coordsY = history.map(target => target.y);
+    const normalisedXCoords = history.map(target => target.x);
+    const normalisedYCoords = history.map(target => target.y);
 
-    const xPrediction = getWeightedPrediction(coordsX);
-    const yPrediction = getWeightedPrediction(coordsY);
+    const xPrediction = getWeightedPrediction(normalisedXCoords);
+    const yPrediction = getWeightedPrediction(normalisedYCoords);
 
     return { x: xPrediction, y: yPrediction };
 }
@@ -219,24 +219,24 @@ export function closerToPrediction(
         detection1: IDetection,
         detection2: IDetection,
     ) {
-        const coords1 = calculateNormalisedPos(
+        const normalisedCoords1 = calculateNormalisedPos(
             detection1.bbox,
             imageData.width,
             imageData.height,
         );
-        const coords2 = calculateNormalisedPos(
+        const normalisedCoords2 = calculateNormalisedPos(
             detection2.bbox,
             imageData.width,
             imageData.height,
         );
 
         const person2DistanceFromPrediction = Math.hypot(
-            coords2.x - prediction.x,
-            coords2.y - prediction.y,
+            normalisedCoords2.x - prediction.x,
+            normalisedCoords2.y - prediction.y,
         );
         const person1DistanceFromPrediction = Math.hypot(
-            coords1.x - prediction.x,
-            coords1.y - prediction.y,
+            normalisedCoords1.x - prediction.x,
+            normalisedCoords1.y - prediction.y,
         );
 
         const closerToPredictedTarget =

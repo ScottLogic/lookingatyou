@@ -2,7 +2,7 @@ import { eyelidPosition, EyeSide, Pose, pupilSizes } from '../../AppConstants';
 import { ICoords } from '../types';
 
 interface IAnimationFrame {
-    coords?: ICoords;
+    normalisedCoords?: ICoords;
     openCoefficient?:
         | number
         | { [EyeSide.LEFT]: number; [EyeSide.RIGHT]: number };
@@ -65,7 +65,7 @@ export function rollEyes(): Animation {
         const y = radius * Math.sin(theta);
         const x = radius * Math.cos(theta);
 
-        path.push({ coords: { x, y }, duration: 100 });
+        path.push({ normalisedCoords: { x, y }, duration: 100 });
     }
 
     return path;
