@@ -35,6 +35,7 @@ export interface IEyeProps {
     reflection: ImageData | undefined;
     irisAdjustment: IIrisAdjustment;
     innerPath: string;
+    skewTransform: string;
 }
 
 const pupilColor = 'black';
@@ -58,7 +59,6 @@ export default function Eye(props: IEyeProps) {
                 innerY={props.innerY}
                 innerX={props.innerX}
                 innerPath={props.innerPath}
-                irisAdjustment={props.irisAdjustment}
                 pupilRadius={props.pupilRadius}
                 pupilColor={pupilColor}
                 dilatedCoefficient={props.dilatedCoefficient}
@@ -66,6 +66,7 @@ export default function Eye(props: IEyeProps) {
                 width={props.width}
                 height={props.height}
                 reflection={props.reflection}
+                skewTransform={props.skewTransform}
             />
             <Eyelids
                 transitionStyle={eyelidTransitionStyle}
