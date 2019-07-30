@@ -29,7 +29,7 @@ interface ISetVideoAction {
 
 interface ISetVideoStreamsAction {
     readonly type: typeof SET_VIDEO_STREAMS;
-    readonly videos: { [deviceId: string]: IVideo };
+    readonly payload: { [deviceId: string]: IVideo };
 }
 
 interface IToggleWebcamAvailable {
@@ -38,7 +38,7 @@ interface IToggleWebcamAvailable {
 
 interface ISetImageDataAction {
     readonly type: typeof SET_IMAGE_DATA;
-    readonly images: {
+    readonly payload: {
         [key: string]: ImageData;
     };
 }

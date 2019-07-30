@@ -1,5 +1,3 @@
-import { ActionCreatorsMapObject } from 'redux';
-
 export function createActionPayload<TypeAction, TypePayload>(
     actionType: TypeAction,
 ): (payload: TypePayload) => IActionsWithPayload<TypeAction, TypePayload> {
