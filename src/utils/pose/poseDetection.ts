@@ -67,7 +67,7 @@ function rightWave(pose: IPoseKeypoints) {
 
 function leftWave(pose: IPoseKeypoints) {
     const armOutToSide =
-        pose.leftElbow.position.x > pose.rightShoulder.position.x;
+        pose.leftElbow.position.x > pose.leftShoulder.position.x;
 
     return (
         armOutToSide &&
