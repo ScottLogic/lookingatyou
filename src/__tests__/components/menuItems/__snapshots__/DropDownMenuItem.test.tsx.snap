@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NumberMenuItem tests should render correctly 1`] = `
+exports[`DropDownMenuItem should render correctly 1`] = `
 "<div data-tip={true} data-for=\\"OUTPUT_STRIDE\\">
   <label>
     test
