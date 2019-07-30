@@ -7,7 +7,7 @@ import DropDownMenuItem, {
 
 let props: IDropDownMenuItemProps;
 
-describe('NumberMenuItem tests', () => {
+describe('DropDownMenuItem', () => {
     beforeEach(() => {
         props = {
             name: 'test',
