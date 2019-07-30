@@ -29,7 +29,7 @@ export default function select(
 }
 
 export function calculateColourMatch(
-    imageData: ImageData,
+    imageData: ImageData | undefined,
     keypoints: Keypoint[],
 ): IColour {
     if (!imageData) {
@@ -51,16 +51,11 @@ export function getAvgColour(
     yEnd: number,
     imageData: ImageData,
 ): IColour {
-    if (!imageData) {
-        return { r: 0, g: 0, b: 0 };
-    }
-
     let L = 0;
     let a = 0;
     let b = 0;
 
     const data = imageData.data;
-
     let counter = 0;
 
     for (
