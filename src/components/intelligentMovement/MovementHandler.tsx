@@ -7,6 +7,7 @@ import {
     EyeSide,
     intervals,
     pupilSizes,
+    userInteractionText,
 } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 import { setIdleTarget } from '../../store/actions/detections/actions';
@@ -45,6 +46,7 @@ interface IDispatchProps {
 interface IMovementState {
     dilationCoefficient: number;
     showText: boolean;
+    text: string;
 }
 
 export type MovementHandlerProps = IMovementProps &
@@ -63,6 +65,7 @@ export class MovementHandler extends React.Component<
     private personDetected: boolean;
     private prevProps: MovementHandlerProps | null;
     private openCoefficient: number;
+    private textTimeout: number | null;
 
     constructor(props: MovementHandlerProps) {
         super(props);
@@ -70,6 +73,7 @@ export class MovementHandler extends React.Component<
         this.state = {
             dilationCoefficient: pupilSizes.neutral,
             showText: false,
+            text: '',
         };
 
         this.movementInterval = 0;
@@ -80,6 +84,7 @@ export class MovementHandler extends React.Component<
         this.squinting = false;
         this.prevProps = null;
         this.openCoefficient = eyelidPosition.OPEN;
+        this.textTimeout = null;
 
         this.animateEye = this.animateEye.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
@@ -215,6 +220,24 @@ export class MovementHandler extends React.Component<
             this.sleepTimeout = null;
             this.openCoefficient = eyelidPosition.OPEN;
         }
+
+        if (this.textTimeout === null) {
+            this.textTimeout = this.props.environment.setTimeout(() => {
+                this.setState({
+                    showText: true,
+                    text:
+                        userInteractionText[
+                            Math.floor(
+                                Math.random() * userInteractionText.length,
+                            )
+                        ],
+                });
+                this.props.environment.setTimeout(() => {
+                    this.setState({ showText: false });
+                    this.textTimeout = null;
+                }, 3000);
+            }, 30000);
+        }
     }
 
     sleep() {
@@ -222,6 +245,11 @@ export class MovementHandler extends React.Component<
             this.sleepTimeout = setTimeout(() => {
                 this.openCoefficient = eyelidPosition.CLOSED;
             }, intervals.sleep);
+        }
+
+        if (this.textTimeout !== null) {
+            this.props.environment.clearTimeout(this.textTimeout);
+            this.textTimeout = null;
         }
     }
 
@@ -235,7 +263,7 @@ export class MovementHandler extends React.Component<
                     dilation={this.state.dilationCoefficient}
                     detected={this.personDetected}
                 />
-                <FadeInText text={'HELLO'} show={this.state.showText} />
+                <FadeInText text={this.state.text} show={this.state.showText} />
             </>
         );
     }
