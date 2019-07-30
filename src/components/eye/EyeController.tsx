@@ -19,6 +19,7 @@ import {
     getTargets,
 } from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
+import { normalise } from '../../utils/objectTracking/calculateFocus';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import Eye from './Eye';
@@ -76,14 +77,18 @@ export const EyeController = React.memo(
             props.animation.length > 0 &&
             props.animation[0].normalisedCoords !== undefined
                 ? {
-                      innerX:
-                          (props.width *
-                              (1 + props.animation[0].normalisedCoords!.x)) /
-                          4,
-                      innerY:
-                          (props.width *
-                              (1 + props.animation[0].normalisedCoords!.y)) /
-                          4,
+                      innerX: normalise(
+                          props.animation[0].normalisedCoords!.x,
+                          1,
+                          -1,
+                          props.width / 2,
+                      ),
+                      innerY: normalise(
+                          props.animation[0].normalisedCoords!.y,
+                          1,
+                          -1,
+                          props.width / 2,
+                      ),
                   }
                 : (() => {
                       const maxDisplacement = getMaxDisplacement(
