@@ -16,6 +16,7 @@ import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
 import { getTargets } from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
+import { normalise } from '../../utils/objectTracking/calculateFocus';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import Eye from './Eye';
@@ -115,7 +116,7 @@ export const EyeController = React.memo(
         const leftCoords = getEyeCoords(props.target);
         const eyeCoords: { [key in EyeSide]: ICoords } =
             props.animation.length > 0 &&
-            props.animation[0].dilation !== undefined
+            props.animation[0].normalisedCoords !== undefined
                 ? centerAnimationCoords()
                 : {
                       LEFT: leftCoords,
@@ -123,26 +124,16 @@ export const EyeController = React.memo(
                   };
 
         function centerAnimationCoords() {
+            const animationX = props.animation[0].normalisedCoords!.x;
+            const animationY = props.animation[0].normalisedCoords!.y;
             return {
                 LEFT: {
-                    x:
-                        (props.width *
-                            (1 + props.animation[0].normalisedCoords!.x)) /
-                        4,
-                    y:
-                        (props.width *
-                            (1 + props.animation[0].normalisedCoords!.y)) /
-                        4,
+                    x: normalise(animationX, 1, -1, props.width / 2),
+                    y: normalise(animationY, 1, -1, props.width / 2),
                 },
                 RIGHT: {
-                    x:
-                        (props.width *
-                            (1 + props.animation[0].normalisedCoords!.x)) /
-                        4,
-                    y:
-                        (props.width *
-                            (1 + props.animation[0].normalisedCoords!.y)) /
-                        4,
+                    x: normalise(animationX, 1, -1, props.width / 2),
+                    y: normalise(animationY, 1, -1, props.width / 2),
                 },
             };
         }

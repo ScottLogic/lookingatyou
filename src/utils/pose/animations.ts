@@ -1,4 +1,5 @@
 import { eyelidPosition, EyeSide, Pose, pupilSizes } from '../../AppConstants';
+import { normalise } from '../objectTracking/calculateFocus';
 import { ICoords } from '../types';
 
 interface IAnimationFrame {
@@ -101,9 +102,9 @@ export function dab(): Animation {
     const animation = [];
     for (let i = 0; i < 20; i++) {
         animation.push({
-            coords: {
-                x: Math.random() * 2 - 1,
-                y: Math.random() * 2 - 1,
+            normalisedCoords: {
+                x: normalise(Math.random(), 1),
+                y: normalise(Math.random(), 1),
             },
             irisColor: '#' + (((1 << 24) * Math.random()) | 0).toString(16),
             duration: 150,
