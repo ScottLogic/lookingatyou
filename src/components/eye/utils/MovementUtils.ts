@@ -1,4 +1,5 @@
 import {
+    eyeCoords,
     idleMovementConsts,
     irisSkewFactor,
     lightConsts,
@@ -35,27 +36,26 @@ export function analyseLight(
     return { tooBright: false, scaledPupilSize: 0 };
 }
 
-export function naturalMovement(currX: number, isMovingLeft: boolean) {
-    if (currX === 0) {
-        if (Math.random() < 0.1) {
-            return moveEye(currX, isMovingLeft);
-        } else {
-            return { newX: currX, isMovingLeft };
-        }
+export function naturalMovement(currentX: number, isMovingLeft: boolean) {
+    const eyeBoundary = 1 - idleMovementConsts.sideBuffer;
+
+    if (currentX === eyeCoords.middleX) {
+        return Math.random() < 0.1
+            ? newEyePos(currentX, isMovingLeft)
+            : { newX: currentX, isMovingLeft };
+    } else if (currentX >= eyeBoundary) {
+        return Math.random() < 0.5
+            ? newEyePos(currentX, !isMovingLeft)
+            : { newX: currentX, isMovingLeft };
     } else {
-        return moveEye(currX, isMovingLeft);
+        return newEyePos(currentX, isMovingLeft);
     }
 }
 
-export function moveEye(currX: number, isMovingLeft: boolean) {
-    const xBoundary = 1 - idleMovementConsts.sideBuffer;
+export function newEyePos(currentX: number, isMovingLeft: boolean) {
     let xDelta = idleMovementConsts.xDelta;
     xDelta = isMovingLeft ? -xDelta : xDelta;
-    if (Math.abs(currX) < xBoundary) {
-        return { newX: currX + xDelta, isMovingLeft };
-    } else {
-        return { newX: currX - xDelta, isMovingLeft: !isMovingLeft };
-    }
+    return { newX: currentX + xDelta, isMovingLeft };
 }
 
 export function getMaxDisplacement(scleraRadius: number, irisRadius: number) {
