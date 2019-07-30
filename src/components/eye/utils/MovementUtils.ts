@@ -1,5 +1,4 @@
 import {
-    eyeCoords,
     idleMovementConsts,
     irisSkewFactor,
     lightConsts,
@@ -36,57 +35,29 @@ export function analyseLight(
     return { tooBright: false, scaledPupilSize: 0 };
 }
 
-export function naturalMovement(
-    currentX: number,
-    isMovingLeft: boolean,
-): { newX: number; isMovingLeft: boolean } {
-    if (currentX === eyeCoords.middleX) {
+export function naturalMovement(currX: number, isMovingLeft: boolean) {
+    if (currX === 0) {
         if (Math.random() < 0.1) {
-            return moveEye(currentX, isMovingLeft);
+            return moveEye(currX, isMovingLeft);
+        } else {
+            return { newX: currX, isMovingLeft };
         }
-        return { newX: 0, isMovingLeft };
+    }
+}
+
+export function moveEye(currX: number, isMovingLeft: boolean) {
+    const xBoundary = 1 - idleMovementConsts.sideBuffer;
+    if (Math.abs(currX) < xBoundary) {
+        const newX = isMovingLeft
+            ? currX - idleMovementConsts.xDelta
+            : currX + idleMovementConsts.xDelta;
+        return { newX, isMovingLeft };
     } else {
-        return moveEye(currentX, isMovingLeft);
+        const newX = isMovingLeft
+            ? currX + idleMovementConsts.xDelta
+            : currX - idleMovementConsts.xDelta;
+        return { newX, isMovingLeft: !isMovingLeft };
     }
-}
-
-function moveEye(
-    currentX: number,
-    isMovingLeft: boolean,
-): { newX: number; isMovingLeft: boolean } {
-    return isMovingLeft
-        ? moveLeft(currentX, isMovingLeft)
-        : moveRight(currentX, isMovingLeft);
-}
-
-function moveLeft(
-    currentX: number,
-    isMovingLeft: boolean,
-): { newX: number; isMovingLeft: boolean } {
-    if (currentX > eyeCoords.middleX - 1 + idleMovementConsts.sideBuffer) {
-        return { newX: currentX - idleMovementConsts.xDelta, isMovingLeft };
-    } else if (Math.random() < 0.5) {
-        return {
-            newX: currentX + idleMovementConsts.xDelta,
-            isMovingLeft: !isMovingLeft,
-        };
-    }
-    return { newX: currentX, isMovingLeft };
-}
-
-function moveRight(
-    currentX: number,
-    isMovingLeft: boolean,
-): { newX: number; isMovingLeft: boolean } {
-    if (currentX < eyeCoords.middleX + 1 - idleMovementConsts.sideBuffer) {
-        return { newX: currentX + idleMovementConsts.xDelta, isMovingLeft };
-    } else if (Math.random() < 0.5) {
-        return {
-            newX: currentX - idleMovementConsts.xDelta,
-            isMovingLeft: !isMovingLeft,
-        };
-    }
-    return { newX: currentX, isMovingLeft };
 }
 
 export function getMaxDisplacement(scleraRadius: number, irisRadius: number) {
