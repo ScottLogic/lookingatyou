@@ -6,7 +6,7 @@ interface ITextProps {
     show: boolean;
 }
 
-export default function FadeInText(props: ITextProps) {
+const FadeInText = React.memo((props: ITextProps) => {
     function renderSpans(text: string) {
         const textArray = text.split('');
 
@@ -43,7 +43,6 @@ export default function FadeInText(props: ITextProps) {
         const delayMin = 100;
         const delayMax = 500;
 
-        // generate random numbers and then convert to delays
         const randoms = () => getRandoms(length, threshold);
         const toDelay = (num: number) => randomToDelay(num, delayMin, delayMax);
 
@@ -51,7 +50,9 @@ export default function FadeInText(props: ITextProps) {
     }
 
     return <div className="revealText">{renderSpans(props.text)}</div>;
-}
+});
+
+export default FadeInText;
 
 const getRandoms = (length: number, threshold: number) => {
     const tooClose = (a: number, b: number) => Math.abs(a - b) < threshold;

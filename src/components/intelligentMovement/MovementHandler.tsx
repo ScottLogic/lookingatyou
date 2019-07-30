@@ -7,7 +7,7 @@ import {
     EyeSide,
     intervals,
     pupilSizes,
-    userInteractionText,
+    userInteraction,
 } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 import { setIdleTarget } from '../../store/actions/detections/actions';
@@ -111,6 +111,13 @@ export class MovementHandler extends React.Component<
                 this.props.target !== nextProps.target ||
                 this.props.detections !== nextProps.detections)
         );
+    }
+
+    componentWillReceiveProps(nextProps: MovementHandlerProps) {
+        if (nextProps.animation.length > 0 && this.textTimeout) {
+            this.props.environment.clearTimeout(this.textTimeout);
+            this.textTimeout = null;
+        }
     }
 
     componentDidUpdate(prevProps: MovementHandlerProps) {
@@ -226,17 +233,17 @@ export class MovementHandler extends React.Component<
                 this.setState({
                     showText: true,
                     text:
-                        userInteractionText[
+                        userInteraction.texts[
                             Math.floor(
-                                Math.random() * userInteractionText.length,
+                                Math.random() * userInteraction.texts.length,
                             )
                         ],
                 });
                 this.props.environment.setTimeout(() => {
                     this.setState({ showText: false });
                     this.textTimeout = null;
-                }, 3000);
-            }, 30000);
+                }, userInteraction.textDuration);
+            }, userInteraction.delay);
         }
     }
 

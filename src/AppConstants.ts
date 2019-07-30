@@ -79,9 +79,16 @@ export const minPoseConfidence = 0.2;
 export const irisSkewFactor = 0.8; // factor by which to squish iris when iris is all the way to edge of sclera
 export const minPoseConfidence = 0.2;
 
-export const userInteractionText = [
-    'HELLO',
-    'TRY WAVING',
-    "I DON'T HAVE HANDS",
-    'PLAY WITH ME',
-];
+export const userInteraction = {
+    texts: [
+        'HELLO',
+        'TRY WAVING',
+        "I DON'T HAVE HANDS",
+        'PLAY WITH ME',
+        "DON'T LEAVE ME",
+        'I HAVE NO MOUTH AND I MUST SCREAM',
+        'NOTHING TO SEE HERE',
+    ],
+    delay: 30000,
+    textDuration: 3000,
+};
