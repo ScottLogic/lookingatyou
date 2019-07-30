@@ -112,6 +112,5 @@ export function dab(): Animation {
                 eyelidPosition.OPEN + (eyelidPosition.OPEN * i) / 20,
         });
     }
-    console.log(animation);
     return animation;
 }
