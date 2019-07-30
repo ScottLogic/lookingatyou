@@ -125,7 +125,6 @@ export class MovementHandler extends React.Component<
         if (this.props.images[EyeSide.LEFT]) {
             const { tooBright, scaledPupilSize } = analyseLight(
                 this.props.images[EyeSide.LEFT],
-                this.tooBright,
             );
             if (tooBright) {
                 this.tooBright = true;

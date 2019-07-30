@@ -4,34 +4,35 @@ import {
     irisSkewFactor,
     lightConsts,
 } from '../../../AppConstants';
+import { normalise } from '../../../utils/objectTracking/calculateFocus';
 
 export function analyseLight(
     image: ImageData,
-    tooBright: boolean,
 ): { tooBright: boolean; scaledPupilSize: number } {
-    if (image.width > 0) {
+    if (image) {
         const data = image.data;
+
         let colorSum = 0;
         for (let i = 0; i < data.length; i += 4) {
             const avg = Math.floor((data[i] + data[i + 1] + data[i + 2]) / 3);
-
             colorSum += avg;
         }
+
         let brightness = Math.floor(colorSum / (image.width * image.height));
+        brightness = Math.min(brightness, lightConsts.maxBrightness);
 
-        if (brightness > lightConsts.maxBrightness) {
-            tooBright = true;
-            brightness = lightConsts.maxBrightness;
-        } else if (tooBright) {
-            tooBright = false;
-        }
-        const scaledPupilSize =
-            ((lightConsts.maxBrightness - brightness) /
-                lightConsts.maxBrightness) *
-                lightConsts.dilationMultipler +
-            lightConsts.dilationOffset;
+        const scaledPupilSize = normalise(
+            lightConsts.maxBrightness - brightness,
+            lightConsts.maxBrightness,
+            0,
+            lightConsts.dilationMultipler + lightConsts.dilationOffset,
+            lightConsts.dilationOffset,
+        );
 
-        return { tooBright, scaledPupilSize };
+        return {
+            tooBright: lightConsts.maxBrightness === brightness,
+            scaledPupilSize,
+        };
     }
     return { tooBright: false, scaledPupilSize: 0 };
 }
@@ -71,7 +72,7 @@ export function getIrisAdjustment(
     irisRadius: number,
     previousAngle: number = 0,
 ) {
-    const displacement = Math.hypot(x - width / 2, y - height / 2);
+    const displacement = Math.hypot(width / 2 - x, height / 2 - y);
     const maxDisplacement = getMaxDisplacement(scleraRadius, irisRadius);
 
     const scale =
@@ -79,7 +80,7 @@ export function getIrisAdjustment(
         ((1 - irisSkewFactor) * (maxDisplacement - displacement)) /
             maxDisplacement;
 
-    let angle = (Math.atan2(y - height / 2, x - width / 2) * 180) / Math.PI;
+    let angle = (Math.atan2(height / 2 - y, width / 2 - x) * 180) / Math.PI;
 
     if (angle - previousAngle < -90) {
         angle = angle + 180;
