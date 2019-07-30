@@ -42,6 +42,8 @@ export function naturalMovement(currX: number, isMovingLeft: boolean) {
         } else {
             return { newX: currX, isMovingLeft };
         }
+    } else {
+        moveEye(currX, isMovingLeft);
     }
 }
 
