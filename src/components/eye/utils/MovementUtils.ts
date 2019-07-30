@@ -43,22 +43,18 @@ export function naturalMovement(currX: number, isMovingLeft: boolean) {
             return { newX: currX, isMovingLeft };
         }
     } else {
-        moveEye(currX, isMovingLeft);
+        return moveEye(currX, isMovingLeft);
     }
 }
 
 export function moveEye(currX: number, isMovingLeft: boolean) {
     const xBoundary = 1 - idleMovementConsts.sideBuffer;
+    let xDelta = idleMovementConsts.xDelta;
+    xDelta = isMovingLeft ? -xDelta : xDelta;
     if (Math.abs(currX) < xBoundary) {
-        const newX = isMovingLeft
-            ? currX - idleMovementConsts.xDelta
-            : currX + idleMovementConsts.xDelta;
-        return { newX, isMovingLeft };
+        return { newX: currX + xDelta, isMovingLeft };
     } else {
-        const newX = isMovingLeft
-            ? currX + idleMovementConsts.xDelta
-            : currX - idleMovementConsts.xDelta;
-        return { newX, isMovingLeft: !isMovingLeft };
+        return { newX: currX - xDelta, isMovingLeft: !isMovingLeft };
     }
 }
 
