@@ -14,9 +14,11 @@ import { ISetIdleTargetAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getFPS } from '../../store/selectors/configSelectors';
 import {
+    getAnimations,
     getDetections,
     getTargets,
 } from '../../store/selectors/detectionSelectors';
+import { getImageData } from '../../store/selectors/videoSelectors';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
@@ -54,7 +56,7 @@ export class MovementHandler extends React.Component<
     IMovementState
 > {
     private movementInterval: number;
-    private sleepTimeout: NodeJS.Timeout | null;
+    private sleepTimeout: number;
     private tooBright: boolean;
     private isMovingLeft: boolean;
     private squinting: boolean;
@@ -70,7 +72,7 @@ export class MovementHandler extends React.Component<
         };
 
         this.movementInterval = 0;
-        this.sleepTimeout = null;
+        this.sleepTimeout = 0;
         this.tooBright = false;
         this.isMovingLeft = false;
         this.personDetected = false;
@@ -208,15 +210,15 @@ export class MovementHandler extends React.Component<
 
     wake() {
         if (this.sleepTimeout !== null) {
-            clearTimeout(this.sleepTimeout);
-            this.sleepTimeout = null;
+            this.props.environment.clearTimeout(this.sleepTimeout);
+            this.sleepTimeout = 0;
             this.openCoefficient = eyelidPosition.OPEN;
         }
     }
 
     sleep() {
         if (this.sleepTimeout === null) {
-            this.sleepTimeout = setTimeout(() => {
+            this.sleepTimeout = this.props.environment.setTimeout(() => {
                 this.openCoefficient = eyelidPosition.CLOSED;
             }, intervals.sleep);
         }
@@ -240,8 +242,8 @@ const mapStateToProps = (state: IRootStore) => ({
     fps: getFPS(state),
     detections: getDetections(state),
     target: getTargets(state),
-    images: state.videoStore.images,
-    animation: state.detectionStore.animation,
+    images: getImageData(state),
+    animation: getAnimations(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => ({

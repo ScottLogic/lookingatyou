@@ -9,6 +9,7 @@ import select, {
     getPredictedTarget,
 } from '../../utils/objectSelection/select';
 import { calculateNormalisedPos } from '../../utils/objectTracking/calculateFocus';
+import { Animation } from '../../utils/pose/animations';
 import { IColour, ICoords } from '../../utils/types';
 import { IRootStore } from '../reducers/rootReducer';
 import { getImageData, getVideos } from './videoSelectors';
@@ -93,4 +94,8 @@ export function getIdleTargets(state: IRootStore): ICoords {
 
 export function getOpenCoefficient(state: IRootStore): number {
     return state.detectionStore.eyesOpenCoefficient;
+}
+
+export function getAnimations(state: IRootStore): Animation {
+    return state.detectionStore.animation;
 }
