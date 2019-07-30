@@ -1,148 +1,63 @@
+import convert from 'color-convert';
 import {
+    CIELabOffset,
     eyeCoords,
     idleMovementConsts,
-    irisSkewFactor,
     lightConsts,
 } from '../../../AppConstants';
+import { normalise } from '../../../utils/objectTracking/calculateFocus';
 
 export function analyseLight(
     image: ImageData,
-    tooBright: boolean,
 ): { tooBright: boolean; scaledPupilSize: number } {
-    if (image.width > 0) {
-        const data = image.data;
-        let colorSum = 0;
-        for (let i = 0; i < data.length; i += 4) {
-            const avg = Math.floor((data[i] + data[i + 1] + data[i + 2]) / 3);
-
-            colorSum += avg;
-        }
-        let brightness = Math.floor(colorSum / (image.width * image.height));
-
-        if (brightness > lightConsts.maxBrightness) {
-            tooBright = true;
-            brightness = lightConsts.maxBrightness;
-        } else if (tooBright) {
-            tooBright = false;
-        }
-        const scaledPupilSize =
-            ((lightConsts.maxBrightness - brightness) /
-                lightConsts.maxBrightness) *
-                lightConsts.dilationMultipler +
-            lightConsts.dilationOffset;
-
-        return { tooBright, scaledPupilSize };
+    if (!image) {
+        return { tooBright: false, scaledPupilSize: 0 };
     }
-    return { tooBright: false, scaledPupilSize: 0 };
-}
 
-export function naturalMovement(
-    currentX: number,
-    isMovingLeft: boolean,
-): { newX: number; isMovingLeft: boolean } {
-    if (currentX === eyeCoords.middleX) {
-        if (Math.random() < 0.1) {
-            return moveEye(currentX, isMovingLeft);
-        }
-        return { newX: 0, isMovingLeft };
-    } else {
-        return moveEye(currentX, isMovingLeft);
+    const data = image.data;
+
+    let colorSum = 0;
+    for (let i = 0; i < data.length; i += 4) {
+        const pixelL = convert.rgb.lab([data[i], data[i + 1], data[i + 2]])[0];
+        colorSum += pixelL;
     }
-}
 
-function moveEye(
-    currentX: number,
-    isMovingLeft: boolean,
-): { newX: number; isMovingLeft: boolean } {
-    return isMovingLeft
-        ? moveLeft(currentX, isMovingLeft)
-        : moveRight(currentX, isMovingLeft);
-}
+    let brightness =
+        Math.floor(colorSum / (image.width * image.height)) + CIELabOffset;
+    brightness = Math.min(brightness, lightConsts.maxBrightness);
 
-function moveLeft(
-    currentX: number,
-    isMovingLeft: boolean,
-): { newX: number; isMovingLeft: boolean } {
-    if (currentX > eyeCoords.middleX - 1 + idleMovementConsts.sideBuffer) {
-        return { newX: currentX - idleMovementConsts.xDelta, isMovingLeft };
-    } else if (Math.random() < 0.5) {
-        return {
-            newX: currentX + idleMovementConsts.xDelta,
-            isMovingLeft: !isMovingLeft,
-        };
-    }
-    return { newX: currentX, isMovingLeft };
-}
-
-function moveRight(
-    currentX: number,
-    isMovingLeft: boolean,
-): { newX: number; isMovingLeft: boolean } {
-    if (currentX < eyeCoords.middleX + 1 - idleMovementConsts.sideBuffer) {
-        return { newX: currentX + idleMovementConsts.xDelta, isMovingLeft };
-    } else if (Math.random() < 0.5) {
-        return {
-            newX: currentX - idleMovementConsts.xDelta,
-            isMovingLeft: !isMovingLeft,
-        };
-    }
-    return { newX: currentX, isMovingLeft };
-}
-
-export function getMaxDisplacement(scleraRadius: number, irisRadius: number) {
-    return (scleraRadius - irisRadius * irisSkewFactor) / irisSkewFactor;
-}
-
-export function getIrisAdjustment(
-    x: number,
-    y: number,
-    height: number,
-    width: number,
-    scleraRadius: number,
-    irisRadius: number,
-    previousAngle: number = 0,
-) {
-    const displacement = Math.hypot(x - width / 2, y - height / 2);
-    const maxDisplacement = getMaxDisplacement(scleraRadius, irisRadius);
-
-    const scale =
-        irisSkewFactor +
-        ((1 - irisSkewFactor) * (maxDisplacement - displacement)) /
-            maxDisplacement;
-
-    let angle = (Math.atan2(y - height / 2, x - width / 2) * 180) / Math.PI;
-
-    if (angle - previousAngle < -90) {
-        angle = angle + 180;
-    } else if (angle - previousAngle > 90) {
-        angle = angle - 180;
-    }
+    const scaledPupilSize = normalise(
+        lightConsts.maxBrightness - brightness,
+        lightConsts.maxBrightness,
+        0,
+        lightConsts.dilationMultipler + lightConsts.dilationOffset,
+        lightConsts.dilationOffset,
+    );
 
     return {
-        scale,
-        angle,
+        tooBright: lightConsts.maxBrightness === brightness,
+        scaledPupilSize,
     };
 }
 
-export function generateInnerPath(radius: number, sectors: number) {
-    const innerRadius = radius * 0.1;
-    const outerRadius = radius * 0.9;
-    const radianStep = (2 * Math.PI) / sectors;
-    const innerOffset = -radianStep / 2;
+export function naturalMovement(currentX: number, isMovingLeft: boolean) {
+    const eyeBoundary = 1 - idleMovementConsts.sideBuffer;
 
-    let currInnerPath = 'M 0 0';
-    for (let i = 0; i < sectors; i++) {
-        const currRadianStep = radianStep * i;
-        const lineOut = `L ${outerRadius *
-            Math.cos(currRadianStep + innerOffset)} ${outerRadius *
-            Math.sin(currRadianStep + innerOffset)}`;
-
-        const lineIn = `L ${innerRadius *
-            Math.cos(currRadianStep)} ${innerRadius *
-            Math.sin(currRadianStep)}`;
-
-        currInnerPath += lineOut;
-        currInnerPath += lineIn;
+    if (currentX === eyeCoords.middleX) {
+        return Math.random() < idleMovementConsts.moveCenterChance
+            ? newEyePos(currentX, isMovingLeft)
+            : { newX: currentX, isMovingLeft };
+    } else if (Math.abs(currentX) >= eyeBoundary) {
+        return Math.random() < idleMovementConsts.moveSideChance
+            ? newEyePos(currentX, !isMovingLeft)
+            : { newX: currentX, isMovingLeft };
+    } else {
+        return newEyePos(currentX, isMovingLeft);
     }
-    return currInnerPath;
+}
+
+function newEyePos(currentX: number, isMovingLeft: boolean) {
+    let xDelta = idleMovementConsts.xDelta;
+    xDelta = isMovingLeft ? 0 - xDelta : xDelta;
+    return { newX: currentX + xDelta, isMovingLeft };
 }
