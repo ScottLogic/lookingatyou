@@ -3,11 +3,8 @@ import { minPoseConfidence, Pose } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 
 interface IPoseKeypoints {
-    nose: Keypoint;
     leftEye: Keypoint;
     rightEye: Keypoint;
-    leftEar: Keypoint;
-    rightEar: Keypoint;
     leftShoulder: Keypoint;
     rightShoulder: Keypoint;
     leftElbow: Keypoint;
@@ -35,11 +32,8 @@ function getPoseKeypoints(selection: IDetection): IPoseKeypoints {
     const keypoints = selection.info.keypoints;
 
     return {
-        nose: keypoints[partIds.nose],
         leftEye: keypoints[partIds.leftEye],
         rightEye: keypoints[partIds.rightEye],
-        leftEar: keypoints[partIds.leftEar],
-        rightEar: keypoints[partIds.rightEar],
         leftShoulder: keypoints[partIds.leftShoulder],
         rightShoulder: keypoints[partIds.rightShoulder],
         leftElbow: keypoints[partIds.leftElbow],
@@ -197,7 +191,11 @@ function checkLeftDab(pose: IPoseKeypoints): boolean {
     );
 }
 
-function armPointingUp(wrist: Keypoint, elbow: Keypoint, shoulder: Keypoint) {
+export function armPointingUp(
+    wrist: Keypoint,
+    elbow: Keypoint,
+    shoulder: Keypoint,
+) {
     return (
         wrist.position.y < elbow.position.y &&
         elbow.position.y < shoulder.position.y
