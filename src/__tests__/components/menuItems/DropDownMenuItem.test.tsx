@@ -1,12 +1,9 @@
-import { mount, ReactWrapper, shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import React from 'react';
-import Help, { HelpWith } from '../../../components/configMenu/Help';
+import { HelpWith } from '../../../components/configMenu/Help';
 import DropDownMenuItem, {
     IDropDownMenuItemProps,
 } from '../../../components/configMenu/menuItems/DropDownMenuItem';
-import NumberMenuItem, {
-    INumberMenuItemProps,
-} from '../../../components/configMenu/menuItems/NumberMenuItem';
 
 let props: IDropDownMenuItemProps;
 
