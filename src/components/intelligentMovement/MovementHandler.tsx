@@ -269,6 +269,7 @@ export class MovementHandler extends React.Component<
                     environment={this.props.environment}
                     dilation={this.state.dilationCoefficient}
                     detected={this.personDetected}
+                    openCoefficient={this.openCoefficient}
                 />
                 <FadeInText text={this.state.text} show={this.state.showText} />
             </>
