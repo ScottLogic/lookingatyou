@@ -25,12 +25,12 @@ import { ICoords } from '../../utils/types';
 import Eye from './Eye';
 import { Gradients } from './Gradients';
 import { Shadows } from './Shadows';
+import { getReflection } from './utils/ReflectionUtils';
 import {
     generateInnerPath,
     getIrisAdjustment,
     getMaxDisplacement,
-} from './utils/EyeUtils';
-import { getReflection } from './utils/ReflectionUtils';
+} from './utils/VisualUtils';
 
 interface IEyeControllerProps {
     width: number;

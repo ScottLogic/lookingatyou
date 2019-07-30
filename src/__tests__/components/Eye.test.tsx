@@ -3,7 +3,7 @@ import React from 'react';
 import { EyeSide } from '../../AppConstants';
 import Eye, { IEyeProps } from '../../components/eye/Eye';
 import { getBezier, getEyeShape } from '../../components/eye/EyeController';
-import { generateInnerPath } from '../../components/eye/utils/EyeUtils';
+import { generateInnerPath } from '../../components/eye/utils/VisualUtils';
 
 const dimension = 500;
 const scleraRadius = 100;

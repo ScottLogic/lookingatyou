@@ -5,7 +5,7 @@ import { BlackFill } from './eyeParts/BlackFill';
 import { Eyelids } from './eyeParts/Eyelids';
 import InnerEye from './eyeParts/InnerEye';
 import { Sclera } from './eyeParts/Sclera';
-import { IIrisAdjustment } from './utils/EyeUtils';
+import { IIrisAdjustment } from './utils/VisualUtils';
 
 export interface IEyeProps {
     class: EyeSide;

@@ -3,7 +3,7 @@ import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import tinycolor from 'tinycolor2';
 import { IRootStore } from '../../../store/reducers/rootReducer';
-import { IIrisAdjustment } from '../utils/EyeUtils';
+import { IIrisAdjustment } from '../utils/VisualUtils';
 
 interface IInnerEyeProps {
     irisRadius: number;
