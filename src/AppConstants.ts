@@ -92,3 +92,10 @@ export const userInteraction = {
     delay: 30000,
     textDuration: 3000,
 };
+export const fadeInText = {
+    threshold: 0.2,
+    delayMin: 200,
+    delayMax: 1000,
+    transitionMax: 2000,
+    transitionMin: 200,
+};
