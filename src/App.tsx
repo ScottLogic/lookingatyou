@@ -95,6 +95,7 @@ export class App extends React.Component<AppProps, IAppState> {
                                 height={this.state.height}
                                 environment={this.props.environment}
                             />
+                            <ConfigMenuElement window={this.props.environment.window} />
                         </div>
                     )
                 ) : (
@@ -102,8 +103,6 @@ export class App extends React.Component<AppProps, IAppState> {
                         No webcam connected. Please connect a webcam.
                     </div>
                 )}
-
-                <ConfigMenuElement window={this.props.environment.window} />
             </div>
         );
     }
