@@ -54,11 +54,11 @@ export default function Eye(props: IEyeProps) {
             />
             <InnerEye pupilColor={pupilColor} {...props} />
             <Eyelids
+                {...props}
                 transitionStyle={eyelidTransitionStyle}
                 cornerShape={cornerShape}
-                {...props}
             />
-            <BlackFill leftX={props.eyeShape.leftX} {...props} />
+            <BlackFill {...props} leftX={props.eyeShape.leftX} />
         </svg>
     );
 }

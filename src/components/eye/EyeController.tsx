@@ -220,9 +220,9 @@ export const EyeController = React.memo(
                             ? calculatedEyesOpenCoefficient
                             : calculatedEyesOpenCoefficient[eye],
                     );
-
                     return (
                         <Eye
+                            {...props}
                             class={eye}
                             key={index}
                             width={props.width / 2}
@@ -239,7 +239,6 @@ export const EyeController = React.memo(
                             reflection={reflectionRef.current}
                             irisAdjustment={irisAdjustmentRef.current}
                             innerPath={innerPath}
-                            {...props}
                         />
                     );
                 })}
