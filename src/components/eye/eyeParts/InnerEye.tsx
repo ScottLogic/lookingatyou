@@ -7,7 +7,6 @@ import { getFPS } from '../../../store/selectors/configSelectors';
 import { getTargets } from '../../../store/selectors/detectionSelectors';
 import { ICoords } from '../../../utils/types';
 import { irisSkewMatrixTransform } from '../utils/MovementUtils';
-import { IIrisAdjustment } from '../utils/VisualUtils';
 
 interface IInnerEyeProps {
     irisRadius: number;
@@ -22,7 +21,6 @@ interface IInnerEyeProps {
     width: number;
     height: number;
     reflection: ImageData | undefined;
-    irisAdjustment: IIrisAdjustment;
 }
 
 interface IInnerEyeMapStateToProps {

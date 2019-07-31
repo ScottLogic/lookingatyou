@@ -64,21 +64,6 @@ export function getMaxDisplacement(scleraRadius: number, irisRadius: number) {
     return (scleraRadius - irisRadius * irisSkewFactor) / irisSkewFactor;
 }
 
-export function getIrisAdjustment(position: ICoords) {
-    const displacement = Math.hypot(position.x, position.y);
-
-    const scale =
-        irisSkewFactor +
-        normalise(1 - displacement, 1, 0, 1 - irisSkewFactor, 0);
-
-    const angle = Math.atan2(position.y, position.x);
-
-    return {
-        scale,
-        angle,
-    };
-}
-
 export function irisSkewMatrixTransform(position: ICoords) {
     const displacement = Math.hypot(position.x, position.y);
 
