@@ -23,7 +23,7 @@ const videoStore = (
             return {
                 ...state,
                 videos: {
-                    ...action.videos,
+                    ...action.payload,
                 },
             };
         case SET_VIDEO:
@@ -50,7 +50,7 @@ const videoStore = (
                 ...state,
                 images: {
                     ...state.images,
-                    ...action.images,
+                    ...action.payload,
                 },
             };
         default:

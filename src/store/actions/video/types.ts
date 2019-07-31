@@ -23,22 +23,22 @@ export interface ISetVideoPayload {
 }
 
 interface ISetVideoAction {
-    type: typeof SET_VIDEO;
-    payload: ISetVideoPayload;
+    readonly type: typeof SET_VIDEO;
+    readonly payload: ISetVideoPayload;
 }
 
 interface ISetVideoStreamsAction {
-    type: typeof SET_VIDEO_STREAMS;
-    videos: { [deviceId: string]: IVideo };
+    readonly type: typeof SET_VIDEO_STREAMS;
+    readonly payload: { [deviceId: string]: IVideo };
 }
 
 interface IToggleWebcamAvailable {
-    type: typeof TOGGLE_WEBCAM_AVAILABLE;
+    readonly type: typeof TOGGLE_WEBCAM_AVAILABLE;
 }
 
 interface ISetImageDataAction {
-    type: typeof SET_IMAGE_DATA;
-    images: {
+    readonly type: typeof SET_IMAGE_DATA;
+    readonly payload: {
         [key: string]: ImageData;
     };
 }

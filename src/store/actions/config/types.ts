@@ -54,18 +54,18 @@ export interface IDetectionConfig {
 }
 
 export interface ISetAppConfigAction {
-    type: ConfigSetAction.APP;
-    partialAppConfig: Partial<IAppConfig>;
+    readonly type: ConfigSetAction.APP;
+    readonly partialAppConfig: Partial<IAppConfig>;
 }
 
 export interface ISetModelConfigAction {
-    type: ConfigSetAction.MODEL;
-    partialModelConfig: Partial<IModelConfig>;
+    readonly type: ConfigSetAction.MODEL;
+    readonly partialModelConfig: Partial<IModelConfig>;
 }
 
 export interface ISetDetectionConfigAction {
-    type: ConfigSetAction.DETECTION;
-    partialDetectionConfig: Partial<IDetectionConfig>;
+    readonly type: ConfigSetAction.DETECTION;
+    readonly partialDetectionConfig: Partial<IDetectionConfig>;
 }
 
 export type ConfigAction =

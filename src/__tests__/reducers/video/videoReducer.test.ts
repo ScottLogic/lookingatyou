@@ -42,7 +42,7 @@ describe('Video Reducer', () => {
     beforeEach(() => {
         mockStore = videoStore(
             { videos: {}, webcamAvailable: false, images: {} },
-            { type: SET_VIDEO_STREAMS, videos: mockInitialState },
+            { type: SET_VIDEO_STREAMS, payload: mockInitialState },
         );
     });
 
@@ -58,7 +58,7 @@ describe('Video Reducer', () => {
     it('should return a new state when dispaching Set Video Streams action', () => {
         const newState = videoStore(mockStore, {
             type: SET_VIDEO_STREAMS,
-            videos: mockTwoVideoStreams,
+            payload: mockTwoVideoStreams,
         });
         const expectedState = {
             videos: {

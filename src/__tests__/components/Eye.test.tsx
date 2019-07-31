@@ -2,10 +2,8 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import { EyeSide } from '../../AppConstants';
 import Eye, { IEyeProps } from '../../components/eye/Eye';
-import {
-    getBezier,
-    getEyeCoordinates,
-} from '../../components/eye/EyeController';
+import { getBezier, getEyeShape } from '../../components/eye/EyeController';
+import { generateInnerPath } from '../../components/eye/utils/VisualUtils';
 
 const dimension = 500;
 const scleraRadius = 100;
@@ -22,18 +20,20 @@ describe('Eye', () => {
             scleraRadius,
             irisRadius: 50,
             pupilRadius: 20,
-            openCoefficient,
             dilatedCoefficient: 1,
             innerX: 250,
             innerY: 250,
             fps: 10,
-            eyeCoords: getEyeCoordinates(
+            eyeShape: getEyeShape(
                 dimension,
                 dimension,
                 scleraRadius,
                 openCoefficient,
             ),
             bezier: getBezier(scleraRadius, openCoefficient),
+            reflection: undefined,
+            innerPath: generateInnerPath(20, 100),
+            irisAdjustment: { scale: 1, angle: 0 },
         };
     });
 

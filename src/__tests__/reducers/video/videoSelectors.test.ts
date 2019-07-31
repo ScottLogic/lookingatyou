@@ -37,7 +37,7 @@ describe('Video Selectors', () => {
     beforeEach(() => {
         mockVideoStore = videoStore(
             { videos: {}, webcamAvailable: false, images: {} },
-            { type: SET_VIDEO_STREAMS, videos: mockTwoVideoStreams },
+            { type: SET_VIDEO_STREAMS, payload: mockTwoVideoStreams },
         );
         mockRootStore = {
             videoStore: mockVideoStore,
