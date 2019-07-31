@@ -226,7 +226,6 @@ export const EyeController = React.memo(
                             class={eye}
                             key={index}
                             width={props.width / 2}
-                            height={props.height}
                             irisColor={irisColor}
                             scleraRadius={scleraRadius}
                             irisRadius={irisRadius}
@@ -240,6 +239,7 @@ export const EyeController = React.memo(
                             reflection={reflectionRef.current}
                             irisAdjustment={irisAdjustmentRef.current}
                             innerPath={innerPath}
+                            {...props}
                         />
                     );
                 })}

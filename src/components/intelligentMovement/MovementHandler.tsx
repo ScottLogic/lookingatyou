@@ -62,7 +62,7 @@ export class MovementHandler extends React.Component<
     private tooBright: boolean;
     private isMovingLeft: boolean;
     private squinting: boolean;
-    private personDetected: boolean;
+    private detected: boolean;
     private prevProps: MovementHandlerProps | null;
     private openCoefficient: number;
     private textTimeout: number | null;
@@ -80,7 +80,7 @@ export class MovementHandler extends React.Component<
         this.sleepTimeout = null;
         this.tooBright = false;
         this.isMovingLeft = false;
-        this.personDetected = false;
+        this.detected = false;
         this.squinting = false;
         this.prevProps = null;
         this.openCoefficient = eyelidPosition.OPEN;
@@ -201,8 +201,8 @@ export class MovementHandler extends React.Component<
     }
 
     isNewTarget() {
-        if (!this.personDetected) {
-            this.personDetected = true;
+        if (!this.detected) {
+            this.detected = true;
             this.setState({
                 dilationCoefficient: pupilSizes.dilated,
             });
@@ -210,8 +210,8 @@ export class MovementHandler extends React.Component<
     }
 
     hasTargetLeft() {
-        if (this.personDetected) {
-            this.personDetected = false;
+        if (this.detected) {
+            this.detected = false;
             this.squinting = true;
             this.setState({
                 dilationCoefficient: pupilSizes.constricted,
@@ -264,12 +264,10 @@ export class MovementHandler extends React.Component<
         return (
             <>
                 <EyeController
-                    width={this.props.width}
-                    height={this.props.height}
-                    environment={this.props.environment}
                     dilation={this.state.dilationCoefficient}
-                    detected={this.personDetected}
+                    detected={this.detected}
                     openCoefficient={this.openCoefficient}
+                    {...this.props}
                 />
                 <FadeInText text={this.state.text} show={this.state.showText} />
             </>
