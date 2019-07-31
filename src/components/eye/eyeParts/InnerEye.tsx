@@ -34,6 +34,14 @@ export const InnerEye = React.memo(
             transition: `transform ${period}ms`, // cx and cy transitions based on FPS
         };
         const canvasRef: React.RefObject<HTMLCanvasElement> = useRef(null);
+<<<<<<< HEAD
+=======
+        const irisAdjustment = getIrisAdjustment(props.target);
+
+        useEffect(() => {
+            irisAdjustmentRef.current = irisAdjustment;
+        }, [irisAdjustment]);
+>>>>>>> refactored getIrisAjustment to use ICoords
 
         useEffect(() => {
             if (canvasRef && props.reflection) {

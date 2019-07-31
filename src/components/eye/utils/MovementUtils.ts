@@ -5,6 +5,7 @@ import {
     lightConsts,
 } from '../../../AppConstants';
 import { normalise } from '../../../utils/objectTracking/calculateFocus';
+import { ICoords } from '../../../utils/types';
 
 export function analyseLight(
     image: ImageData,
@@ -44,7 +45,7 @@ export function naturalMovement(currentX: number, isMovingLeft: boolean) {
         return Math.random() < idleMovementConsts.moveCenterChance
             ? newEyePos(currentX, isMovingLeft)
             : { newX: currentX, isMovingLeft };
-    } else if (currentX >= eyeBoundary) {
+    } else if (Math.abs(currentX) >= eyeBoundary) {
         return Math.random() < idleMovementConsts.moveSideChance
             ? newEyePos(currentX, !isMovingLeft)
             : { newX: currentX, isMovingLeft };
@@ -55,7 +56,7 @@ export function naturalMovement(currentX: number, isMovingLeft: boolean) {
 
 export function newEyePos(currentX: number, isMovingLeft: boolean) {
     let xDelta = idleMovementConsts.xDelta;
-    xDelta = isMovingLeft ? -xDelta : xDelta;
+    xDelta = isMovingLeft ? 0 - xDelta : xDelta;
     return { newX: currentX + xDelta, isMovingLeft };
 }
 
@@ -63,30 +64,14 @@ export function getMaxDisplacement(scleraRadius: number, irisRadius: number) {
     return (scleraRadius - irisRadius * irisSkewFactor) / irisSkewFactor;
 }
 
-export function getIrisAdjustment(
-    x: number,
-    y: number,
-    height: number,
-    width: number,
-    scleraRadius: number,
-    irisRadius: number,
-    previousAngle: number = 0,
-) {
-    const displacement = Math.hypot(width / 2 - x, height / 2 - y);
-    const maxDisplacement = getMaxDisplacement(scleraRadius, irisRadius);
+export function getIrisAdjustment(position: ICoords) {
+    const displacement = Math.hypot(position.x, position.y);
 
     const scale =
         irisSkewFactor +
-        ((1 - irisSkewFactor) * (maxDisplacement - displacement)) /
-            maxDisplacement;
+        normalise(1 - displacement, 1, 0, 1 - irisSkewFactor, 0);
 
-    let angle = (Math.atan2(height / 2 - y, width / 2 - x) * 180) / Math.PI;
-
-    if (angle - previousAngle < -90) {
-        angle = angle + 180;
-    } else if (angle - previousAngle > 90) {
-        angle = angle - 180;
-    }
+    const angle = (Math.atan2(position.y, position.x) / Math.PI) * 180;
 
     return {
         scale,
