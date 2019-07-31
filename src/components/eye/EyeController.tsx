@@ -20,7 +20,7 @@ import {
 } from '../../store/selectors/detectionSelectors';
 import { getVideos } from '../../store/selectors/videoSelectors';
 import { normalise } from '../../utils/objectTracking/calculateFocus';
-import { Animation } from '../../utils/pose/animations';
+import { Animation, blink } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import Eye from './Eye';
 import { Gradients } from './Gradients';
@@ -59,7 +59,6 @@ export type EyeControllerProps = IEyeControllerProps &
 
 export const EyeController = React.memo(
     (props: EyeControllerProps) => {
-        const [isBlinking, setIsBlinking] = useState(false);
         const { environment, updateAnimation, animation } = props;
 
         const scleraRadius = Math.floor(props.width / 4.5);
@@ -114,10 +113,8 @@ export const EyeController = React.memo(
         const calculatedEyesOpenCoefficient =
             props.animation.length > 0 && props.animation[0].openCoefficient
                 ? props.animation[0].openCoefficient
-                : isBlinking
-                ? eyelidPosition.CLOSED
                 : props.openCoefficient;
-
+        console.log(calculatedEyesOpenCoefficient);
         const dilatedCoefficient =
             props.animation.length > 0 &&
             props.animation[0].dilation !== undefined
@@ -135,24 +132,23 @@ export const EyeController = React.memo(
 
         useEffect(() => {
             if (animation.length === 0) {
-                let blink = environment.setInterval(() => {
-                    if (isBlinking) {
-                        setIsBlinking(false);
-                    } else {
-                        const blinkFrequency = props.detected
-                            ? blinkConsts.frequency / 4
-                            : blinkConsts.frequency;
-                        const blinkProbability =
-                            blinkFrequency / (1000 / transitionTimes.blink);
-                        setIsBlinking(Math.random() < blinkProbability);
+                let blinkInterval = environment.setInterval(() => {
+                    const blinkFrequency = props.detected
+                        ? blinkConsts.frequency / 4
+                        : blinkConsts.frequency;
+                    const blinkProbability =
+                        blinkFrequency / (1000 / transitionTimes.blink);
+                    if (Math.random() < blinkProbability) {
+                        console.log('blinking');
+                        updateAnimation(blink());
                     }
                 }, transitionTimes.blink);
                 return () => {
-                    environment.clearInterval(blink);
-                    blink = 0;
+                    environment.clearInterval(blinkInterval);
+                    blinkInterval = 0;
                 };
             }
-        }, [props.detected, environment, isBlinking, animation]);
+        }, [props.detected, environment, animation]);
 
         useEffect(() => {
             if (animation.length > 0) {

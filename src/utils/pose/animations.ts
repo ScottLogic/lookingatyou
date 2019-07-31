@@ -114,3 +114,13 @@ export function dab(): Animation {
     }
     return animation;
 }
+
+export function blink(): Animation {
+    return [
+        {
+            openCoefficient: eyelidPosition.CLOSED,
+            duration: 5000,
+        },
+        { openCoefficient: eyelidPosition.OPEN, duration: 150 },
+    ];
+}
