@@ -38,9 +38,7 @@ interface IToggleWebcamAvailable {
 
 interface ISetImageDataAction {
     type: typeof SET_IMAGE_DATA;
-    images: {
-        [key: string]: ImageData;
-    };
+    image: ImageData;
 }
 
 export type VideoActionTypes =

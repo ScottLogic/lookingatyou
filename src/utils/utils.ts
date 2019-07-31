@@ -3,7 +3,7 @@ import { EyeSide } from '../AppConstants';
 import { IDetection } from '../models/objectDetection';
 import { Bbox, ICoords } from './types';
 
-export function getBbox(detection: IDetection): Bbox | undefined {
+export function getBbox(detection: IDetection | undefined): Bbox | undefined {
     return detection ? detection.bbox : undefined;
 }
 
@@ -36,19 +36,12 @@ export function reshapeDetections(detections: Pose[]): IDetection[] {
 export function getImageDataFromVideos(
     videos: Array<HTMLVideoElement | undefined>,
     document: Document,
-): { [key: string]: ImageData } {
-    let images: { [key: string]: ImageData } = {};
-    const leftImage = getImageData(videos[0], document);
-    if (leftImage) {
-        images = { [EyeSide.LEFT]: leftImage };
-        if (videos[1]) {
-            const rightImage = getImageData(videos[1], document);
-            if (rightImage) {
-                images[EyeSide.RIGHT] = rightImage;
-            }
-        }
+): ImageData | null {
+    const image = getImageData(videos[0], document);
+    if (image) {
+        return image;
     }
-    return images;
+    return null;
 }
 
 function getImageData(

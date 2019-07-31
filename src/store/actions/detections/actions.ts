@@ -85,22 +85,21 @@ export function handleDetection(document: Document) {
                 return;
             }
 
-            const images = getImageDataFromVideos(videos, document);
-            dispatch(setImageDataAction(images));
+            const image = getImageDataFromVideos(videos, document);
 
-            let left: IDetection[] = [];
-            const leftImage = images[EyeSide.LEFT];
-            if (leftImage && model) {
+            let detections: IDetection[] = [];
+            if (image && model) {
+                dispatch(setImageDataAction(image));
                 const leftDetections = await model.estimateMultiplePoses(
-                    leftImage,
+                    image,
                     detectionConfig,
                 );
-                left = reshapeDetections(leftDetections);
+                detections = reshapeDetections(leftDetections);
             }
 
             dispatch(
                 setDetectionsAndMaybeSwapTarget(
-                    left,
+                    detections,
                     getTargets(state),
                     getColour(state),
                 ),
