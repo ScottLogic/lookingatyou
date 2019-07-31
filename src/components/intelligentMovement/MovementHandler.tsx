@@ -139,8 +139,10 @@ export class MovementHandler extends React.Component<
     }
 
     checkSelection() {
-        const isSquinting = this.openCoefficient === eyelidPosition.SQUINT;
-        if (isSquinting && Math.random() < 0.1) {
+        if (
+            this.openCoefficient === eyelidPosition.SQUINT &&
+            Math.random() < 0.1
+        ) {
             this.openCoefficient = eyelidPosition.OPEN;
         }
 
