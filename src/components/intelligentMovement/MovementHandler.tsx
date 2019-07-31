@@ -17,6 +17,7 @@ import {
     getDetections,
     getTargets,
 } from '../../store/selectors/detectionSelectors';
+import { getImageData } from '../../store/selectors/videoSelectors';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
@@ -33,7 +34,7 @@ interface IStateProps {
     fps: number;
     detections: IDetection[];
     target: ICoords;
-    images: { [key: string]: ImageData };
+    image: ImageData;
     animation: Animation;
 }
 
@@ -120,9 +121,9 @@ export class MovementHandler extends React.Component<
     }
 
     calculateBrightness() {
-        if (this.props.images[EyeSide.LEFT]) {
+        if (this.props.image) {
             const { tooBright, scaledPupilSize } = analyseLight(
-                this.props.images[EyeSide.LEFT],
+                this.props.image,
                 this.tooBright,
             );
             if (tooBright) {
@@ -240,7 +241,7 @@ const mapStateToProps = (state: IRootStore) => ({
     fps: getFPS(state),
     detections: getDetections(state),
     target: getTargets(state),
-    images: state.videoStore.images,
+    image: getImageData(state),
     animation: state.detectionStore.animation,
 });
 

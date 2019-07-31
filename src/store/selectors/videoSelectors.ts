@@ -27,6 +27,6 @@ export function getWebcamAvailable(state: IRootStore): boolean {
     return state.videoStore.webcamAvailable;
 }
 
-export function getImageData(state: IRootStore): { [key: string]: ImageData } {
-    return state.videoStore.images;
+export function getImageData(state: IRootStore): ImageData {
+    return state.videoStore.image;
 }

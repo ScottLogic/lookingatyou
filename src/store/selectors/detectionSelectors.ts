@@ -19,8 +19,7 @@ export function getDetections(state: IRootStore): Detections {
 
 export const getSelections = createSelector(
     [getDetections, getPreviousTargets, getPreviousColours, getImageData],
-    (detections, previousTargets, previousColours, imageDataMap) => {
-        const imageData = imageDataMap[EyeSide.LEFT];
+    (detections, previousTargets, previousColours, imageData) => {
         if (previousTargets.length > 0) {
             const predictedTarget = getPredictedTarget(previousTargets);
             const predictedColour = getPredictedColour(previousColours);
@@ -56,8 +55,7 @@ export const getTargets = createSelector(
 
 export const getColour = createSelector(
     [getSelections, getImageData],
-    (selection, imageDataMap): IColour => {
-        const imageData = imageDataMap[EyeSide.LEFT];
+    (selection, imageData): IColour => {
         if (selection) {
             const colour = calculateColourMatch(
                 imageData,
