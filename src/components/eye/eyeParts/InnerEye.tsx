@@ -3,6 +3,10 @@ import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import tinycolor from 'tinycolor2';
 import { IRootStore } from '../../../store/reducers/rootReducer';
+import { getFPS } from '../../../store/selectors/configSelectors';
+import { getTargets } from '../../../store/selectors/detectionSelectors';
+import { ICoords } from '../../../utils/types';
+import { irisSkewMatrixTransform } from '../utils/MovementUtils';
 import { IIrisAdjustment } from '../utils/VisualUtils';
 
 interface IInnerEyeProps {
@@ -23,6 +27,7 @@ interface IInnerEyeProps {
 
 interface IInnerEyeMapStateToProps {
     fps: number;
+    target: ICoords;
 }
 
 type InnerEyeProps = IInnerEyeProps & IInnerEyeMapStateToProps;
@@ -34,14 +39,6 @@ export const InnerEye = React.memo(
             transition: `transform ${period}ms`, // cx and cy transitions based on FPS
         };
         const canvasRef: React.RefObject<HTMLCanvasElement> = useRef(null);
-<<<<<<< HEAD
-=======
-        const irisAdjustment = getIrisAdjustment(props.target);
-
-        useEffect(() => {
-            irisAdjustmentRef.current = irisAdjustment;
-        }, [irisAdjustment]);
->>>>>>> refactored getIrisAjustment to use ICoords
 
         useEffect(() => {
             if (canvasRef && props.reflection) {
@@ -60,9 +57,7 @@ export const InnerEye = React.memo(
                 className="inner"
                 style={transitionStyle}
                 transform={`
-                    rotate(${props.irisAdjustment.angle})
-                    scale(${props.irisAdjustment.scale}, 1)
-                    rotate(${-props.irisAdjustment.angle})
+                    ${irisSkewMatrixTransform(props.target)} 
                     translate(${props.innerX},${props.innerY})
                 `}
             >
@@ -132,7 +127,8 @@ export const InnerEye = React.memo(
 );
 
 const mapStateToProps = (state: IRootStore): IInnerEyeMapStateToProps => ({
-    fps: state.configStore.fps,
+    fps: getFPS(state),
+    target: getTargets(state),
 });
 
 export default connect(mapStateToProps)(InnerEye);
