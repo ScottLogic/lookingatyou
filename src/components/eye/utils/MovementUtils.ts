@@ -5,13 +5,10 @@ import {
     idleMovementConsts,
     lightConsts,
 } from '../../../AppConstants';
-import { normalise } from '../../../utils/objectTracking/calculateFocus';
 
-export function analyseLight(
-    image: ImageData,
-): { tooBright: boolean; scaledPupilSize: number } {
+export function analyseLight(image: ImageData): number {
     if (!image) {
-        return { tooBright: false, scaledPupilSize: 0 };
+        return 0;
     }
 
     const data = image.data;
@@ -22,22 +19,8 @@ export function analyseLight(
         colorSum += pixelL;
     }
 
-    let brightness =
-        Math.floor(colorSum / (image.width * image.height)) + CIELabOffset;
-    brightness = Math.min(brightness, lightConsts.maxBrightness);
-
-    const scaledPupilSize = normalise(
-        lightConsts.maxBrightness - brightness,
-        lightConsts.maxBrightness,
-        0,
-        lightConsts.dilationMultipler + lightConsts.dilationOffset,
-        lightConsts.dilationOffset,
-    );
-
-    return {
-        tooBright: lightConsts.maxBrightness === brightness,
-        scaledPupilSize,
-    };
+    const brightness = Math.floor(colorSum / (image.width * image.height));
+    return Math.min(brightness, lightConsts.maxBrightness);
 }
 
 export function naturalMovement(currentX: number, isMovingLeft: boolean) {

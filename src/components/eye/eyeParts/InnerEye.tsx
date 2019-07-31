@@ -51,10 +51,7 @@ export const InnerEye = React.memo((props: InnerEyeProps) => {
         <g
             className="inner"
             style={transitionStyle}
-            transform={`
-                    ${props.skewTransform}
-                    translate(${props.innerX},${props.innerY})
-                `}
+            transform={`${props.skewTransform} translate(${props.innerX},${props.innerY})`}
         >
             <circle
                 className={'iris'}
