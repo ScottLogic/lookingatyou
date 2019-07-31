@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import './App.css';
-import ConfigMenu from './components/configMenu/ConfigMenu';
+import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import MovementHandler from './components/intelligentMovement/MovementHandler';
 import VideoHandler from './components/video/VideoHandler';
 import { loadModel } from './store/actions/detections/actions';
@@ -95,9 +95,7 @@ export class App extends React.Component<AppProps, IAppState> {
                                 height={this.state.height}
                                 environment={this.props.environment}
                             />
-                            <ConfigMenu
-                                window={this.props.environment.window}
-                            />
+                            <ConfigMenuElement window={this.props.environment.window} />
                         </div>
                     )
                 ) : (

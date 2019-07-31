@@ -33,7 +33,6 @@ export const initialState: IConfigState = {
     detectionConfig: initialDetectionConfig,
     toggleReflection: true,
     reflectionOpacity: 0.2,
-    toggleAdvanced: false,
 };
 
 const configActionMapping = {
