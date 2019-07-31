@@ -26,11 +26,7 @@ import Eye from './Eye';
 import { Gradients } from './Gradients';
 import { Shadows } from './Shadows';
 import { getReflection } from './utils/ReflectionUtils';
-import {
-    generateInnerPath,
-    getIrisAdjustment,
-    getMaxDisplacement,
-} from './utils/VisualUtils';
+import { generateInnerPath, getMaxDisplacement } from './utils/VisualUtils';
 
 interface IEyeControllerProps {
     width: number;
@@ -185,18 +181,6 @@ export const EyeController = React.memo(
             props.config.toggleReflection,
             pupilRadius,
         ]);
-
-        useEffect(() => {
-            irisAdjustmentRef.current = getIrisAdjustment(
-                innerX,
-                innerY,
-                props.height,
-                props.width / 2,
-                scleraRadius,
-                irisRadius,
-                irisAdjustmentRef.current.angle,
-            );
-        });
 
         useEffect(() => {
             setInnerPath(generateInnerPath(irisRadius, 100));

@@ -1,8 +1,8 @@
 import {
     eyeCoords,
     idleMovementConsts,
-    irisSkewFactor,
     lightConsts,
+    minIrisScale,
 } from '../../../AppConstants';
 import { normalise } from '../../../utils/objectTracking/calculateFocus';
 import { ICoords } from '../../../utils/types';
@@ -60,25 +60,20 @@ export function newEyePos(currentX: number, isMovingLeft: boolean) {
     return { newX: currentX + xDelta, isMovingLeft };
 }
 
-export function getMaxDisplacement(scleraRadius: number, irisRadius: number) {
-    return (scleraRadius - irisRadius * irisSkewFactor) / irisSkewFactor;
-}
-
 export function irisSkewMatrixTransform(position: ICoords) {
-    const displacement = Math.hypot(position.x, position.y);
+    const radius = Math.hypot(position.x, position.y);
+    if (radius === 0) {
+        return '';
+    }
 
     const scale =
-        irisSkewFactor +
-        normalise(1 - displacement, 1, 0, 1 - irisSkewFactor, 0);
+        minIrisScale + normalise(1 - radius, 1, 0, 1 - minIrisScale, 0);
+    const xDivR = position.x / radius;
+    const yDivR = position.y / radius;
 
-    const angle = Math.atan2(position.y, position.x);
-
-    const cosAngle = Math.cos(angle);
-    const sinAngle = Math.sin(angle);
-    const a = scale * cosAngle * cosAngle + sinAngle * sinAngle;
-    const b = (1 - scale) * sinAngle * cosAngle;
-    const c = b;
-    const matrix = `matrix(${a},${b},${c},1,0,0)`;
+    const xScale = scale * Math.pow(xDivR, 2) + Math.pow(yDivR, 2);
+    const skew = (1 - scale) * xDivR * yDivR;
+    const matrix = `matrix(${xScale},${skew},${skew},1,0,0)`;
     return matrix;
 }
 

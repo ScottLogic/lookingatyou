@@ -79,4 +79,4 @@ export const targetingConsts = {
     maxNum: 8,
 };
 export const minPoseConfidence = 0.2;
-export const irisSkewFactor = 0.8; // factor by which to squish iris when iris is all the way to edge of sclera
+export const minIrisScale = 0.8; // factor by which to squish iris when iris is all the way to edge of sclera
