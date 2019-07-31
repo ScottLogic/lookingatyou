@@ -57,7 +57,6 @@ export function getAvgColour(
 
     const data = imageData.data;
     let counter = 0;
-
     for (
         let i = yStart * 4 * imageData.width;
         i < yEnd * 4 * imageData.width;
@@ -138,10 +137,6 @@ export function closerToColour(
     keypoints1: Keypoint[],
     keypoints2: Keypoint[],
 ): number {
-    if (!imageData) {
-        return 0;
-    }
-
     const x1Start = getXStart(keypoints1);
     const x2Start = getXStart(keypoints2);
     const x1End = x1Start + colourCheckConsts.xOffset;
