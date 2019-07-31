@@ -6,6 +6,7 @@ import {
     blinkConsts,
     eyelidPosition,
     EyeSide,
+    minIrisScale,
     transitionTimes,
 } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
@@ -26,7 +27,7 @@ import Eye from './Eye';
 import { Gradients } from './Gradients';
 import { Shadows } from './Shadows';
 import { getReflection } from './utils/ReflectionUtils';
-import { generateInnerPath, getMaxDisplacement } from './utils/VisualUtils';
+import { generateInnerPath, irisMatrixTransform } from './utils/VisualUtils';
 
 interface IEyeControllerProps {
     width: number;
@@ -87,10 +88,9 @@ export const EyeController = React.memo(
                       ),
                   }
                 : (() => {
-                      const maxDisplacement = getMaxDisplacement(
-                          scleraRadius,
-                          irisRadius,
-                      );
+                      const maxDisplacement =
+                          (scleraRadius - irisRadius * minIrisScale) /
+                          minIrisScale;
                       const targetY =
                           props.target.y * props.config.ySensitivity;
                       const targetX =
@@ -224,6 +224,7 @@ export const EyeController = React.memo(
                             reflection={reflectionRef.current}
                             irisAdjustment={irisAdjustmentRef.current}
                             innerPath={innerPath}
+                            skewTransform={irisMatrixTransform(props.target)}
                         />
                     );
                 })}

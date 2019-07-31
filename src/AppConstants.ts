@@ -48,7 +48,7 @@ export const idleMovementConsts = {
 };
 export const lightConsts = {
     maxBrightness: 220, // brightness dilation multiplier at max when average brightness reaches this value
-    dilationMultipler: 0.8, // max brightness dilation multiplier = offset + multiplier
+    dilationMultipler: 1.2, // max brightness dilation multiplier = offset + multiplier
     dilationOffset: 0.7, // min brightness dilation multiplier
 };
 export const blinkConsts = {
@@ -80,3 +80,4 @@ export const targetingConsts = {
 };
 export const minPoseConfidence = 0.2;
 export const minIrisScale = 0.8; // factor by which to squish iris when iris is all the way to edge of sclera
+export const CIELabOffset = 128;
