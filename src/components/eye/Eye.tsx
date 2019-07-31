@@ -46,7 +46,7 @@ export default function Eye(props: IEyeProps) {
     };
 
     return (
-        <svg {...props}>
+        <svg className={props.class} width={props.width} height={props.height}>
             <Sclera
                 radius={props.scleraRadius}
                 width={props.width / 2}

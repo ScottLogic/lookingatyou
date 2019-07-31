@@ -14,7 +14,7 @@ export const Sclera = React.memo(
                 className={'sclera'}
                 r={props.radius}
                 fill={'url(#scleraGradient)'}
-                cx={props.width}
+                cx={props.width / 2}
                 cy={props.height}
             />
         );
