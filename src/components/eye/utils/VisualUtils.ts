@@ -20,7 +20,7 @@ export function irisMatrixTransform(position: ICoords) {
 
     const xScale = scale * Math.pow(xDivR, 2) + Math.pow(yDivR, 2);
     const skew = (1 - scale) * xDivR * yDivR;
-    return = `matrix(${xScale},${skew},${skew},1,0,0)`;
+    return `matrix(${xScale},${skew},${skew},1,0,0)`;
 }
 
 export function generateInnerPath(radius: number, sectors: number) {
