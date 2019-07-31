@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import tinycolor from 'tinycolor2';
 import { IRootStore } from '../../../store/reducers/rootReducer';
