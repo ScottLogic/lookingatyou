@@ -3,6 +3,7 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { targetingConsts } from '../../../AppConstants';
 import { Detections, IDetection } from '../../../models/objectDetection';
+import calculateTargetPos from '../../../utils/objectTracking/calculateFocus';
 import { Animation, animationMapping } from '../../../utils/pose/animations';
 import { getPose } from '../../../utils/pose/poseDetection';
 import { IColour, ICoords } from '../../../utils/types';
@@ -16,14 +17,10 @@ import {
     getTargets,
 } from '../../selectors/detectionSelectors';
 import { getVideo } from '../../selectors/videoSelectors';
+import { createActionPayload } from '../creators';
 import { setImageDataAction } from '../video/actions';
 import {
-    ISetAnimationAction,
-    ISetDetectionsAction,
-    ISetIdleTargetAction,
-    ISetModelAction,
-    ISetOpenAction,
-    ISwapSelectionAction,
+    ISwapSelectionActionPayload,
     SET_ANIMATION,
     SET_DETECTIONS,
     SET_IDLE_TARGET,
@@ -31,13 +28,6 @@ import {
     SET_OPEN,
     SWAP_SELECTION,
 } from './types';
-
-export function setModel(model: PoseNet | null): ISetModelAction {
-    return {
-        type: SET_MODEL,
-        payload: model,
-    };
-}
 
 export function loadModel(document: Document) {
     return async (
@@ -87,20 +77,14 @@ export function handleDetection(document: Document) {
             let detections: IDetection[] = [];
             if (image && model) {
                 dispatch(setImageDataAction(image));
-                const leftDetections = await model.estimateMultiplePoses(
+                const pose = await model.estimateMultiplePoses(
                     image,
                     detectionConfig,
                 );
-                detections = reshapeDetections(leftDetections);
+                detections = reshapeDetections(pose);
             }
 
-            dispatch(
-                setDetectionsAndMaybeSwapTarget(
-                    detections,
-                    getTargets(state),
-                    getColour(state),
-                ),
-            );
+            dispatch(setDetectionsAndMaybeSwapTarget(detections));
 
             // The way we get target will change once #273 is implemented
             // For now I compare selection bounding box to existing detections and select a target from there
@@ -119,18 +103,7 @@ export function handleDetection(document: Document) {
     };
 }
 
-export function setIdleTarget(coords: ICoords): ISetIdleTargetAction {
-    return {
-        type: SET_IDLE_TARGET,
-        payload: coords,
-    };
-}
-
-export function setDetectionsAndMaybeSwapTarget(
-    detections: Detections,
-    previousTarget: ICoords,
-    previousColour: IColour,
-) {
+export function setDetectionsAndMaybeSwapTarget(detections: Detections) {
     return (
         dispatch: ThunkDispatch<IRootStore, void, Action>,
         getState: () => IRootStore,
@@ -138,59 +111,81 @@ export function setDetectionsAndMaybeSwapTarget(
         const state = getState();
         const now = new Date().getTime();
         if (now < state.detectionStore.nextSelectionSwapTime) {
-            dispatch(setDetections(detections, previousTarget, previousColour));
+            dispatch(
+                setDetections({
+                    detections,
+                    previousTarget: getTargets(state),
+                    previousColour: getColour(state),
+                }),
+            );
         } else {
+            const previousSelection = getSelections(state);
+            if (previousSelection && detections.length > 1) {
+                removeClosestToSelection(detections, previousSelection);
+            }
+
             const selectionIndex = Math.floor(
                 Math.random() * (detections.length - 1),
             );
-            const nextTargetSwapTime =
+            const nextSelectionSwapTime =
                 now +
                 targetingConsts.minInterval +
                 (targetingConsts.maxInterval - targetingConsts.minInterval) *
                     Math.random();
-            dispatch(
-                swapSelection(
-                    detections.length > 0
-                        ? detections[selectionIndex]
-                        : undefined,
-                    nextTargetSwapTime,
-                ),
-            );
+            const selection =
+                detections.length > 0 ? detections[selectionIndex] : undefined;
+            dispatch(swapSelection({ selection, nextSelectionSwapTime }));
         }
     };
 }
 
-export function setDetections(
-    detections: Detections,
-    previousTarget: ICoords,
-    previousColour: IColour,
-): ISetDetectionsAction {
-    return {
-        type: SET_DETECTIONS,
-        payload: { detections, previousTarget, previousColour },
-    };
+function removeClosestToSelection(
+    detections: IDetection[],
+    selection: IDetection,
+) {
+    const selectionTargetPos = calculateTargetPos(selection.bbox);
+    let closestIndex = 0;
+    let closestDistance = Number.MAX_SAFE_INTEGER;
+    detections.forEach((detection, index) => {
+        const targetPos = calculateTargetPos(detection.bbox);
+        const distance = Math.hypot(
+            targetPos.x - selectionTargetPos.x,
+            targetPos.y - selectionTargetPos.y,
+        );
+        if (distance < closestDistance) {
+            closestIndex = index;
+            closestDistance = distance;
+        }
+    });
+    detections.splice(closestIndex, 1);
 }
 
-export function swapSelection(
-    selection: IDetection | undefined,
-    nextSelectionSwapTime: number,
-): ISwapSelectionAction {
-    return {
-        type: SWAP_SELECTION,
-        payload: { selection, nextSelectionSwapTime },
-    };
-}
+export const setDetections = createActionPayload<
+    typeof SET_DETECTIONS,
+    {
+        detections: Detections;
+        previousTarget: ICoords;
+        previousColour: IColour;
+    }
+>(SET_DETECTIONS);
 
-export function setOpen(openCoefficient: number): ISetOpenAction {
-    return {
-        type: SET_OPEN,
-        payload: openCoefficient,
-    };
-}
+export const swapSelection = createActionPayload<
+    typeof SWAP_SELECTION,
+    ISwapSelectionActionPayload
+>(SWAP_SELECTION);
 
-export function setAnimation(animation: Animation): ISetAnimationAction {
-    return {
-        type: SET_ANIMATION,
-        payload: animation,
-    };
-}
+export const setModel = createActionPayload<typeof SET_MODEL, PoseNet | null>(
+    SET_MODEL,
+);
+
+export const setIdleTarget = createActionPayload<
+    typeof SET_IDLE_TARGET,
+    ICoords
+>(SET_IDLE_TARGET);
+
+export const setOpen = createActionPayload<typeof SET_OPEN, number>(SET_OPEN);
+
+export const setAnimation = createActionPayload<
+    typeof SET_ANIMATION,
+    Animation
+>(SET_ANIMATION);

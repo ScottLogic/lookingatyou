@@ -1,27 +1,16 @@
 import {
     IVideoState,
-    SET_VIDEO,
     SET_VIDEO_STREAMS,
-    VideoActionTypes,
 } from '../../../store/actions/video/types';
 import { initialState as initialConfigStore } from '../../../store/reducers/configReducer';
 import { initialState as initialDetectionStore } from '../../../store/reducers/detectionReducer';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import videoStore from '../../../store/reducers/videoReducer';
 import * as selectors from '../../../store/selectors/videoSelectors';
-import { testDevice1, testDevice2 } from './videoReducer.test';
 
 const device1 = {
-    deviceId: testDevice1,
     width: 260,
     height: 380,
-    stream: undefined,
-};
-
-const device2 = {
-    deviceId: testDevice2,
-    width: 480,
-    height: 640,
     stream: undefined,
 };
 
@@ -36,7 +25,7 @@ describe('Video Selectors', () => {
     beforeEach(() => {
         mockVideoStore = videoStore(
             { video, webcamAvailable: false, image: imgData },
-            { type: SET_VIDEO_STREAMS, video: device1 },
+            { type: SET_VIDEO_STREAMS, payload: device1 },
         );
         mockRootStore = {
             videoStore: mockVideoStore,

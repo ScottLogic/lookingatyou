@@ -17,22 +17,22 @@ export interface IVideoState {
 }
 
 interface ISetVideoAction {
-    type: typeof SET_VIDEO;
-    payload: HTMLVideoElement;
+    readonly type: typeof SET_VIDEO;
+    readonly payload: HTMLVideoElement;
 }
 
 interface ISetVideoStreamsAction {
-    type: typeof SET_VIDEO_STREAMS;
-    video: IVideo;
+    readonly type: typeof SET_VIDEO_STREAMS;
+    readonly payload: IVideo;
 }
 
 interface IToggleWebcamAvailable {
-    type: typeof TOGGLE_WEBCAM_AVAILABLE;
+    readonly type: typeof TOGGLE_WEBCAM_AVAILABLE;
 }
 
 interface ISetImageDataAction {
-    type: typeof SET_IMAGE_DATA;
-    image: ImageData;
+    readonly type: typeof SET_IMAGE_DATA;
+    readonly payload: ImageData;
 }
 
 export type VideoActionTypes =

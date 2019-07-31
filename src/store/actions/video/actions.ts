@@ -2,34 +2,14 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { configureStreams } from '../../../components/webcamHandler/WebcamHandler';
 import { IRootStore } from '../../reducers/rootReducer';
+import { createAction, createActionPayload } from '../creators';
 import {
     IVideo,
     SET_IMAGE_DATA,
     SET_VIDEO,
     SET_VIDEO_STREAMS,
     TOGGLE_WEBCAM_AVAILABLE,
-    VideoActionTypes,
 } from './types';
-
-export function setVideoAction(payload: HTMLVideoElement): VideoActionTypes {
-    return {
-        type: SET_VIDEO,
-        payload,
-    };
-}
-
-export function setVideoStreamsAction(videos: IVideo): VideoActionTypes {
-    return {
-        type: SET_VIDEO_STREAMS,
-        video: videos,
-    };
-}
-
-export function toggleWebcamAvailable(): VideoActionTypes {
-    return {
-        type: TOGGLE_WEBCAM_AVAILABLE,
-    };
-}
 
 export function setStream(mediaDevices: MediaDevices) {
     return async (
@@ -51,9 +31,21 @@ export function setStream(mediaDevices: MediaDevices) {
     };
 }
 
-export function setImageDataAction(image: ImageData): VideoActionTypes {
-    return {
-        type: SET_IMAGE_DATA,
-        image,
-    };
-}
+export const setVideoAction = createActionPayload<
+    typeof SET_VIDEO,
+    HTMLVideoElement
+>(SET_VIDEO);
+
+export const setVideoStreamsAction = createActionPayload<
+    typeof SET_VIDEO_STREAMS,
+    IVideo
+>(SET_VIDEO_STREAMS);
+
+export const toggleWebcamAvailable = createAction<
+    typeof TOGGLE_WEBCAM_AVAILABLE
+>(TOGGLE_WEBCAM_AVAILABLE);
+
+export const setImageDataAction = createActionPayload<
+    typeof SET_IMAGE_DATA,
+    ImageData
+>(SET_IMAGE_DATA);

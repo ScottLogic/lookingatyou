@@ -1,28 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
     blinkConsts,
     eyelidPosition,
-    eyeRatio,
     EyeSide,
     transitionTimes,
 } from '../../AppConstants';
+import { IDetection } from '../../models/objectDetection';
 import { IConfigState } from '../../store/actions/config/types';
 import { setAnimation } from '../../store/actions/detections/actions';
 import { ISetAnimationAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
-import { getTargets } from '../../store/selectors/detectionSelectors';
+import {
+    getSelections,
+    getTargets,
+} from '../../store/selectors/detectionSelectors';
 import { getVideo } from '../../store/selectors/videoSelectors';
 import { normalise } from '../../utils/objectTracking/calculateFocus';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import Eye from './Eye';
-import { getMaxDisplacement } from './EyeUtils';
 import { Gradients } from './Gradients';
 import { Shadows } from './Shadows';
+import { getReflection } from './utils/ReflectionUtils';
+import {
+    generateInnerPath,
+    getIrisAdjustment,
+    getMaxDisplacement,
+} from './utils/VisualUtils';
 
 interface IEyeControllerProps {
     width: number;
@@ -36,7 +44,8 @@ interface IEyeControllerProps {
 interface IEyeControllerMapStateToProps {
     config: IConfigState;
     target: ICoords;
-    video: HTMLVideoElement | undefined;
+    image: HTMLVideoElement | undefined;
+    selection: IDetection | undefined;
     animation: Animation;
 }
 
@@ -50,11 +59,79 @@ export type EyeControllerProps = IEyeControllerProps &
 
 export const EyeController = React.memo(
     (props: EyeControllerProps) => {
-        const [blinkFrequencyCoefficient] = useState(1); // Will change based on camera feed e.g. lower coefficient when object in frame
-        const [isBlinking, setIsBlinking] = useState(false); // Will change based on camera feed e.g. blink less when object in frame
-        const [eyesOpenCoefficient] = useState(eyelidPosition.OPEN); // Will change based on camera feed e.g. higher coefficient to show surprise
-
+        const [isBlinking, setIsBlinking] = useState(false);
         const { environment, updateAnimation, animation } = props;
+
+        const scleraRadius = Math.floor(props.width / 4.5);
+        const irisRadius = Math.floor(props.width / 10);
+        const pupilRadius = Math.floor(props.width / 24);
+
+        const irisAdjustmentRef = useRef({
+            scale: 1,
+            angle: 0,
+        });
+
+        const reflectionRef = useRef<ImageData | undefined>(undefined);
+
+        const { innerX, innerY } =
+            props.animation.length > 0 &&
+            props.animation[0].normalisedCoords !== undefined
+                ? {
+                      innerX: normalise(
+                          props.animation[0].normalisedCoords!.x,
+                          1,
+                          -1,
+                          props.width / 2,
+                      ),
+                      innerY: normalise(
+                          props.animation[0].normalisedCoords!.y,
+                          1,
+                          -1,
+                          props.width / 2,
+                      ),
+                  }
+                : (() => {
+                      const maxDisplacement = getMaxDisplacement(
+                          scleraRadius,
+                          irisRadius,
+                      );
+                      const targetY =
+                          props.target.y * props.config.ySensitivity;
+                      const targetX =
+                          -props.target.x * props.config.xSensitivity; // mirrored
+                      const polarDistance = Math.hypot(targetY, targetX);
+                      const polarAngle = Math.atan2(targetY, targetX);
+                      const displacement =
+                          Math.min(1, polarDistance) * maxDisplacement;
+                      const x =
+                          props.width / 4 + displacement * Math.cos(polarAngle);
+                      const y =
+                          props.height / 2 +
+                          displacement * Math.sin(polarAngle);
+                      return { innerX: x, innerY: y };
+                  })();
+
+        const calculatedEyesOpenCoefficient =
+            props.animation.length > 0 && props.animation[0].openCoefficient
+                ? props.animation[0].openCoefficient
+                : isBlinking
+                ? eyelidPosition.CLOSED
+                : props.openCoefficient;
+
+        const dilatedCoefficient =
+            props.animation.length > 0 &&
+            props.animation[0].dilation !== undefined
+                ? props.animation[0].dilation
+                : props.dilation;
+
+        const [innerPath, setInnerPath] = useState(
+            generateInnerPath(irisRadius, 100),
+        );
+
+        const irisColor =
+            props.animation.length > 0 && props.animation[0].irisColor
+                ? props.animation[0].irisColor
+                : props.config.irisColor;
 
         useEffect(() => {
             if (animation.length === 0) {
@@ -66,8 +143,7 @@ export const EyeController = React.memo(
                             ? blinkConsts.frequency / 4
                             : blinkConsts.frequency;
                         const blinkProbability =
-                            (blinkFrequency * blinkFrequencyCoefficient) /
-                            (1000 / transitionTimes.blink);
+                            blinkFrequency / (1000 / transitionTimes.blink);
                         setIsBlinking(Math.random() < blinkProbability);
                     }
                 }, transitionTimes.blink);
@@ -76,13 +152,7 @@ export const EyeController = React.memo(
                     blink = 0;
                 };
             }
-        }, [
-            props.detected,
-            environment,
-            isBlinking,
-            blinkFrequencyCoefficient,
-            animation,
-        ]);
+        }, [props.detected, environment, isBlinking, animation]);
 
         useEffect(() => {
             if (animation.length > 0) {
@@ -95,73 +165,42 @@ export const EyeController = React.memo(
             }
         }, [animation, updateAnimation, environment]);
 
-        const scleraRadius = props.width / eyeRatio.sclera;
-        const irisRadius = props.width / eyeRatio.iris;
-        const pupilRadius = props.width / eyeRatio.pupil;
+        useEffect(() => {
+            if (
+                props.config.toggleReflection &&
+                props.selection &&
+                props.image
+            ) {
+                reflectionRef.current = getReflection(
+                    pupilRadius,
+                    props.selection.bbox,
+                    props.image,
+                );
+            } else {
+                reflectionRef.current = undefined;
+            }
+        }, [
+            props.selection,
+            props.image,
+            props.config.toggleReflection,
+            pupilRadius,
+        ]);
 
-        const getEyeCoords = (target: ICoords): ICoords => {
-            const maxDisplacement = getMaxDisplacement(
+        useEffect(() => {
+            irisAdjustmentRef.current = getIrisAdjustment(
+                innerX,
+                innerY,
+                props.height,
+                props.width / 2,
                 scleraRadius,
                 irisRadius,
+                irisAdjustmentRef.current.angle,
             );
-            const targetY = target.y * props.config.ySensitivity;
-            const targetX = -target.x * props.config.xSensitivity; // mirrored
-            const polarDistance = Math.hypot(targetY, targetX);
-            const polarAngle = Math.atan2(targetY, targetX);
-            const displacement = Math.min(1, polarDistance) * maxDisplacement;
-            const x = props.width / 4 + displacement * Math.cos(polarAngle);
-            const y = props.height / 2 + displacement * Math.sin(polarAngle);
-            return { x, y };
-        };
-        const leftCoords = getEyeCoords(props.target);
-        const eyeCoords: { [key in EyeSide]: ICoords } =
-            props.animation.length > 0 &&
-            props.animation[0].normalisedCoords !== undefined
-                ? centerAnimationCoords()
-                : {
-                      LEFT: leftCoords,
-                      RIGHT: leftCoords,
-                  };
+        });
 
-        function centerAnimationCoords() {
-            const animationX = props.animation[0].normalisedCoords!.x;
-            const animationY = props.animation[0].normalisedCoords!.y;
-            return {
-                LEFT: {
-                    x: normalise(animationX, 1, -1, props.width / 2),
-                    y: normalise(animationY, 1, -1, props.width / 2),
-                },
-                RIGHT: {
-                    x: normalise(animationX, 1, -1, props.width / 2),
-                    y: normalise(animationY, 1, -1, props.width / 2),
-                },
-            };
-        }
-
-        function getEyesOpenCoefficient(): number {
-            if (props.openCoefficient !== eyesOpenCoefficient) {
-                return props.openCoefficient;
-            } else if (isBlinking) {
-                return 0;
-            } else {
-                return eyesOpenCoefficient;
-            }
-        }
-
-        const calculatedEyesOpenCoefficient =
-            props.animation.length > 0 && props.animation[0].openCoefficient
-                ? props.animation[0].openCoefficient
-                : getEyesOpenCoefficient();
-
-        const dilatedCoefficient =
-            props.animation.length > 0 && props.animation[0].dilation
-                ? props.animation[0].dilation
-                : props.dilation;
-
-        const irisColor =
-            props.animation.length > 0 && props.animation[0].irisColor
-                ? props.animation[0].irisColor
-                : props.config.irisColor;
+        useEffect(() => {
+            setInnerPath(generateInnerPath(irisRadius, 100));
+        }, [irisRadius]);
 
         return (
             <div className="container">
@@ -173,7 +212,7 @@ export const EyeController = React.memo(
                             : calculatedEyesOpenCoefficient[eye],
                     );
 
-                    const eyeCoordsItem = getEyeCoordinates(
+                    const eyeShape = getEyeShape(
                         props.width,
                         props.height,
                         scleraRadius,
@@ -192,13 +231,15 @@ export const EyeController = React.memo(
                             scleraRadius={scleraRadius}
                             irisRadius={irisRadius}
                             pupilRadius={pupilRadius}
-                            // factor by which to multiply the pupil radius - e.g. 0 is non-existant pupil, 1 is no dilation, 2 is very dilated
                             dilatedCoefficient={dilatedCoefficient}
-                            innerX={eyeCoords[eye].x}
-                            innerY={eyeCoords[eye].y}
+                            innerX={innerX}
+                            innerY={innerY}
                             fps={props.config.fps}
                             bezier={bezier}
-                            eyeCoords={eyeCoordsItem}
+                            eyeShape={eyeShape}
+                            reflection={reflectionRef.current}
+                            irisAdjustment={irisAdjustmentRef.current}
+                            innerPath={innerPath}
                         />
                     );
                 })}
@@ -218,25 +259,6 @@ export const EyeController = React.memo(
         previous.target.y === next.target.y,
 );
 
-const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
-    config: getConfig(state),
-    target: getTargets(state),
-    video: getVideo(state),
-    animation: state.detectionStore.animation,
-});
-
-const mapDispatchToProps = (
-    dispatch: Dispatch,
-): IEyeControllerMapDispatchToState => ({
-    updateAnimation: (animation: Animation) =>
-        dispatch(setAnimation(animation)),
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(EyeController);
-
 export function getBezier(scleraRadius: number, openCoefficient: number) {
     const curveConstant = 0.55228474983; // (4/3)tan(pi/8)
     const controlOffset = scleraRadius * curveConstant;
@@ -245,7 +267,7 @@ export function getBezier(scleraRadius: number, openCoefficient: number) {
     return { controlOffset, scaledXcontrolOffset, scaledYcontrolOffset };
 }
 
-export function getEyeCoordinates(
+export function getEyeShape(
     width: number,
     height: number,
     scleraRadius: number,
@@ -268,3 +290,23 @@ export function getEyeCoordinates(
         bottomEyelidY,
     };
 }
+
+const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
+    config: getConfig(state),
+    target: getTargets(state),
+    image: getVideo(state),
+    selection: getSelections(state),
+    animation: state.detectionStore.animation,
+});
+
+const mapDispatchToProps = (
+    dispatch: Dispatch,
+): IEyeControllerMapDispatchToState => ({
+    updateAnimation: (animation: Animation) =>
+        dispatch(setAnimation(animation)),
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(EyeController);

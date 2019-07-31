@@ -3,7 +3,7 @@ import isEqual from 'react-fast-compare';
 
 interface IEyelidsProps {
     transitionStyle: { transition: string };
-    eyeCoords: {
+    eyeShape: {
         leftX: number;
         rightX: number;
         middleY: number;
@@ -34,31 +34,31 @@ export const Eyelids = React.memo(
                     filter="url(#shadowTop)"
                     d={
                         // upper eyelid
-                        `M ${props.eyeCoords.leftX} ${props.eyeCoords.middleY},
+                        `M ${props.eyeShape.leftX} ${props.eyeShape.middleY},
                          A ${props.scleraRadius} ${props.scleraRadius} 0 0 1 ${
-                            props.eyeCoords.rightX
-                        } ${props.eyeCoords.middleY}
-                         C ${props.eyeCoords.rightX -
+                            props.eyeShape.rightX
+                        } ${props.eyeShape.middleY}
+                         C ${props.eyeShape.rightX -
                              props.cornerShape.rightTop *
                                  props.bezier.scaledXcontrolOffset} ${props
-                            .eyeCoords.middleY -
+                            .eyeShape.middleY -
                             props.bezier.scaledYcontrolOffset},
-                         ${props.eyeCoords.middleX +
+                         ${props.eyeShape.middleX +
                              props.bezier.controlOffset} ${
-                            props.eyeCoords.topEyelidY
-                        }, ${props.eyeCoords.middleX} ${
-                            props.eyeCoords.topEyelidY
+                            props.eyeShape.topEyelidY
+                        }, ${props.eyeShape.middleX} ${
+                            props.eyeShape.topEyelidY
                         }
-                         C ${props.eyeCoords.middleX -
+                         C ${props.eyeShape.middleX -
                              props.bezier.controlOffset} ${
-                            props.eyeCoords.topEyelidY
-                        }, ${props.eyeCoords.leftX +
+                            props.eyeShape.topEyelidY
+                        }, ${props.eyeShape.leftX +
                             props.cornerShape.leftTop *
                                 props.bezier.scaledXcontrolOffset} ${props
-                            .eyeCoords.middleY -
+                            .eyeShape.middleY -
                             props.bezier.scaledYcontrolOffset}, ${
-                            props.eyeCoords.leftX
-                        } ${props.eyeCoords.middleY}`
+                            props.eyeShape.leftX
+                        } ${props.eyeShape.middleY}`
                     }
                 />
                 <path
@@ -66,31 +66,31 @@ export const Eyelids = React.memo(
                     filter="url(#shadowBottom)"
                     d={
                         // lower eyelid
-                        `M ${props.eyeCoords.leftX} ${props.eyeCoords.middleY},
+                        `M ${props.eyeShape.leftX} ${props.eyeShape.middleY},
                          A ${props.scleraRadius} ${props.scleraRadius} 0 0 0 ${
-                            props.eyeCoords.rightX
-                        } ${props.eyeCoords.middleY}
-                         C ${props.eyeCoords.rightX -
+                            props.eyeShape.rightX
+                        } ${props.eyeShape.middleY}
+                         C ${props.eyeShape.rightX -
                              props.cornerShape.rightBottom *
                                  props.bezier.scaledXcontrolOffset} ${props
-                            .eyeCoords.middleY +
+                            .eyeShape.middleY +
                             props.bezier.scaledYcontrolOffset},
-                         ${props.eyeCoords.middleX +
+                         ${props.eyeShape.middleX +
                              props.bezier.controlOffset} ${
-                            props.eyeCoords.bottomEyelidY
-                        }, ${props.eyeCoords.middleX} ${
-                            props.eyeCoords.bottomEyelidY
+                            props.eyeShape.bottomEyelidY
+                        }, ${props.eyeShape.middleX} ${
+                            props.eyeShape.bottomEyelidY
                         }
-                         C ${props.eyeCoords.middleX -
+                         C ${props.eyeShape.middleX -
                              props.bezier.controlOffset} ${
-                            props.eyeCoords.bottomEyelidY
-                        }, ${props.eyeCoords.leftX +
+                            props.eyeShape.bottomEyelidY
+                        }, ${props.eyeShape.leftX +
                             props.cornerShape.leftBottom *
                                 props.bezier.scaledXcontrolOffset} ${props
-                            .eyeCoords.middleY +
+                            .eyeShape.middleY +
                             props.bezier.scaledYcontrolOffset}, ${
-                            props.eyeCoords.leftX
-                        } ${props.eyeCoords.middleY}`
+                            props.eyeShape.leftX
+                        } ${props.eyeShape.middleY}`
                     }
                 />
             </svg>
