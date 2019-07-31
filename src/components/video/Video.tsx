@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { setVideoAction } from '../../store/actions/video/actions';
-import { IVideo, SET_VIDEO } from '../../store/actions/video/types';
+import { IVideo } from '../../store/actions/video/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getStreamForDevice } from '../../store/selectors/videoSelectors';
 

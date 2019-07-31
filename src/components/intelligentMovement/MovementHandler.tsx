@@ -4,7 +4,6 @@ import { Dispatch } from 'redux';
 import {
     blinkConsts,
     eyelidPosition,
-    EyeSide,
     intervals,
     pupilSizes,
 } from '../../AppConstants';

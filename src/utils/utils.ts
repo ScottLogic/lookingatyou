@@ -1,5 +1,4 @@
 import { getBoundingBox, partIds, Pose } from '@tensorflow-models/posenet';
-import { EyeSide } from '../AppConstants';
 import { IDetection } from '../models/objectDetection';
 import { Bbox, ICoords } from './types';
 
