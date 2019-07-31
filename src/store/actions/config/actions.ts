@@ -32,6 +32,7 @@ export function updateConfigAction(
                     dispatch(
                         setConfigAction(ConfigSetAction.MODEL, {
                             outputStride: '16',
+                            multiplier: '1',
                         }),
                     );
                 }

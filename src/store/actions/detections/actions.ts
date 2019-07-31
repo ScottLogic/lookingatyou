@@ -3,6 +3,7 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { EyeSide, targetingConsts } from '../../../AppConstants';
 import { Detections, IDetection } from '../../../models/objectDetection';
+import calculateTargetPos from '../../../utils/objectTracking/calculateFocus';
 import { Animation, animationMapping } from '../../../utils/pose/animations';
 import { getPose } from '../../../utils/pose/poseDetection';
 import { IColour, ICoords } from '../../../utils/types';
@@ -22,7 +23,6 @@ import { getVideos } from '../../selectors/videoSelectors';
 import { createActionPayload } from '../creators';
 import { setImageDataAction } from '../video/actions';
 import {
-    ISetDetectionsActionPayload,
     ISwapSelectionActionPayload,
     SET_ANIMATION,
     SET_DETECTIONS,
@@ -88,13 +88,7 @@ export function handleDetection(document: Document) {
                 left = reshapeDetections(leftDetections);
             }
 
-            dispatch(
-                setDetectionsAndMaybeSwapTarget(
-                    left,
-                    getTargets(state),
-                    getColour(state),
-                ),
-            );
+            dispatch(setDetectionsAndMaybeSwapTarget(left));
 
             // The way we get target will change once #273 is implemented
             // For now I compare selection bounding box to existing detections and select a target from there
@@ -113,11 +107,7 @@ export function handleDetection(document: Document) {
     };
 }
 
-export function setDetectionsAndMaybeSwapTarget(
-    detections: Detections,
-    previousTarget: ICoords,
-    previousColour: IColour,
-) {
+export function setDetectionsAndMaybeSwapTarget(detections: Detections) {
     return (
         dispatch: ThunkDispatch<IRootStore, void, Action>,
         getState: () => IRootStore,
@@ -126,9 +116,18 @@ export function setDetectionsAndMaybeSwapTarget(
         const now = new Date().getTime();
         if (now < state.detectionStore.nextSelectionSwapTime) {
             dispatch(
-                setDetections({ detections, previousTarget, previousColour }),
+                setDetections({
+                    detections,
+                    previousTarget: getTargets(state),
+                    previousColour: getColour(state),
+                }),
             );
         } else {
+            const previousSelection = getSelections(state);
+            if (previousSelection && detections.length > 1) {
+                removeClosestToSelection(detections, previousSelection);
+            }
+
             const selectionIndex = Math.floor(
                 Math.random() * (detections.length - 1),
             );
@@ -144,9 +143,34 @@ export function setDetectionsAndMaybeSwapTarget(
     };
 }
 
+function removeClosestToSelection(
+    detections: IDetection[],
+    selection: IDetection,
+) {
+    const selectionTargetPos = calculateTargetPos(selection.bbox);
+    let closestIndex = 0;
+    let closestDistance = Number.MAX_SAFE_INTEGER;
+    detections.forEach((detection, index) => {
+        const targetPos = calculateTargetPos(detection.bbox);
+        const distance = Math.hypot(
+            targetPos.x - selectionTargetPos.x,
+            targetPos.y - selectionTargetPos.y,
+        );
+        if (distance < closestDistance) {
+            closestIndex = index;
+            closestDistance = distance;
+        }
+    });
+    detections.splice(closestIndex, 1);
+}
+
 export const setDetections = createActionPayload<
     typeof SET_DETECTIONS,
-    ISetDetectionsActionPayload
+    {
+        detections: Detections;
+        previousTarget: ICoords;
+        previousColour: IColour;
+    }
 >(SET_DETECTIONS);
 
 export const swapSelection = createActionPayload<
