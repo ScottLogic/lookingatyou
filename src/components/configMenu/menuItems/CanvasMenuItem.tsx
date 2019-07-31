@@ -24,7 +24,7 @@ interface IAppMapStateToProps {
     detections: Detections;
 }
 
-type CanvasMenuItemProps = ICanvasMenuItemProps & IAppMapStateToProps;
+export type CanvasMenuItemProps = ICanvasMenuItemProps & IAppMapStateToProps;
 
 export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
     canvasRef: React.RefObject<HTMLCanvasElement>;
