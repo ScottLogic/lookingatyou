@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface IEyelidsProps {
+export interface IEyelidsProps {
     transitionStyle: { transition: string };
     eyeShape: {
         leftX: number;

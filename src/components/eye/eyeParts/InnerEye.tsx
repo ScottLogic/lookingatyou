@@ -24,7 +24,7 @@ interface IInnerEyeMapStateToProps {
     fps: number;
 }
 
-type InnerEyeProps = IInnerEyeProps & IInnerEyeMapStateToProps;
+export type InnerEyeProps = IInnerEyeProps & IInnerEyeMapStateToProps;
 
 export const InnerEye = React.memo((props: InnerEyeProps) => {
     const period = 1000 / props.fps;

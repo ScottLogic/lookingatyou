@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`InnerEye should render correctly 1`] = `
-"<g className=\\"inner\\" style={{...}} transform=\\"\\\\n                    rotate(38.65980825409008)\\\\n                    scale(0.6986765064737483, 1)\\\\n                    rotate(-38.65980825409008)\\\\n                    translate(0,0)\\\\n                \\">
+"<g className=\\"inner\\" style={{...}} transform=\\"\\\\n                    rotate(0)\\\\n                    scale(0, 1)\\\\n                    rotate(0)\\\\n                    translate(0,0)\\\\n                \\">
   <circle className=\\"iris\\" r={200} fill=\\"url(#irisGradient)\\" />
   <path className=\\"irisStyling\\" d=\\"\\" fill=\\"#0000cc\\" />
   <g className=\\"pupil\\" style={{...}} transform=\\"scale(1)\\">
@@ -10,7 +10,7 @@ exports[`InnerEye should render correctly 1`] = `
     </foreignObject>
     <circle className=\\"pupil\\" r={100} fill=\\"url(#pupilGradient)\\" stroke=\\"black\\" strokeWidth=\\"2\\" />
   </g>
-  <ellipse className=\\"innerReflection\\" rx={37.5} ry={75} fill=\\"url(#shineGradient)\\" transform=\\"skewX(30) translate(100,-50)\\" />
-  <ellipse className=\\"outerReflection\\" rx={50} ry={100} fill=\\"url(#shineGradient)\\" transform=\\"skewX(30) translate(200,-110.00000000000001)\\" />
+  <ellipse className=\\"innerShine\\" rx={37.5} ry={75} fill=\\"url(#shineGradient)\\" transform=\\"skewX(30) translate(100,-50)\\" />
+  <ellipse className=\\"outerShine\\" rx={50} ry={100} fill=\\"url(#shineGradient)\\" transform=\\"skewX(30) translate(200,-110.00000000000001)\\" />
 </g>"
 `;

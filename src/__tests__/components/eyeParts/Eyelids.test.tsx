@@ -7,11 +7,11 @@ import {
 
 let props: IEyelidsProps;
 
-describe('Blackfill', () => {
+describe('Eyelids', () => {
     beforeEach(() => {
         props = {
             transitionStyle: { transition: '' },
-            eyeCoords: {
+            eyeShape: {
                 leftX: 0,
                 rightX: 0,
                 middleY: 0,
