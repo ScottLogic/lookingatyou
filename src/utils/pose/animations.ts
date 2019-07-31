@@ -119,8 +119,8 @@ export function blink(): Animation {
     return [
         {
             openCoefficient: eyelidPosition.CLOSED,
-            duration: 5000,
+            duration: 100,
         },
-        { openCoefficient: eyelidPosition.OPEN, duration: 150 },
+        { openCoefficient: eyelidPosition.OPEN, duration: 100 },
     ];
 }

@@ -111,10 +111,11 @@ export const EyeController = React.memo(
                   })();
 
         const calculatedEyesOpenCoefficient =
-            props.animation.length > 0 && props.animation[0].openCoefficient
-                ? props.animation[0].openCoefficient
+            props.animation.length > 0 &&
+            props.animation[0].hasOwnProperty('openCoefficient')
+                ? props.animation[0].openCoefficient!
                 : props.openCoefficient;
-        console.log(calculatedEyesOpenCoefficient);
+
         const dilatedCoefficient =
             props.animation.length > 0 &&
             props.animation[0].dilation !== undefined
@@ -139,7 +140,6 @@ export const EyeController = React.memo(
                     const blinkProbability =
                         blinkFrequency / (1000 / transitionTimes.blink);
                     if (Math.random() < blinkProbability) {
-                        console.log('blinking');
                         updateAnimation(blink());
                     }
                 }, transitionTimes.blink);
