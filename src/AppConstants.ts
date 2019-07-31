@@ -55,8 +55,9 @@ export const blinkConsts = {
 };
 export const debugFeedConsts = {
     canvasScale: 1,
-    lineWidth: 5,
-    minConfidence: 0.2,
+    lineWidth: 4,
+    minConfidence: 0.1,
+    pointRadius: 3,
 };
 export const colourCheckConsts = {
     yOffset: 10,
