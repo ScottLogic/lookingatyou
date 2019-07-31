@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Blackfill should render correctly 1`] = `
+"<svg className=\\"Eyelids\\">
+  <path style={{...}} filter=\\"url(#shadowTop)\\" d=\\"M 0 0,\\\\n                         A 300 300 0 0 1 0 0\\\\n                         C 0 -30,\\\\n                         20 0, 0 0\\\\n                         C -20 0, 0 -30, 0 0\\" />
+  <path style={{...}} filter=\\"url(#shadowBottom)\\" d=\\"M 0 0,\\\\n                         A 300 300 0 0 0 0 0\\\\n                         C 0 30,\\\\n                         20 0, 0 0\\\\n                         C -20 0, 0 30, 0 0\\" />
+</svg>"
+`;
