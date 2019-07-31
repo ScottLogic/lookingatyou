@@ -14,7 +14,7 @@ export interface IVideo {
 export interface IVideoState {
     webcamAvailable: boolean;
     videos: { [deviceId: string]: IVideo };
-    images: { [key: string]: ImageData };
+    image: ImageData;
 }
 
 export interface ISetVideoPayload {

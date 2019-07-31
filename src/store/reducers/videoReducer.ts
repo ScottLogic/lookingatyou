@@ -8,10 +8,12 @@ import {
     VideoActionTypes,
 } from '../actions/video/types';
 
+const clampedArray = new Uint8ClampedArray(0);
+
 export const initialState: IVideoState = {
     webcamAvailable: false,
     videos: {},
-    images: {},
+    image: { data: clampedArray, width: 0, height: 0 },
 };
 
 const videoStore = (
@@ -48,10 +50,7 @@ const videoStore = (
         case SET_IMAGE_DATA:
             return {
                 ...state,
-                images: {
-                    ...state.images,
-                    ...action.images,
-                },
+                image: action.image,
             };
         default:
             return state;
