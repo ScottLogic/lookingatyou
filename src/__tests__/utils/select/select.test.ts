@@ -1,9 +1,9 @@
-import { IDetection } from '../../../models/objectDetection';
 import {
     detection1,
     detection2,
+    imageData,
 } from '../../../test_constants/selectConstants';
-import select, {
+import {
     calculateColourMatch,
     closerToColour,
     closerToPrediction,
@@ -15,17 +15,6 @@ import select, {
 } from '../../../utils/objectSelection/select';
 
 describe('colour match should return', () => {
-    const data = new Uint8ClampedArray(1382400);
-
-    for (let i = 0; i < 1382400; i += 4) {
-        data[i + 0] = 190; // R value
-        data[i + 1] = 0; // G value
-        data[i + 2] = i < 691200 ? 210 : 0; // B value
-        data[i + 3] = 255; // A value
-    }
-
-    const imageData = { data, width: 720, height: 480 };
-
     it('should return default for undefined imageData', () =>
         expect(calculateColourMatch(undefined, [])).toStrictEqual({
             r: 0,
@@ -49,10 +38,10 @@ describe('getAvgColour should return', () => {
         data[i + 3] = 255; // A value
     }
 
-    const imageData = { data, width: 10, height: 10 };
+    const image = { data, width: 10, height: 10 };
 
     it('should return value for correct data', () => {
-        expect(getAvgColour(0, 0, 10, 10, imageData)).toStrictEqual({
+        expect(getAvgColour(0, 0, 10, 10, image)).toStrictEqual({
             r: 189,
             g: 0,
             b: 208,
@@ -104,16 +93,6 @@ describe('leftOf/rightOf should return', () => {
 });
 
 describe('closerToColour should return', () => {
-    const data = new Uint8ClampedArray(1382400);
-
-    for (let i = 0; i < 1382400; i += 4) {
-        data[i + 0] = 190; // R value
-        data[i + 1] = 0; // G value
-        data[i + 2] = i < 691200 ? 210 : 0; // B value
-        data[i + 3] = 255; // A value
-    }
-
-    const imageData = { data, width: 720, height: 480 };
     const points1 = detection1.info.keypoints;
     const points2 = detection2.info.keypoints;
     const colour = { r: 190, g: 0, b: 0 };
@@ -126,32 +105,22 @@ describe('closerToColour should return', () => {
 });
 
 describe('closerToPrediction should return', () => {
-    const data = new Uint8ClampedArray(86400);
-
-    for (let i = 0; i < 86400; i += 4) {
-        data[i + 0] = 190; // R value
-        data[i + 1] = 0; // G value
-        data[i + 2] = i < 43200 ? 210 : 0; // B value
-        data[i + 3] = 255; // A value
-    }
-
-    const imageData = { data, width: 360, height: 240 };
     const origin = { x: 0, y: 0 };
-    const colour = { r: 190, g: 0, b: 0 };
+    const colour = { r: 188, g: 0, b: 0 };
 
     it('should return positive for new better target', () => {
         expect(
             closerToPrediction(origin, imageData, colour)(
-                detection2,
                 detection1,
+                detection2,
             ),
         ).toBeGreaterThan(0);
     });
     it('should return negative for new worse target', () => {
         expect(
             closerToPrediction(origin, imageData, colour)(
-                detection1,
                 detection2,
+                detection1,
             ),
         ).toBeLessThan(0);
     });

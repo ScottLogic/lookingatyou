@@ -253,3 +253,18 @@ export const detection2: IDetection = {
 };
 
 export const simulatedDetections = [detection1, detection2];
+
+export const imageData = getImageData();
+
+function getImageData(): ImageData {
+    const data = new Uint8ClampedArray(1382400);
+
+    for (let i = 0; i < 1382400; i += 4) {
+        data[i + 0] = 190; // R value
+        data[i + 1] = 0; // G value
+        data[i + 2] = i < 691200 ? 210 : 0; // B value
+        data[i + 3] = 255; // A value
+    }
+
+    return { data, width: 720, height: 480 };
+}
