@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
-    blinkConsts,
     eyelidPosition,
     EyeSide,
     intervals,
@@ -19,7 +18,6 @@ import {
 } from '../../store/selectors/detectionSelectors';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
-import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
 import { analyseLight, naturalMovement } from '../eye/utils/MovementUtils';
 
@@ -59,7 +57,6 @@ export class MovementHandler extends React.Component<
     private isMovingLeft: boolean;
     private squinting: boolean;
     private personDetected: boolean;
-    private prevProps: MovementHandlerProps | null;
     private openCoefficient: number;
 
     constructor(props: MovementHandlerProps) {
@@ -75,7 +72,6 @@ export class MovementHandler extends React.Component<
         this.isMovingLeft = false;
         this.personDetected = false;
         this.squinting = false;
-        this.prevProps = null;
         this.openCoefficient = eyelidPosition.OPEN;
 
         this.animateEye = this.animateEye.bind(this);
@@ -91,7 +87,6 @@ export class MovementHandler extends React.Component<
         this.movementInterval = this.props.environment.setInterval(
             this.animateEye,
             1000 / this.props.fps,
-            this.prevProps,
         );
     }
 
@@ -105,14 +100,9 @@ export class MovementHandler extends React.Component<
         );
     }
 
-    componentDidUpdate(prevProps: MovementHandlerProps) {
-        this.prevProps = prevProps;
-    }
-
-    animateEye(prevProps: MovementHandlerProps) {
+    animateEye() {
         this.checkSelection();
         this.calculateBrightness();
-        this.checkBlink(prevProps);
     }
 
     componentWillUnmount() {
@@ -169,19 +159,6 @@ export class MovementHandler extends React.Component<
             this.props.setIdleTarget(idleCoords);
 
             this.isMovingLeft = isMovingLeft;
-        }
-    }
-
-    checkBlink(prevProps?: MovementHandlerProps) {
-        if (prevProps && this.props.target) {
-            const leftEyeDist = getLargerDistance(
-                prevProps.target,
-                this.props.target,
-            );
-
-            if (leftEyeDist > blinkConsts.movementThreshold) {
-                this.openCoefficient = eyelidPosition.CLOSED;
-            }
         }
     }
 
