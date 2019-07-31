@@ -1,5 +1,4 @@
 import {
-    IVideo,
     IVideoState,
     SET_IMAGE_DATA,
     SET_VIDEO,
@@ -12,7 +11,7 @@ const clampedArray = new Uint8ClampedArray(0);
 
 export const initialState: IVideoState = {
     webcamAvailable: false,
-    videos: {},
+    video: { width: 0, height: 0, stream: undefined },
     image: { data: clampedArray, width: 0, height: 0 },
 };
 
@@ -24,23 +23,14 @@ const videoStore = (
         case SET_VIDEO_STREAMS:
             return {
                 ...state,
-                videos: {
-                    ...action.videos,
+                video: {
+                    ...action.video,
                 },
             };
         case SET_VIDEO:
-            const elementId = action.payload.deviceId;
-            const updatedObject: { [key: string]: IVideo } = {};
-            updatedObject[elementId] = {
-                ...state.videos[elementId],
-                ...action.payload,
-            };
             return {
                 ...state,
-                videos: {
-                    ...state.videos,
-                    ...updatedObject,
-                },
+                video: { ...state.video, videoElement: action.payload },
             };
         case TOGGLE_WEBCAM_AVAILABLE:
             return {

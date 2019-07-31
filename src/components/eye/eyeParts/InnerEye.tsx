@@ -6,7 +6,7 @@ import { fisheyeConsts } from '../../../AppConstants';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import { getFPS } from '../../../store/selectors/configSelectors';
 import { getTargets } from '../../../store/selectors/detectionSelectors';
-import { getVideos } from '../../../store/selectors/videoSelectors';
+import { getVideo } from '../../../store/selectors/videoSelectors';
 import { normalise } from '../../../utils/objectTracking/calculateFocus';
 import { ICoords } from '../../../utils/types';
 import { getIrisAdjustment } from '../EyeUtils';
@@ -257,7 +257,7 @@ function getCrop(target: ICoords, image: HTMLVideoElement) {
 }
 
 const mapStateToProps = (state: IRootStore): IInnerEyeMapStateToProps => ({
-    image: getVideos(state)[0],
+    image: getVideo(state),
     fps: getFPS(state),
     target: getTargets(state),
     showReflection: state.configStore.toggleReflection,

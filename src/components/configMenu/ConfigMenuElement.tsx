@@ -11,7 +11,7 @@ import {
 } from '../../store/actions/config/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
-import { getVideos } from '../../store/selectors/videoSelectors';
+import { getVideo } from '../../store/selectors/videoSelectors';
 import ConfigMenu from './ConfigMenu';
 import Help, { HelpWith } from './Help';
 import CanvasMenuItem from './menuItems/CanvasMenuItem';
@@ -26,7 +26,7 @@ export interface IConfigMenuElementProps {
 
 interface IConfigMenuElementMapStateToProps {
     config: IConfigState;
-    videos: Array<HTMLVideoElement | undefined>;
+    video: HTMLVideoElement | undefined;
 }
 
 interface IConfigMenuElementMapDispatchToProps {
@@ -273,7 +273,7 @@ const mapStateToProps = (
     state: IRootStore,
 ): IConfigMenuElementMapStateToProps => ({
     config: getConfig(state),
-    videos: getVideos(state),
+    video: getVideo(state),
 });
 
 const mapDispatchToProps = (

@@ -1,7 +1,7 @@
 import { detection1 } from '../../test_constants/selectConstants';
 import {
     getBbox,
-    getImageDataFromVideos,
+    getImageDataFromVideo,
     getLargerDistance,
 } from '../../utils/utils';
 
@@ -32,8 +32,6 @@ describe('getLargerDistance should return the larger of the distances', () => {
 
 describe('getImageData should work even on undefined input', () => {
     it('should be empty', () => {
-        expect(
-            getImageDataFromVideos([undefined, undefined, undefined], document),
-        ).toBe(null);
+        expect(getImageDataFromVideo(undefined, document)).toBe(null);
     });
 });

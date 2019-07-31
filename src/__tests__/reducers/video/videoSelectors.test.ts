@@ -25,10 +25,9 @@ const device2 = {
     stream: undefined,
 };
 
-const mockTwoVideoStreams = {
-    testDevice1: device1,
-    testDevice2: device2,
-};
+const array = new Uint8ClampedArray(0);
+const video = { width: 0, height: 0, stream: undefined };
+const imgData = { width: 0, height: 0, data: array };
 
 let mockRootStore: IRootStore;
 let mockVideoStore: IVideoState;
@@ -36,8 +35,8 @@ let mockVideoStore: IVideoState;
 describe('Video Selectors', () => {
     beforeEach(() => {
         mockVideoStore = videoStore(
-            { videos: {}, webcamAvailable: false, images: {} },
-            { type: SET_VIDEO_STREAMS, videos: mockTwoVideoStreams },
+            { video, webcamAvailable: false, image: imgData },
+            { type: SET_VIDEO_STREAMS, video: device1 },
         );
         mockRootStore = {
             videoStore: mockVideoStore,
@@ -46,33 +45,7 @@ describe('Video Selectors', () => {
         };
     });
 
-    it('should return deviceIds from the store', () => {
-        const expectedResult = [testDevice1, testDevice2];
-        expect(selectors.getDeviceIds(mockRootStore)).toEqual(expectedResult);
-    });
-
     it('should return stream for specified device', () => {
-        expect(
-            selectors.getStreamForDevice(mockRootStore, testDevice2),
-        ).toEqual(device2);
-    });
-
-    it('should return video elements for each device', () => {
-        const videoElement = document.createElement('video');
-        const mockSetVideoActionDevice1: VideoActionTypes = {
-            type: SET_VIDEO,
-            payload: {
-                deviceId: testDevice1,
-                video: videoElement,
-            },
-        };
-        mockRootStore.videoStore = videoStore(
-            mockRootStore.videoStore,
-            mockSetVideoActionDevice1,
-        );
-        expect(selectors.getVideos(mockRootStore)).toEqual([
-            videoElement,
-            undefined,
-        ]);
+        expect(selectors.getStreamForDevice(mockRootStore)).toEqual(device1);
     });
 });

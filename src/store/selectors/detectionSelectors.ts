@@ -11,7 +11,7 @@ import select, {
 import { calculateNormalisedPos } from '../../utils/objectTracking/calculateFocus';
 import { IColour, ICoords } from '../../utils/types';
 import { IRootStore } from '../reducers/rootReducer';
-import { getImageData, getVideos } from './videoSelectors';
+import { getImageData, getVideo } from './videoSelectors';
 
 export function getDetections(state: IRootStore): Detections {
     return state.detectionStore.detections;
@@ -35,21 +35,17 @@ export const getSelections = createSelector(
 );
 
 export const getTargets = createSelector(
-    [getSelections, getVideos, getIdleTargets],
-    (selections, videos, idleTargets): ICoords => {
+    [getSelections, getVideo, getIdleTargets],
+    (selections, video, idleTargets): ICoords => {
         const normalisedTarget =
-            selections === undefined || !videos[0]
+            selections === undefined || !video
                 ? undefined
                 : calculateNormalisedPos(
                       selections.bbox,
-                      videos[0]!.width,
-                      videos[0]!.height,
+                      video!.width,
+                      video!.height,
                   );
-        if (normalisedTarget) {
-            return normalisedTarget;
-        } else {
-            return idleTargets;
-        }
+        return normalisedTarget ? normalisedTarget : idleTargets;
     },
 );
 

@@ -3,7 +3,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { configureStreams } from '../../../components/webcamHandler/WebcamHandler';
 import { IRootStore } from '../../reducers/rootReducer';
 import {
-    ISetVideoPayload,
     IVideo,
     SET_IMAGE_DATA,
     SET_VIDEO,
@@ -12,19 +11,17 @@ import {
     VideoActionTypes,
 } from './types';
 
-export function setVideoAction(payload: ISetVideoPayload): VideoActionTypes {
+export function setVideoAction(payload: HTMLVideoElement): VideoActionTypes {
     return {
         type: SET_VIDEO,
         payload,
     };
 }
 
-export function setVideoStreamsAction(videos: {
-    [deviceId: string]: IVideo;
-}): VideoActionTypes {
+export function setVideoStreamsAction(videos: IVideo): VideoActionTypes {
     return {
         type: SET_VIDEO_STREAMS,
-        videos,
+        video: videos,
     };
 }
 
@@ -40,14 +37,16 @@ export function setStream(mediaDevices: MediaDevices) {
         getState: () => IRootStore,
     ) => {
         const streams = await configureStreams(mediaDevices);
-        dispatch(setVideoStreamsAction(streams));
-        const videoStore = getState().videoStore;
-        const streamsLength = Object.keys(streams).length;
-        if (
-            (videoStore.webcamAvailable && streamsLength === 0) ||
-            (!videoStore.webcamAvailable && streamsLength > 0)
-        ) {
-            dispatch(toggleWebcamAvailable());
+        if (streams) {
+            dispatch(setVideoStreamsAction(streams));
+            const videoStore = getState().videoStore;
+            const streamsLength = Object.keys(streams).length;
+            if (
+                (videoStore.webcamAvailable && streamsLength === 0) ||
+                (!videoStore.webcamAvailable && streamsLength > 0)
+            ) {
+                dispatch(toggleWebcamAvailable());
+            }
         }
     };
 }

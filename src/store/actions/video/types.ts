@@ -4,8 +4,7 @@ export const TOGGLE_WEBCAM_AVAILABLE = 'TOGGLE_WEBCAM_AVAILABLE';
 export const SET_IMAGE_DATA = 'SET_IMAGE_DATA';
 
 export interface IVideo {
-    deviceId: string;
-    video?: HTMLVideoElement | undefined;
+    videoElement?: HTMLVideoElement | undefined;
     width: number;
     height: number;
     stream: MediaStream | undefined;
@@ -13,23 +12,18 @@ export interface IVideo {
 
 export interface IVideoState {
     webcamAvailable: boolean;
-    videos: { [deviceId: string]: IVideo };
+    video: IVideo;
     image: ImageData;
-}
-
-export interface ISetVideoPayload {
-    video: HTMLVideoElement;
-    deviceId: string;
 }
 
 interface ISetVideoAction {
     type: typeof SET_VIDEO;
-    payload: ISetVideoPayload;
+    payload: HTMLVideoElement;
 }
 
 interface ISetVideoStreamsAction {
     type: typeof SET_VIDEO_STREAMS;
-    videos: { [deviceId: string]: IVideo };
+    video: IVideo;
 }
 
 interface IToggleWebcamAvailable {

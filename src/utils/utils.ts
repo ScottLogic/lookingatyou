@@ -33,11 +33,11 @@ export function reshapeDetections(detections: Pose[]): IDetection[] {
     });
 }
 
-export function getImageDataFromVideos(
-    videos: Array<HTMLVideoElement | undefined>,
+export function getImageDataFromVideo(
+    video: HTMLVideoElement | undefined,
     document: Document,
 ): ImageData | null {
-    const image = getImageData(videos[0], document);
+    const image = getImageData(video, document);
     if (image) {
         return image;
     }

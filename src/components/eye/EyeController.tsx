@@ -15,7 +15,7 @@ import { ISetAnimationAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
 import { getTargets } from '../../store/selectors/detectionSelectors';
-import { getVideos } from '../../store/selectors/videoSelectors';
+import { getVideo } from '../../store/selectors/videoSelectors';
 import { normalise } from '../../utils/objectTracking/calculateFocus';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
@@ -36,7 +36,7 @@ interface IEyeControllerProps {
 interface IEyeControllerMapStateToProps {
     config: IConfigState;
     target: ICoords;
-    videos: Array<HTMLVideoElement | undefined>;
+    video: HTMLVideoElement | undefined;
     animation: Animation;
 }
 
@@ -221,7 +221,7 @@ export const EyeController = React.memo(
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     config: getConfig(state),
     target: getTargets(state),
-    videos: getVideos(state),
+    video: getVideo(state),
     animation: state.detectionStore.animation,
 });
 

@@ -1,15 +1,12 @@
 import { load, PoseNet } from '@tensorflow-models/posenet';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { EyeSide, targetingConsts } from '../../../AppConstants';
+import { targetingConsts } from '../../../AppConstants';
 import { Detections, IDetection } from '../../../models/objectDetection';
 import { Animation, animationMapping } from '../../../utils/pose/animations';
 import { getPose } from '../../../utils/pose/poseDetection';
 import { IColour, ICoords } from '../../../utils/types';
-import {
-    getImageDataFromVideos,
-    reshapeDetections,
-} from '../../../utils/utils';
+import { getImageDataFromVideo, reshapeDetections } from '../../../utils/utils';
 import { IRootStore } from '../../reducers/rootReducer';
 import { getConfig, getFPS } from '../../selectors/configSelectors';
 import {
@@ -18,7 +15,7 @@ import {
     getSelections,
     getTargets,
 } from '../../selectors/detectionSelectors';
-import { getVideos } from '../../selectors/videoSelectors';
+import { getVideo } from '../../selectors/videoSelectors';
 import { setImageDataAction } from '../video/actions';
 import {
     ISetAnimationAction,
@@ -77,15 +74,15 @@ export function handleDetection(document: Document) {
     ) => {
         if (getState().detectionStore.animation.length === 0) {
             const state = getState();
-            const videos = getVideos(state);
+            const video = getVideo(state);
             const model = state.detectionStore.model;
             const detectionConfig = getConfig(state).detectionConfig;
 
-            if (!videos[0] || !model) {
+            if (!video || !model) {
                 return;
             }
 
-            const image = getImageDataFromVideos(videos, document);
+            const image = getImageDataFromVideo(video, document);
 
             let detections: IDetection[] = [];
             if (image && model) {

@@ -1,8 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Video handler Component should render correctly 1`] = `
-"<div className=\\"webcam-feed\\">
-  <Connect(Video) deviceId=\\"testDevice1\\" />
-  <Connect(Video) deviceId=\\"testDevice2\\" />
-</div>"
-`;

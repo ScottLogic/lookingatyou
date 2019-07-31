@@ -1,32 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import {
-    ISetVideoPayload,
-    IVideo,
-    SET_VIDEO,
-} from '../../store/actions/video/types';
+import { setVideoAction } from '../../store/actions/video/actions';
+import { IVideo, SET_VIDEO } from '../../store/actions/video/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getStreamForDevice } from '../../store/selectors/videoSelectors';
 
-interface IVideoProps {
-    deviceId: string;
-}
-
 interface IDispatchProps {
-    setVideo: (payload: ISetVideoPayload) => void;
+    setVideo: (payload: HTMLVideoElement) => void;
 }
 
-export type VideoProps = IVideoProps & IVideo & IDispatchProps;
+export type VideoProps = IVideo & IDispatchProps;
 
 export function Video(props: VideoProps) {
     function getVideo(element: HTMLVideoElement | null) {
         if (element && props.stream) {
             element.srcObject = props.stream;
-            const payload = {
-                video: element,
-                deviceId: props.deviceId,
-            };
+            const payload = element;
             props.setVideo(payload);
         }
     }
@@ -42,12 +32,10 @@ export function Video(props: VideoProps) {
     );
 }
 
-const mapStateToProps = (state: IRootStore, props: IVideoProps) =>
-    getStreamForDevice(state, props.deviceId);
+const mapStateToProps = (state: IRootStore) => getStreamForDevice(state);
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    setVideo: (payload: ISetVideoPayload) =>
-        dispatch({ type: SET_VIDEO, payload }),
+    setVideo: (payload: HTMLVideoElement) => dispatch(setVideoAction(payload)),
 });
 
 export default connect(

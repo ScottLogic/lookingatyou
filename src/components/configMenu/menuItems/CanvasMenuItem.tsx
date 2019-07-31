@@ -8,7 +8,7 @@ import {
     getDetections,
     getSelections,
 } from '../../../store/selectors/detectionSelectors';
-import { getVideos } from '../../../store/selectors/videoSelectors';
+import { getVideo } from '../../../store/selectors/videoSelectors';
 import { drawPose } from '../DrawPoseUtils';
 import { HelpWith } from '../Help';
 
@@ -19,7 +19,7 @@ interface ICanvasMenuItemProps {
 }
 
 interface IAppMapStateToProps {
-    videos: Array<HTMLVideoElement | undefined>;
+    video: HTMLVideoElement | undefined;
     selection: IDetection | undefined;
     detections: Detections;
 }
@@ -59,7 +59,7 @@ export class CanvasMenuItem extends React.Component<CanvasMenuItemProps> {
     }
 
     getStream() {
-        const video = this.props.videos[this.props.videoIndex];
+        const video = this.props.video;
 
         const focusedPose = this.keypoints;
         const detections = this.props.detections;
@@ -140,7 +140,7 @@ function noMatchingPoint(keypoints1: Keypoint[], keypoints2: Keypoint[]) {
 }
 
 const mapStateToProps = (state: IRootStore) => ({
-    videos: getVideos(state),
+    video: getVideo(state),
     selection: getSelections(state),
     detections: getDetections(state),
 });
