@@ -146,6 +146,8 @@ export function closerToColour(
     const y1End = y1Start + colourCheckConsts.yOffset;
     const y2End = y2Start + colourCheckConsts.yOffset;
 
+    console.log(x1Start, x2Start);
+
     const box1AvgColour = getAvgColour(
         x1Start,
         y1Start,

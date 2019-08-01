@@ -24,9 +24,9 @@ const leftKnee = getPart(1, origin, 'leftKnee');
 const rightKnee = getPart(1, origin, 'rightKnee');
 const leftAnkle = getPart(1, origin, 'leftAnkle');
 const rightAnkle = getPart(1, origin, 'rightAnkle');
-const rightWrist = getPart(1, { x: 0, y: 0 }, 'rightWrist');
-const leftWrist = getPart(1, { x: 0, y: 0 }, 'leftWrist');
-const rightElbow = getPart(1, { x: 0, y: 0 }, 'rightElbow');
+const rightWrist = getPart(1, { x: 1, y: 0 }, 'rightWrist');
+const leftWrist = getPart(1, { x: -1, y: 0 }, 'leftWrist');
+const rightElbow = getPart(1, { x: 3, y: 0 }, 'rightElbow');
 const leftElbow = getPart(1, { x: 0, y: 0 }, 'leftElbow');
 const rightShoulder = getPart(1, { x: 0, y: -5 }, 'rightShoulder');
 const leftShoulder = getPart(1, { x: 5, y: -5 }, 'leftShoulder');
@@ -61,33 +61,31 @@ export const defaultDetection: IDetection = {
     },
 };
 
-export const furtherAwayKeyPoints = defaultKeypoints
-    .splice(1, 1, getPart(1, { x: 10, y: 10 }, 'rightEye'))
-    .splice(2, 1, getPart(1, { x: 10, y: 10 }, 'leftEye'));
+const furherAwayKeyoints = defaultKeypoints
+    .splice(5, 1, getPart(1, { x: 0, y: -5 }, 'rightShoulder'))
+    .splice(6, 1, getPart(1, { x: 5, y: -5 }, 'leftShoulder'));
 
-export const furtherAwayFromPredictionDetection: IDetection = {
-    ...defaultDetection,
+const furtherAwayFromPredictionDetection: IDetection = {
+    bbox: [15, 15, 5, 5],
     info: {
         score: 0.5,
-        keypoints: furtherAwayKeyPoints,
+        keypoints: furherAwayKeyoints,
     },
 };
 
-export const simulatedDetections = [];
+const imageData = getImageData(20, 20);
 
-export const imageData = getImageData();
+function getImageData(width: number, height: number): ImageData {
+    const data = new Uint8ClampedArray(width * height * 4);
 
-function getImageData(): ImageData {
-    const data = new Uint8ClampedArray(400);
-
-    for (let i = 0; i < 400; i += 4) {
+    for (let i = 0; i < width * height * 4; i += 4) {
         data[i + 0] = 190; // R value
         data[i + 1] = 0; // G value
-        data[i + 2] = i < 200 ? 210 : 0; // B value
+        data[i + 2] = i < width * height * 2 ? 210 : 0; // B value
         data[i + 3] = 255; // A value
     }
 
-    return { data, width: 10, height: 10 };
+    return { data, width, height };
 }
 
 function getPart(score: number, position: ICoords, part: string) {
@@ -110,25 +108,16 @@ describe('objectSelection select', () => {
                     defaultDetection.info.keypoints,
                     imageData,
                 ),
-            ).toStrictEqual({ r: 189, g: 0, b: 208 });
+            ).toStrictEqual({ r: 200, g: 0, b: 106 });
         });
     });
 
     describe('getAvgColour', () => {
-        const data = new Uint8ClampedArray(16);
-
-        for (let i = 0; i < 16; i += 4) {
-            data[i + 0] = 190; // R value
-            data[i + 1] = 0; // G value
-            data[i + 2] = 210; // B value
-            data[i + 3] = 255; // A value
-        }
-
-        const image = { data, width: 2, height: 2 };
+        const data = getImageData(2, 2);
 
         it('should return average value for correct data', () => {
-            const result = getAvgColour(0, 0, 2, 2, image);
-            expect(result).toStrictEqual({ r: 189, g: 0, b: 208 });
+            const result = getAvgColour(0, 0, 2, 2, data);
+            expect(result).toStrictEqual({ r: 200, g: 0, b: 106 });
         });
     });
 
@@ -181,21 +170,22 @@ describe('objectSelection select', () => {
 describe('closerToColour', () => {
     const points1 = defaultDetection.info.keypoints;
     const points2 = furtherAwayFromPredictionDetection.info.keypoints;
-    const colour = { r: 190, g: 0, b: 0 };
+    const colour = { r: 0, g: 0, b: 0 };
+    const data = getImageData(25, 25);
 
     it('should return positive for first arg better match', () => {
-        expect(
-            closerToColour(imageData, colour, points1, points2),
-        ).toBeGreaterThan(0);
+        expect(closerToColour(data, colour, points1, points2)).toBeGreaterThan(
+            0,
+        );
     });
 });
 
 describe('closerToPrediction', () => {
-    const colour = { r: 188, g: 0, b: 0 };
-
+    const colour = { r: 200, g: 0, b: 106 };
+    const prediction = { x: -0.5, y: -0.5 };
     it('should return positive for new better target', () => {
         expect(
-            closerToPrediction(origin, imageData, colour)(
+            closerToPrediction(prediction, imageData, colour)(
                 defaultDetection,
                 furtherAwayFromPredictionDetection,
             ),
@@ -203,7 +193,7 @@ describe('closerToPrediction', () => {
     });
     it('should return negative for new worse target', () => {
         expect(
-            closerToPrediction(origin, imageData, colour)(
+            closerToPrediction(prediction, imageData, colour)(
                 furtherAwayFromPredictionDetection,
                 defaultDetection,
             ),
