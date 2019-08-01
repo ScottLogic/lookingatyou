@@ -12,19 +12,15 @@ const FadeInText = React.memo((props: ITextProps) => {
     function renderSpans(text: string) {
         const textArray = text.split('');
 
-        const delays = [...new Array(textArray.length)].map(() =>
-            normalise(
+        const combineWithDelays = (character: string) => ({
+            character,
+            delay: normalise(
                 Math.random(),
                 1,
                 0,
                 fadeInText.delayMax,
                 fadeInText.delayMin,
             ),
-        );
-
-        const combineWithDelays = (character: string, index: number) => ({
-            character,
-            delay: delays[index],
         });
 
         return textArray.map(combineWithDelays).map(renderToSpan);
