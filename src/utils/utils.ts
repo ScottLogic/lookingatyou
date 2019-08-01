@@ -13,7 +13,6 @@ export function reshapeDetections(detections: Pose[]): IDetection[] {
             keypoints[partIds.leftEye],
             keypoints[partIds.rightEye],
         ]);
-        console.log(box);
         return {
             bbox: [
                 box.minX,
