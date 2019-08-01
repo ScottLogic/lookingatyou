@@ -59,17 +59,17 @@ export interface IDetectionConfig {
 
 export interface ISetAppConfigAction {
     readonly type: ConfigSetAction.APP;
-    readonly partialAppConfig: Partial<IAppConfig>;
+    readonly payload: Partial<IAppConfig>;
 }
 
 export interface ISetModelConfigAction {
     readonly type: ConfigSetAction.MODEL;
-    readonly partialModelConfig: Partial<IModelConfig>;
+    readonly payload: Partial<IModelConfig>;
 }
 
 export interface ISetDetectionConfigAction {
     readonly type: ConfigSetAction.DETECTION;
-    readonly partialDetectionConfig: Partial<IDetectionConfig>;
+    readonly payload: Partial<IDetectionConfig>;
 }
 
 export type ConfigAction =
