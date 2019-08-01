@@ -1,12 +1,9 @@
-import { eyelidPosition } from '../../../AppConstants';
+import { eyelidPosition, targetingConsts } from '../../../AppConstants';
 import { IDetection } from '../../../models/objectDetection';
 import { setDetections } from '../../../store/actions/detections/actions';
 import { IDetectionState } from '../../../store/actions/detections/types';
-import configStore from '../../../store/reducers/configReducer';
-import detectionStore, {
-    initialState,
-} from '../../../store/reducers/detectionReducer';
-import { IColour, ICoords } from '../../../utils/types';
+import detectionStore from '../../../store/reducers/detectionReducer';
+import { IColour, ICoords, IHistory } from '../../../utils/types';
 
 describe('Detection Reducer Tests', () => {
     const testState: IDetectionState = {
@@ -19,23 +16,49 @@ describe('Detection Reducer Tests', () => {
         nextSelectionSwapTime: -1,
         history: [],
     };
-    beforeEach(() => {});
-    it('should update detections correctly', () => {
-        const detections: IDetection[] = [
-            { bbox: [1, 1, 1, 1], info: { keypoints: [], score: 5 } },
-        ];
-        const previousTarget: ICoords = { x: 10, y: 15 };
-        const previousColour: IColour = { r: 15, g: 15, b: 50 };
-        const action = setDetections({
-            detections,
-            previousTarget,
-            previousColour,
-        });
+
+    const testDetections: IDetection[] = [
+        { bbox: [1, 1, 1, 1], info: { keypoints: [], score: 5 } },
+    ];
+    const testTarget: ICoords = { x: 10, y: 15 };
+    const testColour: IColour = { r: 20, g: 25, b: 30 };
+    const testAction = setDetections({
+        detections: testDetections,
+        previousTarget: testTarget,
+        previousColour: testColour,
+    });
+    it('should update detections and history correctly in the simplest case', () => {
         const expected: IDetectionState = {
             ...testState,
-            detections,
-            history: [{ colour: previousColour, target: previousTarget }],
+            detections: testDetections,
+            history: [{ colour: testColour, target: testTarget }],
         };
-        expect(detectionStore(testState, action)).toStrictEqual(expected);
+        expect(detectionStore(testState, testAction)).toStrictEqual(expected);
+    });
+    it('should update history correctly when history is at maximum length', () => {
+        const initialHistory: IHistory[] = [];
+
+        for (let i = 0; i < targetingConsts.maxNum; i++) {
+            initialHistory.push({
+                target: { x: i, y: i },
+                colour: { r: i, g: i, b: i },
+            });
+        }
+
+        expect(initialHistory.length).toBe(targetingConsts.maxNum);
+        const initialState = { ...testState, history: initialHistory };
+
+        const expectedHistory = [
+            ...initialHistory.slice(1, targetingConsts.maxNum),
+        ];
+        expectedHistory.push({ target: testTarget, colour: testColour });
+        const expected = {
+            ...initialState,
+            detections: testDetections,
+            history: expectedHistory,
+        };
+        expect(detectionStore(initialState, testAction)).toStrictEqual(
+            expected,
+        );
     });
 });
