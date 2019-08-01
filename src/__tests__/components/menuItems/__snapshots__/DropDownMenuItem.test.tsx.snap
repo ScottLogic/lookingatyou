@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DropDownMenuItem should render correctly 1`] = `
+"<div data-tip={true} data-for=\\"OUTPUT_STRIDE\\">
+  <label>
+    test
+  </label>
+  <select onChange={[Function: onChange]} value=\\"a\\">
+    <option value=\\"a\\">
+      a
+    </option>
+    <option value=\\"b\\">
+      b
+    </option>
+    <option value=\\"c\\">
+      c
+    </option>
+  </select>
+</div>"
+`;

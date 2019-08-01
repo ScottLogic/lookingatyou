@@ -7,6 +7,7 @@ import {
     EyeSide,
     intervals,
     pupilSizes,
+    userInteraction,
 } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 import { setIdleTarget } from '../../store/actions/detections/actions';
@@ -21,7 +22,8 @@ import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
-import { analyseLight, naturalMovement } from '../eye/EyeUtils';
+import { analyseLight, naturalMovement } from '../eye/utils/MovementUtils';
+import FadeInText from '../fadeInText/FadeInText';
 
 interface IMovementProps {
     width: number;
@@ -43,6 +45,8 @@ interface IDispatchProps {
 
 interface IMovementState {
     dilationCoefficient: number;
+    showText: boolean;
+    text: string;
 }
 
 export type MovementHandlerProps = IMovementProps &
@@ -61,12 +65,15 @@ export class MovementHandler extends React.Component<
     private personDetected: boolean;
     private prevProps: MovementHandlerProps | null;
     private openCoefficient: number;
+    private textTimeout: number | null;
 
     constructor(props: MovementHandlerProps) {
         super(props);
 
         this.state = {
             dilationCoefficient: pupilSizes.neutral,
+            showText: false,
+            text: '',
         };
 
         this.movementInterval = 0;
@@ -77,6 +84,7 @@ export class MovementHandler extends React.Component<
         this.squinting = false;
         this.prevProps = null;
         this.openCoefficient = eyelidPosition.OPEN;
+        this.textTimeout = null;
 
         this.animateEye = this.animateEye.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
@@ -103,6 +111,13 @@ export class MovementHandler extends React.Component<
                 this.props.target !== nextProps.target ||
                 this.props.detections !== nextProps.detections)
         );
+    }
+
+    componentWillReceiveProps(nextProps: MovementHandlerProps) {
+        if (nextProps.animation.length > 0 && this.textTimeout) {
+            this.props.environment.clearTimeout(this.textTimeout);
+            this.textTimeout = null;
+        }
     }
 
     componentDidUpdate(prevProps: MovementHandlerProps) {
@@ -212,6 +227,24 @@ export class MovementHandler extends React.Component<
             this.sleepTimeout = null;
             this.openCoefficient = eyelidPosition.OPEN;
         }
+
+        if (this.textTimeout === null) {
+            this.textTimeout = this.props.environment.setTimeout(() => {
+                this.setState({
+                    showText: true,
+                    text:
+                        userInteraction.texts[
+                            Math.floor(
+                                Math.random() * userInteraction.texts.length,
+                            )
+                        ],
+                });
+                this.props.environment.setTimeout(() => {
+                    this.setState({ showText: false });
+                    this.textTimeout = null;
+                }, userInteraction.textDuration);
+            }, userInteraction.delay);
+        }
     }
 
     sleep() {
@@ -220,18 +253,26 @@ export class MovementHandler extends React.Component<
                 this.openCoefficient = eyelidPosition.CLOSED;
             }, intervals.sleep);
         }
+
+        if (this.textTimeout !== null) {
+            this.props.environment.clearTimeout(this.textTimeout);
+            this.textTimeout = null;
+        }
     }
 
     render() {
         return (
-            <EyeController
-                width={this.props.width}
-                height={this.props.height}
-                environment={this.props.environment}
-                dilation={this.state.dilationCoefficient}
-                openCoefficient={this.openCoefficient}
-                detected={this.personDetected}
-            />
+            <>
+                <EyeController
+                    width={this.props.width}
+                    height={this.props.height}
+                    environment={this.props.environment}
+                    dilation={this.state.dilationCoefficient}
+                    detected={this.personDetected}
+                    openCoefficient={this.openCoefficient}
+                />
+                <FadeInText text={this.state.text} show={this.state.showText} />
+            </>
         );
     }
 }
