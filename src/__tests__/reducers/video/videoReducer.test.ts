@@ -6,7 +6,7 @@ import {
     SET_VIDEO,
     SET_VIDEO_STREAMS,
     TOGGLE_WEBCAM_AVAILABLE,
-    VideoActionTypes,
+    VideoAction,
 } from '../../../store/actions/video/types';
 import videoStore from '../../../store/reducers/videoReducer';
 
@@ -73,7 +73,7 @@ describe('Video Reducer', () => {
 
     it('should add HTML element when dispatching Set Vide action', () => {
         const videoElement = document.createElement('video');
-        const mockSetVideoAction: VideoActionTypes = {
+        const mockSetVideoAction: VideoAction = {
             type: SET_VIDEO,
             payload: {
                 deviceId: testDevice1,

@@ -1,11 +1,11 @@
 import {
+    ISetImageDataAction,
+    ISetVideoAction,
+    ISetVideoStreamsAction,
     IVideo,
     IVideoState,
-    SET_IMAGE_DATA,
-    SET_VIDEO,
-    SET_VIDEO_STREAMS,
-    TOGGLE_WEBCAM_AVAILABLE,
-    VideoActionTypes,
+    VideoAction,
+    VideoSetAction,
 } from '../actions/video/types';
 
 export const initialState: IVideoState = {
@@ -14,48 +14,51 @@ export const initialState: IVideoState = {
     images: {},
 };
 
+const videoActionMapping = {
+    [VideoSetAction.IMAGE_DATA]: setImageData,
+    [VideoSetAction.TOGGLE_WEBCAM]: toggleWebcam,
+    [VideoSetAction.VIDEO]: setVideo,
+    [VideoSetAction.VIDEO_STREAMS]: setVideoStreams,
+};
+
 const videoStore = (
     state: IVideoState = initialState,
-    action: VideoActionTypes,
+    action: VideoAction,
 ): IVideoState => {
-    switch (action.type) {
-        case SET_VIDEO_STREAMS:
-            return {
-                ...state,
-                videos: {
-                    ...action.payload,
-                },
-            };
-        case SET_VIDEO:
-            const elementId = action.payload.deviceId;
-            const updatedObject: { [key: string]: IVideo } = {};
-            updatedObject[elementId] = {
-                ...state.videos[elementId],
-                ...action.payload,
-            };
-            return {
-                ...state,
-                videos: {
-                    ...state.videos,
-                    ...updatedObject,
-                },
-            };
-        case TOGGLE_WEBCAM_AVAILABLE:
-            return {
-                ...state,
-                webcamAvailable: !state.webcamAvailable,
-            };
-        case SET_IMAGE_DATA:
-            return {
-                ...state,
-                images: {
-                    ...state.images,
-                    ...action.payload,
-                },
-            };
-        default:
-            return state;
-    }
+    return videoActionMapping.hasOwnProperty(action.type)
+        ? videoActionMapping[action.type](state, action)
+        : state;
 };
+
+function setImageData(state: IVideoState, action: VideoAction): IVideoState {
+    return { ...state, images: (action as ISetImageDataAction).payload };
+}
+
+function setVideoStreams(state: IVideoState, action: VideoAction): IVideoState {
+    return {
+        ...state,
+        videos: { ...(action as ISetVideoStreamsAction).payload },
+    };
+}
+
+function toggleWebcam(state: IVideoState, ignore: VideoAction): IVideoState {
+    return { ...state, webcamAvailable: !state.webcamAvailable };
+}
+
+function setVideo(state: IVideoState, action: VideoAction): IVideoState {
+    const elementId = (action as ISetVideoAction).payload.deviceId;
+    const updatedObject: { [key: string]: IVideo } = {};
+    updatedObject[elementId] = {
+        ...state.videos[elementId],
+        ...(action as ISetVideoAction).payload,
+    };
+    return {
+        ...state,
+        videos: {
+            ...state.videos,
+            ...updatedObject,
+        },
+    };
+}
 
 export default videoStore;
