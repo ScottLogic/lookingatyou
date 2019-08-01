@@ -20,14 +20,10 @@ import {
     getTargets,
 } from '../../selectors/detectionSelectors';
 import { getVideos } from '../../selectors/videoSelectors';
+import { createActionPayload } from '../creators';
 import { setImageDataAction } from '../video/actions';
 import {
-    ISetAnimationAction,
-    ISetDetectionsAction,
-    ISetIdleTargetAction,
-    ISetModelAction,
-    ISetOpenAction,
-    ISwapSelectionAction,
+    ISwapSelectionActionPayload,
     SET_ANIMATION,
     SET_DETECTIONS,
     SET_IDLE_TARGET,
@@ -35,13 +31,6 @@ import {
     SET_OPEN,
     SWAP_SELECTION,
 } from './types';
-
-export function setModel(model: PoseNet | null): ISetModelAction {
-    return {
-        type: SET_MODEL,
-        payload: model,
-    };
-}
 
 export function loadModel(document: Document) {
     return async (
@@ -120,13 +109,6 @@ export function handleDetection(document: Document) {
     };
 }
 
-export function setIdleTarget(coords: ICoords): ISetIdleTargetAction {
-    return {
-        type: SET_IDLE_TARGET,
-        payload: coords,
-    };
-}
-
 export function setDetectionsAndMaybeSwapTarget(detections: Detections) {
     return (
         dispatch: ThunkDispatch<IRootStore, void, Action>,
@@ -136,7 +118,11 @@ export function setDetectionsAndMaybeSwapTarget(detections: Detections) {
         const now = new Date().getTime();
         if (now < state.detectionStore.nextSelectionSwapTime) {
             dispatch(
-                setDetections(detections, getTargets(state), getColour(state)),
+                setDetections({
+                    detections,
+                    previousTarget: getTargets(state),
+                    previousColour: getColour(state),
+                }),
             );
         } else {
             const previousSelection = getSelections(state);
@@ -147,19 +133,14 @@ export function setDetectionsAndMaybeSwapTarget(detections: Detections) {
             const selectionIndex = Math.floor(
                 Math.random() * (detections.length - 1),
             );
-            const nextTargetSwapTime =
+            const nextSelectionSwapTime =
                 now +
                 targetingConsts.minInterval +
                 (targetingConsts.maxInterval - targetingConsts.minInterval) *
                     Math.random();
-            dispatch(
-                swapSelection(
-                    detections.length > 0
-                        ? detections[selectionIndex]
-                        : undefined,
-                    nextTargetSwapTime,
-                ),
-            );
+            const selection =
+                detections.length > 0 ? detections[selectionIndex] : undefined;
+            dispatch(swapSelection({ selection, nextSelectionSwapTime }));
         }
     };
 }
@@ -185,37 +166,32 @@ function removeClosestToSelection(
     detections.splice(closestIndex, 1);
 }
 
-export function setDetections(
-    detections: Detections,
-    previousTarget: ICoords,
-    previousColour: IColour,
-): ISetDetectionsAction {
-    return {
-        type: SET_DETECTIONS,
-        payload: { detections, previousTarget, previousColour },
-    };
-}
+export const setDetections = createActionPayload<
+    typeof SET_DETECTIONS,
+    {
+        detections: Detections;
+        previousTarget: ICoords;
+        previousColour: IColour;
+    }
+>(SET_DETECTIONS);
 
-export function swapSelection(
-    selection: IDetection | undefined,
-    nextSelectionSwapTime: number,
-): ISwapSelectionAction {
-    return {
-        type: SWAP_SELECTION,
-        payload: { selection, nextSelectionSwapTime },
-    };
-}
+export const swapSelection = createActionPayload<
+    typeof SWAP_SELECTION,
+    ISwapSelectionActionPayload
+>(SWAP_SELECTION);
 
-export function setOpen(openCoefficient: number): ISetOpenAction {
-    return {
-        type: SET_OPEN,
-        payload: openCoefficient,
-    };
-}
+export const setModel = createActionPayload<typeof SET_MODEL, PoseNet | null>(
+    SET_MODEL,
+);
 
-export function setAnimation(animation: Animation): ISetAnimationAction {
-    return {
-        type: SET_ANIMATION,
-        payload: animation,
-    };
-}
+export const setIdleTarget = createActionPayload<
+    typeof SET_IDLE_TARGET,
+    ICoords
+>(SET_IDLE_TARGET);
+
+export const setOpen = createActionPayload<typeof SET_OPEN, number>(SET_OPEN);
+
+export const setAnimation = createActionPayload<
+    typeof SET_ANIMATION,
+    Animation
+>(SET_ANIMATION);
