@@ -7,17 +7,7 @@ import {
 } from '../../components/intelligentMovement/MovementHandler';
 
 let props: MovementHandlerProps;
-
-const data = new Uint8ClampedArray(400);
-
-for (let i = 0; i < 400; i += 4) {
-    data[i + 0] = 190; // R value
-    data[i + 1] = 0; // G value
-    data[i + 2] = 210; // B value
-    data[i + 3] = 255; // A value
-}
-
-const imageData = { data, width: 10, height: 10 };
+const imageData = { data: new Uint8ClampedArray(0), width: 10, height: 10 };
 const mockSetIdleTargets = jest.fn();
 
 describe('Movement Handler', () => {
