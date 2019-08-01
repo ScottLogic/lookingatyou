@@ -3,16 +3,11 @@ import {
     getImageDataFromVideo,
     getLargerDistance,
 } from '../../utils/utils';
-import { detection1 } from './select/select.test';
+import { defaultDetection } from './select/select.test';
 
 describe('getBBox should give bbox or undefined', () => {
     it('should be bbox', () => {
-        expect(getBbox(detection1)).toStrictEqual([
-            135.713721802516,
-            245.63915702867212,
-            70.9147492402829,
-            9.40689987277392,
-        ]);
+        expect(getBbox(defaultDetection)).toStrictEqual([0, 1, 1, 1]);
     });
     it('should be undefined', () => {
         expect(getBbox(undefined)).toBe(undefined);
