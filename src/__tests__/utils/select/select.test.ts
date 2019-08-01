@@ -305,7 +305,7 @@ describe('objectSelection select', () => {
         const image = { data, width: 2, height: 2 };
 
         it('should return average value for correct data', () => {
-            const result = getAvgColour(0, 0, 10, 10, image);
+            const result = getAvgColour(0, 0, 2, 2, image);
             expect(result).toStrictEqual({ r: 189, g: 0, b: 208 });
         });
     });
