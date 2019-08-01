@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Movement Handler should render correctly 1`] = `
+"<Fragment>
+  <Connect(Component) width={1920} height={1080} environment={{...}} dilation={1} detected={false} openCoefficient={0.45} />
+  <Memo() text=\\"\\" show={false} />
+</Fragment>"
+`;

@@ -51,7 +51,7 @@ const configStore = (
 };
 
 function setAppConfig(state: IConfigState, action: ConfigAction): IConfigState {
-    return { ...state, ...(action as ISetAppConfigAction).partialAppConfig };
+    return { ...state, ...(action as ISetAppConfigAction).payload };
 }
 
 function setModelConfig(
@@ -62,7 +62,7 @@ function setModelConfig(
         ...state,
         modelConfig: {
             ...state.modelConfig,
-            ...(action as ISetModelConfigAction).partialModelConfig,
+            ...(action as ISetModelConfigAction).payload,
         },
     };
 }
@@ -75,7 +75,7 @@ function setDetectionConfig(
         ...state,
         detectionConfig: {
             ...state.detectionConfig,
-            ...(action as ISetDetectionConfigAction).partialDetectionConfig,
+            ...(action as ISetDetectionConfigAction).payload,
         },
     };
 }
