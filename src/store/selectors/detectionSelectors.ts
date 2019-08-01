@@ -38,13 +38,13 @@ export const getSelections = createSelector(
 export const getTargets = createSelector(
     [getSelections, getVideo],
     (selections, video): ICoords => {
-        return selections === undefined || !video
-            ? centerPoint
-            : calculateNormalisedPos(
+        return selections && video
+            ? calculateNormalisedPos(
                   selections.bbox,
                   video!.width,
                   video!.height,
-              );
+              )
+            : centerPoint;
     },
 );
 

@@ -4,7 +4,7 @@ import { ICoords } from '../../../utils/types';
 
 export function getReflection(
     radius: number,
-    selection: ICoords,
+    target: ICoords,
     image: HTMLVideoElement,
 ) {
     const canvas = document.createElement('canvas');
@@ -16,7 +16,7 @@ export function getReflection(
     ctx.arc(radius, radius, radius, 0, Math.PI * 2, true);
     ctx.closePath();
     ctx.clip();
-    const crop = getCrop(selection, image);
+    const crop = getCrop(target, image);
     ctx.scale(-1, 1);
     ctx.filter = 'blur(1px)';
     const diameter = radius * 2;
