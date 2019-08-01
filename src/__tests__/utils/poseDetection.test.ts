@@ -1,4 +1,5 @@
 import { Keypoint } from '@tensorflow-models/posenet';
+import { Pose } from '../../AppConstants';
 import { getPose } from '../../utils/pose/poseDetection';
 import { Bbox, ICoords } from '../../utils/types';
 
@@ -142,10 +143,10 @@ describe('getPose', () => {
     it('should be undefined for low confidence', () => {
         expect(getPose(lowCofidenceDetection)).toBe(undefined);
     });
-    it('should return `${Pose.LEFT_WAVE}`', () => {
+    it(`should return ${Pose.LEFT_WAVE}`, () => {
         expect(getPose(wave)).toStrictEqual('LEFT_WAVE');
     });
-    it('should return `${Pose.ARMS_OUT}`', () => {
+    it(`should return ${Pose.ARMS_OUT}`, () => {
         expect(getPose(arms)).toStrictEqual('ARMS_OUT');
     });
 });
