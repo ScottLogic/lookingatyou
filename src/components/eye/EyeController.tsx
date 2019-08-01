@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
     blinkConsts,
-    eyelidPosition,
     EyeSide,
     transitionTimes,
 } from '../../AppConstants';
@@ -148,7 +147,7 @@ export const EyeController = React.memo(
                     blinkInterval = 0;
                 };
             }
-        }, [props.detected, environment, animation]);
+        }, [props.detected, environment, animation, updateAnimation]);
 
         useEffect(() => {
             if (animation.length > 0) {
