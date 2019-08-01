@@ -52,7 +52,7 @@ export default function Eye(props: IEyeProps) {
                 width={props.width / 2}
                 height={props.height / 2}
             />
-            <InnerEye pupilColor={pupilColor} {...props} />
+            <InnerEye {...props} pupilColor={pupilColor} />
             <Eyelids
                 {...props}
                 transitionStyle={eyelidTransitionStyle}
