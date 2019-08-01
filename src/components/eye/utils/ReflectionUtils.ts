@@ -1,9 +1,10 @@
 import { fisheyeConsts } from '../../../AppConstants';
-import { Bbox } from '../../../utils/types';
+import { normalise } from '../../../utils/objectTracking/calculateFocus';
+import { ICoords } from '../../../utils/types';
 
 export function getReflection(
     radius: number,
-    selection: Bbox,
+    selection: ICoords,
     image: HTMLVideoElement,
 ) {
     const canvas = document.createElement('canvas');
@@ -21,10 +22,10 @@ export function getReflection(
     const diameter = radius * 2;
     ctx.drawImage(
         image,
-        crop.sx,
-        crop.sy,
-        crop.sWidth,
-        crop.sHeight,
+        crop.sourceX,
+        crop.sourceX,
+        crop.sourceWidth,
+        crop.sourceHeight,
         0,
         0,
         -diameter,
@@ -45,13 +46,13 @@ function fisheye(
 
     for (let currRow = 0; currRow < height; currRow++) {
         const normalisedY = (2 * currRow) / height - 1; // a
-        const normalYSquared = normalisedY * normalisedY; // a2
+        const normalYSquared = normalisedY * normalisedY; // a^2
 
         for (let currColumn = 0; currColumn < width; currColumn++) {
             const normalisedX = (2 * currColumn) / width - 1; // b
-            const normalXSquared = normalisedX * normalisedX; // b2
+            const normalXSquared = normalisedX * normalisedX; // b^2
 
-            const normalisedRadius = Math.sqrt(normalXSquared + normalYSquared); // c=sqrt(a2 + b2)
+            const normalisedRadius = Math.sqrt(normalXSquared + normalYSquared); // c=sqrt(a^2 + b^2)
 
             // For any point in the circle
             if (0.0 <= normalisedRadius && normalisedRadius <= 1.0) {
@@ -86,27 +87,21 @@ function fisheye(
     return result;
 }
 
-function getCrop(selection: Bbox, image: HTMLVideoElement) {
-    if (selection) {
-        const boxSize = image.width * 0.4;
-        let sx = selection[0] + selection[2] / 2 - boxSize / 2;
-        let sy = selection[1] + selection[3] / 2 - boxSize / 2;
-        sx = Math.min(sx, image.width - boxSize);
-        sx = Math.max(sx, 0);
-        sy = Math.min(sy, image.height - boxSize);
-        sy = Math.max(sy, 0);
-        return {
-            sx,
-            sy,
-            sWidth: boxSize,
-            sHeight: boxSize,
-        };
-    } else {
-        return {
-            sx: 0,
-            sy: 0,
-            sWidth: 1,
-            sHeight: 1,
-        };
-    }
+function getCrop(target: ICoords, image: HTMLVideoElement) {
+    const boxSize = image.width * 0.4;
+
+    let sourceX = normalise(target.x, 1, -1, image.width, 0) - boxSize / 2;
+    sourceX = Math.min(sourceX, image.width - boxSize);
+    sourceX = Math.max(sourceX, 0);
+
+    let sourceY = normalise(target.y, 1, -1, image.height, 0) - boxSize / 2;
+    sourceY = Math.min(sourceY, image.height - boxSize);
+    sourceY = Math.max(sourceY, 0);
+
+    return {
+        sourceX,
+        sourceY,
+        sourceWidth: boxSize,
+        sourceHeight: boxSize,
+    };
 }

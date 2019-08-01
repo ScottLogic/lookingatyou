@@ -144,21 +144,17 @@ export const EyeController = React.memo(
         }, [animation, updateAnimation, environment]);
 
         useEffect(() => {
-            if (
-                props.config.toggleReflection &&
-                props.selection &&
-                props.image
-            ) {
+            if (props.config.toggleReflection && props.image) {
                 reflectionRef.current = getReflection(
                     pupilRadius,
-                    props.selection.bbox,
+                    props.target,
                     props.image,
                 );
             } else {
                 reflectionRef.current = undefined;
             }
         }, [
-            props.selection,
+            props.target,
             props.image,
             props.config.toggleReflection,
             pupilRadius,
