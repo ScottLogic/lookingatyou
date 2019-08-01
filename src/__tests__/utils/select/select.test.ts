@@ -1,4 +1,4 @@
-import { Keypoint } from '@tensorflow-models/posenet/dist/types';
+import { Keypoint } from '@tensorflow-models/posenet';
 import { IDetection } from '../../../models/objectDetection';
 import {
     calculateColourMatch,
