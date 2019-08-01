@@ -49,7 +49,7 @@ export function setConfigAction(type: ConfigSetAction, payload: PartialConfig) {
 
     return {
         type,
-        partialModelConfig: parseModelConfig(payload as Partial<
+        payload: parseModelConfig(payload as Partial<
             IModelStringConfig
         >),
     };
