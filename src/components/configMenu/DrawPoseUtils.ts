@@ -63,7 +63,7 @@ function drawKeypoints(
                 ctx,
                 y * debugFeedConsts.canvasScale,
                 x * debugFeedConsts.canvasScale,
-                6,
+                debugFeedConsts.pointRadius,
                 colour,
             );
         }

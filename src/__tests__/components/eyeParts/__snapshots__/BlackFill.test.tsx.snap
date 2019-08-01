@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Blackfill should render correctly 1`] = `
+"<svg className=\\"BlackFill\\">
+  <path d=\\"M 0 540,\\\\n                         H 20,\\\\n                         A 300 300 0 1 1 20 541\\\\n                         v -1\\\\n                         H 0\\\\n                         V 0\\\\n                         H 1920\\\\n                         V 1080\\\\n                         H 0\\\\n                         Z\\" />
+</svg>"
+`;

@@ -1,0 +1,15 @@
+.revealText {
+    width: 90%;
+    color: white;
+    font-size: 5em;
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    text-align: center;
+}
+
+.revealText span {
+    padding: 10px;
+}
