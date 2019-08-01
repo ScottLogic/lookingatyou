@@ -65,43 +65,45 @@ export function handleDetection(document: Document) {
         dispatch: ThunkDispatch<IRootStore, void, Action>,
         getState: () => IRootStore,
     ) => {
-        if (getState().detectionStore.animation.length === 0) {
-            const state = getState();
-            const videos = getVideos(state);
-            const model = state.detectionStore.model;
-            const detectionConfig = getConfig(state).detectionConfig;
+        const state = getState();
+        const videos = getVideos(state);
+        const model = state.detectionStore.model;
+        const detectionConfig = getConfig(state).detectionConfig;
 
-            if (!videos[0] || !model) {
-                return;
-            }
+        if (!videos[0] || !model) {
+            return;
+        }
 
-            const images = getImageDataFromVideos(videos, document);
-            dispatch(setImageDataAction(images));
+        const images = getImageDataFromVideos(videos, document);
+        dispatch(setImageDataAction(images));
 
-            let left: IDetection[] = [];
-            const leftImage = images[EyeSide.LEFT];
-            if (leftImage && model) {
-                const leftDetections = await model.estimateMultiplePoses(
-                    leftImage,
-                    detectionConfig,
-                );
-                left = reshapeDetections(leftDetections);
-            }
-
-            dispatch(setDetectionsAndMaybeSwapTarget(left));
-
-            // The way we get target will change once #273 is implemented
-            // For now I compare selection bounding box to existing detections and select a target from there
-            const selection = getSelections(getState());
-            const target = getDetections(getState()).filter(
-                detection => detection === selection,
+        let left: IDetection[] = [];
+        const leftImage = images[EyeSide.LEFT];
+        if (leftImage && model) {
+            const leftDetections = await model.estimateMultiplePoses(
+                leftImage,
+                detectionConfig,
             );
+            left = reshapeDetections(leftDetections);
+        }
 
-            if (target && target[0]) {
-                const pose = getPose(target[0]!);
-                if (pose) {
-                    dispatch(setAnimation(animationMapping[pose]()));
-                }
+        dispatch(setDetectionsAndMaybeSwapTarget(left));
+
+        // The way we get target will change once #273 is implemented
+        // For now I compare selection bounding box to existing detections and select a target from there
+        const selection = getSelections(getState());
+        const target = getDetections(getState()).filter(
+            detection => detection === selection,
+        );
+
+        if (
+            target &&
+            target[0] &&
+            getState().detectionStore.animation.length === 0
+        ) {
+            const pose = getPose(target[0]!);
+            if (pose) {
+                dispatch(setAnimation(animationMapping[pose]()));
             }
         }
     };

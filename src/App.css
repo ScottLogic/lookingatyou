@@ -45,3 +45,13 @@
         transform: rotate(360deg);
     }
 }
+
+.fadeInText {
+    color: white;
+
+    font-size: 10em;
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
