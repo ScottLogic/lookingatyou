@@ -23,7 +23,7 @@ import { ICoords } from '../../utils/types';
 import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
 import { analyseLight, naturalMovement } from '../eye/utils/MovementUtils';
-import FadeInText from '../fadeIntext/FadeInText';
+import FadeInText from '../fadeInText/FadeInText';
 
 interface IMovementProps {
     width: number;
