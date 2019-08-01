@@ -89,8 +89,8 @@ function wave(
         stationaryWrist,
     );
     const wristAboveEye =
-        waveWrist.position.y > waveEye.position.y &&
-        stationaryWrist.position.y < stationaryEye.position.y;
+        waveWrist.position.y < waveEye.position.y &&
+        stationaryWrist.position.y > stationaryEye.position.y;
     const wristAboveElbow = waveElbow.position.y > waveWrist.position.y;
 
     return validPoints && wristAboveEye && wristAboveElbow;
