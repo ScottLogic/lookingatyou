@@ -76,6 +76,12 @@ export const targetingConsts = {
     maxInterval: 7000,
     maxNum: 8,
 };
+export const eyeRadiiCoefficients = {
+    // multiple screen width by these values to get size of eye parts
+    sclera: 1 / 4.5,
+    iris: 1 / 10,
+    pupil: 1 / 24,
+};
 export const irisSkewFactor = 0.8; // factor by which to squish iris when iris is all the way to edge of sclera
 export const minPoseConfidence = 0.2;
 

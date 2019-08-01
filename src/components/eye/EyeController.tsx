@@ -5,6 +5,7 @@ import { Dispatch } from 'redux';
 import {
     blinkConsts,
     eyelidPosition,
+    eyeRadiiCoefficients,
     EyeSide,
     transitionTimes,
 } from '../../AppConstants';
@@ -62,9 +63,13 @@ export const EyeController = React.memo(
         const [isBlinking, setIsBlinking] = useState(false);
         const { environment, updateAnimation, animation } = props;
 
-        const scleraRadius = Math.floor(props.width / 4.5);
-        const irisRadius = Math.floor(props.width / 10);
-        const pupilRadius = Math.floor(props.width / 24);
+        const scleraRadius = Math.floor(
+            props.width * eyeRadiiCoefficients.sclera,
+        );
+        const irisRadius = Math.floor(props.width * eyeRadiiCoefficients.iris);
+        const pupilRadius = Math.floor(
+            props.width * eyeRadiiCoefficients.pupil,
+        );
 
         const irisAdjustmentRef = useRef({
             scale: 1,
