@@ -4,7 +4,6 @@ import { Animation } from '../../../utils/pose/animations';
 import { IColour, ICoords, IHistory } from '../../../utils/types';
 
 export const SET_MODEL = 'SET_MODEL';
-export const SET_INTERVAL = 'SET_INTERVAL';
 export const SET_IDLE_TARGET = 'SET_IDLE_TARGET';
 export const SET_DETECTIONS = 'SET_DETECTIONS';
 export const SET_OPEN = 'SET_OPEN';
@@ -25,11 +24,6 @@ export interface IDetectionState {
 export interface ISetModelAction {
     readonly type: 'SET_MODEL';
     readonly payload: PoseNet | null;
-}
-
-export interface ISetIntervalAction {
-    readonly type: 'SET_INTERVAL';
-    readonly payload: number;
 }
 
 export interface ISetIdleTargetAction {
@@ -70,7 +64,6 @@ export interface ISwapSelectionAction {
 
 export type DetectionActionType =
     | ISetModelAction
-    | ISetIntervalAction
     | ISetIdleTargetAction
     | ISetDetectionsAction
     | ISetOpenAction

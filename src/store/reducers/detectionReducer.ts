@@ -10,7 +10,6 @@ import {
     SET_ANIMATION,
     SET_DETECTIONS,
     SET_IDLE_TARGET,
-    SET_INTERVAL,
     SET_MODEL,
     SET_OPEN,
     SWAP_SELECTION,
@@ -29,7 +28,6 @@ export const initialState: IDetectionState = {
 
 const detectionActionMapping = {
     [SET_MODEL]: setModel,
-    [SET_INTERVAL]: setDetectionInterval,
     [SET_IDLE_TARGET]: setIdleTarget,
     [SET_DETECTIONS]: setDetections,
     [SET_OPEN]: setOpen,
@@ -51,13 +49,6 @@ function setModel(
     action: DetectionActionType,
 ): IDetectionState {
     return { ...state, model: action.payload as PoseNet };
-}
-
-function setDetectionInterval(
-    state: IDetectionState,
-    action: DetectionActionType,
-): IDetectionState {
-    return { ...state, detectionInterval: action.payload as number };
 }
 
 function setIdleTarget(
