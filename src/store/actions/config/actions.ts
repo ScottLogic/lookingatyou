@@ -16,19 +16,19 @@ import {
 
 export function updateConfigAction(
     type: ConfigSetAction,
-    payload: PartialConfig,
+    partialConfig: PartialConfig,
     document: Document,
 ) {
     return (dispatch: ThunkDispatch<IRootStore, void, Action>) => {
-        dispatch(setConfigAction(type, payload));
+        dispatch(setConfigAction(type, partialConfig));
         switch (type) {
             case ConfigSetAction.APP:
-                if (payload.hasOwnProperty('fps')) {
+                if (partialConfig.hasOwnProperty('fps')) {
                     dispatch(restartDetection(document));
                 }
                 break;
             case ConfigSetAction.MODEL:
-                if (payload.hasOwnProperty('architecture')) {
+                if (partialConfig.hasOwnProperty('architecture')) {
                     dispatch(
                         setConfigAction(ConfigSetAction.MODEL, {
                             outputStride: '16',
@@ -43,19 +43,16 @@ export function updateConfigAction(
 }
 
 export function setConfigAction(type: ConfigSetAction, payload: PartialConfig) {
-    switch (type) {
-        case ConfigSetAction.APP:
-            return { type, partialAppConfig: payload };
-        case ConfigSetAction.MODEL:
-            return {
-                type,
-                partialModelConfig: parseModelConfig(payload as Partial<
-                    IModelStringConfig
-                >),
-            };
-        case ConfigSetAction.DETECTION:
-            return { type, partialDetectionConfig: payload };
+    if (type !== ConfigSetAction.MODEL) {
+        return { type, payload };
     }
+
+    return {
+        type,
+        partialModelConfig: parseModelConfig(payload as Partial<
+            IModelStringConfig
+        >),
+    };
 }
 
 function parseModelConfig(

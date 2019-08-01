@@ -5,6 +5,10 @@ import {
     outputStrides,
 } from '../../../models/objectDetection';
 
+export const SET_APP_CONFIG = 'SET_APP_CONFIG';
+export const SET_MODEL_CONFIG = 'SET_MODEL_CONFIG';
+export const SET_DETECTION_CONFIG = 'SET_DETECTION_CONFIG';
+
 export enum ConfigSetAction {
     APP = 'SET_APP_CONFIG',
     MODEL = 'SET_MODEL_CONFIG',
@@ -55,17 +59,17 @@ export interface IDetectionConfig {
 
 export interface ISetAppConfigAction {
     readonly type: ConfigSetAction.APP;
-    readonly partialAppConfig: Partial<IAppConfig>;
+    readonly payload: Partial<IAppConfig>;
 }
 
 export interface ISetModelConfigAction {
     readonly type: ConfigSetAction.MODEL;
-    readonly partialModelConfig: Partial<IModelConfig>;
+    readonly payload: Partial<IModelConfig>;
 }
 
 export interface ISetDetectionConfigAction {
     readonly type: ConfigSetAction.DETECTION;
-    readonly partialDetectionConfig: Partial<IDetectionConfig>;
+    readonly payload: Partial<IDetectionConfig>;
 }
 
 export type ConfigAction =
