@@ -3,6 +3,13 @@ export const SET_VIDEO_STREAMS = 'SET_VIDEO_STREAMS';
 export const TOGGLE_WEBCAM_AVAILABLE = 'TOGGLE_WEBCAM_AVAILABLE';
 export const SET_IMAGE_DATA = 'SET_IMAGE_DATA';
 
+export enum VideoSetAction {
+    VIDEO = 'SET_VIDEO',
+    VIDEO_STREAMS = 'SET_VIDEO_STREAMS',
+    TOGGLE_WEBCAM = 'TOGGLE_WEBCAM_AVAILABLE',
+    IMAGE_DATA = 'SET_IMAGE_DATA',
+}
+
 export interface IVideo {
     videoElement?: HTMLVideoElement | undefined;
     width: number;
@@ -16,26 +23,26 @@ export interface IVideoState {
     image: ImageData;
 }
 
-interface ISetVideoAction {
+export interface ISetVideoAction {
     readonly type: typeof SET_VIDEO;
     readonly payload: HTMLVideoElement;
 }
 
-interface ISetVideoStreamsAction {
+export interface ISetVideoStreamsAction {
     readonly type: typeof SET_VIDEO_STREAMS;
     readonly payload: IVideo;
 }
 
-interface IToggleWebcamAvailable {
+export interface IToggleWebcamAvailable {
     readonly type: typeof TOGGLE_WEBCAM_AVAILABLE;
 }
 
-interface ISetImageDataAction {
+export interface ISetImageDataAction {
     readonly type: typeof SET_IMAGE_DATA;
     readonly payload: ImageData;
 }
 
-export type VideoActionTypes =
+export type VideoAction =
     | ISetVideoAction
     | ISetVideoStreamsAction
     | IToggleWebcamAvailable
