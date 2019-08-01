@@ -2,11 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import {
-    blinkConsts,
-    EyeSide,
-    transitionTimes,
-} from '../../AppConstants';
+import { blinkConsts, EyeSide, transitionTimes } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 import { IConfigState } from '../../store/actions/config/types';
 import { setAnimation } from '../../store/actions/detections/actions';
@@ -134,7 +130,7 @@ export const EyeController = React.memo(
             if (animation.length === 0) {
                 let blinkInterval = environment.setInterval(() => {
                     const blinkFrequency = props.detected
-                        ? blinkConsts.frequency / 4
+                        ? blinkConsts.focusedFrequency
                         : blinkConsts.frequency;
                     const blinkProbability =
                         blinkFrequency / (1000 / transitionTimes.blink);
