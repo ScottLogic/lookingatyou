@@ -30,7 +30,10 @@ const FadeInText = React.memo((props: ITextProps) => {
         return textArray.map(combineWithDelays).map(renderToSpan);
     }
 
-    function renderToSpan({ character, delay }: any, index: number) {
+    function renderToSpan(
+        characterProps: { character: string; delay: number },
+        index: number,
+    ) {
         const transitionTime = normalise(
             Math.random(),
             1,
@@ -41,12 +44,12 @@ const FadeInText = React.memo((props: ITextProps) => {
         const style = {
             opacity: props.show ? 1 : 0,
             transition: `opacity ${transitionTime}ms`,
-            transitionDelay: `${delay}ms`,
+            transitionDelay: `${characterProps.delay}ms`,
             transitionTimingFunction: 'linear',
         };
         return (
             <span style={style} key={index}>
-                {character}
+                {characterProps.character}
             </span>
         );
     }
