@@ -1,9 +1,9 @@
-import { detection1 } from '../../test_constants/selectConstants';
 import {
     getBbox,
     getImageDataFromVideo,
     getLargerDistance,
 } from '../../utils/utils';
+import { detection1 } from './select/select.test';
 
 describe('getBBox should give bbox or undefined', () => {
     it('should be bbox', () => {
