@@ -96,7 +96,6 @@ export class MovementHandler extends React.Component<
         this.movementInterval = this.props.environment.setInterval(
             this.animateEye,
             1000 / this.props.fps,
-            this.prevProps,
         );
     }
 
