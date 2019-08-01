@@ -279,7 +279,7 @@ function getImageData(): ImageData {
     return { data, width: 720, height: 480 };
 }
 
-describe('utils', () => {
+describe('objectSelection select', () => {
     describe('calculateColourMatch', () => {
         const result = calculateColourMatch([]);
         it('should return default for undefined imageData', () =>
@@ -293,16 +293,16 @@ describe('utils', () => {
     });
 
     describe('getAvgColour', () => {
-        const data = new Uint8ClampedArray(400);
+        const data = new Uint8ClampedArray(16);
 
-        for (let i = 0; i < 400; i += 4) {
+        for (let i = 0; i < 16; i += 4) {
             data[i + 0] = 190; // R value
             data[i + 1] = 0; // G value
             data[i + 2] = 210; // B value
             data[i + 3] = 255; // A value
         }
 
-        const image = { data, width: 10, height: 10 };
+        const image = { data, width: 2, height: 2 };
 
         it('should return average value for correct data', () => {
             const result = getAvgColour(0, 0, 10, 10, image);
