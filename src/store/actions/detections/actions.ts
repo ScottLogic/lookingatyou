@@ -103,7 +103,7 @@ export function handleDetection(document: Document) {
         ) {
             const pose = getPose(target[0]!);
             if (pose) {
-                dispatch(setAnimation(animationMapping[pose]()));
+                dispatch(setAnimation(animationMapping[pose]));
             }
         }
     };
