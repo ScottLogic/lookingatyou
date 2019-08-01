@@ -1,5 +1,5 @@
 import { Keypoint } from '@tensorflow-models/posenet';
-import { armPointingUp, getPose } from '../../utils/pose/poseDetection';
+import { getPose } from '../../utils/pose/poseDetection';
 import { Bbox, ICoords } from '../../utils/types';
 
 const genericBbox: Bbox = [0, 1, 2, 3];
@@ -27,7 +27,7 @@ const rightKnee = getPart(1, origin, 'rightKnee');
 const leftAnkle = getPart(1, origin, 'leftAnkle');
 const rightAnkle = getPart(1, origin, 'rightAnkle');
 
-describe('getPose should return', () => {
+describe('getPose', () => {
     const rightWrist = getLowScorePart('rightWrist');
     const leftWrist = getLowScorePart('leftWrist');
     const rightElbow = getLowScorePart('rightElbow');
@@ -142,22 +142,10 @@ describe('getPose should return', () => {
     it('should be undefined for low confidence', () => {
         expect(getPose(lowCofidenceDetection)).toBe(undefined);
     });
-    it('should be a wave', () => {
+    it('should return `${Pose.LEFT_WAVE}`', () => {
         expect(getPose(wave)).toStrictEqual('LEFT_WAVE');
     });
-    it('should be armsout', () => {
+    it('should return `${Pose.ARMS_OUT}`', () => {
         expect(getPose(arms)).toStrictEqual('ARMS_OUT');
-    });
-});
-
-describe('armPointingUp should return a wave', () => {
-    const rightWrist = getPart(1, { x: 0, y: -10 }, 'rightWrist');
-    const rightElbow = getPart(1, { x: 0, y: 0 }, 'rightElbow');
-    const rightShoulder = getPart(1, { x: 0, y: 10 }, 'rightShoulder');
-
-    it('should be a wave', () => {
-        expect(
-            armPointingUp(rightWrist, rightElbow, rightShoulder),
-        ).toBeTruthy();
     });
 });

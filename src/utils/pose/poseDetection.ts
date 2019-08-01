@@ -191,11 +191,7 @@ function checkLeftDab(pose: IPoseKeypoints): boolean {
     );
 }
 
-export function armPointingUp(
-    wrist: Keypoint,
-    elbow: Keypoint,
-    shoulder: Keypoint,
-) {
+function armPointingUp(wrist: Keypoint, elbow: Keypoint, shoulder: Keypoint) {
     return (
         wrist.position.y < elbow.position.y &&
         elbow.position.y < shoulder.position.y
