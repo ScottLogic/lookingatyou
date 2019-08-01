@@ -1,4 +1,10 @@
-import { eyelidPosition, EyeSide, Pose, pupilSizes } from '../../AppConstants';
+import {
+    eyelidPosition,
+    EyeSide,
+    idleMovementConsts,
+    Pose,
+    pupilSizes,
+} from '../../AppConstants';
 import { normalise } from '../objectTracking/calculateFocus';
 import { ICoords } from '../types';
 
@@ -108,4 +114,29 @@ export function dab(): Animation {
         });
     }
     return animation;
+}
+
+export function naturalMovement(isLeft: boolean): Animation {
+    const xDistance = normalise(
+        Math.random(),
+        1,
+        0,
+        1 - idleMovementConsts.sideBuffer,
+        0,
+    );
+    const x = isLeft ? -xDistance : xDistance;
+    return [
+        {
+            normalisedCoords: { x, y: 0 },
+            duration: 500,
+        },
+        {
+            normalisedCoords: { x, y: 0 },
+            duration: normalise(Math.random(), 1, 0, 2000, 0),
+        },
+        {
+            normalisedCoords: { x: 0, y: 0 },
+            duration: 500,
+        },
+    ];
 }

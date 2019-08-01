@@ -1,10 +1,5 @@
 import convert from 'color-convert';
-import {
-    CIELabOffset,
-    eyeCoords,
-    idleMovementConsts,
-    lightConsts,
-} from '../../../AppConstants';
+import { CIELabOffset, lightConsts } from '../../../AppConstants';
 import { normalise } from '../../../utils/objectTracking/calculateFocus';
 
 export function analyseLight(
@@ -38,26 +33,4 @@ export function analyseLight(
         tooBright: lightConsts.maxBrightness === brightness,
         scaledPupilSize,
     };
-}
-
-export function naturalMovement(currentX: number, isMovingLeft: boolean) {
-    const eyeBoundary = 1 - idleMovementConsts.sideBuffer;
-
-    if (currentX === eyeCoords.middleX) {
-        return Math.random() < idleMovementConsts.moveCenterChance
-            ? newEyePos(currentX, isMovingLeft)
-            : { newX: currentX, isMovingLeft };
-    } else if (Math.abs(currentX) >= eyeBoundary) {
-        return Math.random() < idleMovementConsts.moveSideChance
-            ? newEyePos(currentX, !isMovingLeft)
-            : { newX: currentX, isMovingLeft };
-    } else {
-        return newEyePos(currentX, isMovingLeft);
-    }
-}
-
-function newEyePos(currentX: number, isMovingLeft: boolean) {
-    let xDelta = idleMovementConsts.xDelta;
-    xDelta = isMovingLeft ? 0 - xDelta : xDelta;
-    return { newX: currentX + xDelta, isMovingLeft };
 }

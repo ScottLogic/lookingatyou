@@ -26,7 +26,6 @@ import {
     ISwapSelectionActionPayload,
     SET_ANIMATION,
     SET_DETECTIONS,
-    SET_IDLE_TARGET,
     SET_MODEL,
     SET_OPEN,
     SWAP_SELECTION,
@@ -187,11 +186,6 @@ export const swapSelection = createActionPayload<
 export const setModel = createActionPayload<typeof SET_MODEL, PoseNet | null>(
     SET_MODEL,
 );
-
-export const setIdleTarget = createActionPayload<
-    typeof SET_IDLE_TARGET,
-    ICoords
->(SET_IDLE_TARGET);
 
 export const setOpen = createActionPayload<typeof SET_OPEN, number>(SET_OPEN);
 

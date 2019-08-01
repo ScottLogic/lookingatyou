@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
+    chanceOfIdleEyesMovement,
     eyelidPosition,
     EyeSide,
     intervals,
@@ -9,8 +10,8 @@ import {
     userInteraction,
 } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
-import { setIdleTarget } from '../../store/actions/detections/actions';
-import { ISetIdleTargetAction } from '../../store/actions/detections/types';
+import { setAnimation } from '../../store/actions/detections/actions';
+import { ISetAnimationAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getFPS } from '../../store/selectors/configSelectors';
 import {
@@ -19,10 +20,10 @@ import {
     getTargets,
 } from '../../store/selectors/detectionSelectors';
 import { getImageData } from '../../store/selectors/videoSelectors';
-import { Animation } from '../../utils/pose/animations';
+import { Animation, naturalMovement } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import EyeController from '../eye/EyeController';
-import { analyseLight, naturalMovement } from '../eye/utils/MovementUtils';
+import { analyseLight } from '../eye/utils/MovementUtils';
 import FadeInText from '../fadeInText/FadeInText';
 
 interface IMovementProps {
@@ -40,7 +41,7 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-    setIdleTarget: (coords: ICoords) => ISetIdleTargetAction;
+    updateAnimation: (animation: Animation) => ISetAnimationAction;
 }
 
 interface IMovementState {
@@ -60,7 +61,7 @@ export class MovementHandler extends React.Component<
     private movementInterval: number;
     private sleepTimeout: number;
     private tooBright: boolean;
-    private isMovingLeft: boolean;
+    private hasMovedLeft: boolean;
     private squinting: boolean;
     private personDetected: boolean;
     private openCoefficient: number;
@@ -78,7 +79,7 @@ export class MovementHandler extends React.Component<
         this.movementInterval = 0;
         this.sleepTimeout = 0;
         this.tooBright = false;
-        this.isMovingLeft = false;
+        this.hasMovedLeft = false;
         this.personDetected = false;
         this.squinting = false;
         this.openCoefficient = eyelidPosition.OPEN;
@@ -159,22 +160,14 @@ export class MovementHandler extends React.Component<
         } else {
             this.sleep();
             this.hasTargetLeft();
-
-            let idleCoords = this.props.target;
-
-            if (Math.abs(idleCoords.x) > 1) {
-                idleCoords.x = 0;
+            if (this.props.animation.length === 0) {
+                if (Math.random() < chanceOfIdleEyesMovement) {
+                    this.hasMovedLeft = !this.hasMovedLeft;
+                    this.props.updateAnimation(
+                        naturalMovement(this.hasMovedLeft),
+                    );
+                }
             }
-
-            const { newX, isMovingLeft } = naturalMovement(
-                idleCoords.x,
-                this.isMovingLeft,
-            );
-
-            idleCoords = { x: newX, y: 0 };
-            this.props.setIdleTarget(idleCoords);
-
-            this.isMovingLeft = isMovingLeft;
         }
     }
 
@@ -195,7 +188,6 @@ export class MovementHandler extends React.Component<
                 dilationCoefficient: pupilSizes.constricted,
             });
             this.openCoefficient = eyelidPosition.SQUINT;
-            this.props.setIdleTarget({ x: 0, y: 0 });
         }
     }
 
@@ -264,7 +256,8 @@ const mapStateToProps = (state: IRootStore) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => ({
-    setIdleTarget: (coords: ICoords) => dispatch(setIdleTarget(coords)),
+    updateAnimation: (animation: Animation) =>
+        dispatch(setAnimation(animation)),
 });
 
 export default connect(

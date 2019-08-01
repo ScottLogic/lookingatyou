@@ -32,11 +32,6 @@ export interface ISetIntervalAction {
     readonly payload: number;
 }
 
-export interface ISetIdleTargetAction {
-    readonly type: 'SET_IDLE_TARGET';
-    readonly payload: ICoords;
-}
-
 export interface ISetDetectionsActionPayload {
     readonly detections: Detections;
     readonly previousTarget: ICoords;
@@ -71,7 +66,6 @@ export interface ISwapSelectionAction {
 export type DetectionActionType =
     | ISetModelAction
     | ISetIntervalAction
-    | ISetIdleTargetAction
     | ISetDetectionsAction
     | ISetOpenAction
     | ISetAnimationAction
