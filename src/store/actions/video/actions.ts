@@ -17,14 +17,14 @@ export function setStream(mediaDevices: MediaDevices) {
         getState: () => IRootStore,
     ) => {
         const streams = await configureStreams(mediaDevices);
+        const videoStore = getState().videoStore;
         if (streams) {
             dispatch(setVideoStreamsAction(streams));
-            const videoStore = getState().videoStore;
-            const streamsLength = Object.keys(streams).length;
-            if (
-                (videoStore.webcamAvailable && streamsLength === 0) ||
-                (!videoStore.webcamAvailable && streamsLength > 0)
-            ) {
+            if (!videoStore.webcamAvailable) {
+                dispatch(toggleWebcamAvailable());
+            }
+        } else {
+            if (videoStore.webcamAvailable) {
                 dispatch(toggleWebcamAvailable());
             }
         }

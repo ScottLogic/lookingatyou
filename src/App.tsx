@@ -6,7 +6,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import './App.css';
 import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
 import MovementHandler from './components/intelligentMovement/MovementHandler';
-import Video from './components/video/Video';
+import VideoHandler from './components/video/VideoHandler';
 import { loadModel } from './store/actions/detections/actions';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getWebcamAvailable } from './store/selectors/videoSelectors';
@@ -83,12 +83,12 @@ export class App extends React.Component<AppProps, IAppState> {
     render() {
         return (
             <div className="App">
+                <VideoHandler mediaDevices={this.props.mediaDevices} />
                 {this.props.webcamAvailable ? (
                     !this.props.model ? (
                         <div className="loading-spinner" />
                     ) : (
                         <>
-                            <Video />
                             <MovementHandler
                                 width={this.state.width}
                                 height={this.state.height}
