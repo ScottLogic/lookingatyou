@@ -2,7 +2,7 @@ import { getBoundingBox, partIds, Pose } from '@tensorflow-models/posenet';
 import { IDetection } from '../models/objectDetection';
 import { Bbox, ICoords } from './types';
 
-export function getBbox(detection: IDetection | undefined): Bbox | undefined {
+export function getBbox(detection?: IDetection): Bbox | undefined {
     return detection ? detection.bbox : undefined;
 }
 
@@ -33,17 +33,6 @@ export function reshapeDetections(detections: Pose[]): IDetection[] {
 }
 
 export function getImageDataFromVideo(
-    video: HTMLVideoElement | undefined,
-    document: Document,
-): ImageData | null {
-    const image = getImageData(video, document);
-    if (image) {
-        return image;
-    }
-    return null;
-}
-
-function getImageData(
     video: HTMLVideoElement | undefined,
     document: Document,
 ): ImageData | null {
