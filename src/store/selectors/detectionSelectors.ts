@@ -60,8 +60,8 @@ export const getColour = createSelector(
         const imageData = imageDataMap[EyeSide.LEFT];
         if (selection) {
             const colour = calculateColourMatch(
-                imageData,
                 selection.info.keypoints,
+                imageData,
             );
             return colour;
         }
