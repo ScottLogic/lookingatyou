@@ -2,7 +2,11 @@
 
 exports[`Movement Handler should render correctly 1`] = `
 "<Fragment>
+<<<<<<< HEAD
   <Connect(Component) dilation={1} detected={false} openCoefficient={0.45} width={1920} height={1080} environment={{...}} setIdleTarget={[Function: mockConstructor]} fps={1000} detections={{...}} target={{...}} images={{...}} animation={{...}} />
+=======
+  <Connect(Component) width={1920} height={1080} environment={{...}} dilation={1} detected={false} openCoefficient={0.45} />
+>>>>>>> master
   <Memo() text=\\"\\" show={false} />
 </Fragment>"
 `;
