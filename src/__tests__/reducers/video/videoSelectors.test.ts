@@ -14,9 +14,8 @@ const device1 = {
     stream: undefined,
 };
 
-const array = new Uint8ClampedArray(0);
 const video = { width: 0, height: 0, stream: undefined };
-const imgData = { width: 0, height: 0, data: array };
+const imgData = { width: 0, height: 0, data: new Uint8ClampedArray(0) };
 
 let mockRootStore: IRootStore;
 let mockVideoStore: IVideoState;
