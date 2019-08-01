@@ -36,7 +36,7 @@ describe('Detection Reducer Tests', () => {
         previousTarget: testTarget,
         previousColour: testColour,
     });
-    it('should update detections and history correctly in the simplest case', () => {
+    it('should update detections and history when history is empty', () => {
         const expected: IDetectionState = {
             ...testState,
             detections: testDetections,
@@ -44,7 +44,37 @@ describe('Detection Reducer Tests', () => {
         };
         expect(detectionStore(testState, testAction)).toStrictEqual(expected);
     });
-    it('should update history correctly when history is at maximum length', () => {
+    it('should update detections and history correctly when history is neither empty nor full', () => {
+        if (targetingConsts.maxNum > 1) {
+            const initialState = {
+                ...testState,
+                history: [
+                    {
+                        target: { x: 0, y: 0 },
+                        colour: { r: 0, g: 0, b: 0 },
+                    },
+                ],
+            };
+            const expected = {
+                ...initialState,
+                detections: testDetections,
+                history: [
+                    {
+                        target: { x: 0, y: 0 },
+                        colour: { r: 0, g: 0, b: 0 },
+                    },
+                    {
+                        target: testTarget,
+                        colour: testColour,
+                    },
+                ],
+            };
+            expect(detectionStore(initialState, testAction)).toStrictEqual(
+                expected,
+            );
+        }
+    });
+    it('should update detections history correctly when history is at maximum length', () => {
         const initialHistory: IHistory[] = [];
 
         for (let i = 0; i < targetingConsts.maxNum; i++) {
