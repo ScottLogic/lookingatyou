@@ -66,13 +66,13 @@ export const shock: Animation = [
 ];
 
 export const animationMapping: {
-    [key: string]: Animation;
+    [key: string]: (() => Animation) | Animation;
 } = {
     [Pose.LEFT_WAVE]: leftWink,
     [Pose.RIGHT_WAVE]: rightWink,
-    [Pose.HANDS_UP]: rollEyes(),
+    [Pose.HANDS_UP]: rollEyes,
     [Pose.ARMS_OUT]: shock,
-    [Pose.DAB]: dab(),
+    [Pose.DAB]: dab,
 };
 
 export function rollEyes(): Animation {
