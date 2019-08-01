@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
-    blinkConsts,
     eyelidPosition,
     EyeSide,
     intervals,
@@ -20,7 +19,6 @@ import {
 } from '../../store/selectors/detectionSelectors';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
-import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
 import { analyseLight, naturalMovement } from '../eye/utils/MovementUtils';
 import FadeInText from '../fadeInText/FadeInText';
@@ -62,8 +60,7 @@ export class MovementHandler extends React.Component<
     private tooBright: boolean;
     private isMovingLeft: boolean;
     private squinting: boolean;
-    private detected: boolean;
-    private prevProps: MovementHandlerProps | null;
+    private personDetected: boolean;
     private openCoefficient: number;
     private textTimeout: number | null;
 
@@ -80,9 +77,8 @@ export class MovementHandler extends React.Component<
         this.sleepTimeout = null;
         this.tooBright = false;
         this.isMovingLeft = false;
-        this.detected = false;
+        this.personDetected = false;
         this.squinting = false;
-        this.prevProps = null;
         this.openCoefficient = eyelidPosition.OPEN;
         this.textTimeout = null;
 
@@ -99,7 +95,6 @@ export class MovementHandler extends React.Component<
         this.movementInterval = this.props.environment.setInterval(
             this.animateEye,
             1000 / this.props.fps,
-            this.prevProps,
         );
     }
 
@@ -120,14 +115,9 @@ export class MovementHandler extends React.Component<
         }
     }
 
-    componentDidUpdate(prevProps: MovementHandlerProps) {
-        this.prevProps = prevProps;
-    }
-
-    animateEye(prevProps: MovementHandlerProps) {
+    animateEye() {
         this.checkSelection();
         this.calculateBrightness();
-        this.checkBlink(prevProps);
     }
 
     componentWillUnmount() {
@@ -187,22 +177,9 @@ export class MovementHandler extends React.Component<
         }
     }
 
-    checkBlink(prevProps?: MovementHandlerProps) {
-        if (prevProps && this.props.target) {
-            const leftEyeDist = getLargerDistance(
-                prevProps.target,
-                this.props.target,
-            );
-
-            if (leftEyeDist > blinkConsts.movementThreshold) {
-                this.openCoefficient = eyelidPosition.CLOSED;
-            }
-        }
-    }
-
     isNewTarget() {
-        if (!this.detected) {
-            this.detected = true;
+        if (!this.personDetected) {
+            this.personDetected = true;
             this.setState({
                 dilationCoefficient: pupilSizes.dilated,
             });
@@ -210,8 +187,8 @@ export class MovementHandler extends React.Component<
     }
 
     hasTargetLeft() {
-        if (this.detected) {
-            this.detected = false;
+        if (this.personDetected) {
+            this.personDetected = false;
             this.squinting = true;
             this.setState({
                 dilationCoefficient: pupilSizes.constricted,
@@ -265,7 +242,7 @@ export class MovementHandler extends React.Component<
             <>
                 <EyeController
                     dilation={this.state.dilationCoefficient}
-                    detected={this.detected}
+                    detected={this.personDetected}
                     openCoefficient={this.openCoefficient}
                     {...this.props}
                 />
