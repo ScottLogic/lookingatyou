@@ -1,4 +1,4 @@
-import { irisSkewFactor } from "../../../AppConstants";
+import { irisSkewFactor } from '../../../AppConstants';
 
 export function getMaxDisplacement(scleraRadius: number, irisRadius: number) {
     return (scleraRadius - irisRadius * irisSkewFactor) / irisSkewFactor;
@@ -45,16 +45,18 @@ export function generateInnerPath(radius: number, sectors: number) {
     const radianStep = (2 * Math.PI) / sectors;
     const innerOffset = -radianStep / 2;
 
-    let currInnerPath = 'M 0 0';
+    let currInnerPath = `M ${innerRadius *
+        Math.cos(radianStep * (sectors - 1))} ${innerRadius *
+        Math.sin(radianStep * (sectors - 1))} `;
     for (let i = 0; i < sectors; i++) {
         const currRadianStep = radianStep * i;
         const lineOut = `L ${outerRadius *
             Math.cos(currRadianStep + innerOffset)} ${outerRadius *
-            Math.sin(currRadianStep + innerOffset)}`;
+            Math.sin(currRadianStep + innerOffset)} `;
 
         const lineIn = `L ${innerRadius *
             Math.cos(currRadianStep)} ${innerRadius *
-            Math.sin(currRadianStep)}`;
+            Math.sin(currRadianStep)} `;
 
         currInnerPath += lineOut;
         currInnerPath += lineIn;
