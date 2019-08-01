@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Sclera should render correctly 1`] = `"<circle className=\\"sclera\\" r={100} fill=\\"url(#scleraGradient)\\" cx={1000} cy={800} />"`;

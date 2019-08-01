@@ -77,5 +77,26 @@ export const targetingConsts = {
     maxInterval: 7000,
     maxNum: 8,
 };
-export const minPoseConfidence = 0.2;
+export const numInnerEyeSectors = 100;
 export const irisSkewFactor = 0.8; // factor by which to squish iris when iris is all the way to edge of sclera
+export const minPoseConfidence = 0.2;
+
+export const userInteraction = {
+    texts: [
+        'HELLO',
+        'TRY WAVING',
+        "I DON'T HAVE HANDS",
+        'PLAY WITH ME',
+        "DON'T LEAVE ME",
+        'NOTHING TO SEE HERE',
+    ],
+    delay: 30000,
+    textDuration: 3000,
+};
+export const fadeInText = {
+    threshold: 0.2,
+    delayMin: 200,
+    delayMax: 1000,
+    transitionMax: 2000,
+    transitionMin: 200,
+};

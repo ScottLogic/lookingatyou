@@ -2,7 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { blinkConsts, EyeSide, transitionTimes } from '../../AppConstants';
+import {
+    blinkConsts,
+    EyeSide,
+    numInnerEyeSectors,
+    transitionTimes,
+} from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 import { IConfigState } from '../../store/actions/config/types';
 import { setAnimation } from '../../store/actions/detections/actions';
@@ -118,7 +123,7 @@ export const EyeController = React.memo(
                 : props.dilation;
 
         const [innerPath, setInnerPath] = useState(
-            generateInnerPath(irisRadius, 100),
+            generateInnerPath(irisRadius, numInnerEyeSectors),
         );
 
         const irisColor =
@@ -190,7 +195,7 @@ export const EyeController = React.memo(
         });
 
         useEffect(() => {
-            setInnerPath(generateInnerPath(irisRadius, 100));
+            setInnerPath(generateInnerPath(irisRadius, numInnerEyeSectors));
         }, [irisRadius]);
 
         return (
