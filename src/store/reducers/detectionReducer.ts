@@ -16,7 +16,6 @@ import {
 
 export const initialState: IDetectionState = {
     model: null,
-    idleTarget: { x: 0, y: 0 },
     detections: [],
     eyesOpenCoefficient: eyelidPosition.OPEN,
     detectionInterval: 0,

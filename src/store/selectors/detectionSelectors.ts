@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { EyeSide } from '../../AppConstants';
+import { centerPoint, EyeSide } from '../../AppConstants';
 import { Detections } from '../../models/objectDetection';
 import select, {
     calculateColourMatch,
@@ -37,8 +37,8 @@ export const getSelections = createSelector(
 );
 
 export const getTargets = createSelector(
-    [getSelections, getVideos, getIdleTargets],
-    (selections, videos, idleTargets): ICoords => {
+    [getSelections, getVideos],
+    (selections, videos): ICoords => {
         const normalisedTarget =
             selections === undefined || !videos[0]
                 ? undefined
@@ -47,11 +47,7 @@ export const getTargets = createSelector(
                       videos[0]!.width,
                       videos[0]!.height,
                   );
-        if (normalisedTarget) {
-            return normalisedTarget;
-        } else {
-            return idleTargets;
-        }
+        return normalisedTarget ? normalisedTarget : centerPoint;
     },
 );
 
@@ -86,10 +82,6 @@ export function getPreviousColour(state: IRootStore): IColour {
 
 export function getPreviousColours(state: IRootStore): IColour[] {
     return state.detectionStore.history.map(history => history.colour);
-}
-
-export function getIdleTargets(state: IRootStore): ICoords {
-    return state.detectionStore.idleTarget;
 }
 
 export function getOpenCoefficient(state: IRootStore): number {

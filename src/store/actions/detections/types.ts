@@ -17,7 +17,6 @@ export interface IDetectionState {
     eyesOpenCoefficient: number;
     detections: Detections;
     history: IHistory[];
-    idleTarget: ICoords;
     animation: Animation;
     nextSelectionSwapTime: number;
 }
