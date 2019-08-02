@@ -93,13 +93,13 @@ export const minPoseConfidence = 0.2;
 
 export const userInteraction = {
     texts: [
-        { phrase: 'HELLO', likelihood: 1 },
-        { phrase: 'TRY WAVING', likelihood: 1 },
-        { phrase: "I DON'T HAVE HANDS", likelihood: 0.5 },
-        { phrase: 'PLAY WITH ME', likelihood: 0.7 },
-        { phrase: "DON'T LEAVE ME", likelihood: 0.5 },
-        { phrase: 'NOTHING TO SEE HERE', likelihood: 0.6 },
-        { phrase: 'I HAVE NO MOUTH AND I MUST SCREAM', likelihood: 0.03 },
+        { phrase: 'HELLO', frequency: 1 },
+        { phrase: 'TRY WAVING', frequency: 1 },
+        { phrase: "I DON'T HAVE HANDS", frequency: 0.5 },
+        { phrase: 'PLAY WITH ME', frequency: 0.7 },
+        { phrase: "DON'T LEAVE ME", frequency: 0.5 },
+        { phrase: 'NOTHING TO SEE HERE', frequency: 0.6 },
+        { phrase: 'I HAVE NO MOUTH AND I MUST SCREAM', frequency: 0.03 },
     ],
     delay: 30000,
     textDuration: 3000,
