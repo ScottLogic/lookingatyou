@@ -80,7 +80,7 @@ export const ConfigMenuElement = React.memo(
                         configName={'irisColor'}
                         color={props.config.irisColor}
                         onInputChange={props.updateAppConfig}
-                        helpWith={HelpWith.IRIS_COLOUR}
+                        helpWith={HelpWith.IRIS_COLOR}
                     />
 
                     <br />

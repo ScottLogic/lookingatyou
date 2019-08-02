@@ -1,11 +1,11 @@
 import { Keypoint } from '@tensorflow-models/posenet';
 import convert from 'color-convert';
-import { bodyParts, colourCheckConsts } from '../../AppConstants';
+import { bodyParts, colorCheckConsts } from '../../AppConstants';
 import { Detections, IDetection } from '../../models/objectDetection';
 import calculateTargetPos, {
     calculateNormalisedPos,
 } from '../objectTracking/calculateFocus';
-import { IColour, ICoords } from '../types';
+import { IColor, ICoords } from '../types';
 
 export default function select(
     detections: Detections,
@@ -28,10 +28,10 @@ export default function select(
     return undefined;
 }
 
-export function calculateColourMatch(
+export function calculateColorMatch(
     imageData: ImageData,
     keypoints: Keypoint[],
-): IColour {
+): IColor {
     if (!imageData) {
         return { r: 0, g: 0, b: 0 };
     }
@@ -41,16 +41,16 @@ export function calculateColourMatch(
     const xEnd = xStart + 10;
     const yEnd = yStart + 10;
 
-    return getAvgColour(xStart, yStart, xEnd, yEnd, imageData);
+    return getAvgColor(xStart, yStart, xEnd, yEnd, imageData);
 }
 
-export function getAvgColour(
+export function getAvgColor(
     xStart: number,
     yStart: number,
     xEnd: number,
     yEnd: number,
     imageData: ImageData,
-): IColour {
+): IColor {
     if (!imageData) {
         return { r: 0, g: 0, b: 0 };
     }
@@ -103,10 +103,10 @@ export function getPredictedTarget(history: ICoords[]): ICoords {
     return { x: xPrediction, y: yPrediction };
 }
 
-export function getPredictedColour(history: IColour[]): IColour {
-    const rHistory = history.map(colour => colour.r);
-    const gHistory = history.map(colour => colour.g);
-    const bHistory = history.map(colour => colour.b);
+export function getPredictedColor(history: IColor[]): IColor {
+    const rHistory = history.map(color => color.r);
+    const gHistory = history.map(color => color.g);
+    const bHistory = history.map(color => color.b);
 
     const r = getWeightedAverage(rHistory);
     const g = getWeightedAverage(gHistory);
@@ -137,9 +137,9 @@ export function largerThan(
     );
 }
 
-export function closerToColour(
+export function closerToColor(
     imageData: ImageData,
-    avgColour: IColour,
+    avgColor: IColor,
     keypoints1: Keypoint[],
     keypoints2: Keypoint[],
 ): number {
@@ -149,34 +149,22 @@ export function closerToColour(
 
     const x1Start = getXStart(keypoints1);
     const x2Start = getXStart(keypoints2);
-    const x1End = x1Start + colourCheckConsts.xOffset;
-    const x2End = x2Start + colourCheckConsts.xOffset;
+    const x1End = x1Start + colorCheckConsts.xOffset;
+    const x2End = x2Start + colorCheckConsts.xOffset;
     const y1Start = getYStart(keypoints1);
     const y2Start = getYStart(keypoints2);
-    const y1End = y1Start + colourCheckConsts.yOffset;
-    const y2End = y2Start + colourCheckConsts.yOffset;
+    const y1End = y1Start + colorCheckConsts.yOffset;
+    const y2End = y2Start + colorCheckConsts.yOffset;
 
-    const box1AvgColour = getAvgColour(
-        x1Start,
-        y1Start,
-        x1End,
-        y1End,
-        imageData,
-    );
-    const box2AvgColour = getAvgColour(
-        x2Start,
-        y2Start,
-        x2End,
-        y2End,
-        imageData,
-    );
+    const box1AvgColor = getAvgColor(x1Start, y1Start, x1End, y1End, imageData);
+    const box2AvgColor = getAvgColor(x2Start, y2Start, x2End, y2End, imageData);
 
-    const box1GreenDelta = Math.pow(box1AvgColour.g - avgColour.g, 2);
-    const box1BlueDelta = Math.pow(box1AvgColour.b - avgColour.b, 2);
-    const box1RedDelta = Math.pow(box1AvgColour.r - avgColour.r, 2);
-    const box2RedDelta = Math.pow(box2AvgColour.r - avgColour.r, 2);
-    const box2GreenDelta = Math.pow(box2AvgColour.g - avgColour.g, 2);
-    const box2BlueDelta = Math.pow(box2AvgColour.b - avgColour.b, 2);
+    const box1GreenDelta = Math.pow(box1AvgColor.g - avgColor.g, 2);
+    const box1BlueDelta = Math.pow(box1AvgColor.b - avgColor.b, 2);
+    const box1RedDelta = Math.pow(box1AvgColor.r - avgColor.r, 2);
+    const box2RedDelta = Math.pow(box2AvgColor.r - avgColor.r, 2);
+    const box2GreenDelta = Math.pow(box2AvgColor.g - avgColor.g, 2);
+    const box2BlueDelta = Math.pow(box2AvgColor.b - avgColor.b, 2);
 
     const box1Variance = box1RedDelta + box1GreenDelta + box1BlueDelta;
     const box2Variance = box2RedDelta + box2GreenDelta + box2BlueDelta;
@@ -206,14 +194,14 @@ export function getYStart(keypoints: Keypoint[]) {
         keypoint => keypoint.part === bodyParts.RIGHT_SHOULDER,
     );
     return rightShoulder
-        ? Math.round(rightShoulder.position.y) + colourCheckConsts.yOffset
+        ? Math.round(rightShoulder.position.y) + colorCheckConsts.yOffset
         : 0;
 }
 
 export function closerToPrediction(
     prediction: ICoords,
     imageData: ImageData,
-    avgColour: IColour,
+    avgColor: IColor,
 ): (detection1: IDetection, detection2: IDetection) => number {
     return function closerToCoords(
         detection1: IDetection,
@@ -245,9 +233,9 @@ export function closerToPrediction(
         return person1DistanceFromPrediction > 0.2 ||
             person2DistanceFromPrediction > 0.2
             ? closerToPredictedTarget
-            : closerToColour(
+            : closerToColor(
                   imageData,
-                  avgColour,
+                  avgColor,
                   detection1.info.keypoints,
                   detection2.info.keypoints,
               );

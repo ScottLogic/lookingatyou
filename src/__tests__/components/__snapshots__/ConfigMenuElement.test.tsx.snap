@@ -12,7 +12,7 @@ exports[`ConfigMenuElement tests should render correctly 1`] = `
   <br />
   <Memo() name=\\"X Sensitivity\\" configName=\\"xSensitivity\\" step={0.1} defaultValue={1} onValidInput={[undefined]} helpWith=\\"X_SENSITIVITY\\" min={0} />
   <Memo() name=\\"Y Sensitivity\\" configName=\\"ySensitivity\\" step={0.1} defaultValue={1} onValidInput={[undefined]} helpWith=\\"Y_SENSITIVITY\\" min={0} />
-  <Memo() name=\\"Iris Colour\\" configName=\\"irisColor\\" color=\\"blue\\" onInputChange={[undefined]} helpWith=\\"IRIS_COLOUR\\" />
+  <Memo() name=\\"Iris Colour\\" configName=\\"irisColor\\" color=\\"blue\\" onInputChange={[undefined]} helpWith=\\"IRIS_COLOR\\" />
   <br />
   <Memo() name=\\"Show Reflect\\" configName=\\"toggleReflection\\" helpWith=\\"REFLECTION\\" checked={[undefined]} onInputChange={[undefined]} />
   <Memo() name=\\"Toggle Debug\\" configName=\\"toggleDebug\\" helpWith=\\"DEBUG\\" checked={false} onInputChange={[undefined]} />
@@ -20,7 +20,7 @@ exports[`ConfigMenuElement tests should render correctly 1`] = `
   <Help problemWith=\\"X_SENSITIVITY\\" />
   <Help problemWith=\\"Y_SENSITIVITY\\" />
   <Help problemWith=\\"VIDEO_STREAM\\" />
-  <Help problemWith=\\"IRIS_COLOUR\\" />
+  <Help problemWith=\\"IRIS_COLOR\\" />
   <Help problemWith=\\"APP\\" />
   <Help problemWith=\\"DEBUG\\" />
   <Help problemWith=\\"REFLECTION\\" />

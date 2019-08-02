@@ -2,14 +2,14 @@ import { createSelector } from 'reselect';
 import { EyeSide } from '../../AppConstants';
 import { Detections } from '../../models/objectDetection';
 import select, {
-    calculateColourMatch,
+    calculateColorMatch,
     closerToPrediction,
     first,
-    getPredictedColour,
+    getPredictedColor,
     getPredictedTarget,
 } from '../../utils/objectSelection/select';
 import { calculateNormalisedPos } from '../../utils/objectTracking/calculateFocus';
-import { IColour, ICoords } from '../../utils/types';
+import { IColor, ICoords } from '../../utils/types';
 import { IRootStore } from '../reducers/rootReducer';
 import { getImageData, getVideos } from './videoSelectors';
 
@@ -18,16 +18,16 @@ export function getDetections(state: IRootStore): Detections {
 }
 
 export const getSelections = createSelector(
-    [getDetections, getPreviousTargets, getPreviousColours, getImageData],
-    (detections, previousTargets, previousColours, imageDataMap) => {
+    [getDetections, getPreviousTargets, getPreviousColors, getImageData],
+    (detections, previousTargets, previousColors, imageDataMap) => {
         const imageData = imageDataMap[EyeSide.LEFT];
         if (previousTargets.length > 0) {
             const predictedTarget = getPredictedTarget(previousTargets);
-            const predictedColour = getPredictedColour(previousColours);
+            const predictedColor = getPredictedColor(previousColors);
 
             return select(
                 detections,
-                closerToPrediction(predictedTarget, imageData, predictedColour),
+                closerToPrediction(predictedTarget, imageData, predictedColor),
             );
         } else {
             return select(detections, first);
@@ -54,16 +54,16 @@ export const getTargets = createSelector(
     },
 );
 
-export const getColour = createSelector(
+export const getColor = createSelector(
     [getSelections, getImageData],
-    (selection, imageDataMap): IColour => {
+    (selection, imageDataMap): IColor => {
         const imageData = imageDataMap[EyeSide.LEFT];
         if (selection) {
-            const colour = calculateColourMatch(
+            const color = calculateColorMatch(
                 imageData,
                 selection.info.keypoints,
             );
-            return colour;
+            return color;
         }
         return { r: 0, g: 0, b: 0 };
     },
@@ -78,13 +78,13 @@ export function getPreviousTargets(state: IRootStore): ICoords[] {
     return state.detectionStore.history.map(history => history.target);
 }
 
-export function getPreviousColour(state: IRootStore): IColour {
+export function getPreviousColor(state: IRootStore): IColor {
     return state.detectionStore.history[state.detectionStore.history.length - 1]
-        .colour;
+        .color;
 }
 
-export function getPreviousColours(state: IRootStore): IColour[] {
-    return state.detectionStore.history.map(history => history.colour);
+export function getPreviousColors(state: IRootStore): IColor[] {
+    return state.detectionStore.history.map(history => history.color);
 }
 
 export function getIdleTargets(state: IRootStore): ICoords {

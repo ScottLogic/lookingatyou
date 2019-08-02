@@ -6,7 +6,7 @@ import { Detections, IDetection } from '../../../models/objectDetection';
 import calculateTargetPos from '../../../utils/objectTracking/calculateFocus';
 import { Animation, animationMapping } from '../../../utils/pose/animations';
 import { getPose } from '../../../utils/pose/poseDetection';
-import { IColour, ICoords } from '../../../utils/types';
+import { IColor, ICoords } from '../../../utils/types';
 import {
     getImageDataFromVideos,
     reshapeDetections,
@@ -14,7 +14,7 @@ import {
 import { IRootStore } from '../../reducers/rootReducer';
 import { getConfig, getFPS } from '../../selectors/configSelectors';
 import {
-    getColour,
+    getColor,
     getDetections,
     getSelections,
     getTargets,
@@ -125,7 +125,7 @@ export function setDetectionsAndMaybeSwapTarget(detections: Detections) {
                 setDetections({
                     detections,
                     previousTarget: getTargets(state),
-                    previousColour: getColour(state),
+                    previousColor: getColor(state),
                 }),
             );
         } else {
@@ -175,7 +175,7 @@ export const setDetections = createActionPayload<
     {
         detections: Detections;
         previousTarget: ICoords;
-        previousColour: IColour;
+        previousColor: IColor;
     }
 >(SET_DETECTIONS);
 
