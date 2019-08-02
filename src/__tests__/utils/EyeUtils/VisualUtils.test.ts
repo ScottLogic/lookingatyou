@@ -1,88 +1,54 @@
-import { irisSkewFactor } from '../../../AppConstants';
+import { min, sqrt } from '@tensorflow/tfjs-core';
+import { minIrisScale } from '../../../AppConstants';
 import {
     generateInnerPath,
-    getIrisAdjustment,
-    getMaxDisplacement,
+    irisMatrixTransform,
 } from '../../../components/eye/utils/VisualUtils';
+import { normalise } from '../../../utils/objectTracking/calculateFocus';
 
-describe('getIrisAdjustment', () => {
-    it('should not scale iris when it is centered', () => {
-        const x = 5;
-        const y = 5;
-        const height = 10;
-        const width = 10;
-        const scleraRadius = 30;
-        const irisRadius = 20;
-        const previousAngle = 0;
-        const irisAdjustment = getIrisAdjustment(
-            x,
-            y,
-            height,
-            width,
-            scleraRadius,
-            irisRadius,
-            previousAngle,
-        );
-        expect(irisAdjustment.scale).toBeCloseTo(1);
+describe('irisMatrixTransform', () => {
+    it('should not transform the iris when it is centered', () => {
+        const irisTransform = irisMatrixTransform({ x: 0, y: 0 });
+        expect(irisTransform).toBe('');
     });
-    it('should scale iris to the minimum when at max displacement and should rotate to a multiple of 45 degees when eye is looking directly at corner', () => {
-        const scleraRadius = 30;
-        const irisRadius = 20;
-        const height = 10;
-        const width = 10;
-        const x =
-            width / 2 +
-            getMaxDisplacement(scleraRadius, irisRadius) / Math.sqrt(2);
-        const y =
-            height / 2 -
-            getMaxDisplacement(scleraRadius, irisRadius) / Math.sqrt(2);
-        const previousAngle = 0;
-        const irisAdjustment = getIrisAdjustment(
-            x,
-            y,
-            height,
-            width,
-            scleraRadius,
-            irisRadius,
-            previousAngle,
-        );
-        expect(irisAdjustment.scale).toBe(irisSkewFactor);
-        expect(irisAdjustment.angle % 45).toBeCloseTo(0, 1);
+    it.each([[1], [-1]])(
+        'should scale iris to the minimum with no skew when at eye is at cardinal position',
+        position => {
+            const testX = { xScale: minIrisScale, skew: 0, yScale: 1 };
+            const testY = { xScale: 1, skew: 0, yScale: minIrisScale };
+            let irisAdjustment = irisMatrixTransform({ x: position, y: 0 });
+            expect(parseMatrixTransform(irisAdjustment)).toMatchObject(testX);
+            irisAdjustment = irisMatrixTransform({ x: 0, y: position });
+            expect(parseMatrixTransform(irisAdjustment)).toMatchObject(testY);
+        },
+    );
+    it('should skew the iris correctly when at an angle', () => {
+        const max = 1 / Math.sqrt(2);
+        const irisAdjustment = irisMatrixTransform({ x: max, y: max });
+        const { xScale, yScale, skew } = parseMatrixTransform(irisAdjustment);
+        expect(xScale).toBeCloseTo(0.9);
+        expect(yScale).toBeCloseTo(0.9);
+        expect(skew).toBeCloseTo(0.1);
     });
-    it('should never return an angle whose difference from the previous angle is less than or equal 90', () => {
-        const height = 10;
-        const width = 10;
-        const scleraRadius = 30;
-        const irisRadius = 20;
-        let previousAngle = 0;
-        const positions = [
-            { x: 0, y: 0 },
-            { x: 1, y: 3 },
-            { x: 2, y: 2 },
-            { x: 3, y: 1 },
-            { x: 4, y: 5 },
-            { x: 5, y: 4 },
-            { x: 6, y: 6 },
-            { x: 7, y: 8 },
-            { x: 8, y: 9 },
-            { x: 9, y: 7 },
-        ];
-        positions.forEach(({ x, y }) => {
-            const irisAdjustment = getIrisAdjustment(
+
+    it.each([
+        [-0.5, 0, 0.9, 1, 0],
+        [-0.25, Math.sqrt(3) / -2, 0.986, 0.834, 0.048],
+    ])(
+        'should scale iris smoothly between center and outer radius',
+        (x, y, scaleX, scaleY, expectedSkew) => {
+            const irisAdjustment = irisMatrixTransform({
                 x,
                 y,
-                height,
-                width,
-                scleraRadius,
-                irisRadius,
-                previousAngle,
+            });
+            const { xScale, yScale, skew } = parseMatrixTransform(
+                irisAdjustment,
             );
-            expect(
-                Math.abs(irisAdjustment.angle - previousAngle),
-            ).toBeLessThanOrEqual(90);
-            previousAngle = irisAdjustment.angle;
-        });
-    });
+            expect(xScale).toBeCloseTo(scaleX);
+            expect(yScale).toBeCloseTo(scaleY);
+            expect(skew).toBeCloseTo(expectedSkew);
+        },
+    );
 });
 
 describe('generateInnerPath', () => {
@@ -95,3 +61,11 @@ describe('generateInnerPath', () => {
         );
     });
 });
+
+function parseMatrixTransform(
+    transform: string,
+): { xScale: number; skew: number; yScale: number } {
+    const stringValues = transform.slice(7).slice(0, -1);
+    const values = stringValues.split(',').map(value => parseFloat(value));
+    return { xScale: values[0], skew: values[1], yScale: values[3] };
+}

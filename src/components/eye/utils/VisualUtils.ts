@@ -15,12 +15,16 @@ export function irisMatrixTransform(position: ICoords) {
 
     const scale =
         minIrisScale + normalise(1 - radius, 1, 0, 1 - minIrisScale, 0);
+
     const xDivR = position.x / radius;
     const yDivR = position.y / radius;
+    const xDivR2 = Math.pow(xDivR, 2);
+    const yDivR2 = Math.pow(yDivR, 2);
 
-    const xScale = scale * Math.pow(xDivR, 2) + Math.pow(yDivR, 2);
+    const xScale = scale * xDivR2 + yDivR2;
+    const yScale = yDivR2 * scale + xDivR2;
     const skew = (1 - scale) * xDivR * yDivR;
-    return `matrix(${xScale},${skew},${skew},1,0,0)`;
+    return `matrix(${xScale},${skew},${skew},${yScale},0,0)`;
 }
 
 export function generateInnerPath(radius: number, sectors: number) {
