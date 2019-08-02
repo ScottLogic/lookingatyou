@@ -2,16 +2,17 @@ import {
     ISetImageDataAction,
     ISetVideoAction,
     ISetVideoStreamsAction,
-    IVideo,
     IVideoState,
     VideoAction,
     VideoSetAction,
 } from '../actions/video/types';
 
+const clampedArray = new Uint8ClampedArray(0);
+
 export const initialState: IVideoState = {
     webcamAvailable: false,
-    videos: {},
-    images: {},
+    video: { width: 0, height: 0, stream: undefined },
+    image: { data: clampedArray, width: 0, height: 0 },
 };
 
 const videoActionMapping = {
@@ -31,13 +32,13 @@ const videoStore = (
 };
 
 function setImageData(state: IVideoState, action: VideoAction): IVideoState {
-    return { ...state, images: (action as ISetImageDataAction).payload };
+    return { ...state, image: (action as ISetImageDataAction).payload };
 }
 
 function setVideoStreams(state: IVideoState, action: VideoAction): IVideoState {
     return {
         ...state,
-        videos: { ...(action as ISetVideoStreamsAction).payload },
+        video: { ...(action as ISetVideoStreamsAction).payload },
     };
 }
 
@@ -46,17 +47,11 @@ function toggleWebcam(state: IVideoState, ignore: VideoAction): IVideoState {
 }
 
 function setVideo(state: IVideoState, action: VideoAction): IVideoState {
-    const elementId = (action as ISetVideoAction).payload.deviceId;
-    const updatedObject: { [key: string]: IVideo } = {};
-    updatedObject[elementId] = {
-        ...state.videos[elementId],
-        ...(action as ISetVideoAction).payload,
-    };
     return {
         ...state,
-        videos: {
-            ...state.videos,
-            ...updatedObject,
+        video: {
+            ...state.video,
+            videoElement: (action as ISetVideoAction).payload,
         },
     };
 }
