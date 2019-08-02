@@ -1,8 +1,4 @@
-import {
-    getBbox,
-    getImageDataFromVideo,
-    getLargerDistance,
-} from '../../utils/utils';
+import { getBbox, getImageDataFromVideo } from '../../utils/utils';
 import { defaultDetection } from './select/select.test';
 
 describe('getBBox should give bbox or undefined', () => {
