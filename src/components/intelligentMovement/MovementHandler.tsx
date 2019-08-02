@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
     eyelidPosition,
-    EyeSide,
     intervals,
     pupilSizes,
     userInteraction,
