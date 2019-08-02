@@ -121,6 +121,7 @@ export class MovementHandler extends React.Component<
     calculateBrightness() {
         if (this.props.image) {
             const brightness = analyseLight(this.props.image);
+
             this.dilationCoefficient = normalise(
                 lightConsts.maxBrightness - brightness,
                 lightConsts.maxBrightness,
@@ -144,14 +145,10 @@ export class MovementHandler extends React.Component<
         }
 
         if (this.props.selection) {
-            this.props.environment.clearTimeout(this.sleepTimeout);
-            this.openCoefficient = eyelidPosition.OPEN;
-            this.isNewTarget();
+            this.setNewTarget();
         } else {
-            this.sleepTimeout = this.props.environment.setTimeout(() => {
-                this.openCoefficient = eyelidPosition.CLOSED;
-            }, intervals.sleep);
-            this.hasTargetLeft();
+            this.setNoTarget();
+
             if (this.props.animation.length === 0) {
                 if (Math.random() < chanceOfIdleEyesMovement) {
                     this.hasMovedLeft = !this.hasMovedLeft;
@@ -163,19 +160,24 @@ export class MovementHandler extends React.Component<
         }
     }
 
-    isNewTarget() {
+    setNewTarget() {
+        this.props.environment.clearTimeout(this.sleepTimeout);
+        this.openCoefficient = eyelidPosition.OPEN;
         if (!this.personDetected) {
             this.personDetected = true;
             this.dilationCoefficient = pupilSizes.dilated;
         }
     }
 
-    hasTargetLeft() {
+    setNoTarget() {
         if (this.personDetected) {
             this.personDetected = false;
             this.dilationCoefficient = eyelidPosition.SQUINT;
             this.openCoefficient = eyelidPosition.SQUINT;
         }
+        this.sleepTimeout = this.props.environment.setTimeout(() => {
+            this.openCoefficient = eyelidPosition.CLOSED;
+        }, intervals.sleep);
     }
 
     wake() {
