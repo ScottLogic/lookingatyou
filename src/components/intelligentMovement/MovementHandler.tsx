@@ -258,7 +258,7 @@ const mapStateToProps = (state: IRootStore) => ({
     fps: getFPS(state),
     detections: getDetections(state),
     target: getTargets(state),
-    images: getImageData(state),
+    image: getImageData(state),
     animation: getAnimations(state),
 });
 
