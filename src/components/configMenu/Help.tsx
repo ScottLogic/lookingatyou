@@ -19,6 +19,7 @@ export enum HelpWith {
     FLIP = 'FLIP',
     MIN_SCORE = 'MIN_SCORE',
     NMS_RADIUS = 'NMS_RADIUS',
+    ADVANCE_SETTINGS = 'ADVANCE_SETTINGS',
 }
 
 const fps = () => {
@@ -166,6 +167,10 @@ const nmsRadius = () => {
     );
 };
 
+const advancedSettings = () => {
+    return <Fragment>Advanced settings.</Fragment>;
+};
+
 interface IHelpSectionMap {
     [id: string]: () => JSX.Element;
 }
@@ -188,6 +193,7 @@ const helpSections: IHelpSectionMap = {
     FLIP: flip,
     MIN_SCORE: minScore,
     NMS_RADIUS: nmsRadius,
+    ADVANCE_SETTINGS: advancedSettings,
 };
 
 function text(section: HelpWith) {
