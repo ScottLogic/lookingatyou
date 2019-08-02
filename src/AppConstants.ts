@@ -41,12 +41,14 @@ export const eyeCoords = {
     middleY: 0,
 };
 export const idleMovementConsts = {
+    moveCenterChance: 0.1,
+    moveSideChance: 0.5,
     xDelta: 0.4, // move this distance between frames when scanning the room
     sideBuffer: 0.2, // do not move the iris closer than this distance to the edge of the sclera
 };
 export const lightConsts = {
     maxBrightness: 220, // brightness dilation multiplier at max when average brightness reaches this value
-    dilationMultipler: 0.8, // max brightness dilation multiplier = offset + multiplier
+    dilationMultipler: 1.2, // max brightness dilation multiplier = offset + multiplier
     dilationOffset: 0.7, // min brightness dilation multiplier
 };
 export const blinkConsts = {
@@ -87,9 +89,6 @@ export const configMenuConsts = {
     visibleTimer: 1000,
     width: '17.5em',
 };
-export const numInnerEyeSectors = 100;
-export const irisSkewFactor = 0.8; // factor by which to squish iris when iris is all the way to edge of sclera
-export const minPoseConfidence = 0.2;
 
 export const userInteraction = {
     texts: [
@@ -110,3 +109,7 @@ export const fadeInText = {
     transitionMax: 2000,
     transitionMin: 200,
 };
+export const numInnerEyeSectors = 100;
+export const minPoseConfidence = 0.2;
+export const minIrisScale = 0.8; // factor by which to squish iris when iris is all the way to edge of sclera
+export const CIELabOffset = 128;

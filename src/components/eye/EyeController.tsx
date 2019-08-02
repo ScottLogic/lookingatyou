@@ -6,6 +6,7 @@ import {
     blinkConsts,
     eyeRadiiCoefficients,
     EyeSide,
+    minIrisScale,
     numInnerEyeSectors,
     transitionTimes,
 } from '../../AppConstants';
@@ -19,7 +20,7 @@ import {
     getSelections,
     getTargets,
 } from '../../store/selectors/detectionSelectors';
-import { getVideos } from '../../store/selectors/videoSelectors';
+import { getVideo } from '../../store/selectors/videoSelectors';
 import { normalise } from '../../utils/objectTracking/calculateFocus';
 import { Animation, blink } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
@@ -27,11 +28,7 @@ import Eye from './Eye';
 import { Gradients } from './Gradients';
 import { Shadows } from './Shadows';
 import { getReflection } from './utils/ReflectionUtils';
-import {
-    generateInnerPath,
-    getIrisAdjustment,
-    getMaxDisplacement,
-} from './utils/VisualUtils';
+import { generateInnerPath, irisMatrixTransform } from './utils/VisualUtils';
 
 interface IEyeControllerProps {
     width: number;
@@ -95,10 +92,9 @@ export const EyeController = React.memo(
                       ),
                   }
                 : (() => {
-                      const maxDisplacement = getMaxDisplacement(
-                          scleraRadius,
-                          irisRadius,
-                      );
+                      const maxDisplacement =
+                          (scleraRadius - irisRadius * minIrisScale) /
+                          minIrisScale;
                       const targetY =
                           props.target.y * props.config.ySensitivity;
                       const targetX =
@@ -188,19 +184,7 @@ export const EyeController = React.memo(
         ]);
 
         useEffect(() => {
-            irisAdjustmentRef.current = getIrisAdjustment(
-                innerX,
-                innerY,
-                props.height,
-                props.width / 2,
-                scleraRadius,
-                irisRadius,
-                irisAdjustmentRef.current.angle,
-            );
-        });
-
-        useEffect(() => {
-            setInnerPath(generateInnerPath(irisRadius, numInnerEyeSectors));
+            setInnerPath(generateInnerPath(irisRadius, 100));
         }, [irisRadius]);
 
         return (
@@ -241,6 +225,7 @@ export const EyeController = React.memo(
                             reflection={reflectionRef.current}
                             irisAdjustment={irisAdjustmentRef.current}
                             innerPath={innerPath}
+                            skewTransform={irisMatrixTransform(props.target)}
                         />
                     );
                 })}
@@ -295,7 +280,7 @@ export function getEyeShape(
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     config: getConfig(state),
     target: getTargets(state),
-    image: getVideos(state)[0],
+    image: getVideo(state),
     selection: getSelections(state),
     animation: state.detectionStore.animation,
 });
