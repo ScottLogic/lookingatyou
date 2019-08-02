@@ -3,6 +3,7 @@ import {
     idleMovementConsts,
     lightConsts,
 } from '../../../AppConstants';
+import { ICoords } from '../../../utils/types';
 
 export function analyseLight(image: ImageData): number {
     if (!image) {
@@ -40,4 +41,14 @@ function newEyePos(currentX: number, isMovingLeft: boolean) {
     let xDelta = idleMovementConsts.xDelta;
     xDelta = isMovingLeft ? 0 - xDelta : xDelta;
     return { newX: currentX + xDelta, isMovingLeft };
+}
+
+export function confineToCircle(target: ICoords) {
+    const radius = Math.min(1, Math.hypot(target.x, target.y));
+    const polarAngle = Math.atan2(target.y, target.x);
+
+    return {
+        x: radius * Math.cos(polarAngle),
+        y: radius * Math.sin(polarAngle),
+    };
 }
