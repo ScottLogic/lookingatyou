@@ -45,25 +45,22 @@ function fisheye(
     const result = new Uint8ClampedArray(pixels.length);
 
     for (let currRow = 0; currRow < height; currRow++) {
-        const normalisedY = (2 * currRow) / height - 1; // a
-        const normalYSquared = normalisedY * normalisedY; // a^2
+        const normalisedY = (2 * currRow) / height - 1;
 
         for (let currColumn = 0; currColumn < width; currColumn++) {
-            const normalisedX = (2 * currColumn) / width - 1; // b
-            const normalXSquared = normalisedX * normalisedX; // b^2
-
-            const normalisedRadius = Math.sqrt(normalXSquared + normalYSquared); // c=sqrt(a^2 + b^2)
+            const normalisedX = (2 * currColumn) / width - 1;
+            const normalisedRadius = Math.hypot(normalisedX, normalisedY);
 
             // For any point in the circle
-            if (0.0 <= normalisedRadius && normalisedRadius <= 1.0) {
+            if (0 <= normalisedRadius && normalisedRadius <= 1) {
                 // The closer to the center it is, the larger the value
                 let radiusScaling = Math.sqrt(
-                    1.0 - normalisedRadius * normalisedRadius,
+                    1 - Math.pow(normalisedRadius, 2),
                 );
-                radiusScaling =
-                    (normalisedRadius + (1.0 - radiusScaling)) / 2.0;
                 // Exponential curve between 0 and 1, ie pixels closer to the center have a much lower scaling value
+                radiusScaling = (normalisedRadius + (1 - radiusScaling)) / 2;
 
+                // Adjusts the intensity of the fisheye
                 radiusScaling =
                     radiusScaling * fisheyeConsts.intensity +
                     normalisedRadius * (1 - fisheyeConsts.intensity);
