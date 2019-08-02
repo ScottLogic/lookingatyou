@@ -76,6 +76,10 @@ export const targetingConsts = {
     maxInterval: 7000,
     maxNum: 8,
 };
+export const configMenuConsts = {
+    visibleTimer: 1000,
+    width: '17.5em',
+};
 export const numInnerEyeSectors = 100;
 export const irisSkewFactor = 0.8; // factor by which to squish iris when iris is all the way to edge of sclera
 export const minPoseConfidence = 0.2;
