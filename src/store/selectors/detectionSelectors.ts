@@ -53,8 +53,8 @@ export const getColor = createSelector(
     (selection, imageData): IColor => {
         if (selection) {
             const color = calculateColorMatch(
-                imageData,
                 selection.info.keypoints,
+                imageData,
             );
             return color;
         }

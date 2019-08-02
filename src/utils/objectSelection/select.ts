@@ -29,8 +29,8 @@ export default function select(
 }
 
 export function calculateColorMatch(
-    imageData: ImageData,
     keypoints: Keypoint[],
+    imageData?: ImageData,
 ): IColor {
     if (!imageData) {
         return { r: 0, g: 0, b: 0 };
