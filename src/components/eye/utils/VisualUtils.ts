@@ -1,42 +1,30 @@
-import { irisSkewFactor } from '../../../AppConstants';
-
-export function getMaxDisplacement(scleraRadius: number, irisRadius: number) {
-    return (scleraRadius - irisRadius * irisSkewFactor) / irisSkewFactor;
-}
+import { minIrisScale } from '../../../AppConstants';
+import { normalise } from '../../../utils/objectTracking/calculateFocus';
+import { ICoords } from '../../../utils/types';
 
 export interface IIrisAdjustment {
     scale: number;
     angle: number;
 }
-export function getIrisAdjustment(
-    x: number,
-    y: number,
-    height: number,
-    width: number,
-    scleraRadius: number,
-    irisRadius: number,
-    previousAngle: number = 0,
-): IIrisAdjustment {
-    const displacement = Math.hypot(x - width / 2, y - height / 2);
-    const maxDisplacement = getMaxDisplacement(scleraRadius, irisRadius);
 
-    const scale =
-        irisSkewFactor +
-        ((1 - irisSkewFactor) * (maxDisplacement - displacement)) /
-            maxDisplacement;
-
-    let angle = (Math.atan2(y - height / 2, x - width / 2) * 180) / Math.PI;
-
-    if (angle - previousAngle < -90) {
-        angle = angle + 180;
-    } else if (angle - previousAngle > 90) {
-        angle = angle - 180;
+export function irisMatrixTransform(position: ICoords) {
+    const radius = Math.hypot(position.x, position.y);
+    if (radius === 0) {
+        return '';
     }
 
-    return {
-        scale,
-        angle,
-    };
+    const scale =
+        minIrisScale + normalise(1 - radius, 1, 0, 1 - minIrisScale, 0);
+
+    const xDivR = position.x / radius;
+    const yDivR = position.y / radius;
+    const xDivR2 = Math.pow(xDivR, 2);
+    const yDivR2 = Math.pow(yDivR, 2);
+
+    const xScale = scale * xDivR2 + yDivR2;
+    const yScale = yDivR2 * scale + xDivR2;
+    const skew = (1 - scale) * xDivR * yDivR;
+    return `matrix(${xScale},${skew},${skew},${yScale},0,0)`;
 }
 
 export function generateInnerPath(radius: number, sectors: number) {

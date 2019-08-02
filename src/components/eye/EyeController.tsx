@@ -5,6 +5,7 @@ import { Dispatch } from 'redux';
 import {
     blinkConsts,
     EyeSide,
+    minIrisScale,
     numInnerEyeSectors,
     transitionTimes,
 } from '../../AppConstants';
@@ -26,11 +27,7 @@ import Eye from './Eye';
 import { Gradients } from './Gradients';
 import { Shadows } from './Shadows';
 import { getReflection } from './utils/ReflectionUtils';
-import {
-    generateInnerPath,
-    getIrisAdjustment,
-    getMaxDisplacement,
-} from './utils/VisualUtils';
+import { generateInnerPath, irisMatrixTransform } from './utils/VisualUtils';
 
 interface IEyeControllerProps {
     width: number;
@@ -90,10 +87,9 @@ export const EyeController = React.memo(
                       ),
                   }
                 : (() => {
-                      const maxDisplacement = getMaxDisplacement(
-                          scleraRadius,
-                          irisRadius,
-                      );
+                      const maxDisplacement =
+                          (scleraRadius - irisRadius * minIrisScale) /
+                          minIrisScale;
                       const targetY =
                           props.target.y * props.config.ySensitivity;
                       const targetX =
@@ -183,19 +179,7 @@ export const EyeController = React.memo(
         ]);
 
         useEffect(() => {
-            irisAdjustmentRef.current = getIrisAdjustment(
-                innerX,
-                innerY,
-                props.height,
-                props.width / 2,
-                scleraRadius,
-                irisRadius,
-                irisAdjustmentRef.current.angle,
-            );
-        });
-
-        useEffect(() => {
-            setInnerPath(generateInnerPath(irisRadius, numInnerEyeSectors));
+            setInnerPath(generateInnerPath(irisRadius, 100));
         }, [irisRadius]);
 
         return (
@@ -235,6 +219,7 @@ export const EyeController = React.memo(
                             reflection={reflectionRef.current}
                             irisAdjustment={irisAdjustmentRef.current}
                             innerPath={innerPath}
+                            skewTransform={irisMatrixTransform(props.target)}
                         />
                     );
                 })}

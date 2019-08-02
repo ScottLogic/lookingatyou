@@ -35,6 +35,7 @@ export interface IEyeProps {
     reflection: ImageData | undefined;
     irisAdjustment: IIrisAdjustment;
     innerPath: string;
+    skewTransform: string;
 }
 
 const pupilColor = 'black';

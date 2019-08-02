@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import tinycolor from 'tinycolor2';
 import { IRootStore } from '../../../store/reducers/rootReducer';
-import { IIrisAdjustment } from '../utils/VisualUtils';
+import { getFPS } from '../../../store/selectors/configSelectors';
 
 interface IInnerEyeProps {
     irisRadius: number;
@@ -17,7 +17,7 @@ interface IInnerEyeProps {
     width: number;
     height: number;
     reflection: ImageData | undefined;
-    irisAdjustment: IIrisAdjustment;
+    skewTransform: string;
 }
 
 interface IInnerEyeMapStateToProps {
@@ -50,9 +50,7 @@ export const InnerEye = React.memo((props: InnerEyeProps) => {
             className="inner"
             style={transitionStyle}
             transform={`
-                    rotate(${props.irisAdjustment.angle})
-                    scale(${props.irisAdjustment.scale}, 1)
-                    rotate(${-props.irisAdjustment.angle})
+                    ${props.skewTransform} 
                     translate(${props.innerX},${props.innerY})
                 `}
         >
@@ -118,7 +116,7 @@ export const InnerEye = React.memo((props: InnerEyeProps) => {
 });
 
 const mapStateToProps = (state: IRootStore): IInnerEyeMapStateToProps => ({
-    fps: state.configStore.fps,
+    fps: getFPS(state),
 });
 
 export default connect(mapStateToProps)(InnerEye);
