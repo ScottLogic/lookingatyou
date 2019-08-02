@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { Detections } from '../../models/objectDetection';
+import { Detections, IDetection } from '../../models/objectDetection';
 import select, {
     calculateColourMatch,
     closerToPrediction,
@@ -16,50 +16,65 @@ export function getDetections(state: IRootStore): Detections {
     return state.detectionStore.detections;
 }
 
+export const getSelectionCombiner = (
+    detections: IDetection[],
+    previousTargets: ICoords[],
+    previousColours: IColour[],
+    imageData: ImageData,
+) => {
+    if (previousTargets.length > 0) {
+        const predictedTarget = getPredictedTarget(previousTargets);
+        const predictedColour = getPredictedColour(previousColours);
+
+        return select(
+            detections,
+            closerToPrediction(predictedTarget, imageData, predictedColour),
+        );
+    } else {
+        return select(detections, first);
+    }
+};
 export const getSelections = createSelector(
     [getDetections, getPreviousTargets, getPreviousColours, getImageData],
-    (detections, previousTargets, previousColours, imageData) => {
-        if (previousTargets.length > 0) {
-            const predictedTarget = getPredictedTarget(previousTargets);
-            const predictedColour = getPredictedColour(previousColours);
-
-            return select(
-                detections,
-                closerToPrediction(predictedTarget, imageData, predictedColour),
-            );
-        } else {
-            return select(detections, first);
-        }
-    },
+    getSelectionCombiner,
 );
 
+export const getTargetsCombiner = (
+    selections: IDetection | undefined,
+    video: HTMLVideoElement | undefined,
+    idleTargets: ICoords,
+): ICoords => {
+    const normalisedTarget =
+        selections === undefined || !video
+            ? undefined
+            : calculateNormalisedPos(
+                  selections.bbox,
+                  video!.width,
+                  video!.height,
+              );
+    return normalisedTarget ? normalisedTarget : idleTargets;
+};
 export const getTargets = createSelector(
     [getSelections, getVideo, getIdleTargets],
-    (selections, video, idleTargets): ICoords => {
-        const normalisedTarget =
-            selections === undefined || !video
-                ? undefined
-                : calculateNormalisedPos(
-                      selections.bbox,
-                      video!.width,
-                      video!.height,
-                  );
-        return normalisedTarget ? normalisedTarget : idleTargets;
-    },
+    getTargetsCombiner,
 );
 
+export const getColourCombiner = (
+    selection: IDetection | undefined,
+    imageData: ImageData,
+): IColour => {
+    if (selection) {
+        const colour = calculateColourMatch(
+            selection.info.keypoints,
+            imageData,
+        );
+        return colour;
+    }
+    return { r: 0, g: 0, b: 0 };
+};
 export const getColour = createSelector(
     [getSelections, getImageData],
-    (selection, imageData): IColour => {
-        if (selection) {
-            const colour = calculateColourMatch(
-                selection.info.keypoints,
-                imageData,
-            );
-            return colour;
-        }
-        return { r: 0, g: 0, b: 0 };
-    },
+    getColourCombiner,
 );
 
 export function getPreviousTarget(state: IRootStore): ICoords {
