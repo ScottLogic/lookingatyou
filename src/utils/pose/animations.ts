@@ -1,4 +1,10 @@
-import { eyelidPosition, EyeSide, Pose, pupilSizes } from '../../AppConstants';
+import {
+    eyelidPosition,
+    EyeSide,
+    Pose,
+    pupilSizes,
+    transitionTimes,
+} from '../../AppConstants';
 import { normalise } from '../objectTracking/calculateFocus';
 import { ICoords } from '../types';
 
@@ -108,4 +114,17 @@ export function dab(): Animation {
         });
     }
     return animation;
+}
+
+export function blink(): Animation {
+    return [
+        {
+            openCoefficient: eyelidPosition.CLOSED,
+            duration: transitionTimes.blink,
+        },
+        {
+            openCoefficient: eyelidPosition.OPEN,
+            duration: transitionTimes.blink,
+        },
+    ];
 }
