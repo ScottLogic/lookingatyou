@@ -1,15 +1,14 @@
 import React, { useEffect } from 'react';
-import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { setStream } from '../../store/actions/video/actions';
 import { IRootStore } from '../../store/reducers/rootReducer';
-import { getDeviceIds } from '../../store/selectors/videoSelectors';
+import { getWebcamAvailable } from '../../store/selectors/videoSelectors';
 import Video from './Video';
 
 interface IVideoHandlerStateToProps {
-    deviceIds: string[];
+    webcamAvailable: boolean;
 }
 
 interface IVideoHandlerDispatchProps {
@@ -24,9 +23,28 @@ export type VideoHandlerProps = IVideoHandlerProps &
     IVideoHandlerStateToProps &
     IVideoHandlerDispatchProps;
 
+export const VideoHandler = React.memo((props: VideoHandlerProps) => {
+    const { mediaDevices, configureStream } = { ...props };
+
+    useEffect(() => {
+        if (mediaDevices) {
+            configureStream(mediaDevices);
+            mediaDevices.ondevicechange = () => {
+                if (mediaDevices) {
+                    configureStream(mediaDevices);
+                }
+            };
+        }
+    }, [mediaDevices, configureStream]);
+
+    return (
+        <div className="webcam-feed">{props.webcamAvailable && <Video />}</div>
+    );
+});
+
 const mapStateToProps = (state: IRootStore) => {
     return {
-        deviceIds: getDeviceIds(state),
+        webcamAvailable: getWebcamAvailable(state),
     };
 };
 
@@ -36,34 +54,6 @@ const mapDispatchToProps = (
     configureStream: (mediaDevices: MediaDevices) =>
         dispatch(setStream(mediaDevices)),
 });
-
-export const VideoHandler = React.memo(
-    (props: VideoHandlerProps) => {
-        const { mediaDevices, configureStream } = { ...props };
-
-        useEffect(() => {
-            if (mediaDevices) {
-                configureStream(mediaDevices);
-                mediaDevices.ondevicechange = () => {
-                    if (mediaDevices) {
-                        configureStream(mediaDevices);
-                    }
-                };
-            }
-        }, [mediaDevices, configureStream]);
-
-        return (
-            <div className="webcam-feed">
-                {props.deviceIds.map((device, key) => (
-                    <Video key={key} deviceId={device} />
-                ))}
-            </div>
-        );
-    },
-    (previous, next) => {
-        return isEqual(previous.deviceIds, next.deviceIds);
-    },
-);
 
 export default connect(
     mapStateToProps,

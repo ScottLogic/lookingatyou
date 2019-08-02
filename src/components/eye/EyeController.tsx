@@ -18,7 +18,7 @@ import {
     getSelections,
     getTargets,
 } from '../../store/selectors/detectionSelectors';
-import { getVideos } from '../../store/selectors/videoSelectors';
+import { getVideo } from '../../store/selectors/videoSelectors';
 import { normalise } from '../../utils/objectTracking/calculateFocus';
 import { Animation, blink } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
@@ -290,7 +290,7 @@ export function getEyeShape(
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     config: getConfig(state),
     target: getTargets(state),
-    image: getVideos(state)[0],
+    image: getVideo(state),
     selection: getSelections(state),
     animation: state.detectionStore.animation,
 });

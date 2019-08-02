@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import { EyeSide } from '../../AppConstants';
 import { Detections } from '../../models/objectDetection';
 import select, {
     calculateColourMatch,
@@ -11,7 +10,7 @@ import select, {
 import { calculateNormalisedPos } from '../../utils/objectTracking/calculateFocus';
 import { IColour, ICoords } from '../../utils/types';
 import { IRootStore } from '../reducers/rootReducer';
-import { getImageData, getVideos } from './videoSelectors';
+import { getImageData, getVideo } from './videoSelectors';
 
 export function getDetections(state: IRootStore): Detections {
     return state.detectionStore.detections;
@@ -19,8 +18,7 @@ export function getDetections(state: IRootStore): Detections {
 
 export const getSelections = createSelector(
     [getDetections, getPreviousTargets, getPreviousColours, getImageData],
-    (detections, previousTargets, previousColours, imageDataMap) => {
-        const imageData = imageDataMap[EyeSide.LEFT];
+    (detections, previousTargets, previousColours, imageData) => {
         if (previousTargets.length > 0) {
             const predictedTarget = getPredictedTarget(previousTargets);
             const predictedColour = getPredictedColour(previousColours);
@@ -36,28 +34,23 @@ export const getSelections = createSelector(
 );
 
 export const getTargets = createSelector(
-    [getSelections, getVideos, getIdleTargets],
-    (selections, videos, idleTargets): ICoords => {
+    [getSelections, getVideo, getIdleTargets],
+    (selections, video, idleTargets): ICoords => {
         const normalisedTarget =
-            selections === undefined || !videos[0]
+            selections === undefined || !video
                 ? undefined
                 : calculateNormalisedPos(
                       selections.bbox,
-                      videos[0]!.width,
-                      videos[0]!.height,
+                      video!.width,
+                      video!.height,
                   );
-        if (normalisedTarget) {
-            return normalisedTarget;
-        } else {
-            return idleTargets;
-        }
+        return normalisedTarget ? normalisedTarget : idleTargets;
     },
 );
 
 export const getColour = createSelector(
     [getSelections, getImageData],
-    (selection, imageDataMap): IColour => {
-        const imageData = imageDataMap[EyeSide.LEFT];
+    (selection, imageData): IColour => {
         if (selection) {
             const colour = calculateColourMatch(
                 selection.info.keypoints,
