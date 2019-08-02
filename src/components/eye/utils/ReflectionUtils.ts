@@ -18,7 +18,6 @@ export function getReflection(
     ctx.clip();
     const crop = getCrop(target, image);
     ctx.scale(-1, 1);
-    ctx.filter = 'blur(1px)';
     const diameter = radius * 2;
     ctx.drawImage(
         image,
@@ -45,10 +44,10 @@ function fisheye(
     const result = new Uint8ClampedArray(pixels.length);
 
     for (let currRow = 0; currRow < height; currRow++) {
-        const normalisedY = (2 * currRow) / height - 1;
+        const normalisedY = normalise(currRow, height);
 
         for (let currColumn = 0; currColumn < width; currColumn++) {
-            const normalisedX = (2 * currColumn) / width - 1;
+            const normalisedX = normalise(currColumn, width);
             const normalisedRadius = Math.hypot(normalisedX, normalisedY);
 
             // For any point in the circle
@@ -66,10 +65,10 @@ function fisheye(
                     normalisedRadius * (1 - fisheyeConsts.intensity);
 
                 const theta = Math.atan2(normalisedY, normalisedX); // angle to point from center of circle
-                const scaledNormalisedX = radiusScaling * Math.cos(theta);
-                const scaledNormalisedY = radiusScaling * Math.sin(theta);
-                const newX = Math.floor(((scaledNormalisedX + 1) * width) / 2); // normalise x to size of circle
-                const newY = Math.floor(((scaledNormalisedY + 1) * height) / 2); // normalise y to size of circle
+                const xScale = radiusScaling * Math.cos(theta);
+                const yScale = radiusScaling * Math.sin(theta);
+                const newX = Math.floor(normalise(xScale, 1, -1, width, 0));
+                const newY = Math.floor(normalise(yScale, 1, -1, height, 0));
                 const srcpos = newY * width + newX; // New pixel position in array
                 if (srcpos >= 0 && srcpos < width * height) {
                     for (let i = 0; i < 4; i++) {
