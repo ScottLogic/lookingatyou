@@ -53,34 +53,13 @@ export default function Eye(props: IEyeProps) {
                 width={props.width / 2}
                 height={props.height / 2}
             />
-            <InnerEye
-                irisRadius={props.irisRadius}
-                irisColor={props.irisColor}
-                innerY={props.innerY}
-                innerX={props.innerX}
-                innerPath={props.innerPath}
-                pupilRadius={props.pupilRadius}
-                pupilColor={pupilColor}
-                dilatedCoefficient={props.dilatedCoefficient}
-                scleraRadius={props.scleraRadius}
-                width={props.width}
-                height={props.height}
-                reflection={props.reflection}
-                skewTransform={props.skewTransform}
-            />
+            <InnerEye {...props} pupilColor={pupilColor} />
             <Eyelids
+                {...props}
                 transitionStyle={eyelidTransitionStyle}
-                eyeShape={props.eyeShape}
                 cornerShape={cornerShape}
-                bezier={props.bezier}
-                scleraRadius={props.scleraRadius}
             />
-            <BlackFill
-                leftX={props.eyeShape.leftX}
-                scleraRadius={props.scleraRadius}
-                height={props.height}
-                width={props.width}
-            />
+            <BlackFill {...props} leftX={props.eyeShape.leftX} />
         </svg>
     );
 }

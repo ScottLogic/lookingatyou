@@ -205,13 +205,12 @@ export const EyeController = React.memo(
                             ? calculatedEyesOpenCoefficient
                             : calculatedEyesOpenCoefficient[eye],
                     );
-
                     return (
                         <Eye
+                            {...props}
                             class={eye}
                             key={index}
                             width={props.width / 2}
-                            height={props.height}
                             irisColor={irisColor}
                             scleraRadius={scleraRadius}
                             irisRadius={irisRadius}
