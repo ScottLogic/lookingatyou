@@ -16,7 +16,7 @@ export function getDetections(state: IRootStore): Detections {
     return state.detectionStore.detections;
 }
 
-export const getSelectionCombiner = (
+export const getSelectionsCombiner = (
     detections: IDetection[],
     previousTargets: ICoords[],
     previousColours: IColour[],
@@ -36,7 +36,7 @@ export const getSelectionCombiner = (
 };
 export const getSelections = createSelector(
     [getDetections, getPreviousTargets, getPreviousColours, getImageData],
-    getSelectionCombiner,
+    getSelectionsCombiner,
 );
 
 export const getTargetsCombiner = (
