@@ -42,16 +42,17 @@ export function updateConfigAction(
     };
 }
 
-export function setConfigAction(type: ConfigSetAction, payload: PartialConfig) {
+export function setConfigAction(
+    type: ConfigSetAction,
+    payload: PartialConfig,
+): { type: ConfigSetAction; payload: PartialConfig } {
     if (type !== ConfigSetAction.MODEL) {
         return { type, payload };
     }
 
     return {
         type,
-        payload: parseModelConfig(payload as Partial<
-            IModelStringConfig
-        >),
+        payload: parseModelConfig(payload as Partial<IModelStringConfig>),
     };
 }
 
