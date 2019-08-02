@@ -1,10 +1,6 @@
 import { getAdjacentKeyPoints, Keypoint } from '@tensorflow-models/posenet';
 import { debugFeedConsts } from '../../AppConstants';
-
-interface ITuple {
-    y: number;
-    x: number;
-}
+import { ICoords } from '../../utils/types';
 
 export function drawPose(
     keypoints: Keypoint[],
@@ -16,8 +12,8 @@ export function drawPose(
 }
 
 function drawSegment(
-    pair1: ITuple,
-    pair2: ITuple,
+    pair1: ICoords,
+    pair2: ICoords,
     color: string,
     scale: number,
     ctx: CanvasRenderingContext2D,
