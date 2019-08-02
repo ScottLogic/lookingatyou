@@ -23,49 +23,49 @@ export interface IDetectionState {
 }
 
 export interface ISetModelAction {
-    type: 'SET_MODEL';
-    payload: PoseNet | null;
+    readonly type: 'SET_MODEL';
+    readonly payload: PoseNet | null;
 }
 
 export interface ISetIntervalAction {
-    type: 'SET_INTERVAL';
-    payload: number;
+    readonly type: 'SET_INTERVAL';
+    readonly payload: number;
 }
 
 export interface ISetIdleTargetAction {
-    type: 'SET_IDLE_TARGET';
-    payload: ICoords;
+    readonly type: 'SET_IDLE_TARGET';
+    readonly payload: ICoords;
 }
 
 export interface ISetDetectionsActionPayload {
-    detections: Detections;
-    previousTarget: ICoords;
-    previousColour: IColour;
+    readonly detections: Detections;
+    readonly previousTarget: ICoords;
+    readonly previousColour: IColour;
 }
 
 export interface ISetDetectionsAction {
-    type: 'SET_DETECTIONS';
-    payload: ISetDetectionsActionPayload;
+    readonly type: 'SET_DETECTIONS';
+    readonly payload: ISetDetectionsActionPayload;
 }
 
 export interface ISetOpenAction {
-    type: 'SET_OPEN';
-    payload: number;
+    readonly type: 'SET_OPEN';
+    readonly payload: number;
 }
 
 export interface ISetAnimationAction {
-    type: typeof SET_ANIMATION;
-    payload: Animation;
+    readonly type: typeof SET_ANIMATION;
+    readonly payload: Animation;
 }
 
 export interface ISwapSelectionActionPayload {
-    selection: IDetection | undefined;
-    nextSelectionSwapTime: number;
+    readonly selection: IDetection | undefined;
+    readonly nextSelectionSwapTime: number;
 }
 
 export interface ISwapSelectionAction {
-    type: 'SWAP_SELECTION';
-    payload: ISwapSelectionActionPayload;
+    readonly type: 'SWAP_SELECTION';
+    readonly payload: ISwapSelectionActionPayload;
 }
 
 export type DetectionActionType =

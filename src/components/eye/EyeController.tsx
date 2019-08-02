@@ -7,6 +7,7 @@ import {
     eyelidPosition,
     EyeSide,
     minIrisScale,
+    numInnerEyeSectors,
     transitionTimes,
 } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
@@ -121,7 +122,7 @@ export const EyeController = React.memo(
                 : props.dilation;
 
         const [innerPath, setInnerPath] = useState(
-            generateInnerPath(irisRadius, 100),
+            generateInnerPath(irisRadius, numInnerEyeSectors),
         );
 
         const irisColor =

@@ -2,7 +2,7 @@ import {
     IVideoState,
     SET_VIDEO,
     SET_VIDEO_STREAMS,
-    VideoActionTypes,
+    VideoAction,
 } from '../../../store/actions/video/types';
 import { initialState as initialConfigStore } from '../../../store/reducers/configReducer';
 import { initialState as initialDetectionStore } from '../../../store/reducers/detectionReducer';
@@ -37,7 +37,7 @@ describe('Video Selectors', () => {
     beforeEach(() => {
         mockVideoStore = videoStore(
             { videos: {}, webcamAvailable: false, images: {} },
-            { type: SET_VIDEO_STREAMS, videos: mockTwoVideoStreams },
+            { type: SET_VIDEO_STREAMS, payload: mockTwoVideoStreams },
         );
         mockRootStore = {
             videoStore: mockVideoStore,
@@ -59,7 +59,7 @@ describe('Video Selectors', () => {
 
     it('should return video elements for each device', () => {
         const videoElement = document.createElement('video');
-        const mockSetVideoActionDevice1: VideoActionTypes = {
+        const mockSetVideoActionDevice1: VideoAction = {
             type: SET_VIDEO,
             payload: {
                 deviceId: testDevice1,
