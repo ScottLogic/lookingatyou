@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import './App.css';
-import ConfigMenuElement from './components/configMenu/ConfigMenuElement';
+import ConfigMenu from './components/configMenu/ConfigMenu';
 import MovementHandler from './components/intelligentMovement/MovementHandler';
 import VideoHandler from './components/video/VideoHandler';
 import { loadModel } from './store/actions/detections/actions';
@@ -84,19 +84,20 @@ export class App extends React.Component<AppProps, IAppState> {
         return (
             <div className="App">
                 <VideoHandler mediaDevices={this.props.mediaDevices} />
-
                 {this.props.webcamAvailable ? (
                     !this.props.model ? (
                         <div className="loading-spinner" />
                     ) : (
-                        <div>
+                        <>
                             <MovementHandler
                                 width={this.state.width}
                                 height={this.state.height}
                                 environment={this.props.environment}
                             />
-                            <ConfigMenuElement window={this.props.environment.window} />
-                        </div>
+                            <ConfigMenu
+                                window={this.props.environment.window}
+                            />
+                        </>
                     )
                 ) : (
                     <div className="Error">

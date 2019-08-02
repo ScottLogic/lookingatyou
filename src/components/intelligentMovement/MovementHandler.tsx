@@ -4,7 +4,6 @@ import { Dispatch } from 'redux';
 import {
     chanceOfIdleEyesMovement,
     eyelidPosition,
-    EyeSide,
     intervals,
     pupilSizes,
     userInteraction,
@@ -36,7 +35,7 @@ interface IStateProps {
     fps: number;
     detections: IDetection[];
     target: ICoords;
-    images: { [key: string]: ImageData };
+    image: ImageData;
     animation: Animation;
 }
 
@@ -128,9 +127,9 @@ export class MovementHandler extends React.Component<
     }
 
     calculateBrightness() {
-        if (this.props.images[EyeSide.LEFT]) {
+        if (this.props.image) {
             const { tooBright, scaledPupilSize } = analyseLight(
-                this.props.images[EyeSide.LEFT],
+                this.props.image,
             );
             if (tooBright) {
                 this.tooBright = true;
@@ -251,7 +250,7 @@ const mapStateToProps = (state: IRootStore) => ({
     fps: getFPS(state),
     detections: getDetections(state),
     target: getTargets(state),
-    images: getImageData(state),
+    image: getImageData(state),
     animation: getAnimations(state),
 });
 

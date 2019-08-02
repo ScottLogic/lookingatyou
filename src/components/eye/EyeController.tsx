@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
     blinkConsts,
-    eyelidPosition,
     EyeSide,
     minIrisScale,
     numInnerEyeSectors,
@@ -20,8 +19,8 @@ import {
     getSelections,
     getTargets,
 } from '../../store/selectors/detectionSelectors';
-import { getVideos } from '../../store/selectors/videoSelectors';
-import { Animation } from '../../utils/pose/animations';
+import { getVideo } from '../../store/selectors/videoSelectors';
+import { Animation, blink } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import Eye from './Eye';
 import { Gradients } from './Gradients';
@@ -56,7 +55,6 @@ export type EyeControllerProps = IEyeControllerProps &
 
 export const EyeController = React.memo(
     (props: EyeControllerProps) => {
-        const [isBlinking, setIsBlinking] = useState(false);
         const { environment, updateAnimation, animation } = props;
 
         const scleraRadius = Math.floor(props.width / 4.5);
@@ -90,10 +88,9 @@ export const EyeController = React.memo(
         const innerY = props.height / 2 + displacement * Math.sin(polarAngle);
 
         const calculatedEyesOpenCoefficient =
-            props.animation.length > 0 && props.animation[0].openCoefficient
-                ? props.animation[0].openCoefficient
-                : isBlinking
-                ? eyelidPosition.CLOSED
+            props.animation.length > 0 &&
+            props.animation[0].hasOwnProperty('openCoefficient')
+                ? props.animation[0].openCoefficient!
                 : props.openCoefficient;
 
         const dilatedCoefficient =
@@ -113,24 +110,22 @@ export const EyeController = React.memo(
 
         useEffect(() => {
             if (animation.length === 0) {
-                let blink = environment.setInterval(() => {
-                    if (isBlinking) {
-                        setIsBlinking(false);
-                    } else {
-                        const blinkFrequency = props.detected
-                            ? blinkConsts.frequency / 4
-                            : blinkConsts.frequency;
-                        const blinkProbability =
-                            blinkFrequency / (1000 / transitionTimes.blink);
-                        setIsBlinking(Math.random() < blinkProbability);
+                let blinkInterval = environment.setInterval(() => {
+                    const blinkFrequency = props.detected
+                        ? blinkConsts.focusedFrequency
+                        : blinkConsts.frequency;
+                    const blinkProbability =
+                        blinkFrequency / (1000 / transitionTimes.blink);
+                    if (Math.random() < blinkProbability) {
+                        updateAnimation(blink());
                     }
                 }, transitionTimes.blink);
                 return () => {
-                    environment.clearInterval(blink);
-                    blink = 0;
+                    environment.clearInterval(blinkInterval);
+                    blinkInterval = 0;
                 };
             }
-        }, [props.detected, environment, isBlinking, animation]);
+        }, [props.detected, environment, animation, updateAnimation]);
 
         useEffect(() => {
             if (animation.length > 0) {
@@ -266,7 +261,7 @@ export function getEyeShape(
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     config: getConfig(state),
     target: getTargets(state),
-    image: getVideos(state)[0],
+    image: getVideo(state),
     selection: getSelections(state),
     animation: state.detectionStore.animation,
 });

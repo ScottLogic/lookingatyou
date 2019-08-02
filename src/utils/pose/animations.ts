@@ -4,6 +4,7 @@ import {
     idleMovementConsts,
     Pose,
     pupilSizes,
+    transitionTimes,
 } from '../../AppConstants';
 import { normalise } from '../objectTracking/calculateFocus';
 import { ICoords } from '../types';
@@ -137,6 +138,19 @@ export function naturalMovement(isLeft: boolean): Animation {
         {
             normalisedCoords: { x: 0, y: 0 },
             duration: 500,
+        },
+    ];
+}
+
+export function blink(): Animation {
+    return [
+        {
+            openCoefficient: eyelidPosition.CLOSED,
+            duration: transitionTimes.blink,
+        },
+        {
+            openCoefficient: eyelidPosition.OPEN,
+            duration: transitionTimes.blink,
         },
     ];
 }

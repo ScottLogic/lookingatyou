@@ -27,7 +27,7 @@ export const pupilSizes = {
     constricted: 0.8,
 };
 export const transitionTimes = {
-    blink: 200,
+    blink: 100,
 };
 export const intervals = {
     sleep: 25000, // eyes go to sleep after this much time without targets
@@ -53,6 +53,7 @@ export const lightConsts = {
 };
 export const blinkConsts = {
     frequency: 0.25,
+    focusedFrequency: 0.0625,
     movementThreshold: 0.8, // eye blinks when, between frames, it mvoes this distance
 };
 export const debugFeedConsts = {
@@ -78,6 +79,12 @@ export const targetingConsts = {
     maxInterval: 7000,
     maxNum: 8,
 };
+
+export const configMenuConsts = {
+    visibleTimer: 1000,
+    width: '17.5em',
+};
+
 export const userInteraction = {
     texts: [
         'HELLO',

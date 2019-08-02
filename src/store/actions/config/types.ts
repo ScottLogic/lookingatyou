@@ -31,6 +31,7 @@ export interface IAppConfig {
     ySensitivity: number;
     fps: number;
     toggleDebug: boolean;
+    toggleAdvanced: boolean;
     irisColor: string;
     toggleReflection: boolean;
     reflectionOpacity: number;
