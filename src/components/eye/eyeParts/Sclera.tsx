@@ -1,23 +1,19 @@
 import React from 'react';
-import isEqual from 'react-fast-compare';
 
-interface IScleraProps {
+export interface IScleraProps {
     radius: number;
     width: number;
     height: number;
 }
 
-export const Sclera = React.memo(
-    (props: IScleraProps) => {
-        return (
-            <circle
-                className={'sclera'}
-                r={props.radius}
-                fill={'url(#scleraGradient)'}
-                cx={props.width}
-                cy={props.height}
-            />
-        );
-    },
-    (previous, next) => isEqual(previous, next),
-);
+export const Sclera = React.memo((props: IScleraProps) => {
+    return (
+        <circle
+            className={'sclera'}
+            r={props.radius}
+            fill={'url(#scleraGradient)'}
+            cx={props.width}
+            cy={props.height}
+        />
+    );
+});
