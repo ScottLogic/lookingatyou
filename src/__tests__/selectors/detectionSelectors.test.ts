@@ -1,34 +1,31 @@
-import { number } from 'prop-types';
 import { getImageData } from '../../__test_utils__/getImageData';
 import { makeDetection } from '../../__test_utils__/makeDetection';
-import { IDetection } from '../../models/objectDetection';
-import { initialState as configStore } from '../../store/reducers/configReducer';
-import { initialState as detectionStore } from '../../store/reducers/detectionReducer';
-import { IRootStore } from '../../store/reducers/rootReducer';
-import { initialState as videoStore } from '../../store/reducers/videoReducer';
-import {
-    getSelections,
-    getSelectionsCombiner,
-} from '../../store/selectors/detectionSelectors';
-import { IColour, ICoords } from '../../utils/types';
+import { getSelectionsCombiner } from '../../store/selectors/detectionSelectors';
 
 describe('getSelectionCombiner', () => {
-    const twoColoursImageData = getImageData(4, 4);
-    const rootStore: IRootStore = {
-        configStore,
-        videoStore,
-        detectionStore,
-    };
     it('should return undefined when there are no detections', () => {
         expect(
-            getSelectionsCombiner([], [], [], twoColoursImageData),
+            getSelectionsCombiner([], [], [], getImageData(0, 0)),
         ).toBeUndefined();
     });
     it('should return that selection when there is only one selection', () => {
         const detection = makeDetection(10, 10);
         const detections = [detection];
         expect(
-            getSelectionsCombiner(detections, [], [], twoColoursImageData),
+            getSelectionsCombiner(detections, [], [], getImageData(0, 0)),
         ).toStrictEqual(detection);
+    });
+    it('should return the selection closest to the item in history when history is a singleton', () => {
+        const detections = [makeDetection(0, 0), makeDetection(9, 0)];
+        const previousTargets = [{ x: -0.9, y: -1 }];
+        const previousColours = [{ r: 0, g: 0, b: 0 }];
+        expect(
+            getSelectionsCombiner(
+                detections,
+                previousTargets,
+                previousColours,
+                getImageData(10, 10),
+            ),
+        ).toStrictEqual(detections[0]);
     });
 });
