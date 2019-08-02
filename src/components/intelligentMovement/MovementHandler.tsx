@@ -233,12 +233,10 @@ export class MovementHandler extends React.Component<
         return (
             <>
                 <EyeController
-                    width={this.props.width}
-                    height={this.props.height}
-                    environment={this.props.environment}
                     dilation={this.state.dilationCoefficient}
                     detected={this.personDetected}
                     openCoefficient={this.openCoefficient}
+                    {...this.props}
                 />
                 <FadeInText text={this.state.text} show={this.state.showText} />
             </>

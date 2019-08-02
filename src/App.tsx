@@ -83,17 +83,14 @@ export class App extends React.Component<AppProps, IAppState> {
     render() {
         return (
             <div className="App">
-                <VideoHandler mediaDevices={this.props.mediaDevices} />
+                <VideoHandler {...this.props} />
+
                 {this.props.webcamAvailable ? (
                     !this.props.model ? (
                         <div className="loading-spinner" />
                     ) : (
                         <>
-                            <MovementHandler
-                                width={this.state.width}
-                                height={this.state.height}
-                                environment={this.props.environment}
-                            />
+                            <MovementHandler {...this.state} {...this.props} />
                             <ConfigMenu
                                 window={this.props.environment.window}
                             />
