@@ -1,10 +1,8 @@
-import { min, sqrt } from '@tensorflow/tfjs-core';
 import { minIrisScale } from '../../../AppConstants';
 import {
     generateInnerPath,
     irisMatrixTransform,
 } from '../../../components/eye/utils/VisualUtils';
-import { normalise } from '../../../utils/objectTracking/calculateFocus';
 
 describe('irisMatrixTransform', () => {
     it('should not transform the iris when it is centered', () => {
