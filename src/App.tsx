@@ -89,12 +89,12 @@ export class App extends React.Component<AppProps, IAppState> {
                     !this.props.model ? (
                         <div className="loading-spinner" />
                     ) : (
-                        <div>
+                        <>
                             <MovementHandler {...this.state} {...this.props} />
                             <ConfigMenu
                                 window={this.props.environment.window}
                             />
-                        </div>
+                        </>
                     )
                 ) : (
                     <div className="Error">
