@@ -1,12 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import {
-    blinkConsts,
-    eyelidPosition,
-    intervals,
-    pupilSizes,
-} from '../../AppConstants';
+import { eyelidPosition, intervals, pupilSizes } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 import { setIdleTarget } from '../../store/actions/detections/actions';
 import { ISetIdleTargetAction } from '../../store/actions/detections/types';
@@ -19,7 +14,6 @@ import {
 import { getImageData } from '../../store/selectors/videoSelectors';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
-import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
 import { analyseLight, naturalMovement } from '../eye/utils/MovementUtils';
 
@@ -59,8 +53,8 @@ export class MovementHandler extends React.Component<
     private isMovingLeft: boolean;
     private squinting: boolean;
     private personDetected: boolean;
-    private prevProps: MovementHandlerProps | null;
     private openCoefficient: number;
+    private textTimeout: number | null;
 
     constructor(props: MovementHandlerProps) {
         super(props);
@@ -75,8 +69,8 @@ export class MovementHandler extends React.Component<
         this.isMovingLeft = false;
         this.personDetected = false;
         this.squinting = false;
-        this.prevProps = null;
         this.openCoefficient = eyelidPosition.OPEN;
+        this.textTimeout = null;
 
         this.animateEye = this.animateEye.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
@@ -91,7 +85,6 @@ export class MovementHandler extends React.Component<
         this.movementInterval = this.props.environment.setInterval(
             this.animateEye,
             1000 / this.props.fps,
-            this.prevProps,
         );
     }
 
@@ -105,14 +98,16 @@ export class MovementHandler extends React.Component<
         );
     }
 
-    componentDidUpdate(prevProps: MovementHandlerProps) {
-        this.prevProps = prevProps;
+    componentWillReceiveProps(nextProps: MovementHandlerProps) {
+        if (nextProps.animation.length > 0 && this.textTimeout) {
+            this.props.environment.clearTimeout(this.textTimeout);
+            this.textTimeout = null;
+        }
     }
 
-    animateEye(prevProps: MovementHandlerProps) {
+    animateEye() {
         this.checkSelection();
         this.calculateBrightness();
-        this.checkBlink(prevProps);
     }
 
     componentWillUnmount() {
@@ -169,19 +164,6 @@ export class MovementHandler extends React.Component<
             this.props.setIdleTarget(idleCoords);
 
             this.isMovingLeft = isMovingLeft;
-        }
-    }
-
-    checkBlink(prevProps?: MovementHandlerProps) {
-        if (prevProps && this.props.target) {
-            const leftEyeDist = getLargerDistance(
-                prevProps.target,
-                this.props.target,
-            );
-
-            if (leftEyeDist > blinkConsts.movementThreshold) {
-                this.openCoefficient = eyelidPosition.CLOSED;
-            }
         }
     }
 
