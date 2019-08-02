@@ -8,31 +8,32 @@ export function analyseLight(
     image: ImageData,
     tooBright: boolean,
 ): { tooBright: boolean; scaledPupilSize: number } {
-    if (image.width > 0) {
-        const data = image.data;
-        let colorSum = 0;
-        for (let i = 0; i < data.length; i += 4) {
-            const avg = Math.floor((data[i] + data[i + 1] + data[i + 2]) / 3);
-
-            colorSum += avg;
-        }
-        let brightness = Math.floor(colorSum / (image.width * image.height));
-
-        if (brightness > lightConsts.maxBrightness) {
-            tooBright = true;
-            brightness = lightConsts.maxBrightness;
-        } else if (tooBright) {
-            tooBright = false;
-        }
-        const scaledPupilSize =
-            ((lightConsts.maxBrightness - brightness) /
-                lightConsts.maxBrightness) *
-                lightConsts.dilationMultipler +
-            lightConsts.dilationOffset;
-
-        return { tooBright, scaledPupilSize };
+    if (image.width <= 0) {
+        return { tooBright: false, scaledPupilSize: 0 };
     }
-    return { tooBright: false, scaledPupilSize: 0 };
+
+    const data = image.data;
+    let colorSum = 0;
+    for (let i = 0; i < data.length; i += 4) {
+        const avg = Math.floor(data[i] + data[i + 1] + data[i + 2]);
+
+        colorSum += avg;
+    }
+    let brightness = Math.floor(colorSum / (image.width * image.height * 3));
+
+    if (brightness > lightConsts.maxBrightness) {
+        tooBright = true;
+        brightness = lightConsts.maxBrightness;
+    } else if (tooBright) {
+        tooBright = false;
+    }
+
+    const scaledPupilSize =
+        ((lightConsts.maxBrightness - brightness) / lightConsts.maxBrightness) *
+            lightConsts.dilationMultipler +
+        lightConsts.dilationOffset;
+
+    return { tooBright, scaledPupilSize };
 }
 
 export function naturalMovement(
