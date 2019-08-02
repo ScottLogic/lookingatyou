@@ -33,7 +33,8 @@
 .ConfigMenu label,
 .ConfigMenu input,
 .ConfigMenu select,
-.ConfigMenu h1 {
+.ConfigMenu h1,
+.ConfigMenu h3 {
     padding: 10px;
     width: 50%;
     display: inline-block;
