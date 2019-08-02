@@ -23,7 +23,7 @@ export function getReflection(
     ctx.drawImage(
         image,
         crop.sourceX,
-        crop.sourceX,
+        crop.sourceY,
         crop.sourceWidth,
         crop.sourceHeight,
         0,
