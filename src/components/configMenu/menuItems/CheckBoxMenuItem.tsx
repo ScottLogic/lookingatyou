@@ -1,4 +1,4 @@
-import Button from '@material-ui/core/Button';
+import { Button, Checkbox } from '@material-ui/core';
 import React, { useState } from 'react';
 import Popup from 'reactjs-popup';
 import { PartialConfig } from '../../../store/actions/config/types';
@@ -19,7 +19,10 @@ const CheckBoxMenuItem = React.memo(
     (props: ICheckBoxMenuItemProps) => {
         const [showModal, setShowModal] = useState(false);
 
-        function onChange(event: React.ChangeEvent<HTMLInputElement>) {
+        function onChange(
+            event: React.ChangeEvent<HTMLInputElement>,
+            checked: boolean,
+        ) {
             if (!props.checked) {
                 setShowModal(true);
             } else {
@@ -29,14 +32,14 @@ const CheckBoxMenuItem = React.memo(
             }
         }
 
-        function accept(event: React.MouseEvent<HTMLButtonElement>) {
+        function accept() {
             setShowModal(false);
             props.onInputChange({
                 [props.configName]: true,
             });
         }
 
-        function decline(event: React.MouseEvent<HTMLButtonElement>) {
+        function decline() {
             setShowModal(false);
             props.onInputChange({
                 [props.configName]: false,
@@ -47,10 +50,10 @@ const CheckBoxMenuItem = React.memo(
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>
                 <label>{props.name}</label>
 
-                <input
-                    type="checkbox"
+                <Checkbox
                     checked={props.checked}
                     onChange={onChange}
+                    color="primary"
                 />
 
                 {props.alert && (
