@@ -10,7 +10,7 @@ import select, {
 import { calculateNormalisedPos } from '../../utils/objectTracking/calculateFocus';
 import { IColour, ICoords } from '../../utils/types';
 import { IRootStore } from '../reducers/rootReducer';
-import { getImageData, getVideo } from './videoSelectors';
+import { getImageData, getVideo, getVideoDimensions } from './videoSelectors';
 
 export function getDetections(state: IRootStore): Detections {
     return state.detectionStore.detections;
@@ -41,21 +41,21 @@ export const getSelections = createSelector(
 
 export const getTargetsCombiner = (
     selections: IDetection | undefined,
-    video: HTMLVideoElement | undefined,
+    videoDimensions: { width: number; height: number } | undefined,
     idleTargets: ICoords,
 ): ICoords => {
     const normalisedTarget =
-        selections === undefined || !video
+        selections === undefined || !videoDimensions
             ? undefined
             : calculateNormalisedPos(
                   selections.bbox,
-                  video!.width,
-                  video!.height,
+                  videoDimensions.width,
+                  videoDimensions.height,
               );
     return normalisedTarget ? normalisedTarget : idleTargets;
 };
 export const getTargets = createSelector(
-    [getSelections, getVideo, getIdleTargets],
+    [getSelections, getVideoDimensions, getIdleTargets],
     getTargetsCombiner,
 );
 

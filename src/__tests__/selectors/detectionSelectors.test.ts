@@ -1,6 +1,6 @@
 import { getImageData } from '../../__test_utils__/getImageData';
 import { makeDetection } from '../../__test_utils__/makeDetection';
-import { getSelectionsCombiner } from '../../store/selectors/detectionSelectors';
+import { getSelectionsCombiner, getTargetsCombiner } from '../../store/selectors/detectionSelectors';
 
 describe('getSelectionCombiner', () => {
     it('should return undefined when there are no detections', () => {
@@ -29,3 +29,8 @@ describe('getSelectionCombiner', () => {
         ).toStrictEqual(detections[0]);
     });
 });
+describe('getTargetsCombiner', () => {
+    it('should return the idle targets when selection and/or video is undefined', () => {
+        expect(getTargetsCombiner(undefined, undefined, {x: 100, y:155})).toStrictEqual({x:100,y:155});
+    })
+})

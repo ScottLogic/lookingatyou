@@ -1,8 +1,18 @@
+import { ICoords } from '../../utils/types';
 import { IVideo } from '../actions/video/types';
 import { IRootStore } from '../reducers/rootReducer';
 
 export function getStreamForDevice(state: IRootStore): IVideo | undefined {
     return state.videoStore.video;
+}
+
+export function getVideoDimensions(state: IRootStore) {
+    const video = getVideo(state);
+    if (video) {
+        return { width: video.width, height: video.height };
+    } else {
+        return undefined;
+    }
 }
 
 export function getVideo(state: IRootStore): HTMLVideoElement | undefined {
