@@ -22,12 +22,12 @@ export interface IDetectionState {
 }
 
 export interface ISetModelAction {
-    readonly type: 'SET_MODEL';
+    readonly type: typeof SET_MODEL;
     readonly payload: PoseNet | null;
 }
 
 export interface ISetIntervalAction {
-    readonly type: 'SET_INTERVAL';
+    readonly type: typeof SET_INTERVAL;
     readonly payload: number;
 }
 
@@ -38,12 +38,12 @@ export interface ISetDetectionsActionPayload {
 }
 
 export interface ISetDetectionsAction {
-    readonly type: 'SET_DETECTIONS';
+    readonly type: typeof SET_DETECTIONS;
     readonly payload: ISetDetectionsActionPayload;
 }
 
 export interface ISetOpenAction {
-    readonly type: 'SET_OPEN';
+    readonly type: typeof SET_OPEN;
     readonly payload: number;
 }
 
@@ -58,7 +58,7 @@ export interface ISwapSelectionActionPayload {
 }
 
 export interface ISwapSelectionAction {
-    readonly type: 'SWAP_SELECTION';
+    readonly type: typeof SWAP_SELECTION;
     readonly payload: ISwapSelectionActionPayload;
 }
 
