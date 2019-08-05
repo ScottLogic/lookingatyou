@@ -12,7 +12,6 @@ import { IRootStore } from '../../reducers/rootReducer';
 import { getConfig, getFPS } from '../../selectors/configSelectors';
 import {
     getColor,
-    getDetections,
     getSelections,
     getTargets,
 } from '../../selectors/detectionSelectors';
