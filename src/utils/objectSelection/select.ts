@@ -22,10 +22,7 @@ export default function select(
         undefined,
     );
 
-    if (selectedDetection) {
-        return selectedDetection;
-    }
-    return undefined;
+    return selectedDetection;
 }
 
 export function calculateColorMatch(

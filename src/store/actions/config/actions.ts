@@ -17,14 +17,14 @@ import {
 export function updateConfigAction(
     type: ConfigSetAction,
     partialConfig: PartialConfig,
-    document: Document,
+    window: Window,
 ) {
     return (dispatch: ThunkDispatch<IRootStore, void, Action>) => {
         dispatch(setConfigAction(type, partialConfig));
         switch (type) {
             case ConfigSetAction.APP:
                 if (partialConfig.hasOwnProperty('fps')) {
-                    dispatch(restartDetection(document));
+                    dispatch(restartDetection(window));
                 }
                 break;
             case ConfigSetAction.MODEL:
@@ -36,7 +36,7 @@ export function updateConfigAction(
                         }),
                     );
                 }
-                dispatch(loadModel(document));
+                dispatch(loadModel(window));
                 break;
         }
     };

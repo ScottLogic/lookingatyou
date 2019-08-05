@@ -23,12 +23,13 @@ import {
     ISwapSelectionActionPayload,
     SET_ANIMATION,
     SET_DETECTIONS,
+    SET_INTERVAL,
     SET_MODEL,
     SET_OPEN,
     SWAP_SELECTION,
 } from './types';
 
-export function loadModel(document: Document) {
+export function loadModel(window: Window) {
     return async (
         dispatch: ThunkDispatch<IRootStore, void, Action>,
         getState: () => IRootStore,
@@ -37,22 +38,22 @@ export function loadModel(document: Document) {
         const config = getConfig(getState());
         const model = await load(config.modelConfig);
         dispatch(setModel(model));
-        dispatch(restartDetection(document));
+        dispatch(restartDetection(window));
     };
 }
 
-export function restartDetection(document: Document) {
+export function restartDetection(window: Window) {
     return (
         dispatch: ThunkDispatch<IRootStore, void, Action>,
         getState: () => IRootStore,
     ) => {
         const state = getState();
-        clearInterval(state.detectionStore.detectionInterval);
-        const id = setInterval(
-            () => dispatch(handleDetection(document)),
+        window.clearInterval(state.detectionStore.detectionInterval);
+        const id = window.setInterval(
+            () => dispatch(handleDetection(window.document)),
             1000 / getFPS(state),
         );
-        dispatch({ type: 'SET_INTERVAL', payload: id });
+        dispatch({ type: SET_INTERVAL, payload: id });
     };
 }
 
@@ -72,34 +73,23 @@ export function handleDetection(document: Document) {
 
         const image = getImageDataFromVideo(video, document);
 
-        if (image) {
-            dispatch(setImageDataAction(image));
+        if (!image) {
+            return;
         }
 
+        dispatch(setImageDataAction(image));
         let detections: IDetection[] = [];
-        if (image && model) {
-            const leftDetections = await model.estimateMultiplePoses(
-                image,
-                detectionConfig,
-            );
-            detections = reshapeDetections(leftDetections);
-        }
+        const leftDetections = await model.estimateMultiplePoses(
+            image,
+            detectionConfig,
+        );
+        detections = reshapeDetections(leftDetections);
 
         dispatch(setDetectionsAndMaybeSwapTarget(detections));
 
-        // The way we get target will change once #273 is implemented
-        // For now I compare selection bounding box to existing detections and select a target from there
         const selection = getSelections(getState());
-        const target = getDetections(getState()).filter(
-            detection => detection === selection,
-        );
-
-        if (
-            target &&
-            target[0] &&
-            getState().detectionStore.animation.length === 0
-        ) {
-            const pose = getPose(target[0]!);
+        if (selection && getState().detectionStore.animation.length === 0) {
+            const pose = getPose(selection);
             if (pose) {
                 let poseAnimation = animationMapping[pose];
                 poseAnimation = Array.isArray(poseAnimation)
