@@ -3,6 +3,8 @@ import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 
 export interface ICheckBoxMenuItemProps {
+    window: Window;
+    alert: boolean;
     name: string;
     configName: string;
     onInputChange: (payload: PartialConfig) => void;
@@ -13,6 +15,14 @@ export interface ICheckBoxMenuItemProps {
 const CheckBoxMenuItem = React.memo(
     (props: ICheckBoxMenuItemProps) => {
         function onChange(event: React.ChangeEvent<HTMLInputElement>) {
+            if (
+                props.alert &&
+                !props.window.confirm(
+                    'WARNING: Changing these settings could result in bad performance of the app',
+                )
+            ) {
+                return;
+            }
             props.onInputChange({
                 [props.configName]: event.target.checked,
             });
