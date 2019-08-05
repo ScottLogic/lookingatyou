@@ -57,7 +57,6 @@ export default function UserConfig(props: IUserConfigProps) {
             <br />
 
             <CheckBoxMenuItem
-                window={props.window}
                 alert={!props.config.toggleAdvanced}
                 name={'Toggle Advanced'}
                 configName={'toggleAdvanced'}

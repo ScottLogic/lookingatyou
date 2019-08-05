@@ -6,7 +6,6 @@ import { HelpWith } from '../Help';
 import './CheckBoxMenuItem.css';
 
 export interface ICheckBoxMenuItemProps {
-    window: Window;
     alert: boolean;
     name: string;
     configName: string;
@@ -19,11 +18,8 @@ const CheckBoxMenuItem = React.memo(
     (props: ICheckBoxMenuItemProps) => {
         const [showModal, setShowModal] = useState(false);
 
-        function onChange(
-            event: React.ChangeEvent<HTMLInputElement>,
-            checked: boolean,
-        ) {
-            if (!props.checked) {
+        function onChange(event: React.ChangeEvent<HTMLInputElement>) {
+            if (alert && !props.checked) {
                 setShowModal(true);
             } else {
                 props.onInputChange({
