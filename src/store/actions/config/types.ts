@@ -13,6 +13,7 @@ export enum ConfigSetAction {
     APP = 'SET_APP_CONFIG',
     MODEL = 'SET_MODEL_CONFIG',
     DETECTION = 'SET_DETECTION_CONFIG',
+    RESET = 'RESET_CONFIG',
 }
 
 export interface IConfigState extends IAppConfig {
@@ -73,7 +74,12 @@ export interface ISetDetectionConfigAction {
     readonly payload: Partial<IDetectionConfig>;
 }
 
+export interface IResetConfigAction {
+    readonly type: 'RESET_CONFIG';
+}
+
 export type ConfigAction =
     | ISetAppConfigAction
     | ISetModelConfigAction
-    | ISetDetectionConfigAction;
+    | ISetDetectionConfigAction
+    | IResetConfigAction;

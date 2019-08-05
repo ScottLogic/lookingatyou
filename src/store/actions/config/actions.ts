@@ -42,6 +42,14 @@ export function updateConfigAction(
     };
 }
 
+export function resetConfigAction(
+    type: ConfigSetAction,
+): { type: ConfigSetAction } {
+    return {
+        type,
+    };
+}
+
 export function setConfigAction(
     type: ConfigSetAction,
     payload: PartialConfig,

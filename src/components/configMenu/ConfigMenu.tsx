@@ -4,7 +4,10 @@ import { connect } from 'react-redux';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { configMenuConsts } from '../../AppConstants';
-import { updateConfigAction } from '../../store/actions/config/actions';
+import {
+    resetConfigAction,
+    updateConfigAction,
+} from '../../store/actions/config/actions';
 import {
     ConfigSetAction,
     IConfigState,
@@ -27,6 +30,7 @@ interface IConfigMenuMapDispatchToProps {
     updateAppConfig: (payload: PartialConfig) => void;
     updateModelConfig: (payload: PartialConfig) => void;
     updateDetectionConfig: (payload: PartialConfig) => void;
+    resetConfig: () => void;
 }
 export type ConfigMenuProps = IConfigMenuProps &
     IConfigMenuMapStateToProps &
@@ -95,7 +99,7 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
             >
-                <h1>Config</h1>
+                <h1>Settings</h1>
                 <span
                     className="icon"
                     data-tip={true}
@@ -108,6 +112,12 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
                     <AdvancedConfigItems {...this.props} />
                 )}
 
+                <br />
+
+                <button className="reset" onClick={this.props.resetConfig}>
+                    RESET TO DEFAULTS
+                </button>
+
                 {Object.values(HelpWith).map((type, key: number) => (
                     <Help key={key} problemWith={HelpWith[type] as HelpWith} />
                 ))}
@@ -115,7 +125,6 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
         );
     }
 }
-
 const mapStateToProps = (state: IRootStore): IConfigMenuMapStateToProps => ({
     config: getConfig(state),
 });
@@ -148,6 +157,7 @@ const mapDispatchToProps = (
                 ownProps.window.document,
             ),
         ),
+    resetConfig: () => dispatch(resetConfigAction(ConfigSetAction.RESET)),
 });
 
 export default connect(
