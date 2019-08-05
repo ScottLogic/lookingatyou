@@ -19,7 +19,7 @@ const CheckBoxMenuItem = React.memo(
         const [showModal, setShowModal] = useState(false);
 
         function onChange(event: React.ChangeEvent<HTMLInputElement>) {
-            if (alert && !props.checked) {
+            if (props.alert && !props.checked) {
                 setShowModal(true);
             } else {
                 props.onInputChange({
