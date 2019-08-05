@@ -66,23 +66,22 @@ describe('getColourCombiner', () => {
                 keypoints: [
                     {
                         score: 1,
-                        position: { x: 5, y: 5 },
+                        position: { x: 15, y: 15 },
                         part: bodyParts.LEFT_SHOULDER,
                     },
                     {
                         score: 1,
-                        position: { x: 10, y: 5 },
+                        position: { x: 45, y: 15 },
                         part: bodyParts.LEFT_SHOULDER,
                     },
                 ],
             },
         };
-        const imageData = getImageData(20, 20);
-        console.log(imageData.data);
+        const imageData = getImageData(400, 400);
         expect(getColourCombiner(selection, imageData)).toStrictEqual({
-            r: 190,
+            r: 189,
             g: 0,
-            b: 210,
-        });
+            b: 208,
+        }); // values adjusted slightly for colour-space conversion
     });
 });
