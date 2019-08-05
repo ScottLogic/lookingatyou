@@ -18,12 +18,14 @@ const CheckBoxMenuItem = React.memo(
     (props: ICheckBoxMenuItemProps) => {
         const [showModal, setShowModal] = useState(false);
 
-        function onChange(event: React.ChangeEvent<HTMLInputElement>) {
+        function onChange() {
             if (props.alert && !props.checked) {
+                console.log('hi');
                 setShowModal(true);
             } else {
+                console.log('hello');
                 props.onInputChange({
-                    [props.configName]: event.target.checked,
+                    [props.configName]: !props.checked,
                 });
             }
         }
@@ -48,7 +50,7 @@ const CheckBoxMenuItem = React.memo(
 
                 <Checkbox
                     checked={props.checked}
-                    onChange={onChange}
+                    onClick={onChange}
                     color="primary"
                 />
 
