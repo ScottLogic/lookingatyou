@@ -6,8 +6,12 @@ export enum HelpWith {
     X_SENSITIVITY = 'X_SENSITIVITY',
     Y_SENSITIVITY = 'Y_SENSITIVITY',
     VIDEO_STREAM = 'VIDEO_STREAM',
+<<<<<<< HEAD
     IRIS_COLOR = 'IRIS_COLOR',
     APP = 'APP',
+=======
+    IRIS_COLOUR = 'IRIS_COLOUR',
+>>>>>>> :fire: Removed app help from tooltips
     DEBUG = 'DEBUG',
     REFLECTION = 'REFLECTION',
     REFLECTION_OPACITY = 'REFLECTION_OPACITY',
@@ -50,17 +54,6 @@ const video = () => {
 
 const iris = () => {
     return <Fragment>Customise eye colour.</Fragment>;
-};
-
-const app = () => {
-    return (
-        <Fragment>
-            This is an app designed to track users using a webcam.
-            <br /> The eyes will follow you around and react differently
-            depending on what they see.
-            <br /> Hover over any of the menu items for more information.
-        </Fragment>
-    );
 };
 
 const debug = () => {
@@ -180,8 +173,12 @@ const helpSections: IHelpSectionMap = {
     X_SENSITIVITY: xSense,
     Y_SENSITIVITY: ySense,
     VIDEO_STREAM: video,
+<<<<<<< HEAD
     IRIS_COLOR: iris,
     APP: app,
+=======
+    IRIS_COLOUR: iris,
+>>>>>>> :fire: Removed app help from tooltips
     DEBUG: debug,
     REFLECTION: reflection,
     REFLECTION_OPACITY: reflectionOpacity,
