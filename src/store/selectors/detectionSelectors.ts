@@ -10,7 +10,7 @@ import select, {
 import { calculateNormalisedPos } from '../../utils/objectTracking/calculateFocus';
 import { IColour, ICoords } from '../../utils/types';
 import { IRootStore } from '../reducers/rootReducer';
-import { getImageData, getVideo, getVideoDimensions } from './videoSelectors';
+import { getImageData, getVideoDimensions } from './videoSelectors';
 
 export function getDetections(state: IRootStore): Detections {
     return state.detectionStore.detections;

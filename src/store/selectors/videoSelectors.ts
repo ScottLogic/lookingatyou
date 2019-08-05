@@ -1,4 +1,3 @@
-import { ICoords } from '../../utils/types';
 import { IVideo } from '../actions/video/types';
 import { IRootStore } from '../reducers/rootReducer';
 
