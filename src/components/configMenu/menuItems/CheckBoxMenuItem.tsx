@@ -1,4 +1,5 @@
 import React from 'react';
+import Popup from 'reactjs-popup';
 import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 
@@ -30,11 +31,18 @@ const CheckBoxMenuItem = React.memo(
         return (
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>
                 <label>{props.name}</label>
-                <input
-                    type="checkbox"
-                    checked={props.checked}
-                    onChange={onChange}
-                />
+                <Popup
+                    trigger={
+                        <input
+                            type="checkbox"
+                            checked={props.checked}
+                            onChange={onChange}
+                        />
+                    }
+                    position="right center"
+                >
+                    <div>Popup content here !!</div>
+                </Popup>
             </div>
         );
     },
