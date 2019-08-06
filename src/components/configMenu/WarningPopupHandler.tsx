@@ -2,7 +2,7 @@ import { Button } from '@material-ui/core';
 import React, { useState } from 'react';
 import Popup from 'reactjs-popup';
 import { PartialConfig } from '../../store/actions/config/types';
-import './menuItems/CheckBoxMenuItem.css';
+import './WarningPopupHandler.css';
 export interface ICheckBoxMenuItemProps {
     configName: string;
     onInputChange: (payload: PartialConfig) => void;

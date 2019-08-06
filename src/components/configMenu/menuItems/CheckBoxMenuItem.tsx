@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 import WarningPopupHandler from '../WarningPopupHandler';
-import './CheckBoxMenuItem.css';
 
 export interface ICheckBoxMenuItemProps {
     name: string;
