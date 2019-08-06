@@ -113,10 +113,17 @@ export const EyeController = React.memo(
                 ? props.animation[0].irisColor
                 : props.config.irisColor;
 
+        const animationRef = useRef(animation);
+        const detectedRef = useRef(props.detected);
         useEffect(() => {
-            if (animation.length === 0) {
+            detectedRef.current = props.detected;
+            animationRef.current = animation;
+        }, [props.detected, animation]);
+
+        useEffect(() => {
+            if (animationRef.current.length === 0) {
                 let blinkInterval = environment.setInterval(() => {
-                    const blinkFrequency = props.detected
+                    const blinkFrequency = detectedRef.current
                         ? blinkConsts.focusedFrequency
                         : blinkConsts.frequency;
                     const blinkProbability =
@@ -130,7 +137,7 @@ export const EyeController = React.memo(
                     blinkInterval = 0;
                 };
             }
-        }, [props.detected, environment, animation, updateAnimation]);
+        }, [environment, updateAnimation]);
 
         useEffect(() => {
             if (animation.length > 0) {
