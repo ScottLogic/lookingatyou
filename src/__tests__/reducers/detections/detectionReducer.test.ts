@@ -11,7 +11,7 @@ import detectionStore, {
     initialState,
 } from '../../../store/reducers/detectionReducer';
 import { Animation } from '../../../utils/pose/animations';
-import { IColour, ICoords, IHistory } from '../../../utils/types';
+import { IColor, ICoords, IHistory } from '../../../utils/types';
 
 describe('Detection Reducer Tests', () => {
     const testDetection: IDetection = {
@@ -20,17 +20,17 @@ describe('Detection Reducer Tests', () => {
     };
     const testDetections: IDetection[] = [testDetection];
     const testTarget: ICoords = { x: 10, y: 15 };
-    const testColour: IColour = { r: 20, g: 25, b: 30 };
+    const testColor: IColor = { r: 20, g: 25, b: 30 };
     const testAction = setDetections({
         detections: testDetections,
         previousTarget: testTarget,
-        previousColour: testColour,
+        previousColor: testColor,
     });
     it('should update detections and history when history is empty', () => {
         const expected: IDetectionState = {
             ...initialState,
             detections: testDetections,
-            history: [{ colour: testColour, target: testTarget }],
+            history: [{ color: testColor, target: testTarget }],
         };
         expect(detectionStore(initialState, testAction)).toStrictEqual(
             expected,
@@ -43,7 +43,7 @@ describe('Detection Reducer Tests', () => {
                 history: [
                     {
                         target: { x: 0, y: 0 },
-                        colour: { r: 0, g: 0, b: 0 },
+                        color: { r: 0, g: 0, b: 0 },
                     },
                 ],
             };
@@ -53,11 +53,11 @@ describe('Detection Reducer Tests', () => {
                 history: [
                     {
                         target: { x: 0, y: 0 },
-                        colour: { r: 0, g: 0, b: 0 },
+                        color: { r: 0, g: 0, b: 0 },
                     },
                     {
                         target: testTarget,
-                        colour: testColour,
+                        color: testColor,
                     },
                 ],
             };
@@ -72,7 +72,7 @@ describe('Detection Reducer Tests', () => {
         for (let i = 0; i < targetingConsts.maxNum; i++) {
             initialHistory.push({
                 target: { x: i, y: i },
-                colour: { r: i, g: i, b: i },
+                color: { r: i, g: i, b: i },
             });
         }
 
@@ -83,7 +83,7 @@ describe('Detection Reducer Tests', () => {
         };
 
         const expectedHistory = initialHistory.slice(1, targetingConsts.maxNum);
-        expectedHistory.push({ target: testTarget, colour: testColour });
+        expectedHistory.push({ target: testTarget, color: testColor });
         const expected = {
             ...modifiedInitialState,
             detections: testDetections,
