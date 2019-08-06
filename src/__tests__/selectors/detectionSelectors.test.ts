@@ -1,6 +1,6 @@
 import { getImageData } from '../../__test_utils__/getImageData';
 import { makeDetection } from '../../__test_utils__/makeDetection';
-import { bodyParts } from '../../AppConstants';
+import { bodyParts, centerPoint } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 import {
     getColourCombiner,
@@ -37,17 +37,18 @@ describe('getSelectionCombiner', () => {
 });
 describe('getTargetsCombiner', () => {
     it('should return the idle targets when selection and/or video is undefined', () => {
-        expect(
-            getTargetsCombiner(undefined, undefined, { x: 100, y: 155 }),
-        ).toStrictEqual({ x: 100, y: 155 });
+        expect(getTargetsCombiner(undefined, undefined)).toStrictEqual(
+            centerPoint,
+        );
     });
     it('should return the selection normalised to the video dimensions, when selection and video are both defined', () => {
         const selection = makeDetection(150, 250);
         const dimensions = { width: 300, height: 250 };
         const idleTargets = { x: 0, y: 0 };
-        expect(
-            getTargetsCombiner(selection, dimensions, idleTargets),
-        ).toStrictEqual({ x: 0, y: 1 });
+        expect(getTargetsCombiner(selection, dimensions)).toStrictEqual({
+            x: 0,
+            y: 1,
+        });
     });
 });
 describe('getColourCombiner', () => {
