@@ -30,7 +30,7 @@ const ColorMenuItem = React.memo(
             });
         }
 
-        function close() {
+        function close(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
             setShowPopup(false);
         }
 
@@ -52,7 +52,7 @@ const ColorMenuItem = React.memo(
                     <Popup
                         open={showPopup}
                         modal={true}
-                        closeOnDocumentClick={true}
+                        closeOnDocumentClick={false}
                     >
                         <>
                             <SketchPicker
