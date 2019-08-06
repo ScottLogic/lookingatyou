@@ -9,10 +9,10 @@ interface ITuple {
 export function drawPose(
     keypoints: Keypoint[],
     canvasCtx: CanvasRenderingContext2D,
-    colour: string,
+    color: string,
 ) {
-    drawSkeleton(keypoints, canvasCtx, colour);
-    drawKeypoints(keypoints, canvasCtx, colour);
+    drawSkeleton(keypoints, canvasCtx, color);
+    drawKeypoints(keypoints, canvasCtx, color);
 }
 
 function drawSegment(
@@ -33,7 +33,7 @@ function drawSegment(
 function drawSkeleton(
     keypoints: Keypoint[],
     canvasCtx: CanvasRenderingContext2D,
-    colour: string,
+    color: string,
 ) {
     const adjacentKeyPoints = getAdjacentKeyPoints(
         keypoints,
@@ -44,7 +44,7 @@ function drawSkeleton(
         drawSegment(
             keypoint[0].position,
             keypoint[1].position,
-            colour,
+            color,
             debugFeedConsts.canvasScale,
             canvasCtx,
         );
@@ -54,7 +54,7 @@ function drawSkeleton(
 function drawKeypoints(
     keypoints: Keypoint[],
     ctx: CanvasRenderingContext2D,
-    colour: string,
+    color: string,
 ) {
     for (const keypoint of keypoints) {
         if (keypoint.score >= debugFeedConsts.minConfidence) {
@@ -64,7 +64,7 @@ function drawKeypoints(
                 y * debugFeedConsts.canvasScale,
                 x * debugFeedConsts.canvasScale,
                 debugFeedConsts.pointRadius,
-                colour,
+                color,
             );
         }
     }
@@ -75,10 +75,10 @@ function drawPoint(
     y: number,
     x: number,
     r: number,
-    colour: string,
+    color: string,
 ) {
     ctx.beginPath();
     ctx.arc(x, y, r, 0, 2 * Math.PI);
-    ctx.fillStyle = colour;
+    ctx.fillStyle = color;
     ctx.fill();
 }

@@ -21,7 +21,6 @@ import {
     getTargets,
 } from '../../store/selectors/detectionSelectors';
 import { getVideo } from '../../store/selectors/videoSelectors';
-import { normalise } from '../../utils/objectTracking/calculateFocus';
 import { Animation, blink } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import Eye from './Eye';
@@ -74,42 +73,24 @@ export const EyeController = React.memo(
 
         const reflectionRef = useRef<ImageData | undefined>(undefined);
 
-        const { innerX, innerY } =
+        const { x, y } =
             props.animation.length > 0 &&
             props.animation[0].normalisedCoords !== undefined
                 ? {
-                      innerX: normalise(
-                          props.animation[0].normalisedCoords!.x,
-                          1,
-                          -1,
-                          props.width / 2,
-                      ),
-                      innerY: normalise(
-                          props.animation[0].normalisedCoords!.y,
-                          1,
-                          -1,
-                          props.width / 2,
-                      ),
+                      x: props.animation[0].normalisedCoords!.x,
+                      y: props.animation[0].normalisedCoords!.y,
                   }
-                : (() => {
-                      const maxDisplacement =
-                          (scleraRadius - irisRadius * minIrisScale) /
-                          minIrisScale;
-                      const targetY =
-                          props.target.y * props.config.ySensitivity;
-                      const targetX =
-                          -props.target.x * props.config.xSensitivity; // mirrored
-                      const polarDistance = Math.hypot(targetY, targetX);
-                      const polarAngle = Math.atan2(targetY, targetX);
-                      const displacement =
-                          Math.min(1, polarDistance) * maxDisplacement;
-                      const x =
-                          props.width / 4 + displacement * Math.cos(polarAngle);
-                      const y =
-                          props.height / 2 +
-                          displacement * Math.sin(polarAngle);
-                      return { innerX: x, innerY: y };
-                  })();
+                : { x: props.target.x, y: props.target.y };
+
+        const maxDisplacement =
+            (scleraRadius - irisRadius * minIrisScale) / minIrisScale;
+        const targetY = y * props.config.ySensitivity;
+        const targetX = -x * props.config.xSensitivity; // mirrored
+        const polarDistance = Math.hypot(targetY, targetX);
+        const polarAngle = Math.atan2(targetY, targetX);
+        const displacement = Math.min(1, polarDistance) * maxDisplacement;
+        const innerX = props.width / 4 + displacement * Math.cos(polarAngle);
+        const innerY = props.height / 2 + displacement * Math.sin(polarAngle);
 
         const calculatedEyesOpenCoefficient =
             props.animation.length > 0 &&
@@ -225,6 +206,11 @@ export const EyeController = React.memo(
                             irisAdjustment={irisAdjustmentRef.current}
                             innerPath={innerPath}
                             skewTransform={irisMatrixTransform(props.target)}
+                            transformDuration={
+                                props.animation.length > 0
+                                    ? props.animation[0].duration
+                                    : undefined
+                            }
                         />
                     );
                 })}
