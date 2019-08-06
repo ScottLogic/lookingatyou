@@ -67,7 +67,7 @@ function setDetections(
     }
     newHistory.push({
         target: payload.previousTarget,
-        colour: payload.previousColour,
+        color: payload.previousColor,
     });
 
     return {
