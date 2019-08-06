@@ -55,7 +55,7 @@ const FadeInText = React.memo((props: IFadeInTextProps) => {
         return {
             fontSize:
                 text.length > fadeInText.defaultTextLength
-                    ? `${(parseInt(fadeInText.fontSize) *
+                    ? `${(parseInt(fadeInText.fontSize, 10) *
                           fadeInText.defaultTextLength) /
                           text.length}em`
                     : fadeInText.fontSize,

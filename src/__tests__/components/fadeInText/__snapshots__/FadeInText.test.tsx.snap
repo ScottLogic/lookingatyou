@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FadeInText should render correctly 1`] = `
-"<div className=\\"revealText\\">
+"<div className=\\"revealText\\" style={{...}}>
   <span style={{...}}>
     t
   </span>
