@@ -45,9 +45,7 @@ export function updateConfigAction(
 export function resetConfigAction(
     type: ConfigSetAction,
 ): { type: ConfigSetAction } {
-    return {
-        type,
-    };
+    return { type };
 }
 
 export function setConfigAction(
