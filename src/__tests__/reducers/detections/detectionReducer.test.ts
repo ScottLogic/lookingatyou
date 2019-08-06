@@ -8,22 +8,13 @@ import {
     swapSelection,
 } from '../../../store/actions/detections/actions';
 import { IDetectionState } from '../../../store/actions/detections/types';
-import detectionStore from '../../../store/reducers/detectionReducer';
+import detectionStore, {
+    initialState,
+} from '../../../store/reducers/detectionReducer';
 import { Animation } from '../../../utils/pose/animations';
 import { IColour, ICoords, IHistory } from '../../../utils/types';
 
 describe('Detection Reducer Tests', () => {
-    const testState: IDetectionState = {
-        model: null,
-        idleTarget: { x: 0, y: 0 },
-        detections: [],
-        eyesOpenCoefficient: eyelidPosition.OPEN,
-        detectionInterval: 0,
-        animation: [],
-        nextSelectionSwapTime: -1,
-        history: [],
-    };
-
     const testDetection: IDetection = {
         bbox: [1, 1, 1, 1],
         info: { keypoints: [], score: 5 },
@@ -38,16 +29,18 @@ describe('Detection Reducer Tests', () => {
     });
     it('should update detections and history when history is empty', () => {
         const expected: IDetectionState = {
-            ...testState,
+            ...initialState,
             detections: testDetections,
             history: [{ colour: testColour, target: testTarget }],
         };
-        expect(detectionStore(testState, testAction)).toStrictEqual(expected);
+        expect(detectionStore(initialState, testAction)).toStrictEqual(
+            expected,
+        );
     });
     it('should update detections and history correctly when history is neither empty nor full', () => {
         if (targetingConsts.maxNum > 1) {
-            const initialState = {
-                ...testState,
+            const modifiedInitialState = {
+                ...initialState,
                 history: [
                     {
                         target: { x: 0, y: 0 },
@@ -56,7 +49,7 @@ describe('Detection Reducer Tests', () => {
                 ],
             };
             const expected = {
-                ...initialState,
+                ...modifiedInitialState,
                 detections: testDetections,
                 history: [
                     {
@@ -69,9 +62,9 @@ describe('Detection Reducer Tests', () => {
                     },
                 ],
             };
-            expect(detectionStore(initialState, testAction)).toStrictEqual(
-                expected,
-            );
+            expect(
+                detectionStore(modifiedInitialState, testAction),
+            ).toStrictEqual(expected);
         }
     });
     it('should update detections history correctly when history is at maximum length', () => {
@@ -85,16 +78,19 @@ describe('Detection Reducer Tests', () => {
         }
 
         expect(initialHistory.length).toBe(targetingConsts.maxNum);
-        const initialState = { ...testState, history: initialHistory };
+        const modifiedInitialState = {
+            ...initialState,
+            history: initialHistory,
+        };
 
         const expectedHistory = initialHistory.slice(1, targetingConsts.maxNum);
         expectedHistory.push({ target: testTarget, colour: testColour });
         const expected = {
-            ...initialState,
+            ...modifiedInitialState,
             detections: testDetections,
             history: expectedHistory,
         };
-        expect(detectionStore(initialState, testAction)).toStrictEqual(
+        expect(detectionStore(modifiedInitialState, testAction)).toStrictEqual(
             expected,
         );
     });
@@ -105,22 +101,22 @@ describe('Detection Reducer Tests', () => {
             nextSelectionSwapTime,
         });
         const expected = {
-            ...testState,
+            ...initialState,
             detections: testDetections,
             history: [],
             nextSelectionSwapTime,
         };
-        expect(detectionStore(testState, action)).toStrictEqual(expected);
+        expect(detectionStore(initialState, action)).toStrictEqual(expected);
     });
 
     it('should update open coefficient correctly', () => {
         const eyesOpenCoefficient = 0.3;
         const action = setOpen(eyesOpenCoefficient);
         const expected = {
-            ...testState,
+            ...initialState,
             eyesOpenCoefficient,
         };
-        expect(detectionStore(testState, action)).toStrictEqual(expected);
+        expect(detectionStore(initialState, action)).toStrictEqual(expected);
     });
 
     it('should update animation correctly', () => {
@@ -142,16 +138,16 @@ describe('Detection Reducer Tests', () => {
         ];
         const action = setAnimation(animation);
         const expected = {
-            ...testState,
+            ...initialState,
             animation,
         };
-        expect(detectionStore(testState, action)).toStrictEqual(expected);
+        expect(detectionStore(initialState, action)).toStrictEqual(expected);
     });
 
     it('should update idle target correctly', () => {
         const idleTarget = { x: 500, y: 755 };
         const action = setIdleTarget(idleTarget);
-        const expected = { ...testState, idleTarget };
-        expect(detectionStore(testState, action)).toStrictEqual(expected);
+        const expected = { ...initialState, idleTarget };
+        expect(detectionStore(initialState, action)).toStrictEqual(expected);
     });
 });
