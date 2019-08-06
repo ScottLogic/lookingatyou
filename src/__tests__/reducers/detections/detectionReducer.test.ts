@@ -87,9 +87,7 @@ describe('Detection Reducer Tests', () => {
         expect(initialHistory.length).toBe(targetingConsts.maxNum);
         const initialState = { ...testState, history: initialHistory };
 
-        const expectedHistory = [
-            ...initialHistory.slice(1, targetingConsts.maxNum),
-        ];
+        const expectedHistory = initialHistory.slice(1, targetingConsts.maxNum);
         expectedHistory.push({ target: testTarget, colour: testColour });
         const expected = {
             ...initialState,
