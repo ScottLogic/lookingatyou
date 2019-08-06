@@ -52,14 +52,14 @@ const FadeInText = React.memo((props: IFadeInTextProps) => {
     }
 
     function getFontSize(text: string) {
-        return {
-            fontSize:
-                text.length > fadeInText.defaultTextLength
-                    ? `${(parseInt(fadeInText.fontSize, 10) *
-                          fadeInText.defaultTextLength) /
-                          text.length}em`
-                    : fadeInText.fontSize,
-        };
+        if (text.length > fadeInText.defaultTextLength) {
+            const scaledFontSize =
+                (parseInt(fadeInText.fontSize, 10) *
+                    fadeInText.defaultTextLength) /
+                text.length;
+            return { fontSize: scaledFontSize + 'em' };
+        }
+        return { fontSize: fadeInText.fontSize };
     }
 
     return (
