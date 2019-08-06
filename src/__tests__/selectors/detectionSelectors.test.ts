@@ -3,7 +3,7 @@ import { makeDetection } from '../../__test_utils__/makeDetection';
 import { bodyParts, centerPoint } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 import {
-    getColourCombiner,
+    getColorCombiner,
     getSelectionsCombiner,
     getTargetsCombiner,
 } from '../../store/selectors/detectionSelectors';
@@ -53,7 +53,7 @@ describe('getTargetsCombiner', () => {
 });
 describe('getColourCombiner', () => {
     it('should return 0 for all rgb values when selection is undefined', () => {
-        expect(getColourCombiner(undefined, getImageData(1, 1))).toStrictEqual({
+        expect(getColorCombiner(undefined, getImageData(1, 1))).toStrictEqual({
             r: 0,
             b: 0,
             g: 0,
@@ -79,7 +79,7 @@ describe('getColourCombiner', () => {
             },
         };
         const imageData = getImageData(400, 400);
-        expect(getColourCombiner(selection, imageData)).toStrictEqual({
+        expect(getColorCombiner(selection, imageData)).toStrictEqual({
             r: 189,
             g: 0,
             b: 208,
