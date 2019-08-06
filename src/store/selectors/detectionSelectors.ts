@@ -56,16 +56,16 @@ export const getTargets = createSelector(
     getTargetsCombiner,
 );
 
-export const getColourCombiner = (
+export const getColorCombiner = (
     selection: IDetection | undefined,
     imageData: ImageData,
 ): IColor =>
     selection
         ? calculateColorMatch(selection.info.keypoints, imageData)
         : { r: 0, g: 0, b: 0 };
-export const getColour = createSelector(
+export const getColor = createSelector(
     [getSelections, getImageData],
-    getColourCombiner,
+    getColorCombiner,
 );
 
 export function getPreviousTarget(state: IRootStore): ICoords {
