@@ -17,7 +17,6 @@ export interface IDetectionState {
     eyesOpenCoefficient: number;
     detections: Detections;
     history: IHistory[];
-    idleTarget: ICoords;
     animation: Animation;
     nextSelectionSwapTime: number;
 }
@@ -30,11 +29,6 @@ export interface ISetModelAction {
 export interface ISetIntervalAction {
     readonly type: 'SET_INTERVAL';
     readonly payload: number;
-}
-
-export interface ISetIdleTargetAction {
-    readonly type: 'SET_IDLE_TARGET';
-    readonly payload: ICoords;
 }
 
 export interface ISetDetectionsActionPayload {
@@ -71,7 +65,6 @@ export interface ISwapSelectionAction {
 export type DetectionActionType =
     | ISetModelAction
     | ISetIntervalAction
-    | ISetIdleTargetAction
     | ISetDetectionsAction
     | ISetOpenAction
     | ISetAnimationAction
