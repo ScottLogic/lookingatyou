@@ -1,4 +1,6 @@
+import convert from 'color-convert';
 import {
+    CIELabOffset,
     eyeCoords,
     idleMovementConsts,
     lightConsts,
@@ -16,11 +18,12 @@ export function analyseLight(
 
     let colorSum = 0;
     for (let i = 0; i < data.length; i += 4) {
-        const average = Math.floor((data[i] + data[i + 1] + data[i + 2]) / 3);
-        colorSum += average;
+        const pixelL = convert.rgb.lab([data[i], data[i + 1], data[i + 2]])[0];
+        colorSum += pixelL;
     }
 
-    let brightness = Math.floor(colorSum / (image.width * image.height));
+    let brightness =
+        Math.floor(colorSum / (image.width * image.height)) + CIELabOffset;
     brightness = Math.min(brightness, lightConsts.maxBrightness);
 
     const scaledPupilSize = normalise(

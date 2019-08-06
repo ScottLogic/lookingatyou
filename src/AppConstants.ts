@@ -62,7 +62,7 @@ export const debugFeedConsts = {
     minConfidence: 0.1,
     pointRadius: 3,
 };
-export const colourCheckConsts = {
+export const colorCheckConsts = {
     yOffset: 10,
     xOffset: 10,
 };
@@ -113,3 +113,5 @@ export const numInnerEyeSectors = 100;
 export const minPoseConfidence = 0.2;
 export const minIrisScale = 0.8; // factor by which to squish iris when iris is all the way to edge of sclera
 export const CIELabOffset = 128;
+export const centerPoint = { x: 0, y: 0 };
+export const chanceOfIdleEyesMovement = 0.1;

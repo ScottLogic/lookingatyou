@@ -18,6 +18,7 @@ interface IInnerEyeProps {
     height: number;
     reflection: ImageData | undefined;
     skewTransform: string;
+    transformDuration?: number;
 }
 
 interface IInnerEyeMapStateToProps {
@@ -27,7 +28,8 @@ interface IInnerEyeMapStateToProps {
 export type InnerEyeProps = IInnerEyeProps & IInnerEyeMapStateToProps;
 
 export const InnerEye = React.memo((props: InnerEyeProps) => {
-    const period = 1000 / props.fps;
+    const period = props.transformDuration || 1000 / props.fps;
+
     const transitionStyle = {
         transition: `transform ${period}ms`, // cx and cy transitions based on FPS
     };
@@ -50,7 +52,7 @@ export const InnerEye = React.memo((props: InnerEyeProps) => {
             className="inner"
             style={transitionStyle}
             transform={`
-                    ${props.skewTransform} 
+                    ${props.skewTransform}
                     translate(${props.innerX},${props.innerY})
                 `}
         >

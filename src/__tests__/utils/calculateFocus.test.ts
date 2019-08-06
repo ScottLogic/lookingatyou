@@ -1,4 +1,5 @@
 import calculateTargetPos, {
+    calculateNormalisedPos,
     normalise,
 } from '../../utils/objectTracking/calculateFocus';
 import { Bbox, ICoords } from '../../utils/types';
@@ -39,8 +40,8 @@ describe('normalise should return', () => {
 
 describe('calculateTargetPos should return', () => {
     const testValues: Array<[Bbox, ICoords]> = [
-        [[0, 0, 10, 20], { x: 5, y: 5 }],
-        [[50, 800, 100, 200], { x: 100, y: 850 }],
+        [[0, 0, 10, 20], { x: 5, y: 10 }],
+        [[50, 800, 100, 200], { x: 100, y: 900 }],
         [[42, 21, 0, 0], { x: 42, y: 21 }],
     ];
     it.each(testValues)(
@@ -54,4 +55,16 @@ describe('calculateTargetPos should return', () => {
             }
         },
     );
+});
+
+describe('calculateNormalisedPos should return', () => {
+    const bbox: Bbox = [10, 20, 40, 40];
+    const width = 200;
+    const height = 200;
+    it('normalised coordinates based on bbox, width and height', () => {
+        const expected = { x: -0.7, y: -0.6 };
+        expect(calculateNormalisedPos(bbox, width, height)).toStrictEqual(
+            expected,
+        );
+    });
 });

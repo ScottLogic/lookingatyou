@@ -3,12 +3,12 @@ import { fadeInText } from '../../AppConstants';
 import { normalise } from '../../utils/objectTracking/calculateFocus';
 import './fadeInText.css';
 
-interface ITextProps {
+interface IFadeInTextProps {
     text: string;
     show: boolean;
 }
 
-const FadeInText = React.memo((props: ITextProps) => {
+const FadeInText = React.memo((props: IFadeInTextProps) => {
     function renderSpans(text: string) {
         const textArray = text.split('');
 

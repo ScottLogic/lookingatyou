@@ -6,12 +6,12 @@ import { Detections, IDetection } from '../../../models/objectDetection';
 import calculateTargetPos from '../../../utils/objectTracking/calculateFocus';
 import { Animation, animationMapping } from '../../../utils/pose/animations';
 import { getPose } from '../../../utils/pose/poseDetection';
-import { IColour, ICoords } from '../../../utils/types';
+import { IColor, ICoords } from '../../../utils/types';
 import { getImageDataFromVideo, reshapeDetections } from '../../../utils/utils';
 import { IRootStore } from '../../reducers/rootReducer';
 import { getConfig, getFPS } from '../../selectors/configSelectors';
 import {
-    getColour,
+    getColor,
     getDetections,
     getSelections,
     getTargets,
@@ -23,7 +23,6 @@ import {
     ISwapSelectionActionPayload,
     SET_ANIMATION,
     SET_DETECTIONS,
-    SET_IDLE_TARGET,
     SET_MODEL,
     SET_OPEN,
     SWAP_SELECTION,
@@ -124,7 +123,7 @@ export function setDetectionsAndMaybeSwapTarget(detections: Detections) {
                 setDetections({
                     detections,
                     previousTarget: getTargets(state),
-                    previousColour: getColour(state),
+                    previousColor: getColor(state),
                 }),
             );
         } else {
@@ -174,7 +173,7 @@ export const setDetections = createActionPayload<
     {
         detections: Detections;
         previousTarget: ICoords;
-        previousColour: IColour;
+        previousColor: IColor;
     }
 >(SET_DETECTIONS);
 
@@ -186,11 +185,6 @@ export const swapSelection = createActionPayload<
 export const setModel = createActionPayload<typeof SET_MODEL, PoseNet | null>(
     SET_MODEL,
 );
-
-export const setIdleTarget = createActionPayload<
-    typeof SET_IDLE_TARGET,
-    ICoords
->(SET_IDLE_TARGET);
 
 export const setOpen = createActionPayload<typeof SET_OPEN, number>(SET_OPEN);
 
