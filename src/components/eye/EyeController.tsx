@@ -57,10 +57,6 @@ export type EyeControllerProps = IEyeControllerProps &
 export const EyeController = React.memo(
     (props: EyeControllerProps) => {
         const { environment, updateAnimation, animation } = props;
-        const target = {
-            x: props.target.x * props.config.xSensitivity,
-            y: props.target.y * props.config.ySensitivity,
-        };
 
         const scleraRadius = Math.floor(
             props.width * eyeRadiiCoefficients.sclera,
