@@ -1,7 +1,6 @@
 import { PoseNet } from '@tensorflow-models/posenet';
 import { eyelidPosition, targetingConsts } from '../../AppConstants';
 import { Animation } from '../../utils/pose/animations';
-import { ICoords } from '../../utils/types';
 import {
     DetectionActionType,
     IDetectionState,
@@ -9,7 +8,7 @@ import {
     ISwapSelectionActionPayload,
     SET_ANIMATION,
     SET_DETECTIONS,
-    SET_IDLE_TARGET,
+    SET_INTERVAL,
     SET_MODEL,
     SET_OPEN,
     SWAP_SELECTION,
@@ -17,7 +16,6 @@ import {
 
 export const initialState: IDetectionState = {
     model: null,
-    idleTarget: { x: 0, y: 0 },
     detections: [],
     eyesOpenCoefficient: eyelidPosition.OPEN,
     detectionInterval: 0,
@@ -28,7 +26,7 @@ export const initialState: IDetectionState = {
 
 const detectionActionMapping = {
     [SET_MODEL]: setModel,
-    [SET_IDLE_TARGET]: setIdleTarget,
+    [SET_INTERVAL]: setDetectionInterval,
     [SET_DETECTIONS]: setDetections,
     [SET_OPEN]: setOpen,
     [SET_ANIMATION]: setAnimation,
@@ -51,14 +49,11 @@ function setModel(
     return { ...state, model: action.payload as PoseNet };
 }
 
-function setIdleTarget(
+function setDetectionInterval(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    return {
-        ...state,
-        idleTarget: action.payload as ICoords,
-    };
+    return { ...state, detectionInterval: action.payload as number };
 }
 
 function setDetections(

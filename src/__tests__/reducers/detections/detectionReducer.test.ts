@@ -3,7 +3,6 @@ import { IDetection } from '../../../models/objectDetection';
 import {
     setAnimation,
     setDetections,
-    setIdleTarget,
     setOpen,
     swapSelection,
 } from '../../../store/actions/detections/actions';
@@ -141,13 +140,6 @@ describe('Detection Reducer Tests', () => {
             ...initialState,
             animation,
         };
-        expect(detectionStore(initialState, action)).toStrictEqual(expected);
-    });
-
-    it('should update idle target correctly', () => {
-        const idleTarget = { x: 500, y: 755 };
-        const action = setIdleTarget(idleTarget);
-        const expected = { ...initialState, idleTarget };
         expect(detectionStore(initialState, action)).toStrictEqual(expected);
     });
 });

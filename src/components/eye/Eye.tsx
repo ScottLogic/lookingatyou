@@ -36,14 +36,16 @@ export interface IEyeProps {
     irisAdjustment: IIrisAdjustment;
     innerPath: string;
     skewTransform: string;
+    transformDuration?: number;
 }
 
 const pupilColor = 'black';
 
 export default function Eye(props: IEyeProps) {
     const cornerShape = getCornerShape(props);
+    const duration = props.transformDuration || transitionTimes.blink;
     const eyelidTransitionStyle = {
-        transition: `d ${transitionTimes.blink}ms`,
+        transition: `d ${duration}ms`,
     };
 
     return (
