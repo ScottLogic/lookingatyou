@@ -75,7 +75,7 @@ export interface ISetDetectionConfigAction {
 }
 
 export interface IResetConfigAction {
-    readonly type: 'RESET_CONFIG';
+    readonly type: ConfigSetAction.RESET;
 }
 
 export type ConfigAction =
