@@ -26,7 +26,7 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
 
             {props.config.toggleReflection && (
                 <NumberMenuItem
-                    name={'Reflect Opacity'}
+                    name={'Reflection Opacity'}
                     configName={'reflectionOpacity'}
                     step={0.01}
                     defaultValue={props.config.reflectionOpacity}
@@ -37,7 +37,7 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 />
             )}
             <CheckBoxMenuItem
-                name={'Toggle Debug'}
+                name={'Toggle Camera Feed'}
                 configName={'toggleDebug'}
                 helpWith={HelpWith.DEBUG}
                 checked={props.config.toggleDebug}
@@ -51,7 +51,7 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 />
             )}
 
-            <h3>Model Config</h3>
+            <h3>Model Settings</h3>
             <DropDownMenuItem
                 name={'Pose Model'}
                 configName={'architecture'}
@@ -98,13 +98,15 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                     name={'Multiplier'}
                     configName={'multiplier'}
                     onInputChange={props.updateModelConfig}
-                    values={['0.50', '0.75', '1']}
+                    values={['0.5', '0.75', '1']}
                     defaultValue={props.config.modelConfig.multiplier.toString()}
                     helpWith={HelpWith.MULTIPLIER}
                 />
             )}
 
-            <h3>Detection Config</h3>
+            <br />
+
+            <h3>Detection Settings</h3>
             <NumberMenuItem
                 name={'Detections'}
                 configName={'maxDetections'}

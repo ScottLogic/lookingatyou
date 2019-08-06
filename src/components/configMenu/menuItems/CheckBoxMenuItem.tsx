@@ -29,7 +29,11 @@ const CheckBoxMenuItem = React.memo(
         }
 
         return (
-            <div data-tip={true} data-for={HelpWith[props.helpWith]}>
+            <div
+                className="checkbox"
+                data-tip={true}
+                data-for={HelpWith[props.helpWith]}
+            >
                 <FormControl>
                     <FormControlLabel
                         value="start"
@@ -41,7 +45,6 @@ const CheckBoxMenuItem = React.memo(
                         labelPlacement="start"
                     />
                 </FormControl>
-
                 {showModal && props.warning && (
                     <WarningPopupHandler
                         configName={props.configName}

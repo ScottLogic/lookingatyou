@@ -1,3 +1,4 @@
+import { TextField } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
@@ -47,17 +48,15 @@ const NumberMenuItem = React.memo(
         return (
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>
                 <label>{props.name}</label>
-                <input
-                    type="number"
+                <TextField
+                    className="textFieldInput"
+                    id="standard-number"
                     value={value || 0}
-                    min={props.min}
-                    max={props.max}
-                    style={{
-                        color: isValid ? 'black' : 'red',
-                    }}
-                    onBlur={onBlur}
                     onChange={onChange}
-                    step={props.step}
+                    onBlur={onBlur}
+                    type="number"
+                    error={!isValid}
+                    margin="normal"
                 />
             </div>
         );

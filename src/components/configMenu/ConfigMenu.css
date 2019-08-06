@@ -36,7 +36,6 @@
 .ConfigMenu h1,
 .ConfigMenu h3 {
     padding: 10px;
-    width: 50%;
     display: inline-block;
     margin: 0;
 }
@@ -71,4 +70,47 @@
     width: 70%;
     height: 3em;
     left: 15%;
+}
+
+.MuiFormControlLabel-root {
+    width: 100% !important;
+}
+
+.MuiCheckbox-colorPrimary {
+    position: absolute !important;
+    left: 75%;
+    padding: 0px !important;
+}
+
+.MuiFormControlLabel-label {
+    position: absolute;
+    left: 1%;
+}
+
+.h3,
+.MuiFormControl-root,
+#standard-number {
+    width: 100%;
+}
+
+.selectForm,
+.textFieldInput {
+    width: 70%;
+    position: absolute;
+    left: 5%;
+}
+
+.checkbox {
+    padding: 10px;
+    height: fit-content;
+}
+
+.slider {
+    left: 5%;
+    width: 70% !important;
+}
+
+.MuiFormControl-marginNormal {
+    margin-top: 0px !important;
+    margin-bottom: 16px !important;
 }

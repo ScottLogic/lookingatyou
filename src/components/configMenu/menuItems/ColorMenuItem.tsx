@@ -38,9 +38,7 @@ const ColorMenuItem = React.memo(
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>
                 <Button
                     style={{
-                        borderRadius: 35,
                         backgroundColor: props.color,
-                        padding: '18px 36px',
                     }}
                     value={props.color}
                     variant="contained"
