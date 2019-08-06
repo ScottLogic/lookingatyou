@@ -62,7 +62,7 @@ export const debugFeedConsts = {
     minConfidence: 0.1,
     pointRadius: 3,
 };
-export const colourCheckConsts = {
+export const colorCheckConsts = {
     yOffset: 10,
     xOffset: 10,
 };

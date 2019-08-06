@@ -5,14 +5,14 @@ export interface ICoords {
     y: number;
 }
 
-export interface IColour {
+export interface IColor {
     r: number;
     g: number;
     b: number;
 }
 
 export interface IHistory {
-    colour: IColour;
+    color: IColor;
     target: ICoords;
 }
 
