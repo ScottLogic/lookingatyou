@@ -12,15 +12,19 @@ import { IConfigMenuProps } from '../configMenu/ConfigMenu';
 interface IHelpPopupProps {
     window: Window;
 }
+
 interface IHelpPopupMapStateToProps {
     showHelp: boolean;
 }
+
 interface IHelpPopupMapDispatchToProps {
     setShowHelpToFalse: () => void;
 }
+
 type HelpPopupProps = IHelpPopupProps &
     IHelpPopupMapStateToProps &
     IHelpPopupMapDispatchToProps;
+
 function HelpPopup(props: HelpPopupProps) {
     return (
         <Popup
@@ -49,6 +53,7 @@ function HelpPopup(props: HelpPopupProps) {
 const mapStateToProps = (state: IRootStore): IHelpPopupMapStateToProps => ({
     showHelp: getShowHelp(state),
 });
+
 const mapDispatchToProps = (
     dispatch: ThunkDispatch<IRootStore, void, Action>,
     ownProps: IConfigMenuProps,
