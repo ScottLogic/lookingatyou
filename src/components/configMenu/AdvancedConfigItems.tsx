@@ -17,7 +17,6 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
     return (
         <React.Fragment>
             <CheckBoxMenuItem
-                alert={false}
                 name={'Show Reflection'}
                 configName={'toggleReflection'}
                 helpWith={HelpWith.REFLECTION}
@@ -38,7 +37,6 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 />
             )}
             <CheckBoxMenuItem
-                alert={false}
                 name={'Toggle Debug'}
                 configName={'toggleDebug'}
                 helpWith={HelpWith.DEBUG}
@@ -117,7 +115,6 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 min={1}
             />
             <CheckBoxMenuItem
-                alert={false}
                 name={'Flip Horizontal'}
                 configName={'flipHorizontal'}
                 helpWith={HelpWith.FLIP}

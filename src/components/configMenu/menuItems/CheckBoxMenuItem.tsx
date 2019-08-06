@@ -1,17 +1,16 @@
-import { Button } from '@material-ui/core';
 import React, { useState } from 'react';
-import Popup from 'reactjs-popup';
 import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
+import WarningPopupHandler from '../WarningPopupHandler';
 import './CheckBoxMenuItem.css';
 
 export interface ICheckBoxMenuItemProps {
-    alert: boolean;
     name: string;
     configName: string;
     onInputChange: (payload: PartialConfig) => void;
     checked: boolean;
     helpWith: HelpWith;
+    warning?: JSX.Element;
 }
 
 const CheckBoxMenuItem = React.memo(
@@ -19,27 +18,14 @@ const CheckBoxMenuItem = React.memo(
         const [showModal, setShowModal] = useState(false);
 
         function onChange(event: React.ChangeEvent<HTMLInputElement>) {
-            if (props.alert && !props.checked) {
+            if (props.warning && !props.checked) {
                 setShowModal(true);
             } else {
                 props.onInputChange({
                     [props.configName]: event.target.checked,
                 });
+                setShowModal(false);
             }
-        }
-
-        function accept() {
-            setShowModal(false);
-            props.onInputChange({
-                [props.configName]: true,
-            });
-        }
-
-        function decline() {
-            setShowModal(false);
-            props.onInputChange({
-                [props.configName]: false,
-            });
         }
 
         return (
@@ -52,37 +38,13 @@ const CheckBoxMenuItem = React.memo(
                     onChange={onChange}
                 />
 
-                {props.alert && (
-                    <Popup
-                        open={showModal}
-                        modal={true}
-                        closeOnDocumentClick={false}
-                    >
-                        <>
-                            <h1>Warning!</h1>
-                            <br />
-                            The advanced settings are intended for users with a
-                            technical understanding of the app and changing them
-                            from the defaults could lead to the app becoming
-                            unstable.
-                            <br />
-                            <Button
-                                variant="contained"
-                                className="accept"
-                                color="primary"
-                                onClick={accept}
-                            >
-                                Proceed
-                            </Button>
-                            <Button
-                                variant="contained"
-                                className="decline"
-                                onClick={decline}
-                            >
-                                Cancel
-                            </Button>
-                        </>
-                    </Popup>
+                {showModal && props.warning && (
+                    <WarningPopupHandler
+                        configName={props.configName}
+                        onInputChange={props.onInputChange}
+                        checked={props.checked}
+                        warning={props.warning}
+                    />
                 )}
             </div>
         );
