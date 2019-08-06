@@ -1,11 +1,11 @@
 import { Keypoint } from '@tensorflow-models/posenet';
 import { IDetection } from '../../../models/objectDetection';
 import {
-    calculateColourMatch,
-    closerToColour,
+    calculateColorMatch,
+    closerToColor,
     closerToPrediction,
-    getAvgColour,
-    getPredictedColour,
+    getAvgColor,
+    getPredictedColor,
     getPredictedTarget,
     leftOf,
     rightOf,
@@ -98,16 +98,13 @@ function getPart(score: number, position: ICoords, part: string) {
 
 describe('objectSelection select', () => {
     describe('calculateColourMatch', () => {
-        const result = calculateColourMatch([]);
+        const result = calculateColorMatch([]);
         it('should return default for undefined imageData', () =>
             expect(result).toStrictEqual({ r: 0, g: 0, b: 0 }));
 
         it('should return average colour at those points', () => {
             expect(
-                calculateColourMatch(
-                    defaultDetection.info.keypoints,
-                    imageData,
-                ),
+                calculateColorMatch(defaultDetection.info.keypoints, imageData),
             ).toStrictEqual({ r: 200, g: 0, b: 106 });
         });
     });
@@ -116,7 +113,7 @@ describe('objectSelection select', () => {
         const data = getImageData(2, 2);
 
         it('should return average value for correct data', () => {
-            const result = getAvgColour(0, 0, 2, 2, data);
+            const result = getAvgColor(0, 0, 2, 2, data);
             expect(result).toStrictEqual({ r: 200, g: 0, b: 106 });
         });
     });
@@ -135,13 +132,13 @@ describe('objectSelection select', () => {
 
     describe('getPredictedColour', () => {
         const noHistory = [{ r: 0, g: 0, b: 0 }];
-        const result = getPredictedColour(noHistory);
+        const result = getPredictedColor(noHistory);
         it('should return black on default history', () => {
             expect(result).toStrictEqual({ r: 0, g: 0, b: 0 });
         });
 
         const history = [{ r: 0, g: 0, b: 0 }, { r: 15, g: 15, b: 15 }];
-        const historyResult = getPredictedColour(history);
+        const historyResult = getPredictedColor(history);
         it('should return avgerage if there is history', () => {
             expect(historyResult).toStrictEqual({ r: 10, g: 10, b: 10 });
         });
@@ -167,14 +164,14 @@ describe('objectSelection select', () => {
     });
 });
 
-describe('closerToColour', () => {
+describe('closerToColor', () => {
     const points1 = defaultDetection.info.keypoints;
     const points2 = furtherAwayFromPredictionDetection.info.keypoints;
     const colour = { r: 0, g: 0, b: 0 };
     const data = getImageData(25, 25);
 
     it('should return positive for first arg better match', () => {
-        expect(closerToColour(data, colour, points1, points2)).toBeGreaterThan(
+        expect(closerToColor(data, colour, points1, points2)).toBeGreaterThan(
             0,
         );
     });

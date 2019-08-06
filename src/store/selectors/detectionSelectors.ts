@@ -1,15 +1,16 @@
 import { createSelector } from 'reselect';
+import { centerPoint } from '../../AppConstants';
 import { Detections } from '../../models/objectDetection';
 import select, {
-    calculateColourMatch,
+    calculateColorMatch,
     closerToPrediction,
     first,
-    getPredictedColour,
+    getPredictedColor,
     getPredictedTarget,
 } from '../../utils/objectSelection/select';
 import { calculateNormalisedPos } from '../../utils/objectTracking/calculateFocus';
 import { Animation } from '../../utils/pose/animations';
-import { IColour, ICoords } from '../../utils/types';
+import { IColor, ICoords } from '../../utils/types';
 import { IRootStore } from '../reducers/rootReducer';
 import { getImageData, getVideo } from './videoSelectors';
 
@@ -18,15 +19,15 @@ export function getDetections(state: IRootStore): Detections {
 }
 
 export const getSelections = createSelector(
-    [getDetections, getPreviousTargets, getPreviousColours, getImageData],
-    (detections, previousTargets, previousColours, imageData) => {
+    [getDetections, getPreviousTargets, getPreviousColors, getImageData],
+    (detections, previousTargets, previousColors, imageData) => {
         if (previousTargets.length > 0) {
             const predictedTarget = getPredictedTarget(previousTargets);
-            const predictedColour = getPredictedColour(previousColours);
+            const predictedColor = getPredictedColor(previousColors);
 
             return select(
                 detections,
-                closerToPrediction(predictedTarget, imageData, predictedColour),
+                closerToPrediction(predictedTarget, imageData, predictedColor),
             );
         } else {
             return select(detections, first);
@@ -35,29 +36,27 @@ export const getSelections = createSelector(
 );
 
 export const getTargets = createSelector(
-    [getSelections, getVideo, getIdleTargets],
-    (selections, video, idleTargets): ICoords => {
-        const normalisedTarget =
-            selections === undefined || !video
-                ? undefined
-                : calculateNormalisedPos(
-                      selections.bbox,
-                      video!.width,
-                      video!.height,
-                  );
-        return normalisedTarget ? normalisedTarget : idleTargets;
+    [getSelections, getVideo],
+    (selections, video): ICoords => {
+        return selections === undefined || !video
+            ? centerPoint
+            : calculateNormalisedPos(
+                  selections.bbox,
+                  video!.width,
+                  video!.height,
+              );
     },
 );
 
-export const getColour = createSelector(
+export const getColor = createSelector(
     [getSelections, getImageData],
-    (selection, imageData): IColour => {
+    (selection, imageData): IColor => {
         if (selection) {
-            const colour = calculateColourMatch(
+            const color = calculateColorMatch(
                 selection.info.keypoints,
                 imageData,
             );
-            return colour;
+            return color;
         }
         return { r: 0, g: 0, b: 0 };
     },
@@ -72,17 +71,13 @@ export function getPreviousTargets(state: IRootStore): ICoords[] {
     return state.detectionStore.history.map(history => history.target);
 }
 
-export function getPreviousColour(state: IRootStore): IColour {
+export function getPreviousColor(state: IRootStore): IColor {
     return state.detectionStore.history[state.detectionStore.history.length - 1]
-        .colour;
+        .color;
 }
 
-export function getPreviousColours(state: IRootStore): IColour[] {
-    return state.detectionStore.history.map(history => history.colour);
-}
-
-export function getIdleTargets(state: IRootStore): ICoords {
-    return state.detectionStore.idleTarget;
+export function getPreviousColors(state: IRootStore): IColor[] {
+    return state.detectionStore.history.map(history => history.color);
 }
 
 export function getOpenCoefficient(state: IRootStore): number {
