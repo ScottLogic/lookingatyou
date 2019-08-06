@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InnerEye should render correctly 1`] = `
+"<g className=\\"inner\\" style={{...}} transform=\\"\\\\n                    undefined \\\\n                    translate(0,0)\\\\n                \\">
+  <circle className=\\"iris\\" r={200} fill=\\"url(#irisGradient)\\" />
+  <path className=\\"irisStyling\\" d=\\"\\" fill=\\"#0000cc\\" />
+  <g className=\\"pupil\\" style={{...}} transform=\\"scale(1)\\">
+    <foreignObject width={200} height={200} x={-100} y={-100}>
+      <canvas width={200} height={200} />
+    </foreignObject>
+    <circle className=\\"pupil\\" r={100} fill=\\"url(#pupilGradient)\\" stroke=\\"black\\" strokeWidth=\\"2\\" />
+  </g>
+  <ellipse className=\\"innerShine\\" rx={37.5} ry={75} fill=\\"url(#shineGradient)\\" transform=\\"skewX(30) translate(100,-50)\\" />
+  <ellipse className=\\"outerShine\\" rx={50} ry={100} fill=\\"url(#shineGradient)\\" transform=\\"skewX(30) translate(200,-110.00000000000001)\\" />
+</g>"
+`;

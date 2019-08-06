@@ -1,26 +1,5 @@
 version: 2
 jobs:
-    lint:
-        docker:
-            - image: 'circleci/node:10.16'
-        steps:
-            - checkout
-            - restore_cache:
-                  key: lookingatyou-{{ checksum "package-lock.json" }}
-            - run:
-                  name: Install npm dependencies
-                  command: npm ci
-            - save_cache:
-                  key: lookingatyou-{{ checksum "package-lock.json" }}
-                  paths:
-                      - node_modules
-            - run:
-                  name: Build project
-                  command: npm run build
-            - run:
-                  name: Check Linting
-                  command: npm run lint
-
     test:
         docker:
             - image: 'circleci/node:10.16'
@@ -36,8 +15,14 @@ jobs:
                   paths:
                       - node_modules
             - run:
+                  name: Check Linting
+                  command: npm run lint
+            - run:
                   name: Run tests
                   command: npm run test
+            - run:
+                  name: Build project
+                  command: npm run build
 
     deploy:
         docker:
@@ -73,10 +58,7 @@ workflows:
     version: 2
     test-and-deploy:
         jobs:
-            - lint
-            - test:
-                  requires:
-                      - lint
+            - test
             - deploy:
                   filters:
                       branches:

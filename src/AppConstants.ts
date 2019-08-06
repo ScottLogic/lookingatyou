@@ -27,7 +27,7 @@ export const pupilSizes = {
     constricted: 0.8,
 };
 export const transitionTimes = {
-    blink: 200,
+    blink: 100,
 };
 export const intervals = {
     sleep: 25000, // eyes go to sleep after this much time without targets
@@ -41,16 +41,19 @@ export const eyeCoords = {
     middleY: 0,
 };
 export const idleMovementConsts = {
+    moveCenterChance: 0.1,
+    moveSideChance: 0.5,
     xDelta: 0.4, // move this distance between frames when scanning the room
     sideBuffer: 0.2, // do not move the iris closer than this distance to the edge of the sclera
 };
 export const lightConsts = {
     maxBrightness: 220, // brightness dilation multiplier at max when average brightness reaches this value
-    dilationMultipler: 0.8, // max brightness dilation multiplier = offset + multiplier
+    dilationMultipler: 1.2, // max brightness dilation multiplier = offset + multiplier
     dilationOffset: 0.7, // min brightness dilation multiplier
 };
 export const blinkConsts = {
     frequency: 0.25,
+    focusedFrequency: 0.0625,
     movementThreshold: 0.8, // eye blinks when, between frames, it mvoes this distance
 };
 export const debugFeedConsts = {
@@ -76,8 +79,16 @@ export const targetingConsts = {
     maxInterval: 7000,
     maxNum: 8,
 };
-export const irisSkewFactor = 0.8; // factor by which to squish iris when iris is all the way to edge of sclera
-export const minPoseConfidence = 0.2;
+export const eyeRadiiCoefficients = {
+    // multiple screen width by these values to get size of eye parts
+    sclera: 1 / 4.5,
+    iris: 1 / 10,
+    pupil: 1 / 24,
+};
+export const configMenuConsts = {
+    visibleTimer: 1000,
+    width: '17.5em',
+};
 
 export const userInteraction = {
     texts: [
@@ -98,3 +109,7 @@ export const fadeInText = {
     transitionMax: 2000,
     transitionMin: 200,
 };
+export const numInnerEyeSectors = 100;
+export const minPoseConfidence = 0.2;
+export const minIrisScale = 0.8; // factor by which to squish iris when iris is all the way to edge of sclera
+export const CIELabOffset = 128;

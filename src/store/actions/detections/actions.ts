@@ -1,16 +1,13 @@
 import { load, PoseNet } from '@tensorflow-models/posenet';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { EyeSide, targetingConsts } from '../../../AppConstants';
+import { targetingConsts } from '../../../AppConstants';
 import { Detections, IDetection } from '../../../models/objectDetection';
 import calculateTargetPos from '../../../utils/objectTracking/calculateFocus';
 import { Animation, animationMapping } from '../../../utils/pose/animations';
 import { getPose } from '../../../utils/pose/poseDetection';
 import { IColour, ICoords } from '../../../utils/types';
-import {
-    getImageDataFromVideos,
-    reshapeDetections,
-} from '../../../utils/utils';
+import { getImageDataFromVideo, reshapeDetections } from '../../../utils/utils';
 import { IRootStore } from '../../reducers/rootReducer';
 import { getConfig, getFPS } from '../../selectors/configSelectors';
 import {
@@ -19,7 +16,7 @@ import {
     getSelections,
     getTargets,
 } from '../../selectors/detectionSelectors';
-import { getVideos } from '../../selectors/videoSelectors';
+import { getVideo } from '../../selectors/videoSelectors';
 import { createActionPayload } from '../creators';
 import { setImageDataAction } from '../video/actions';
 import {
@@ -66,28 +63,30 @@ export function handleDetection(document: Document) {
         getState: () => IRootStore,
     ) => {
         const state = getState();
-        const videos = getVideos(state);
+        const video = getVideo(state);
         const model = state.detectionStore.model;
         const detectionConfig = getConfig(state).detectionConfig;
 
-        if (!videos[0] || !model) {
+        if (!video || !model) {
             return;
         }
 
-        const images = getImageDataFromVideos(videos, document);
-        dispatch(setImageDataAction(images));
+        const image = getImageDataFromVideo(video, document);
 
-        let left: IDetection[] = [];
-        const leftImage = images[EyeSide.LEFT];
-        if (leftImage && model) {
-            const leftDetections = await model.estimateMultiplePoses(
-                leftImage,
-                detectionConfig,
-            );
-            left = reshapeDetections(leftDetections);
+        if (image) {
+            dispatch(setImageDataAction(image));
         }
 
-        dispatch(setDetectionsAndMaybeSwapTarget(left));
+        let detections: IDetection[] = [];
+        if (image && model) {
+            const leftDetections = await model.estimateMultiplePoses(
+                image,
+                detectionConfig,
+            );
+            detections = reshapeDetections(leftDetections);
+        }
+
+        dispatch(setDetectionsAndMaybeSwapTarget(detections));
 
         // The way we get target will change once #273 is implemented
         // For now I compare selection bounding box to existing detections and select a target from there
@@ -103,7 +102,11 @@ export function handleDetection(document: Document) {
         ) {
             const pose = getPose(target[0]!);
             if (pose) {
-                dispatch(setAnimation(animationMapping[pose]()));
+                let poseAnimation = animationMapping[pose];
+                poseAnimation = Array.isArray(poseAnimation)
+                    ? poseAnimation
+                    : poseAnimation();
+                dispatch(setAnimation(poseAnimation));
             }
         }
     };

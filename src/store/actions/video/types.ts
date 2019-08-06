@@ -11,8 +11,7 @@ export enum VideoSetAction {
 }
 
 export interface IVideo {
-    deviceId: string;
-    video?: HTMLVideoElement | undefined;
+    videoElement?: HTMLVideoElement | undefined;
     width: number;
     height: number;
     stream: MediaStream | undefined;
@@ -20,23 +19,18 @@ export interface IVideo {
 
 export interface IVideoState {
     webcamAvailable: boolean;
-    videos: { [deviceId: string]: IVideo };
-    images: { [key: string]: ImageData };
-}
-
-export interface ISetVideoPayload {
-    video: HTMLVideoElement;
-    deviceId: string;
+    video: IVideo;
+    image: ImageData;
 }
 
 export interface ISetVideoAction {
     readonly type: typeof SET_VIDEO;
-    readonly payload: ISetVideoPayload;
+    readonly payload: HTMLVideoElement;
 }
 
 export interface ISetVideoStreamsAction {
     readonly type: typeof SET_VIDEO_STREAMS;
-    readonly payload: { [deviceId: string]: IVideo };
+    readonly payload: IVideo;
 }
 
 export interface IToggleWebcamAvailable {
@@ -45,9 +39,7 @@ export interface IToggleWebcamAvailable {
 
 export interface ISetImageDataAction {
     readonly type: typeof SET_IMAGE_DATA;
-    readonly payload: {
-        [key: string]: ImageData;
-    };
+    readonly payload: ImageData;
 }
 
 export type VideoAction =

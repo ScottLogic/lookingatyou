@@ -2,9 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
-    blinkConsts,
     eyelidPosition,
-    EyeSide,
     intervals,
     pupilSizes,
     userInteraction,
@@ -15,12 +13,13 @@ import { ISetIdleTargetAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getFPS } from '../../store/selectors/configSelectors';
 import {
+    getAnimations,
     getDetections,
     getTargets,
 } from '../../store/selectors/detectionSelectors';
+import { getImageData } from '../../store/selectors/videoSelectors';
 import { Animation } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
-import { getLargerDistance } from '../../utils/utils';
 import EyeController from '../eye/EyeController';
 import { analyseLight, naturalMovement } from '../eye/utils/MovementUtils';
 import FadeInText from '../fadeInText/FadeInText';
@@ -35,7 +34,7 @@ interface IStateProps {
     fps: number;
     detections: IDetection[];
     target: ICoords;
-    images: { [key: string]: ImageData };
+    image: ImageData;
     animation: Animation;
 }
 
@@ -58,14 +57,13 @@ export class MovementHandler extends React.Component<
     IMovementState
 > {
     private movementInterval: number;
-    private sleepTimeout: NodeJS.Timeout | null;
+    private sleepTimeout: number;
     private tooBright: boolean;
     private isMovingLeft: boolean;
     private squinting: boolean;
     private personDetected: boolean;
-    private prevProps: MovementHandlerProps | null;
     private openCoefficient: number;
-    private textTimeout: number | null;
+    private textTimeout: number;
 
     constructor(props: MovementHandlerProps) {
         super(props);
@@ -77,14 +75,13 @@ export class MovementHandler extends React.Component<
         };
 
         this.movementInterval = 0;
-        this.sleepTimeout = null;
+        this.sleepTimeout = 0;
         this.tooBright = false;
         this.isMovingLeft = false;
         this.personDetected = false;
         this.squinting = false;
-        this.prevProps = null;
         this.openCoefficient = eyelidPosition.OPEN;
-        this.textTimeout = null;
+        this.textTimeout = 0;
 
         this.animateEye = this.animateEye.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
@@ -99,7 +96,6 @@ export class MovementHandler extends React.Component<
         this.movementInterval = this.props.environment.setInterval(
             this.animateEye,
             1000 / this.props.fps,
-            this.prevProps,
         );
     }
 
@@ -116,18 +112,13 @@ export class MovementHandler extends React.Component<
     componentWillReceiveProps(nextProps: MovementHandlerProps) {
         if (nextProps.animation.length > 0 && this.textTimeout) {
             this.props.environment.clearTimeout(this.textTimeout);
-            this.textTimeout = null;
+            this.textTimeout = 0;
         }
     }
 
-    componentDidUpdate(prevProps: MovementHandlerProps) {
-        this.prevProps = prevProps;
-    }
-
-    animateEye(prevProps: MovementHandlerProps) {
+    animateEye() {
         this.checkSelection();
         this.calculateBrightness();
-        this.checkBlink(prevProps);
     }
 
     componentWillUnmount() {
@@ -135,10 +126,9 @@ export class MovementHandler extends React.Component<
     }
 
     calculateBrightness() {
-        if (this.props.images[EyeSide.LEFT]) {
+        if (this.props.image) {
             const { tooBright, scaledPupilSize } = analyseLight(
-                this.props.images[EyeSide.LEFT],
-                this.tooBright,
+                this.props.image,
             );
             if (tooBright) {
                 this.tooBright = true;
@@ -187,19 +177,6 @@ export class MovementHandler extends React.Component<
         }
     }
 
-    checkBlink(prevProps?: MovementHandlerProps) {
-        if (prevProps && this.props.target) {
-            const leftEyeDist = getLargerDistance(
-                prevProps.target,
-                this.props.target,
-            );
-
-            if (leftEyeDist > blinkConsts.movementThreshold) {
-                this.openCoefficient = eyelidPosition.CLOSED;
-            }
-        }
-    }
-
     isNewTarget() {
         if (!this.personDetected) {
             this.personDetected = true;
@@ -222,13 +199,13 @@ export class MovementHandler extends React.Component<
     }
 
     wake() {
-        if (this.sleepTimeout !== null) {
-            clearTimeout(this.sleepTimeout);
-            this.sleepTimeout = null;
+        if (this.sleepTimeout !== 0) {
+            this.props.environment.clearTimeout(this.sleepTimeout);
+            this.sleepTimeout = 0;
             this.openCoefficient = eyelidPosition.OPEN;
         }
 
-        if (this.textTimeout === null) {
+        if (this.textTimeout === 0) {
             this.textTimeout = this.props.environment.setTimeout(() => {
                 this.setState({
                     showText: true,
@@ -241,22 +218,22 @@ export class MovementHandler extends React.Component<
                 });
                 this.props.environment.setTimeout(() => {
                     this.setState({ showText: false });
-                    this.textTimeout = null;
+                    this.textTimeout = 0;
                 }, userInteraction.textDuration);
             }, userInteraction.delay);
         }
     }
 
     sleep() {
-        if (this.sleepTimeout === null) {
-            this.sleepTimeout = setTimeout(() => {
+        if (this.sleepTimeout === 0) {
+            this.sleepTimeout = this.props.environment.setTimeout(() => {
                 this.openCoefficient = eyelidPosition.CLOSED;
             }, intervals.sleep);
         }
 
-        if (this.textTimeout !== null) {
+        if (this.textTimeout !== 0) {
             this.props.environment.clearTimeout(this.textTimeout);
-            this.textTimeout = null;
+            this.textTimeout = 0;
         }
     }
 
@@ -264,12 +241,10 @@ export class MovementHandler extends React.Component<
         return (
             <>
                 <EyeController
-                    width={this.props.width}
-                    height={this.props.height}
-                    environment={this.props.environment}
                     dilation={this.state.dilationCoefficient}
                     detected={this.personDetected}
                     openCoefficient={this.openCoefficient}
+                    {...this.props}
                 />
                 <FadeInText text={this.state.text} show={this.state.showText} />
             </>
@@ -281,8 +256,8 @@ const mapStateToProps = (state: IRootStore) => ({
     fps: getFPS(state),
     detections: getDetections(state),
     target: getTargets(state),
-    images: state.videoStore.images,
-    animation: state.detectionStore.animation,
+    image: getImageData(state),
+    animation: getAnimations(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => ({

@@ -1,4 +1,10 @@
-import { eyelidPosition, EyeSide, Pose, pupilSizes } from '../../AppConstants';
+import {
+    eyelidPosition,
+    EyeSide,
+    Pose,
+    pupilSizes,
+    transitionTimes,
+} from '../../AppConstants';
 import { normalise } from '../objectTracking/calculateFocus';
 import { ICoords } from '../types';
 
@@ -14,45 +20,66 @@ interface IAnimationFrame {
 
 export type Animation = IAnimationFrame[];
 
-export const animationMapping: { [key: string]: () => Animation } = {
+export const wink = {
+    openCoefficient: eyelidPosition.OPEN,
+    duration: 500,
+};
+
+export const leftWink: Animation = [
+    {
+        openCoefficient: {
+            [EyeSide.LEFT]: eyelidPosition.CLOSED,
+            [EyeSide.RIGHT]: eyelidPosition.OPEN,
+        },
+        duration: 500,
+    },
+    wink,
+];
+
+export const rightWink: Animation = [
+    {
+        openCoefficient: {
+            [EyeSide.RIGHT]: eyelidPosition.CLOSED,
+            [EyeSide.LEFT]: eyelidPosition.OPEN,
+        },
+        duration: 500,
+    },
+    wink,
+];
+
+const constricted = {
+    dilation: pupilSizes.constricted,
+    openCoefficient: eyelidPosition.SHOCKED,
+    duration: 100,
+};
+
+const dilated = {
+    dilation: pupilSizes.dilated,
+    openCoefficient: eyelidPosition.SQUINT,
+    duration: 100,
+};
+
+export const shock: Animation = [
+    {
+        dilation: pupilSizes.dilated,
+        openCoefficient: eyelidPosition.SQUINT,
+        duration: 500,
+    },
+    constricted,
+    dilated,
+    constricted,
+    dilated,
+];
+
+export const animationMapping: {
+    [key: string]: (() => Animation) | Animation;
+} = {
     [Pose.LEFT_WAVE]: leftWink,
     [Pose.RIGHT_WAVE]: rightWink,
     [Pose.HANDS_UP]: rollEyes,
     [Pose.ARMS_OUT]: shock,
     [Pose.DAB]: dab,
 };
-
-export function leftWink(): Animation {
-    const left = {
-        openCoefficient: {
-            [EyeSide.LEFT]: eyelidPosition.CLOSED,
-            [EyeSide.RIGHT]: eyelidPosition.OPEN,
-        },
-        duration: 500,
-    };
-    return wink(left);
-}
-
-export function rightWink(): Animation {
-    const right = {
-        openCoefficient: {
-            [EyeSide.RIGHT]: eyelidPosition.CLOSED,
-            [EyeSide.LEFT]: eyelidPosition.OPEN,
-        },
-        duration: 500,
-    };
-    return wink(right);
-}
-
-function wink(animation: IAnimationFrame): Animation {
-    return [
-        animation,
-        {
-            openCoefficient: eyelidPosition.OPEN,
-            duration: 500,
-        },
-    ];
-}
 
 export function rollEyes(): Animation {
     const path = [];
@@ -72,32 +99,6 @@ export function rollEyes(): Animation {
     return path;
 }
 
-export function shock(): Animation {
-    const constricted = {
-        dilation: pupilSizes.constricted,
-        openCoefficient: eyelidPosition.SHOCKED,
-        duration: 100,
-    };
-
-    const dilated = {
-        dilation: pupilSizes.dilated,
-        openCoefficient: eyelidPosition.SQUINT,
-        duration: 100,
-    };
-
-    return [
-        {
-            dilation: pupilSizes.dilated,
-            openCoefficient: eyelidPosition.SQUINT,
-            duration: 500,
-        },
-        constricted,
-        dilated,
-        constricted,
-        dilated,
-    ];
-}
-
 export function dab(): Animation {
     const animation = [];
     for (let i = 0; i < 20; i++) {
@@ -113,4 +114,17 @@ export function dab(): Animation {
         });
     }
     return animation;
+}
+
+export function blink(): Animation {
+    return [
+        {
+            openCoefficient: eyelidPosition.CLOSED,
+            duration: transitionTimes.blink,
+        },
+        {
+            openCoefficient: eyelidPosition.OPEN,
+            duration: transitionTimes.blink,
+        },
+    ];
 }

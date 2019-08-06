@@ -29,8 +29,8 @@ export default function select(
 }
 
 export function calculateColourMatch(
-    imageData: ImageData,
     keypoints: Keypoint[],
+    imageData?: ImageData,
 ): IColour {
     if (!imageData) {
         return { r: 0, g: 0, b: 0 };
@@ -51,18 +51,12 @@ export function getAvgColour(
     yEnd: number,
     imageData: ImageData,
 ): IColour {
-    if (!imageData) {
-        return { r: 0, g: 0, b: 0 };
-    }
-
     let L = 0;
     let a = 0;
     let b = 0;
 
     const data = imageData.data;
-
     let counter = 0;
-
     for (
         let i = yStart * 4 * imageData.width;
         i < yEnd * 4 * imageData.width;
@@ -143,10 +137,6 @@ export function closerToColour(
     keypoints1: Keypoint[],
     keypoints2: Keypoint[],
 ): number {
-    if (!imageData) {
-        return 0;
-    }
-
     const x1Start = getXStart(keypoints1);
     const x2Start = getXStart(keypoints2);
     const x1End = x1Start + colourCheckConsts.xOffset;

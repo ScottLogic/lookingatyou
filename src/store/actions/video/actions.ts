@@ -4,7 +4,6 @@ import { configureStreams } from '../../../components/webcamHandler/WebcamHandle
 import { IRootStore } from '../../reducers/rootReducer';
 import { createAction, createActionPayload } from '../creators';
 import {
-    ISetVideoPayload,
     IVideo,
     SET_IMAGE_DATA,
     SET_VIDEO,
@@ -18,26 +17,28 @@ export function setStream(mediaDevices: MediaDevices) {
         getState: () => IRootStore,
     ) => {
         const streams = await configureStreams(mediaDevices);
-        dispatch(setVideoStreamsAction(streams));
         const videoStore = getState().videoStore;
-        const streamsLength = Object.keys(streams).length;
-        if (
-            (videoStore.webcamAvailable && streamsLength === 0) ||
-            (!videoStore.webcamAvailable && streamsLength > 0)
-        ) {
-            dispatch(toggleWebcamAvailable());
+        if (streams) {
+            dispatch(setVideoStreamsAction(streams));
+            if (!videoStore.webcamAvailable) {
+                dispatch(toggleWebcamAvailable());
+            }
+        } else {
+            if (videoStore.webcamAvailable) {
+                dispatch(toggleWebcamAvailable());
+            }
         }
     };
 }
 
 export const setVideoAction = createActionPayload<
     typeof SET_VIDEO,
-    ISetVideoPayload
+    HTMLVideoElement
 >(SET_VIDEO);
 
 export const setVideoStreamsAction = createActionPayload<
     typeof SET_VIDEO_STREAMS,
-    { [deviceId: string]: IVideo }
+    IVideo
 >(SET_VIDEO_STREAMS);
 
 export const toggleWebcamAvailable = createAction<
@@ -46,5 +47,5 @@ export const toggleWebcamAvailable = createAction<
 
 export const setImageDataAction = createActionPayload<
     typeof SET_IMAGE_DATA,
-    { [key: string]: ImageData }
+    ImageData
 >(SET_IMAGE_DATA);
