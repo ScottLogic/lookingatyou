@@ -1,4 +1,4 @@
-import { Checkbox } from '@material-ui/core';
+import { Checkbox, FormControl, FormControlLabel } from '@material-ui/core';
 import React, { useState } from 'react';
 import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
@@ -17,32 +17,35 @@ const CheckBoxMenuItem = React.memo(
     (props: ICheckBoxMenuItemProps) => {
         const [showModal, setShowModal] = useState(false);
 
-        function onChange(event: React.ChangeEvent<HTMLInputElement>) {
+        function onChange(event: object, checked: boolean) {
             if (props.warning && !props.checked) {
                 setShowModal(true);
             } else {
-                props.onInputChange({
-                    [props.configName]: !props.checked,
-                });
                 setShowModal(false);
+                props.onInputChange({
+                    [props.configName]: checked,
+                });
             }
         }
 
         return (
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>
-                <label>{props.name}</label>
-
-                <Checkbox
-                    checked={props.checked}
-                    onChange={onChange}
-                    color="primary"
-                />
+                <FormControl>
+                    <FormControlLabel
+                        value="start"
+                        onChange={onChange}
+                        control={
+                            <Checkbox checked={props.checked} color="primary" />
+                        }
+                        label={props.name}
+                        labelPlacement="start"
+                    />
+                </FormControl>
 
                 {showModal && props.warning && (
                     <WarningPopupHandler
                         configName={props.configName}
                         onInputChange={props.onInputChange}
-                        checked={props.checked}
                         warning={props.warning}
                     />
                 )}

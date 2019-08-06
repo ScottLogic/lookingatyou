@@ -4,6 +4,7 @@ import { SketchPicker } from 'react-color';
 import Popup from 'reactjs-popup';
 import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
+import './ColorMenuItem.css';
 
 export interface IColorMenuItemProps {
     name: string;
@@ -24,7 +25,6 @@ const ColorMenuItem = React.memo(
         }
 
         function handleChangeComplete(color: any) {
-            setShowPopup(false);
             props.onInputChange({
                 [props.configName]: color.hex,
             });
@@ -36,7 +36,6 @@ const ColorMenuItem = React.memo(
 
         return (
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>
-                <label>{props.name}</label>
                 <Button
                     style={{
                         borderRadius: 35,
@@ -46,10 +45,14 @@ const ColorMenuItem = React.memo(
                     value={props.color}
                     variant="contained"
                     onClick={onChange}
-                />
+                    className="launchColorPicker"
+                >
+                    Pick {props.name}
+                </Button>
 
                 {showPopup && (
                     <Popup
+                        className="colorPicker"
                         open={showPopup}
                         modal={true}
                         closeOnDocumentClick={false}
@@ -62,7 +65,11 @@ const ColorMenuItem = React.memo(
 
                             <br />
 
-                            <Button variant="contained" onClick={close}>
+                            <Button
+                                className="closeColorPicker"
+                                variant="contained"
+                                onClick={close}
+                            >
                                 Close
                             </Button>
                         </>
