@@ -3,22 +3,19 @@ import { analyseLight } from '../../../components/eye/utils/MovementUtils';
 
 describe('analyseLight', () => {
     const imageData = getImageData(10, 10);
-    const tooBright = true;
 
-    it('should return false and 0 for empty image', () => {
+    it('should return false and NaN for empty image', () => {
         const expectedValue = {
             tooBright: false,
-            scaledPupilSize: 0,
+            scaledPupilSize: NaN,
         };
-        expect(analyseLight(getImageData(0, 0), false)).toStrictEqual(
-            expectedValue,
-        );
+        expect(analyseLight(getImageData(0, 0))).toStrictEqual(expectedValue);
     });
     it('should not be too bright', () => {
         const expectedValue = {
             tooBright: false,
-            scaledPupilSize: 1.1436363636363636,
+            scaledPupilSize: 1.3654545454545453,
         };
-        expect(analyseLight(imageData, tooBright)).toStrictEqual(expectedValue);
+        expect(analyseLight(imageData)).toStrictEqual(expectedValue);
     });
 });
