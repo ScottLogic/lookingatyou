@@ -15,6 +15,7 @@ import { ISetAnimationAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getFPS } from '../../store/selectors/configSelectors';
 import {
+    getAnimationExists,
     getAnimations,
     getSelections,
     getTargets,
@@ -39,6 +40,7 @@ interface IStateProps {
     target: ICoords;
     image: ImageData;
     animation: Animation;
+    animationExists: boolean;
 }
 
 interface IDispatchProps {
@@ -94,7 +96,7 @@ export class MovementHandler extends React.Component<
 
     shouldComponentUpdate(nextProps: MovementHandlerProps) {
         return (
-            this.props.animation.length === 0 &&
+            this.props.animationExists &&
             (this.props.height !== nextProps.height ||
                 this.props.width !== nextProps.width ||
                 this.props.target !== nextProps.target ||
@@ -103,7 +105,7 @@ export class MovementHandler extends React.Component<
     }
 
     componentWillReceiveProps(nextProps: MovementHandlerProps) {
-        if (nextProps.animation.length > 0 && this.textTimeout) {
+        if (nextProps.animationExists && this.textTimeout) {
             this.props.environment.clearTimeout(this.textTimeout);
             this.textTimeout = 0;
         }
@@ -148,7 +150,7 @@ export class MovementHandler extends React.Component<
         } else {
             this.setNoTarget();
 
-            if (this.props.animation.length === 0) {
+            if (this.props.animationExists) {
                 if (Math.random() < chanceOfIdleEyesMovement) {
                     this.hasMovedLeft = !this.hasMovedLeft;
                     this.props.updateAnimation(
@@ -227,6 +229,7 @@ const mapStateToProps = (state: IRootStore) => ({
     target: getTargets(state),
     image: getImageData(state),
     animation: getAnimations(state),
+    animationExists: getAnimationExists(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => ({
