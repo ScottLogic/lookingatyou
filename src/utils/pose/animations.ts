@@ -154,26 +154,3 @@ export function blink(): Animation {
         },
     ];
 }
-
-export function peek(openLeft: boolean, openRight: boolean): Animation {
-    return [
-        {
-            openCoefficient: {
-                [EyeSide.RIGHT]: openRight
-                    ? eyelidPosition.OPEN
-                    : eyelidPosition.CLOSED,
-                [EyeSide.LEFT]: openLeft
-                    ? eyelidPosition.OPEN
-                    : eyelidPosition.CLOSED,
-            },
-            duration: transitionTimes.peek,
-        },
-        {
-            openCoefficient: {
-                [EyeSide.RIGHT]: eyelidPosition.CLOSED,
-                [EyeSide.LEFT]: eyelidPosition.CLOSED,
-            },
-            duration: transitionTimes.peek,
-        },
-    ];
-}

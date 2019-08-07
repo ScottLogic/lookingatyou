@@ -22,7 +22,7 @@ describe('Movement Handler', () => {
             fps: 1000,
             detections: [],
             target: { x: 0, y: 0 },
-            image: imageData,
+            images: { test: imageData },
             animation: [],
             updateAnimation: mockUpdateAnimation,
         };
