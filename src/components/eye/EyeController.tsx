@@ -117,8 +117,10 @@ export const EyeController = React.memo(
         const detectedRef = useRef(props.detected);
         useEffect(() => {
             detectedRef.current = props.detected;
-            animationRef.current = animation;
-        }, [props.detected, animation]);
+        }, [props.detected]);
+        useEffect(() => {
+            detectedRef.current = props.detected;
+        }, [animation]);
 
         useEffect(() => {
             if (animationRef.current.length === 0) {
