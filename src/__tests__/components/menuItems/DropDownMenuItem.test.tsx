@@ -23,11 +23,4 @@ describe('DropDownMenuItem', () => {
         const wrapper = shallow(<DropDownMenuItem {...props} />).debug();
         expect(wrapper).toMatchSnapshot();
     });
-
-    it('should call onInputChange when input is changed', () => {
-        const value = 'b';
-        const wrapper = mount(<DropDownMenuItem {...props} />);
-        wrapper.find('select').simulate('change', { target: { value } });
-        expect(wrapper.get(0).props.onInputChange).toHaveBeenCalled();
-    });
 });
