@@ -9,8 +9,6 @@ export function getVideoDimensions(state: IRootStore) {
     const video = getVideo(state);
     if (video) {
         return { width: video.width, height: video.height };
-    } else {
-        return undefined;
     }
 }
 
