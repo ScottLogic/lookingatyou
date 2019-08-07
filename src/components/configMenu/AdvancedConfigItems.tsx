@@ -5,6 +5,7 @@ import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import DropDownMenuItem from './menuItems/DropDownMenuItem';
 import NumberMenuItem from './menuItems/NumberMenuItem';
+import SliderMenuItem from './menuItems/SliderMenuItem';
 
 interface IAdvancedConfigProps {
     window: Window;
@@ -25,14 +26,14 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
             />
 
             {props.config.toggleReflection && (
-                <NumberMenuItem
+                <SliderMenuItem
                     name={'Reflection Opacity'}
                     configName={'reflectionOpacity'}
-                    step={0.01}
+                    step={0.05}
                     defaultValue={props.config.reflectionOpacity}
                     onValidInput={props.updateAppConfig}
                     helpWith={HelpWith.REFLECTION_OPACITY}
-                    min={0.01}
+                    min={0.0}
                     max={1.0}
                 />
             )}
@@ -50,6 +51,8 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                     videoIndex={0}
                 />
             )}
+
+            <br />
 
             <h3>Model Settings</h3>
             <DropDownMenuItem
@@ -116,15 +119,9 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 helpWith={HelpWith.DETECTIONS}
                 min={1}
             />
-            <CheckBoxMenuItem
-                name={'Flip Horizontal'}
-                configName={'flipHorizontal'}
-                helpWith={HelpWith.FLIP}
-                checked={props.config.detectionConfig.flipHorizontal}
-                onInputChange={props.updateDetectionConfig}
-            />
-            <NumberMenuItem
-                name={'Min Score'}
+
+            <SliderMenuItem
+                name={'Minimum Confidence'}
                 configName={'scoreThreshold'}
                 helpWith={HelpWith.MIN_SCORE}
                 step={0.01}

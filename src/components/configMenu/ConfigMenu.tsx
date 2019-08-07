@@ -91,6 +91,10 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
 
     componentWillUnmount() {
         this.props.window.clearInterval(this.hideTimeout);
+        this.props.window.removeEventListener(
+            'mousemove',
+            this.mouseMoveHandler,
+        );
     }
 
     render() {

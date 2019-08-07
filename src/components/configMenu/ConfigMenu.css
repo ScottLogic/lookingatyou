@@ -78,7 +78,7 @@
 
 .MuiCheckbox-colorPrimary {
     position: absolute !important;
-    left: 75%;
+    left: 90%;
     padding: 0px !important;
 }
 
@@ -95,7 +95,7 @@
 
 .selectForm,
 .textFieldInput {
-    width: 70%;
+    width: 90%;
     position: absolute;
     left: 5%;
 }
@@ -107,7 +107,7 @@
 
 .slider {
     left: 5%;
-    width: 70% !important;
+    width: 90% !important;
 }
 
 .MuiFormControl-marginNormal {
