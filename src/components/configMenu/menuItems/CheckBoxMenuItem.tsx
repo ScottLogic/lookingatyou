@@ -16,16 +16,19 @@ const CheckBoxMenuItem = React.memo(
     (props: ICheckBoxMenuItemProps) => {
         function onChange(event: React.ChangeEvent<HTMLInputElement>) {
             if (
-                !props.alert &&
-                props.window.confirm(
+                props.alert &&
+                !props.window.confirm(
                     'WARNING: Changing these settings could result in bad performance of the app',
                 )
             ) {
+                return;
+            } else {
                 props.onInputChange({
                     [props.configName]: event.target.checked,
                 });
             }
         }
+
         return (
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>
                 <label>{props.name}</label>
