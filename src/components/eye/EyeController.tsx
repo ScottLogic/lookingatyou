@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
     blinkConsts,
+    eyelidPosition,
     eyeRadiiCoefficients,
     EyeSide,
     minIrisScale,
@@ -22,7 +23,7 @@ import {
     getTargets,
 } from '../../store/selectors/detectionSelectors';
 import { getVideo } from '../../store/selectors/videoSelectors';
-import { Animation, blink } from '../../utils/pose/animations';
+import { Animation, blink, peek } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import Eye from './Eye';
 import { Gradients } from './Gradients';
@@ -37,6 +38,7 @@ interface IEyeControllerProps {
     dilation: number;
     openCoefficient: number;
     detected: boolean;
+    isSleeping: boolean;
 }
 
 interface IEyeControllerMapStateToProps {
@@ -90,6 +92,8 @@ export const EyeController = React.memo(
             props.animation.length > 0 &&
             props.animation[0].hasOwnProperty('openCoefficient')
                 ? props.animation[0].openCoefficient!
+                : props.isSleeping
+                ? eyelidPosition.CLOSED
                 : props.openCoefficient;
 
         const dilatedCoefficient =
@@ -118,22 +122,44 @@ export const EyeController = React.memo(
 
         useEffect(() => {
             if (animationRef.current.length === 0) {
-                let blinkInterval = environment.setInterval(() => {
-                    const blinkFrequency = detectedRef.current
-                        ? blinkConsts.focusedFrequency
-                        : blinkConsts.frequency;
-                    const blinkProbability =
-                        blinkFrequency / (1000 / transitionTimes.blink);
-                    if (Math.random() < blinkProbability) {
-                        updateAnimation(blink());
-                    }
-                }, transitionTimes.blink);
-                return () => {
-                    environment.clearInterval(blinkInterval);
-                    blinkInterval = 0;
-                };
+                if (props.isSleeping) {
+                    let peekInterval = environment.setInterval(() => {
+                        const peekProbability =
+                            blinkConsts.peekFrequency /
+                            (1000 / transitionTimes.peek);
+                        if (Math.random() < peekProbability) {
+                            const random = Math.random();
+                            if (random < 1 / 3) {
+                                updateAnimation(peek(true, false));
+                            } else if (random < 2 / 3) {
+                                updateAnimation(peek(false, true));
+                            } else {
+                                updateAnimation(peek(true, true));
+                            }
+                        }
+                    }, transitionTimes.peek);
+                    return () => {
+                        environment.clearInterval(peekInterval);
+                        peekInterval = 0;
+                    };
+                } else {
+                    let blinkInterval = environment.setInterval(() => {
+                        const blinkFrequency = detectedRef.current
+                            ? blinkConsts.focusedFrequency
+                            : blinkConsts.frequency;
+                        const blinkProbability =
+                            blinkFrequency / (1000 / transitionTimes.blink);
+                        if (Math.random() < blinkProbability) {
+                            updateAnimation(blink());
+                        }
+                    }, transitionTimes.blink);
+                    return () => {
+                        environment.clearInterval(blinkInterval);
+                        blinkInterval = 0;
+                    };
+                }
             }
-        }, [environment, updateAnimation]);
+        }, [props.isSleeping, environment, updateAnimation]);
 
         useEffect(() => {
             if (animation.length > 0) {

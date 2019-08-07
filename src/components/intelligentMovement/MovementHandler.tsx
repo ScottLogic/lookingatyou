@@ -65,6 +65,7 @@ export class MovementHandler extends React.Component<
     private openCoefficient: number;
     private hasMovedLeft: boolean;
     private personDetected: boolean;
+    private isSleeping: boolean;
 
     constructor(props: MovementHandlerProps) {
         super(props);
@@ -81,6 +82,7 @@ export class MovementHandler extends React.Component<
         this.openCoefficient = eyelidPosition.OPEN;
         this.hasMovedLeft = false;
         this.personDetected = false;
+        this.isSleeping = false;
 
         this.animateEye = this.animateEye.bind(this);
     }
@@ -160,7 +162,7 @@ export class MovementHandler extends React.Component<
     }
 
     setNewTarget() {
-        this.openCoefficient = eyelidPosition.OPEN;
+        this.isSleeping = false;
         this.props.environment.clearTimeout(this.sleepTimeout);
         if (!this.personDetected) {
             this.personDetected = true;
@@ -174,7 +176,7 @@ export class MovementHandler extends React.Component<
             this.dilationCoefficient = eyelidPosition.SQUINT;
             this.openCoefficient = eyelidPosition.SQUINT;
             this.sleepTimeout = this.props.environment.setTimeout(() => {
-                this.openCoefficient = eyelidPosition.CLOSED;
+                this.isSleeping = true;
             }, intervals.sleep);
         }
         this.props.environment.clearTimeout(this.textTimeout);
@@ -212,7 +214,12 @@ export class MovementHandler extends React.Component<
                 <EyeController
                     dilation={this.dilationCoefficient}
                     detected={this.personDetected}
-                    openCoefficient={this.openCoefficient}
+                    openCoefficient={
+                        this.isSleeping
+                            ? eyelidPosition.CLOSED
+                            : this.openCoefficient
+                    }
+                    isSleeping={this.isSleeping}
                     {...this.props}
                 />
                 <FadeInText text={this.state.text} show={this.state.showText} />
