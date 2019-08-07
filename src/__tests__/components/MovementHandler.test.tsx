@@ -33,7 +33,6 @@ describe('Movement Handler', () => {
 
     afterEach(() => {
         global.Math.random = originalRandom;
-        console.log(Math.random());
     });
 
     it('should render correctly', () => {
