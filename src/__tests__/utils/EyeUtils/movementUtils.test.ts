@@ -4,7 +4,7 @@ import { analyseLight } from '../../../components/eye/utils/MovementUtils';
 describe('analyseLight', () => {
     const imageData = getImageData(10, 10);
 
-    it('should return false and NaN for empty image', () => {
+    it('should return false and NaNq for empty image', () => {
         const expectedValue = {
             tooBright: false,
             scaledPupilSize: NaN,

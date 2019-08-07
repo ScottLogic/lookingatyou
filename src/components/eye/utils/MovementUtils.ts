@@ -1,6 +1,4 @@
-import convert from 'color-convert';
 import {
-    CIELabOffset,
     eyeCoords,
     idleMovementConsts,
     lightConsts,
