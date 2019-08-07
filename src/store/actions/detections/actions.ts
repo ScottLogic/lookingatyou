@@ -47,6 +47,7 @@ export function restartDetection(window: Window) {
         getState: () => IRootStore,
     ) => {
         const state = getState();
+        dispatch(handleDetection(document));
         window.clearInterval(state.detectionStore.detectionInterval);
         const id = window.setInterval(
             () => dispatch(handleDetection(window.document)),

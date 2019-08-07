@@ -1,7 +1,7 @@
 export async function configureStreams(mediaDevices: MediaDevices) {
     try {
         const stream = await mediaDevices.getUserMedia({
-            video: true,
+            video: { width: 320, height: 240 },
         });
         const streamSettings = stream.getVideoTracks()[0].getSettings();
         if (streamSettings.width && streamSettings.height) {

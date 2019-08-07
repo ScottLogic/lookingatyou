@@ -169,8 +169,7 @@ export function getXStart(keypoints: Keypoint[]) {
     return leftShoulder && rightShoulder
         ? Math.abs(
               Math.round(
-                  (leftShoulder.position.x - rightShoulder.position.x) / 2 +
-                      rightShoulder.position.x,
+                  (leftShoulder.position.x + rightShoulder.position.x) / 2,
               ) - 5,
           )
         : 0;

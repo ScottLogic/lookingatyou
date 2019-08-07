@@ -107,6 +107,7 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
                 {this.props.config.toggleAdvanced && (
                     <AdvancedConfigItems {...this.props} />
                 )}
+
                 {Object.values(HelpWith).map((type, key: number) => (
                     <Help key={key} problemWith={HelpWith[type] as HelpWith} />
                 ))}
