@@ -5,6 +5,13 @@ export function getStreamForDevice(state: IRootStore): IVideo | undefined {
     return state.videoStore.video;
 }
 
+export function getVideoDimensions(state: IRootStore) {
+    const video = getVideo(state);
+    if (video) {
+        return { width: video.width, height: video.height };
+    }
+}
+
 export function getVideo(state: IRootStore): HTMLVideoElement | undefined {
     if (state.videoStore.video) {
         return state.videoStore.video.videoElement;
