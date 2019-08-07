@@ -119,7 +119,7 @@ export const EyeController = React.memo(
             detectedRef.current = props.detected;
         }, [props.detected]);
         useEffect(() => {
-            detectedRef.current = props.detected;
+            animationRef.current = animation;
         }, [animation]);
 
         useEffect(() => {
