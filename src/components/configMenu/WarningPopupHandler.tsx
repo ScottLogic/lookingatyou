@@ -8,6 +8,8 @@ export interface ICheckBoxMenuItemProps {
     onInputChange: (payload: PartialConfig) => void;
     showModal: boolean;
     warning: JSX.Element;
+    accept: () => void;
+    decline: () => void;
 }
 
 const WarningPopupHandler = React.memo((props: ICheckBoxMenuItemProps) => {
@@ -17,19 +19,6 @@ const WarningPopupHandler = React.memo((props: ICheckBoxMenuItemProps) => {
         setShowModal(props.showModal);
     }, [setShowModal, props.showModal]);
 
-    console.log('props', props.showModal);
-    function accept() {
-        setShowModal(false);
-        props.onInputChange({
-            [props.configName]: true,
-        });
-    }
-
-    function decline() {
-        setShowModal(false);
-    }
-
-    console.log('rendering warning', showModal, props.showModal);
     return (
         <>
             {showModal && (
@@ -43,14 +32,14 @@ const WarningPopupHandler = React.memo((props: ICheckBoxMenuItemProps) => {
                             variant="contained"
                             className="accept"
                             color="primary"
-                            onClick={accept}
+                            onClick={props.accept}
                         >
                             Proceed
                         </Button>
                         <Button
                             variant="contained"
                             className="decline"
-                            onClick={decline}
+                            onClick={props.decline}
                         >
                             Cancel
                         </Button>
