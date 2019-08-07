@@ -28,7 +28,7 @@ function ValueLabelComponent(props: any) {
     );
 }
 
-export interface INumberMenuItemProps {
+export interface ISliderMenuItemProps {
     name: string;
     configName: string;
     step: number;
@@ -40,7 +40,7 @@ export interface INumberMenuItemProps {
 }
 
 const SliderMenuItem = React.memo(
-    (props: INumberMenuItemProps) => {
+    (props: ISliderMenuItemProps) => {
         function onChange(ignore: object, value: number | number[]) {
             props.onValidInput({
                 [props.configName]: value,
