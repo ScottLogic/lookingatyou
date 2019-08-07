@@ -28,6 +28,17 @@ const CheckBoxMenuItem = React.memo(
             }
         }
 
+        function accept() {
+            setShowModal(false);
+            props.onInputChange({
+                [props.configName]: true,
+            });
+        }
+
+        function decline() {
+            setShowModal(false);
+        }
+
         return (
             <div
                 className="checkbox"
@@ -45,11 +56,15 @@ const CheckBoxMenuItem = React.memo(
                         labelPlacement="start"
                     />
                 </FormControl>
-                {showModal && props.warning && (
+
+                {props.warning && (
                     <WarningPopupHandler
                         configName={props.configName}
                         onInputChange={props.onInputChange}
+                        showModal={showModal}
                         warning={props.warning}
+                        accept={accept}
+                        decline={decline}
                     />
                 )}
             </div>
