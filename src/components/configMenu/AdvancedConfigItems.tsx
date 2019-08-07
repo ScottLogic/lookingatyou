@@ -1,18 +1,60 @@
 import React from 'react';
 import { IConfigState, PartialConfig } from '../../store/actions/config/types';
 import { HelpWith } from './Help';
+import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import DropDownMenuItem from './menuItems/DropDownMenuItem';
 import NumberMenuItem from './menuItems/NumberMenuItem';
 
 interface IAdvancedConfigProps {
+    window: Window;
     config: IConfigState;
     updateModelConfig: (payload: PartialConfig) => void;
     updateDetectionConfig: (payload: PartialConfig) => void;
+    updateAppConfig: (payload: PartialConfig) => void;
 }
 export default function AdvancedConfig(props: IAdvancedConfigProps) {
     return (
         <React.Fragment>
+            <CheckBoxMenuItem
+                window={props.window}
+                alert={false}
+                name={'Show Reflection'}
+                configName={'toggleReflection'}
+                helpWith={HelpWith.REFLECTION}
+                checked={props.config.toggleReflection}
+                onInputChange={props.updateAppConfig}
+            />
+
+            {props.config.toggleReflection && (
+                <NumberMenuItem
+                    name={'Reflect Opacity'}
+                    configName={'reflectionOpacity'}
+                    step={0.01}
+                    defaultValue={props.config.reflectionOpacity}
+                    onValidInput={props.updateAppConfig}
+                    helpWith={HelpWith.REFLECTION_OPACITY}
+                    min={0.01}
+                    max={1.0}
+                />
+            )}
+            <CheckBoxMenuItem
+                window={props.window}
+                alert={false}
+                name={'Toggle Debug'}
+                configName={'toggleDebug'}
+                helpWith={HelpWith.DEBUG}
+                checked={props.config.toggleDebug}
+                onInputChange={props.updateAppConfig}
+            />
+            {props.config.toggleDebug && (
+                <CanvasMenuItem
+                    name={'Camera'}
+                    helpWith={HelpWith.VIDEO_STREAM}
+                    videoIndex={0}
+                />
+            )}
+
             <h3>Model Config</h3>
             <DropDownMenuItem
                 name={'Pose Model'}
@@ -77,6 +119,8 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 min={1}
             />
             <CheckBoxMenuItem
+                window={props.window}
+                alert={false}
                 name={'Flip Horizontal'}
                 configName={'flipHorizontal'}
                 helpWith={HelpWith.FLIP}

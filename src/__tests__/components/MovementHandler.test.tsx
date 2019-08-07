@@ -9,6 +9,8 @@ import {
 let props: MovementHandlerProps;
 const imageData = { data: new Uint8ClampedArray(0), width: 10, height: 10 };
 const mockUpdateAnimation = jest.fn();
+const mockMathRandom = jest.fn();
+const originalRandom = Math.random;
 
 describe('Movement Handler', () => {
     beforeEach(() => {
@@ -20,10 +22,17 @@ describe('Movement Handler', () => {
             fps: 1000,
             detections: [],
             target: { x: 0, y: 0 },
-            images: { test: imageData },
+            image: imageData,
             animation: [],
             updateAnimation: mockUpdateAnimation,
         };
+
+        mockMathRandom.mockReturnValue(0.05);
+        global.Math.random = mockMathRandom;
+    });
+
+    afterEach(() => {
+        global.Math.random = originalRandom;
     });
 
     it('should render correctly', () => {

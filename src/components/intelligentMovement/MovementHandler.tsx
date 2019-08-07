@@ -199,14 +199,19 @@ export class MovementHandler extends React.Component<
 
         if (this.textTimeout === 0) {
             this.textTimeout = this.props.environment.setTimeout(() => {
+                const totalFrequency = userInteraction.texts
+                    .map(text => text.frequency)
+                    .reduce((x, y) => x + y);
+                let random = Math.random() * totalFrequency;
+                let i = 0;
+                while (random >= 0) {
+                    random -= userInteraction.texts[i].frequency;
+                    i++;
+                }
+                const phrase = userInteraction.texts[i - 1].phrase;
                 this.setState({
                     showText: true,
-                    text:
-                        userInteraction.texts[
-                            Math.floor(
-                                Math.random() * userInteraction.texts.length,
-                            )
-                        ],
+                    text: phrase,
                 });
                 this.props.environment.setTimeout(() => {
                     this.setState({ showText: false });
