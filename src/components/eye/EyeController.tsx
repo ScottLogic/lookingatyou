@@ -17,6 +17,7 @@ import { ISetAnimationAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
 import {
+    getAnimations,
     getSelections,
     getTargets,
 } from '../../store/selectors/detectionSelectors';
@@ -73,21 +74,18 @@ export const EyeController = React.memo(
 
         const reflectionRef = useRef<ImageData | undefined>(undefined);
 
-        const { x, y } =
-            props.animation.length > 0 &&
-            props.animation[0].normalisedCoords !== undefined
-                ? {
-                      x: props.animation[0].normalisedCoords!.x,
-                      y: props.animation[0].normalisedCoords!.y,
-                  }
-                : { x: props.target.x, y: props.target.y };
+        const target =
+            props.animation.length > 0 && props.animation[0].normalisedCoords
+                ? props.animation[0].normalisedCoords
+                : {
+                      x: props.target.x * props.config.xSensitivity,
+                      y: props.target.y * props.config.ySensitivity,
+                  };
 
         const maxDisplacement =
             (scleraRadius - irisRadius * minIrisScale) / minIrisScale;
-        const targetY = y * props.config.ySensitivity;
-        const targetX = -x * props.config.xSensitivity; // mirrored
-        const polarDistance = Math.hypot(targetY, targetX);
-        const polarAngle = Math.atan2(targetY, targetX);
+        const polarDistance = Math.hypot(target.y, -target.x);
+        const polarAngle = Math.atan2(target.y, -target.x);
         const displacement = Math.min(1, polarDistance) * maxDisplacement;
         const innerX = props.width / 4 + displacement * Math.cos(polarAngle);
         const innerY = props.height / 2 + displacement * Math.sin(polarAngle);
@@ -210,7 +208,7 @@ export const EyeController = React.memo(
                             reflection={reflectionRef.current}
                             irisAdjustment={irisAdjustmentRef.current}
                             innerPath={innerPath}
-                            skewTransform={irisMatrixTransform(props.target)}
+                            skewTransform={irisMatrixTransform(target)}
                             transformDuration={
                                 props.animation.length > 0
                                     ? props.animation[0].duration
@@ -272,7 +270,7 @@ const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     target: getTargets(state),
     image: getVideo(state),
     selection: getSelections(state),
-    animation: state.detectionStore.animation,
+    animation: getAnimations(state),
 });
 
 const mapDispatchToProps = (
