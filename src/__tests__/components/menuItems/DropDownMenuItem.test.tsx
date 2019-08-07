@@ -1,3 +1,4 @@
+import { Select } from '@material-ui/core';
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 import { HelpWith } from '../../../components/configMenu/Help';
