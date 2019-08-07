@@ -92,12 +92,13 @@ export const configMenuConsts = {
 
 export const userInteraction = {
     texts: [
-        'HELLO',
-        'TRY WAVING',
-        "I DON'T HAVE HANDS",
-        'PLAY WITH ME',
-        "DON'T LEAVE ME",
-        'NOTHING TO SEE HERE',
+        { phrase: 'HELLO', frequency: 1 },
+        { phrase: 'TRY WAVING', frequency: 1 },
+        { phrase: "I DON'T HAVE HANDS", frequency: 0.5 },
+        { phrase: 'PLAY WITH ME', frequency: 0.7 },
+        { phrase: "DON'T LEAVE ME", frequency: 0.5 },
+        { phrase: 'NOTHING TO SEE HERE', frequency: 0.6 },
+        { phrase: 'I HAVE NO MOUTH AND I MUST SCREAM', frequency: 0.03 },
     ],
     delay: 30000,
     textDuration: 3000,
