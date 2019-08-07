@@ -77,12 +77,9 @@ export function handleDetection(document: Document) {
         }
 
         dispatch(setImageDataAction(image));
-        let detections: IDetection[] = [];
-        const leftDetections = await model.estimateMultiplePoses(
-            image,
-            detectionConfig,
+        const detections = reshapeDetections(
+            await model.estimateMultiplePoses(image, detectionConfig),
         );
-        detections = reshapeDetections(leftDetections);
 
         dispatch(setDetectionsAndMaybeSwapTarget(detections));
 
