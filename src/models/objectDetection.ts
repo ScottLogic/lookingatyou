@@ -10,11 +10,6 @@ export interface IDetection {
 
 export type Detections = IDetection[];
 
-export interface ISelections {
-    left?: Bbox;
-    right?: Bbox;
-}
-
 export type architectures = 'MobileNetV1' | 'ResNet50';
 export type outputStrides = 8 | 16 | 32;
 export type multipliers = 0.5 | 0.75 | 1.0;
