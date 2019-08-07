@@ -1,6 +1,6 @@
 import React from 'react';
 import { EyeSide, transitionTimes } from '../../AppConstants';
-import { ICoords } from '../../utils/types';
+import { IAnimationFrame } from '../../utils/pose/animations';
 import './Eye.css';
 import { BlackFill } from './eyeParts/BlackFill';
 import { Eyelids } from './eyeParts/Eyelids';
@@ -8,16 +8,15 @@ import InnerEye from './eyeParts/InnerEye';
 import { Sclera } from './eyeParts/Sclera';
 
 export interface IEyeProps {
+    animation: IAnimationFrame;
     class: EyeSide;
     width: number;
     height: number;
-    irisColor: string;
     scleraRadius: number;
     irisRadius: number;
     pupilRadius: number;
-    dilatedCoefficient: number;
-    innerCenter: ICoords;
-    fps: number;
+    innerPath: string;
+    skewTransform: string;
     bezier: {
         controlOffset: number;
         scaledXcontrolOffset: number;
@@ -31,17 +30,12 @@ export interface IEyeProps {
         topEyelidY: number;
         bottomEyelidY: number;
     };
-    reflection: ImageData | undefined;
-    innerPath: string;
-    skewTransform: string;
-    transformDuration?: number;
+    reflection?: ImageData;
 }
-
-const pupilColor = 'black';
 
 export default function Eye(props: IEyeProps) {
     const cornerShape = getCornerShape(props);
-    const duration = props.transformDuration || transitionTimes.blink;
+    const duration = props.animation.duration || transitionTimes.blink;
     const eyelidTransitionStyle = {
         transition: `d ${duration}ms`,
     };
@@ -53,7 +47,7 @@ export default function Eye(props: IEyeProps) {
                 width={props.width / 2}
                 height={props.height / 2}
             />
-            <InnerEye {...props} pupilColor={pupilColor} />
+            <InnerEye {...props} />
             <Eyelids
                 {...props}
                 transitionStyle={eyelidTransitionStyle}

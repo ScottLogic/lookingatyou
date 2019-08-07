@@ -7,6 +7,13 @@ import {
 
 let props: InnerEyeProps;
 const data = new Uint8ClampedArray(400);
+const animation = {
+    target: { x: 0, y: 0 },
+    dilation: 1,
+    openCoefficient: 1,
+    irisColor: 'blue',
+    duration: 100,
+};
 
 for (let i = 0; i < 400; i += 4) {
     data[i + 0] = 190; // R value
@@ -20,16 +27,12 @@ const imageData = { data, width: 10, height: 10 };
 describe('InnerEye', () => {
     beforeEach(() => {
         props = {
-            irisRadius: 200,
-            dilatedCoefficient: 1,
-            innerCenter: { x: 0, y: 0 },
-            irisColor: 'blue',
-            fps: 30,
             height: 800,
             width: 1000,
-            pupilColor: 'black',
-            pupilRadius: 100,
             scleraRadius: 500,
+            irisRadius: 200,
+            pupilRadius: 100,
+            animation,
             reflection: imageData,
             innerPath: '',
             skewTransform: '',

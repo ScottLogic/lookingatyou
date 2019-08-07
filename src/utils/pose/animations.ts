@@ -9,8 +9,8 @@ import {
 import { normalise } from '../objectTracking/calculateFocus';
 import { ICoords } from '../types';
 
-interface IAnimationFrame {
-    normalisedCoords?: ICoords;
+export interface IAnimationFrame {
+    target?: ICoords;
     openCoefficient?:
         | number
         | { [EyeSide.LEFT]: number; [EyeSide.RIGHT]: number };
@@ -94,7 +94,7 @@ export function rollEyes(): Animation {
         const y = radius * Math.sin(theta);
         const x = radius * Math.cos(theta);
 
-        path.push({ normalisedCoords: { x, y }, duration: 100 });
+        path.push({ target: { x, y }, duration: 100 });
     }
 
     return path;
@@ -104,7 +104,7 @@ export function dab(): Animation {
     const animation = [];
     for (let i = 0; i < 20; i++) {
         animation.push({
-            normalisedCoords: {
+            target: {
                 x: normalise(Math.random(), 1),
                 y: normalise(Math.random(), 1),
             },
@@ -128,15 +128,15 @@ export function naturalMovement(isLeft: boolean): Animation {
     const x = isLeft ? -xDistance : xDistance;
     return [
         {
-            normalisedCoords: { x, y: 0 },
+            target: { x, y: 0 },
             duration: 500,
         },
         {
-            normalisedCoords: { x, y: 0 },
+            target: { x, y: 0 },
             duration: normalise(Math.random(), 1, 0, 2000, 0),
         },
         {
-            normalisedCoords: { x: 0, y: 0 },
+            target: { x: 0, y: 0 },
             duration: 500,
         },
     ];

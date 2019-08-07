@@ -1,37 +1,22 @@
 import React, { useEffect, useRef } from 'react';
-import { connect } from 'react-redux';
 import tinycolor from 'tinycolor2';
-import { IRootStore } from '../../../store/reducers/rootReducer';
-import { getFPS } from '../../../store/selectors/configSelectors';
-import { ICoords } from '../../../utils/types';
+import { IAnimationFrame } from '../../../utils/pose/animations';
 
 interface IInnerEyeProps {
     irisRadius: number;
-    innerCenter: ICoords;
-    irisColor: string;
+    animation: IAnimationFrame;
     innerPath: any;
     pupilRadius: number;
-    pupilColor: string;
-    dilatedCoefficient: number;
     scleraRadius: number;
     width: number;
     height: number;
-    reflection: ImageData | undefined;
     skewTransform: string;
-    transformDuration?: number;
+    reflection?: ImageData;
 }
 
-interface IInnerEyeMapStateToProps {
-    fps: number;
-}
-
-export type InnerEyeProps = IInnerEyeProps & IInnerEyeMapStateToProps;
-
-export const InnerEye = React.memo((props: InnerEyeProps) => {
-    const period = props.transformDuration || 1000 / props.fps;
-
+export const InnerEye = React.memo((props: IInnerEyeProps) => {
     const transitionStyle = {
-        transition: `transform ${period}ms`, // cx and cy transitions based on FPS
+        transition: `transform ${props.animation.duration}ms`,
     };
     const canvasRef: React.RefObject<HTMLCanvasElement> = useRef(null);
 
@@ -51,7 +36,9 @@ export const InnerEye = React.memo((props: InnerEyeProps) => {
         <g
             className="inner"
             style={transitionStyle}
-            transform={`${props.skewTransform} translate(${props.innerCenter.x},${props.innerCenter.y})`}
+            transform={`${props.skewTransform} translate(${
+                props.animation.target!.x
+            },${props.animation.target!.y})`}
         >
             <circle
                 className={'iris'}
@@ -61,14 +48,14 @@ export const InnerEye = React.memo((props: InnerEyeProps) => {
             <path
                 className="irisStyling"
                 d={props.innerPath}
-                fill={tinycolor(props.irisColor)
+                fill={tinycolor(props.animation!.irisColor)
                     .darken(10)
                     .toHexString()}
             />
             <g
                 className="pupil"
                 style={transitionStyle}
-                transform={`scale(${props.dilatedCoefficient})`}
+                transform={`scale(${props.animation!.dilation})`}
             >
                 <foreignObject
                     width={props.pupilRadius * 2}
@@ -114,8 +101,4 @@ export const InnerEye = React.memo((props: InnerEyeProps) => {
     );
 });
 
-const mapStateToProps = (state: IRootStore): IInnerEyeMapStateToProps => ({
-    fps: getFPS(state),
-});
-
-export default connect(mapStateToProps)(InnerEye);
+export default InnerEye;
