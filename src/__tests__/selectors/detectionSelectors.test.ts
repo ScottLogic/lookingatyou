@@ -16,9 +16,8 @@ describe('getSelectionCombiner', () => {
     });
     it('should return that selection when there is only one selection', () => {
         const detection = makeDetection(10, 10);
-        const detections = [detection];
         expect(
-            getSelectionsCombiner(detections, [], [], getImageData(0, 0)),
+            getSelectionsCombiner([detection], [], [], getImageData(0, 0)),
         ).toStrictEqual(detection);
     });
     it('should return the selection closest to the item in history when history is a singleton', () => {
