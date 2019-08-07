@@ -8,7 +8,9 @@ import {
 
 let props: MovementHandlerProps;
 const imageData = { data: new Uint8ClampedArray(0), width: 10, height: 10 };
-const mockSetIdleTargets = jest.fn();
+const mockUpdateAnimation = jest.fn();
+const mockMathRandom = jest.fn();
+const originalRandom = Math.random;
 
 describe('Movement Handler', () => {
     beforeEach(() => {
@@ -17,13 +19,20 @@ describe('Movement Handler', () => {
             height: 1080,
             environment: new jsdom.JSDOM(`...`, { url: 'http://localhost' })
                 .window,
-            setIdleTarget: mockSetIdleTargets,
             fps: 1000,
             detections: [],
             target: { x: 0, y: 0 },
             images: { test: imageData },
             animation: [],
+            updateAnimation: mockUpdateAnimation,
         };
+
+        mockMathRandom.mockReturnValue(0.05);
+        global.Math.random = mockMathRandom;
+    });
+
+    afterEach(() => {
+        global.Math.random = originalRandom;
     });
 
     it('should render correctly', () => {
@@ -31,13 +40,13 @@ describe('Movement Handler', () => {
         expect(wrapper).toMatchSnapshot();
     });
 
-    it('should dispatch setIdleTarget when there are no detections', () => {
+    it('should dispatch updateAnimation when there are no detections', () => {
         jest.useFakeTimers();
         const wrapper = shallow(<MovementHandler {...props} />);
         wrapper.setProps({
             detections: [],
         });
-        jest.advanceTimersByTime(1);
-        expect(mockSetIdleTargets).toBeCalled();
+        jest.advanceTimersByTime(20);
+        expect(mockUpdateAnimation).toBeCalled();
     });
 });

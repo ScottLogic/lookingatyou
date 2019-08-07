@@ -16,7 +16,7 @@ describe('NumberMenuItem tests', () => {
             configName: 'test',
             color: '#cbcbcb',
             onInputChange: mockOnInputChange,
-            helpWith: HelpWith.IRIS_COLOUR,
+            helpWith: HelpWith.IRIS_COLOR,
         };
     });
 

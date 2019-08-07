@@ -35,14 +35,17 @@ export interface IEyeProps {
     reflection: ImageData | undefined;
     irisAdjustment: IIrisAdjustment;
     innerPath: string;
+    skewTransform: string;
+    transformDuration?: number;
 }
 
 const pupilColor = 'black';
 
 export default function Eye(props: IEyeProps) {
     const cornerShape = getCornerShape(props);
+    const duration = props.transformDuration || transitionTimes.blink;
     const eyelidTransitionStyle = {
-        transition: `d ${transitionTimes.blink}ms`,
+        transition: `d ${duration}ms`,
     };
 
     return (
@@ -52,34 +55,13 @@ export default function Eye(props: IEyeProps) {
                 width={props.width / 2}
                 height={props.height / 2}
             />
-            <InnerEye
-                irisRadius={props.irisRadius}
-                irisColor={props.irisColor}
-                innerY={props.innerY}
-                innerX={props.innerX}
-                innerPath={props.innerPath}
-                irisAdjustment={props.irisAdjustment}
-                pupilRadius={props.pupilRadius}
-                pupilColor={pupilColor}
-                dilatedCoefficient={props.dilatedCoefficient}
-                scleraRadius={props.scleraRadius}
-                width={props.width}
-                height={props.height}
-                reflection={props.reflection}
-            />
+            <InnerEye {...props} pupilColor={pupilColor} />
             <Eyelids
+                {...props}
                 transitionStyle={eyelidTransitionStyle}
-                eyeShape={props.eyeShape}
                 cornerShape={cornerShape}
-                bezier={props.bezier}
-                scleraRadius={props.scleraRadius}
             />
-            <BlackFill
-                leftX={props.eyeShape.leftX}
-                scleraRadius={props.scleraRadius}
-                height={props.height}
-                width={props.width}
-            />
+            <BlackFill {...props} leftX={props.eyeShape.leftX} />
         </svg>
     );
 }

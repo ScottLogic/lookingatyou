@@ -1,14 +1,16 @@
 import { createSelector } from 'reselect';
+import { centerPoint } from '../../AppConstants';
 import { Detections, IDetection } from '../../models/objectDetection';
 import select, {
-    calculateColourMatch,
+    calculateColorMatch,
     closerToPrediction,
     first,
-    getPredictedColour,
+    getPredictedColor,
     getPredictedTarget,
 } from '../../utils/objectSelection/select';
 import { calculateNormalisedPos } from '../../utils/objectTracking/calculateFocus';
-import { IColour, ICoords } from '../../utils/types';
+import { Animation } from '../../utils/pose/animations';
+import { IColor, ICoords } from '../../utils/types';
 import { IRootStore } from '../reducers/rootReducer';
 import { getImageData, getVideo } from './videoSelectors';
 
@@ -19,12 +21,12 @@ export function getDetections(state: IRootStore): Detections {
 export const getSelectionsCombiner = (
     detections: IDetection[],
     previousTargets: ICoords[],
-    previousColours: IColour[],
+    previousColours: IColor[],
     imageData: ImageData,
 ) => {
     if (previousTargets.length > 0) {
         const predictedTarget = getPredictedTarget(previousTargets);
-        const predictedColour = getPredictedColour(previousColours);
+        const predictedColour = getPredictedColor(previousColours);
 
         return select(
             detections,
@@ -35,8 +37,20 @@ export const getSelectionsCombiner = (
     }
 };
 export const getSelections = createSelector(
-    [getDetections, getPreviousTargets, getPreviousColours, getImageData],
-    getSelectionsCombiner,
+    [getDetections, getPreviousTargets, getPreviousColors, getImageData],
+    (detections, previousTargets, previousColors, imageData) => {
+        if (previousTargets.length > 0) {
+            const predictedTarget = getPredictedTarget(previousTargets);
+            const predictedColor = getPredictedColor(previousColors);
+
+            return select(
+                detections,
+                closerToPrediction(predictedTarget, imageData, predictedColor),
+            );
+        } else {
+            return select(detections, first);
+        }
+    },
 );
 
 export const getTargetsCombiner = (
@@ -55,26 +69,30 @@ export const getTargetsCombiner = (
     return normalisedTarget ? normalisedTarget : idleTargets;
 };
 export const getTargets = createSelector(
-    [getSelections, getVideo, getIdleTargets],
-    getTargetsCombiner,
+    [getSelections, getVideo],
+    (selections, video): ICoords => {
+        return selections === undefined || !video
+            ? centerPoint
+            : calculateNormalisedPos(
+                  selections.bbox,
+                  video!.width,
+                  video!.height,
+              );
+    },
 );
 
-export const getColourCombiner = (
-    selection: IDetection | undefined,
-    imageData: ImageData,
-): IColour => {
-    if (selection) {
-        const colour = calculateColourMatch(
-            selection.info.keypoints,
-            imageData,
-        );
-        return colour;
-    }
-    return { r: 0, g: 0, b: 0 };
-};
-export const getColour = createSelector(
+export const getColor = createSelector(
     [getSelections, getImageData],
-    getColourCombiner,
+    (selection, imageData): IColor => {
+        if (selection) {
+            const color = calculateColorMatch(
+                selection.info.keypoints,
+                imageData,
+            );
+            return color;
+        }
+        return { r: 0, g: 0, b: 0 };
+    },
 );
 
 export function getPreviousTarget(state: IRootStore): ICoords {
@@ -86,19 +104,19 @@ export function getPreviousTargets(state: IRootStore): ICoords[] {
     return state.detectionStore.history.map(history => history.target);
 }
 
-export function getPreviousColour(state: IRootStore): IColour {
+export function getPreviousColor(state: IRootStore): IColor {
     return state.detectionStore.history[state.detectionStore.history.length - 1]
-        .colour;
+        .color;
 }
 
-export function getPreviousColours(state: IRootStore): IColour[] {
-    return state.detectionStore.history.map(history => history.colour);
-}
-
-export function getIdleTargets(state: IRootStore): ICoords {
-    return state.detectionStore.idleTarget;
+export function getPreviousColors(state: IRootStore): IColor[] {
+    return state.detectionStore.history.map(history => history.color);
 }
 
 export function getOpenCoefficient(state: IRootStore): number {
     return state.detectionStore.eyesOpenCoefficient;
+}
+
+export function getAnimations(state: IRootStore): Animation {
+    return state.detectionStore.animation;
 }
