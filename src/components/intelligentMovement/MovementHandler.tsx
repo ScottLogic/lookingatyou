@@ -65,6 +65,7 @@ export class MovementHandler extends React.Component<
     private personDetected: boolean;
     private openCoefficient: number;
     private textTimeout: number;
+    private isSleeping: boolean;
 
     constructor(props: MovementHandlerProps) {
         super(props);
@@ -83,6 +84,7 @@ export class MovementHandler extends React.Component<
         this.squinting = false;
         this.openCoefficient = eyelidPosition.OPEN;
         this.textTimeout = 0;
+        this.isSleeping = false;
 
         this.animateEye = this.animateEye.bind(this);
         this.isNewTarget = this.isNewTarget.bind(this);
@@ -194,7 +196,7 @@ export class MovementHandler extends React.Component<
         if (this.sleepTimeout !== 0) {
             this.props.environment.clearTimeout(this.sleepTimeout);
             this.sleepTimeout = 0;
-            this.openCoefficient = eyelidPosition.OPEN;
+            this.isSleeping = false;
         }
 
         if (this.textTimeout === 0) {
@@ -224,7 +226,7 @@ export class MovementHandler extends React.Component<
     sleep() {
         if (this.sleepTimeout === 0) {
             this.sleepTimeout = this.props.environment.setTimeout(() => {
-                this.openCoefficient = eyelidPosition.CLOSED;
+                this.isSleeping = true;
             }, intervals.sleep);
         }
 
@@ -241,6 +243,7 @@ export class MovementHandler extends React.Component<
                     dilation={this.state.dilationCoefficient}
                     detected={this.personDetected}
                     openCoefficient={this.openCoefficient}
+                    isSleeping={this.isSleeping}
                     {...this.props}
                 />
                 <FadeInText text={this.state.text} show={this.state.showText} />
