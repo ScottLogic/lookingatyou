@@ -41,8 +41,8 @@ export const getSelections = createSelector(
 );
 
 export const getTargetsCombiner = (
-    selections: IDetection | undefined,
-    videoDimensions: { width: number; height: number } | undefined,
+    selections?: IDetection,
+    videoDimensions?: { width: number; height: number },
 ): ICoords =>
     !selections || !videoDimensions
         ? centerPoint
