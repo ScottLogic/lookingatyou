@@ -17,6 +17,7 @@ import { ISetAnimationAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
 import {
+    getAnimations,
     getSelections,
     getTargets,
 } from '../../store/selectors/detectionSelectors';
@@ -73,21 +74,18 @@ export const EyeController = React.memo(
 
         const reflectionRef = useRef<ImageData | undefined>(undefined);
 
-        const { x, y } =
-            props.animation.length > 0 &&
-            props.animation[0].normalisedCoords !== undefined
-                ? {
-                      x: props.animation[0].normalisedCoords!.x,
-                      y: props.animation[0].normalisedCoords!.y,
-                  }
-                : { x: props.target.x, y: props.target.y };
+        const target =
+            props.animation.length > 0 && props.animation[0].normalisedCoords
+                ? props.animation[0].normalisedCoords
+                : {
+                      x: props.target.x * props.config.xSensitivity,
+                      y: props.target.y * props.config.ySensitivity,
+                  };
 
         const maxDisplacement =
             (scleraRadius - irisRadius * minIrisScale) / minIrisScale;
-        const targetY = y * props.config.ySensitivity;
-        const targetX = -x * props.config.xSensitivity; // mirrored
-        const polarDistance = Math.hypot(targetY, targetX);
-        const polarAngle = Math.atan2(targetY, targetX);
+        const polarDistance = Math.hypot(target.y, -target.x);
+        const polarAngle = Math.atan2(target.y, -target.x);
         const displacement = Math.min(1, polarDistance) * maxDisplacement;
         const innerX = props.width / 4 + displacement * Math.cos(polarAngle);
         const innerY = props.height / 2 + displacement * Math.sin(polarAngle);
@@ -113,10 +111,19 @@ export const EyeController = React.memo(
                 ? props.animation[0].irisColor
                 : props.config.irisColor;
 
+        const animationRef = useRef(animation);
+        const detectedRef = useRef(props.detected);
         useEffect(() => {
-            if (animation.length === 0) {
+            detectedRef.current = props.detected;
+        }, [props.detected]);
+        useEffect(() => {
+            animationRef.current = animation;
+        }, [animation]);
+
+        useEffect(() => {
+            if (animationRef.current.length === 0) {
                 let blinkInterval = environment.setInterval(() => {
-                    const blinkFrequency = props.detected
+                    const blinkFrequency = detectedRef.current
                         ? blinkConsts.focusedFrequency
                         : blinkConsts.frequency;
                     const blinkProbability =
@@ -130,7 +137,7 @@ export const EyeController = React.memo(
                     blinkInterval = 0;
                 };
             }
-        }, [props.detected, environment, animation, updateAnimation]);
+        }, [environment, updateAnimation]);
 
         useEffect(() => {
             if (animation.length > 0) {
@@ -144,21 +151,17 @@ export const EyeController = React.memo(
         }, [animation, updateAnimation, environment]);
 
         useEffect(() => {
-            if (
-                props.config.toggleReflection &&
-                props.selection &&
-                props.image
-            ) {
+            if (props.config.toggleReflection && props.image) {
                 reflectionRef.current = getReflection(
                     pupilRadius,
-                    props.selection.bbox,
+                    props.target,
                     props.image,
                 );
             } else {
                 reflectionRef.current = undefined;
             }
         }, [
-            props.selection,
+            props.target,
             props.image,
             props.config.toggleReflection,
             pupilRadius,
@@ -205,7 +208,7 @@ export const EyeController = React.memo(
                             reflection={reflectionRef.current}
                             irisAdjustment={irisAdjustmentRef.current}
                             innerPath={innerPath}
-                            skewTransform={irisMatrixTransform(props.target)}
+                            skewTransform={irisMatrixTransform(target)}
                             transformDuration={
                                 props.animation.length > 0
                                     ? props.animation[0].duration
@@ -267,7 +270,7 @@ const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     target: getTargets(state),
     image: getVideo(state),
     selection: getSelections(state),
-    animation: state.detectionStore.animation,
+    animation: getAnimations(state),
 });
 
 const mapDispatchToProps = (

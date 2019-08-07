@@ -4,12 +4,12 @@ import { Animation } from '../../../utils/pose/animations';
 import { IColor, ICoords, IHistory } from '../../../utils/types';
 
 export const SET_MODEL = 'SET_MODEL';
-export const SET_INTERVAL = 'SET_INTERVAL';
 export const SET_IDLE_TARGET = 'SET_IDLE_TARGET';
 export const SET_DETECTIONS = 'SET_DETECTIONS';
 export const SET_OPEN = 'SET_OPEN';
 export const SET_ANIMATION = 'SET_ANIMATION';
 export const SWAP_SELECTION = 'SWAP_SELECTION';
+export const SET_INTERVAL = 'SET_INTERVAL';
 
 export interface IDetectionState {
     model: PoseNet | null;
