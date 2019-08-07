@@ -40,10 +40,9 @@ describe('getTargetsCombiner', () => {
             centerPoint,
         );
     });
-    it('should return the selection normalised to the video dimensions, when selection and video are both defined', () => {
+    it('should return the selection normalised to between -1 and 1, when selection and video are both defined', () => {
         const selection = makeDetection(150, 250);
         const dimensions = { width: 300, height: 250 };
-        const idleTargets = { x: 0, y: 0 };
         expect(getTargetsCombiner(selection, dimensions)).toStrictEqual({
             x: 0,
             y: 1,
@@ -58,7 +57,7 @@ describe('getColourCombiner', () => {
             g: 0,
         });
     });
-    it('should correctly return colour based on keypoints of the selection and colour values stored in imageData', () => {
+    it('should correctly return color based on keypoints of the selection and color values stored in imageData', () => {
         const selection: IDetection = {
             bbox: [10, 10, 0, 0],
             info: {
@@ -82,6 +81,6 @@ describe('getColourCombiner', () => {
             r: 189,
             g: 0,
             b: 208,
-        }); // values adjusted slightly for colour-space conversion
+        }); // values adjusted slightly for color-space conversion
     });
 });
