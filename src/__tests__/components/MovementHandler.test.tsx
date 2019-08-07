@@ -35,8 +35,8 @@ describe('Movement Handler', () => {
     it('should dispatch updateAnimation when there are no detections', () => {
         mockMath.random = () => 0.05;
         global.Math = mockMath;
+
         jest.useFakeTimers();
-        console.log(Math.random());
         const wrapper = shallow(<MovementHandler {...props} />);
         wrapper.setProps({
             detections: [],
