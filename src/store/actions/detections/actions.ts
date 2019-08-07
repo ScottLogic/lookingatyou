@@ -48,6 +48,7 @@ export function restartDetection(document: Document) {
     ) => {
         const state = getState();
         clearInterval(state.detectionStore.detectionInterval);
+        dispatch(handleDetection(document));
         const id = setInterval(
             () => dispatch(handleDetection(document)),
             1000 / getFPS(state),
