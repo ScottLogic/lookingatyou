@@ -5,6 +5,6 @@ exports[`NumberMenuItem tests should render correctly 1`] = `
   <label>
     test
   </label>
-  <input type=\\"number\\" value={30} min={1} max={[undefined]} style={{...}} onBlur={[Function: onBlur]} onChange={[Function: onChange]} step={1} />
+  <WithStyles(ForwardRef(TextField)) className=\\"textFieldInput\\" id=\\"standard-number\\" value={30} onChange={[Function: onChange]} onBlur={[Function: onBlur]} type=\\"number\\" error={false} margin=\\"normal\\" />
 </div>"
 `;

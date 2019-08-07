@@ -1,10 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CheckBoxMenuItem tests should render correctly 1`] = `
-"<div data-tip={true} data-for=\\"DEBUG\\">
-  <label>
-    test
-  </label>
-  <input type=\\"checkbox\\" checked={false} onChange={[Function: onChange]} />
+"<div className=\\"checkbox\\" data-tip={true} data-for=\\"DEBUG\\">
+  <WithStyles(ForwardRef(FormControl))>
+    <WithStyles(ForwardRef(FormControlLabel)) value=\\"start\\" onChange={[Function: onChange]} control={{...}} label=\\"test\\" labelPlacement=\\"start\\" />
+  </WithStyles(ForwardRef(FormControl))>
 </div>"
 `;
