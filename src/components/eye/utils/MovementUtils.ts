@@ -16,7 +16,7 @@ export function analyseLight(image: ImageData): number {
         colorSum += data[i] + data[i + 1] + data[i + 2];
     }
 
-    const brightness = Math.floor(colorSum / (image.width * image.height));
+    const brightness = Math.floor(colorSum / (image.width * image.height * 3));
     return Math.min(brightness, lightConsts.maxBrightness);
 }
 
