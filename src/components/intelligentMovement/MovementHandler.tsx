@@ -50,6 +50,7 @@ interface IDispatchProps {
 interface IMovementState {
     showText: boolean;
     text: string;
+    isSleeping: boolean;
 }
 
 export type MovementHandlerProps = IMovementProps &
@@ -67,7 +68,6 @@ export class MovementHandler extends React.Component<
     private openCoefficient: number;
     private hasMovedLeft: boolean;
     private personDetected: boolean;
-    private isSleeping: boolean;
 
     constructor(props: MovementHandlerProps) {
         super(props);
@@ -75,6 +75,7 @@ export class MovementHandler extends React.Component<
         this.state = {
             showText: false,
             text: '',
+            isSleeping: false,
         };
 
         this.movementInterval = 0;
@@ -84,9 +85,9 @@ export class MovementHandler extends React.Component<
         this.openCoefficient = eyelidPosition.OPEN;
         this.hasMovedLeft = false;
         this.personDetected = false;
-        this.isSleeping = false;
 
         this.animateEye = this.animateEye.bind(this);
+        this.sleep = this.sleep.bind(this);
     }
 
     componentDidMount() {
@@ -96,13 +97,18 @@ export class MovementHandler extends React.Component<
         );
     }
 
-    shouldComponentUpdate(nextProps: MovementHandlerProps) {
+    shouldComponentUpdate(
+        nextProps: MovementHandlerProps,
+        nextState: IMovementState,
+    ) {
         return (
-            this.props.animationExists &&
-            (this.props.height !== nextProps.height ||
-                this.props.width !== nextProps.width ||
-                this.props.target !== nextProps.target ||
-                this.props.selection !== nextProps.selection)
+            this.state.isSleeping !== nextState.isSleeping ||
+            (this.props.animationExists &&
+                (this.props.height !== nextProps.height ||
+                    this.props.width !== nextProps.width ||
+                    this.props.target !== nextProps.target ||
+                    this.props.selection !== nextProps.selection ||
+                    this.state.isSleeping !== nextState.isSleeping))
         );
     }
 
@@ -152,8 +158,11 @@ export class MovementHandler extends React.Component<
         } else {
             this.setNoTarget();
 
-            if (this.props.animationExists) {
-                if (Math.random() < chanceOfIdleEyesMovement) {
+            if (this.props.animation.length === 0) {
+                if (
+                    !this.state.isSleeping &&
+                    Math.random() < chanceOfIdleEyesMovement
+                ) {
                     this.hasMovedLeft = !this.hasMovedLeft;
                     this.props.updateAnimation(
                         naturalMovement(this.hasMovedLeft),
@@ -164,7 +173,7 @@ export class MovementHandler extends React.Component<
     }
 
     setNewTarget() {
-        this.isSleeping = false;
+        this.wake();
         this.props.environment.clearTimeout(this.sleepTimeout);
         if (!this.personDetected) {
             this.personDetected = true;
@@ -177,12 +186,21 @@ export class MovementHandler extends React.Component<
             this.personDetected = false;
             this.dilationCoefficient = eyelidPosition.SQUINT;
             this.openCoefficient = eyelidPosition.SQUINT;
-            this.sleepTimeout = this.props.environment.setTimeout(() => {
-                this.isSleeping = true;
-            }, intervals.sleep);
+            this.sleepTimeout = this.props.environment.setTimeout(
+                this.sleep,
+                intervals.sleep,
+            );
         }
         this.props.environment.clearTimeout(this.textTimeout);
         this.textTimeout = 0;
+    }
+
+    sleep() {
+        this.setState({ isSleeping: true });
+    }
+
+    wake() {
+        this.setState({ isSleeping: false });
     }
 
     startTextTimer() {
@@ -216,12 +234,8 @@ export class MovementHandler extends React.Component<
                 <EyeController
                     dilation={this.dilationCoefficient}
                     detected={this.personDetected}
-                    openCoefficient={
-                        this.isSleeping
-                            ? eyelidPosition.CLOSED
-                            : this.openCoefficient
-                    }
-                    isSleeping={this.isSleeping}
+                    openCoefficient={this.openCoefficient}
+                    isSleeping={this.state.isSleeping}
                     {...this.props}
                 />
                 <FadeInText text={this.state.text} show={this.state.showText} />

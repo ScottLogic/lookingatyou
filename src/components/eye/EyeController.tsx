@@ -99,38 +99,34 @@ export const EyeController = React.memo(
             generateInnerPath(irisRadius, numInnerEyeSectors),
         );
 
-        const animationRef = useRef(animation);
         const detectedRef = useRef(props.detected);
         useEffect(() => {
             detectedRef.current = props.detected;
         }, [props.detected]);
-        useEffect(() => {
-            animationRef.current = animation;
-        }, [animation]);
 
         useEffect(() => {
-            if (animationRef.current.length === 0) {
-                if (props.isSleeping) {
-                    let peekInterval = environment.setInterval(() => {
-                        const peekProbability =
-                            blinkConsts.peekFrequency /
-                            (1000 / transitionTimes.peek);
-                        if (Math.random() < peekProbability) {
-                            const random = Math.random();
-                            if (random < 1 / 3) {
-                                updateAnimation(peek(true, false));
-                            } else if (random < 2 / 3) {
-                                updateAnimation(peek(false, true));
-                            } else {
-                                updateAnimation(peek(true, true));
-                            }
+            if (props.isSleeping) {
+                let peekInterval = environment.setInterval(() => {
+                    const peekProbability =
+                        blinkConsts.peekFrequency /
+                        (1000 / transitionTimes.peek);
+                    if (Math.random() < peekProbability) {
+                        const random = Math.random();
+                        if (random < 1 / 3) {
+                            updateAnimation(peek(true, false));
+                        } else if (random < 2 / 3) {
+                            updateAnimation(peek(false, true));
+                        } else {
+                            updateAnimation(peek(true, true));
                         }
-                    }, transitionTimes.peek);
-                    return () => {
-                        environment.clearInterval(peekInterval);
-                        peekInterval = 0;
-                    };
-                } else {
+                    }
+                }, transitionTimes.peek);
+                return () => {
+                    environment.clearInterval(peekInterval);
+                    peekInterval = 0;
+                };
+            } else {
+                {
                     let blinkInterval = environment.setInterval(() => {
                         const blinkFrequency = detectedRef.current
                             ? blinkConsts.focusedFrequency
@@ -226,11 +222,13 @@ export const EyeController = React.memo(
         );
     },
     (previous, next) =>
+        false &&
         isEqual(previous.animation, next.animation) &&
         previous.dilation === next.dilation &&
         previous.openCoefficient === next.openCoefficient &&
         previous.target.x === next.target.x &&
-        previous.target.y === next.target.y,
+        previous.target.y === next.target.y &&
+        previous.isSleeping === next.isSleeping,
 );
 
 export function getBezier(scleraRadius: number, openCoefficient: number) {
