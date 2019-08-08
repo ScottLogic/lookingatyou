@@ -65,3 +65,10 @@
     top: 1em;
     right: 1em;
 }
+
+.reset {
+    position: absolute;
+    width: 70%;
+    height: 2em;
+    left: 15%;
+}

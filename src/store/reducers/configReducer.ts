@@ -40,6 +40,7 @@ const configActionMapping = {
     [ConfigSetAction.APP]: setAppConfig,
     [ConfigSetAction.MODEL]: setModelConfig,
     [ConfigSetAction.DETECTION]: setDetectionConfig,
+    [ConfigSetAction.RESET]: resetConfig,
 };
 
 const configStore = (
@@ -79,6 +80,10 @@ function setDetectionConfig(
             ...(action as ISetDetectionConfigAction).payload,
         },
     };
+}
+
+function resetConfig(): IConfigState {
+    return initialState;
 }
 
 export default configStore;
