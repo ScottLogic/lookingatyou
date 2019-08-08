@@ -31,7 +31,7 @@ export const transitionTimes = {
     peek: 500,
 };
 export const intervals = {
-    sleep: 3000, // eyes go to sleep after this much time without targets
+    sleep: 12000, // eyes go to sleep after this much time without targets
 };
 export const debugFeedColors = {
     chosen: 'green', // chosen target drawn to debug feed in this colour
