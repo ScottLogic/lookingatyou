@@ -63,7 +63,7 @@ const mapDispatchToProps = (
             updateConfigAction(
                 ConfigSetAction.APP,
                 { showHelp: false },
-                ownProps.window.document,
+                ownProps.window,
             ),
         ),
 });
