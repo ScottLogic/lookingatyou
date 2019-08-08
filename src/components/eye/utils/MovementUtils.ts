@@ -1,8 +1,4 @@
-import {
-    eyeCoords,
-    idleMovementConsts,
-    lightConsts,
-} from '../../../AppConstants';
+import { lightConsts } from '../../../AppConstants';
 import { ICoords } from '../../../utils/types';
 
 export function analyseLight(image: ImageData): number {
@@ -21,34 +17,10 @@ export function analyseLight(image: ImageData): number {
     return Math.min(brightness, lightConsts.maxBrightness);
 }
 
-export function naturalMovement(currentX: number, isMovingLeft: boolean) {
-    const eyeBoundary = 1 - idleMovementConsts.sideBuffer;
-
-    if (currentX === eyeCoords.middleX) {
-        return Math.random() < idleMovementConsts.moveCenterChance
-            ? newEyePos(currentX, isMovingLeft)
-            : { newX: currentX, isMovingLeft };
-    } else if (Math.abs(currentX) >= eyeBoundary) {
-        return Math.random() < idleMovementConsts.moveSideChance
-            ? newEyePos(currentX, !isMovingLeft)
-            : { newX: currentX, isMovingLeft };
-    } else {
-        return newEyePos(currentX, isMovingLeft);
-    }
-}
-
-function newEyePos(currentX: number, isMovingLeft: boolean) {
-    let xDelta = idleMovementConsts.xDelta;
-    xDelta = isMovingLeft ? 0 - xDelta : xDelta;
-    return { newX: currentX + xDelta, isMovingLeft };
-}
-
 export function confineToCircle(target: ICoords) {
     const radius = Math.min(1, Math.hypot(target.x, target.y));
-    const polarAngle = Math.atan2(target.y, target.x);
 
-    return {
-        x: radius * Math.cos(polarAngle),
-        y: radius * Math.sin(polarAngle),
-    };
+    return radius === 0
+        ? { x: 0, y: 0 }
+        : { x: radius * (target.x / radius), y: radius * (target.y / radius) };
 }
