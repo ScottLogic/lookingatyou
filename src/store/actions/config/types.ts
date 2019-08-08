@@ -5,10 +5,6 @@ import {
     outputStrides,
 } from '../../../models/objectDetection';
 
-export const SET_APP_CONFIG = 'SET_APP_CONFIG';
-export const SET_MODEL_CONFIG = 'SET_MODEL_CONFIG';
-export const SET_DETECTION_CONFIG = 'SET_DETECTION_CONFIG';
-
 export enum ConfigSetAction {
     APP = 'SET_APP_CONFIG',
     MODEL = 'SET_MODEL_CONFIG',
