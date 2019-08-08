@@ -22,8 +22,7 @@ describe('InnerEye', () => {
         props = {
             irisRadius: 200,
             dilatedCoefficient: 1,
-            innerX: 0,
-            innerY: 0,
+            innerCenter: { x: 0, y: 0 },
             irisColor: 'blue',
             fps: 30,
             height: 800,
@@ -33,7 +32,7 @@ describe('InnerEye', () => {
             scleraRadius: 500,
             reflection: imageData,
             innerPath: '',
-            irisAdjustment: { scale: 0, angle: 0 },
+            skewTransform: '',
         };
     });
 

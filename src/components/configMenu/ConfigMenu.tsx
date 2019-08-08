@@ -150,26 +150,18 @@ const mapDispatchToProps = (
 ) => ({
     updateAppConfig: (payload: PartialConfig) =>
         dispatch(
-            updateConfigAction(
-                ConfigSetAction.APP,
-                payload,
-                ownProps.window.document,
-            ),
+            updateConfigAction(ConfigSetAction.APP, payload, ownProps.window),
         ),
     updateModelConfig: (payload: PartialConfig) =>
         dispatch(
-            updateConfigAction(
-                ConfigSetAction.MODEL,
-                payload,
-                ownProps.window.document,
-            ),
+            updateConfigAction(ConfigSetAction.MODEL, payload, ownProps.window),
         ),
     updateDetectionConfig: (payload: PartialConfig) =>
         dispatch(
             updateConfigAction(
                 ConfigSetAction.DETECTION,
                 payload,
-                ownProps.window.document,
+                ownProps.window,
             ),
         ),
     resetConfig: () => dispatch(resetConfigAction(ConfigSetAction.RESET)),
