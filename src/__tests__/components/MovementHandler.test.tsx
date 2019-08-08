@@ -20,7 +20,6 @@ describe('Movement Handler', () => {
             environment: new jsdom.JSDOM(`...`, { url: 'http://localhost' })
                 .window,
             fps: 1000,
-            detections: [],
             target: { x: 0, y: 0 },
             image: imageData,
             animation: [],

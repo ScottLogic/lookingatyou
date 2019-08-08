@@ -18,7 +18,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 name={'Detections Per Second'}
                 configName={'fps'}
                 step={1}
-                defaultValue={props.config.fps}
+                defaultValue={props.config.appConfig.fps}
                 onValidInput={props.updateAppConfig}
                 helpWith={HelpWith.FPS}
                 min={1}
@@ -28,7 +28,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 name={'X Sensitivity'}
                 configName={'xSensitivity'}
                 step={0.05}
-                defaultValue={props.config.xSensitivity}
+                defaultValue={props.config.appConfig.xSensitivity}
                 onValidInput={props.updateAppConfig}
                 helpWith={HelpWith.X_SENSITIVITY}
                 min={0}
@@ -38,7 +38,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 name={'Y Sensitivity'}
                 configName={'ySensitivity'}
                 step={0.05}
-                defaultValue={props.config.ySensitivity}
+                defaultValue={props.config.appConfig.ySensitivity}
                 onValidInput={props.updateAppConfig}
                 helpWith={HelpWith.Y_SENSITIVITY}
                 min={0}
@@ -50,7 +50,7 @@ export default function UserConfig(props: IUserConfigProps) {
             <ColorMenuItem
                 name={'Iris Colour'}
                 configName={'irisColor'}
-                color={props.config.irisColor}
+                color={props.config.appConfig.irisColor}
                 onInputChange={props.updateAppConfig}
                 helpWith={HelpWith.IRIS_COLOR}
             />
@@ -61,7 +61,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 name={'Show Advanced Settings'}
                 configName={'toggleAdvanced'}
                 helpWith={HelpWith.ADVANCE_SETTINGS}
-                checked={props.config.toggleAdvanced}
+                checked={props.config.appConfig.toggleAdvanced}
                 onInputChange={props.updateAppConfig}
                 warning={
                     <>
