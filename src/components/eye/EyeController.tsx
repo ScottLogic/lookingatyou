@@ -18,6 +18,7 @@ import { ISetAnimationAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
 import {
+    getAnimationExists,
     getAnimations,
     getSelections,
     getTargets,
@@ -44,9 +45,10 @@ interface IEyeControllerProps {
 interface IEyeControllerMapStateToProps {
     config: IConfigState;
     target: ICoords;
-    image: HTMLVideoElement | undefined;
-    selection: IDetection | undefined;
+    image?: HTMLVideoElement;
+    selection?: IDetection;
     animation: Animation;
+    animationExists: boolean;
 }
 
 interface IEyeControllerMapDispatchToState {
@@ -72,7 +74,7 @@ export const EyeController = React.memo(
         const reflectionRef = useRef<ImageData | undefined>(undefined);
 
         const target =
-            props.animation.length > 0 && props.animation[0].normalisedCoords
+            props.animationExists && props.animation[0].normalisedCoords
                 ? props.animation[0].normalisedCoords
                 : {
                       x: props.target.x * props.config.xSensitivity,
@@ -89,7 +91,7 @@ export const EyeController = React.memo(
         const innerCenter = { x: innerX, y: innerY };
 
         const calculatedEyesOpenCoefficient =
-            props.animation.length > 0 &&
+            props.animationExists &&
             props.animation[0].hasOwnProperty('openCoefficient')
                 ? props.animation[0].openCoefficient!
                 : props.isSleeping
@@ -97,8 +99,7 @@ export const EyeController = React.memo(
                 : props.openCoefficient;
 
         const dilatedCoefficient =
-            props.animation.length > 0 &&
-            props.animation[0].dilation !== undefined
+            props.animationExists && props.animation[0].dilation !== undefined
                 ? props.animation[0].dilation
                 : props.dilation;
 
@@ -107,7 +108,7 @@ export const EyeController = React.memo(
         );
 
         const irisColor =
-            props.animation.length > 0 && props.animation[0].irisColor
+            props.animationExists && props.animation[0].irisColor
                 ? props.animation[0].irisColor
                 : props.config.irisColor;
 
@@ -158,7 +159,7 @@ export const EyeController = React.memo(
         }, [props.isSleeping, environment, updateAnimation]);
 
         useEffect(() => {
-            if (animation.length > 0) {
+            if (props.animationExists) {
                 const timer = environment.setTimeout(() => {
                     const myAnimation = [...animation];
                     myAnimation!.shift();
@@ -166,7 +167,7 @@ export const EyeController = React.memo(
                 }, animation[0].duration);
                 return () => environment.clearTimeout(timer);
             }
-        }, [animation, updateAnimation, environment]);
+        }, [animation, updateAnimation, environment, props.animationExists]);
 
         useEffect(() => {
             if (props.config.toggleReflection && props.image) {
@@ -226,7 +227,7 @@ export const EyeController = React.memo(
                             innerPath={innerPath}
                             skewTransform={irisMatrixTransform(target)}
                             transformDuration={
-                                props.animation.length > 0
+                                props.animationExists
                                     ? props.animation[0].duration
                                     : undefined
                             }
@@ -289,6 +290,7 @@ const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     image: getVideo(state),
     selection: getSelections(state),
     animation: getAnimations(state),
+    animationExists: getAnimationExists(state),
 });
 
 const mapDispatchToProps = (
