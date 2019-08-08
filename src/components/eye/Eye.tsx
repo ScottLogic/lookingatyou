@@ -1,11 +1,11 @@
 import React from 'react';
 import { EyeSide, transitionTimes } from '../../AppConstants';
+import { ICoords } from '../../utils/types';
 import './Eye.css';
 import { BlackFill } from './eyeParts/BlackFill';
 import { Eyelids } from './eyeParts/Eyelids';
 import InnerEye from './eyeParts/InnerEye';
 import { Sclera } from './eyeParts/Sclera';
-import { IIrisAdjustment } from './utils/VisualUtils';
 
 export interface IEyeProps {
     class: EyeSide;
@@ -16,8 +16,7 @@ export interface IEyeProps {
     irisRadius: number;
     pupilRadius: number;
     dilatedCoefficient: number;
-    innerX: number;
-    innerY: number;
+    innerCenter: ICoords;
     fps: number;
     bezier: {
         controlOffset: number;
@@ -33,7 +32,6 @@ export interface IEyeProps {
         bottomEyelidY: number;
     };
     reflection: ImageData | undefined;
-    irisAdjustment: IIrisAdjustment;
     innerPath: string;
     skewTransform: string;
     transformDuration?: number;

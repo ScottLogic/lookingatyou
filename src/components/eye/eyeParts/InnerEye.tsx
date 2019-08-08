@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import tinycolor from 'tinycolor2';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import { getFPS } from '../../../store/selectors/configSelectors';
+import { ICoords } from '../../../utils/types';
 
 interface IInnerEyeProps {
     irisRadius: number;
-    innerY: number;
-    innerX: number;
+    innerCenter: ICoords;
     irisColor: string;
     innerPath: any;
     pupilRadius: number;
@@ -51,7 +51,7 @@ export const InnerEye = React.memo((props: InnerEyeProps) => {
         <g
             className="inner"
             style={transitionStyle}
-            transform={`${props.skewTransform} translate(${props.innerX},${props.innerY})`}
+            transform={`${props.skewTransform} translate(${props.innerCenter.x},${props.innerCenter.y})`}
         >
             <circle
                 className={'iris'}
