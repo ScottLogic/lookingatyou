@@ -109,6 +109,8 @@ export const fadeInText = {
     delayMax: 1000,
     transitionMax: 2000,
     transitionMin: 200,
+    fontSize: '5em',
+    defaultTextLength: 20,
 };
 export const numInnerEyeSectors = 100;
 export const minPoseConfidence = 0.2;

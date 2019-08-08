@@ -43,6 +43,7 @@ const FadeInText = React.memo((props: IFadeInTextProps) => {
             transitionDelay: `${characterProps.delay}ms`,
             transitionTimingFunction: 'linear',
         };
+
         return (
             <span style={style} key={index}>
                 {characterProps.character}
@@ -50,7 +51,22 @@ const FadeInText = React.memo((props: IFadeInTextProps) => {
         );
     }
 
-    return <div className="revealText">{renderSpans(props.text)}</div>;
+    function getFontSize(text: string) {
+        if (text.length > fadeInText.defaultTextLength) {
+            const scaledFontSize =
+                (parseInt(fadeInText.fontSize, 10) *
+                    fadeInText.defaultTextLength) /
+                text.length;
+            return { fontSize: scaledFontSize + 'em' };
+        }
+        return { fontSize: fadeInText.fontSize };
+    }
+
+    return (
+        <div className="revealText" style={getFontSize(props.text)}>
+            {renderSpans(props.text)}
+        </div>
+    );
 });
 
 export default FadeInText;

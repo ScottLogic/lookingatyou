@@ -35,8 +35,8 @@ interface IEyeControllerProps {
     height: number;
     environment: Window;
     dilation: number;
-    detected: boolean;
     openCoefficient: number;
+    detected: boolean;
 }
 
 interface IEyeControllerMapStateToProps {
@@ -67,11 +67,6 @@ export const EyeController = React.memo(
             props.width * eyeRadiiCoefficients.pupil,
         );
 
-        const irisAdjustmentRef = useRef({
-            scale: 1,
-            angle: 0,
-        });
-
         const reflectionRef = useRef<ImageData | undefined>(undefined);
 
         const target =
@@ -89,6 +84,7 @@ export const EyeController = React.memo(
         const displacement = Math.min(1, polarDistance) * maxDisplacement;
         const innerX = props.width / 4 + displacement * Math.cos(polarAngle);
         const innerY = props.height / 2 + displacement * Math.sin(polarAngle);
+        const innerCenter = { x: innerX, y: innerY };
 
         const calculatedEyesOpenCoefficient =
             props.animation.length > 0 &&
@@ -200,13 +196,11 @@ export const EyeController = React.memo(
                             irisRadius={irisRadius}
                             pupilRadius={pupilRadius}
                             dilatedCoefficient={dilatedCoefficient}
-                            innerX={innerX}
-                            innerY={innerY}
+                            innerCenter={innerCenter}
                             fps={props.config.fps}
                             bezier={bezier}
                             eyeShape={eyeShape}
                             reflection={reflectionRef.current}
-                            irisAdjustment={irisAdjustmentRef.current}
                             innerPath={innerPath}
                             skewTransform={irisMatrixTransform(target)}
                             transformDuration={
