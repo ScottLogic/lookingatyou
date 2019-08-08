@@ -15,6 +15,7 @@
 }
 
 .container {
+    height: calc(50% + 50vw * 0.25);
     display: flex;
     flex-flow: row;
 }
@@ -54,4 +55,10 @@
     top: 75%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.movementHandler {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
