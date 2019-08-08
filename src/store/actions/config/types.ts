@@ -11,6 +11,7 @@ export const SET_DETECTION_CONFIG = 'SET_DETECTION_CONFIG';
 
 export enum ConfigSetAction {
     APP = 'SET_APP_CONFIG',
+    ADVANCED = 'SET_ADVANCED',
     MODEL = 'SET_MODEL_CONFIG',
     DETECTION = 'SET_DETECTION_CONFIG',
     RESET = 'RESET_CONFIG',
@@ -79,12 +80,18 @@ export interface ISetDetectionConfigAction {
     readonly payload: Partial<IDetectionConfig>;
 }
 
+export interface ISetAdvancedConfigAction {
+    readonly type: ConfigSetAction.ADVANCED;
+    readonly payload: Partial<IAdvancedConfig>;
+}
+
 export interface IResetConfigAction {
     readonly type: ConfigSetAction.RESET;
 }
 
 export type ConfigAction =
     | ISetAppConfigAction
+    | ISetAdvancedConfigAction
     | ISetModelConfigAction
     | ISetDetectionConfigAction
     | IResetConfigAction;

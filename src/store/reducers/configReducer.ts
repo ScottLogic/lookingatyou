@@ -6,6 +6,7 @@ import {
     IConfigState,
     IDetectionConfig,
     IModelConfig,
+    ISetAdvancedConfigAction,
     ISetAppConfigAction,
     ISetDetectionConfigAction,
     ISetModelConfigAction,
@@ -48,6 +49,7 @@ export const initialConfig: IConfigState = {
 
 const configActionMapping = {
     [ConfigSetAction.APP]: setAppConfig,
+    [ConfigSetAction.ADVANCED]: setAdvancedConfig,
     [ConfigSetAction.MODEL]: setModelConfig,
     [ConfigSetAction.DETECTION]: setDetectionConfig,
     [ConfigSetAction.RESET]: resetConfig,
@@ -63,7 +65,26 @@ const configStore = (
 };
 
 function setAppConfig(state: IConfigState, action: ConfigAction): IConfigState {
-    return { ...state, ...(action as ISetAppConfigAction).payload };
+    return {
+        ...state,
+        appConfig: {
+            ...state.appConfig,
+            ...(action as ISetAppConfigAction).payload,
+        },
+    };
+}
+
+function setAdvancedConfig(
+    state: IConfigState,
+    action: ConfigAction,
+): IConfigState {
+    return {
+        ...state,
+        advancedConfig: {
+            ...state.advancedConfig,
+            ...(action as ISetAdvancedConfigAction).payload,
+        },
+    };
 }
 
 function setModelConfig(
