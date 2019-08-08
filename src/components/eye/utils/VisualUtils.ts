@@ -2,11 +2,6 @@ import { minIrisScale } from '../../../AppConstants';
 import { normalise } from '../../../utils/objectTracking/calculateFocus';
 import { ICoords } from '../../../utils/types';
 
-export interface IIrisAdjustment {
-    scale: number;
-    angle: number;
-}
-
 export function irisMatrixTransform(position: ICoords) {
     const radius = Math.hypot(position.x, position.y);
     if (radius === 0) {

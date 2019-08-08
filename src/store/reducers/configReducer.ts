@@ -38,7 +38,7 @@ export const initialAdvancedConfig: IAdvancedConfig = {
     toggleDebug: false,
     modelConfig: initalModelConfig,
     detectionConfig: initialDetectionConfig,
-    toggleReflection: true,
+    toggleReflection: false,
     reflectionOpacity: 0.2,
 };
 
