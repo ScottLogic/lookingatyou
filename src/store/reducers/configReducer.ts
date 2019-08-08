@@ -1,6 +1,8 @@
 import {
     ConfigAction,
     ConfigSetAction,
+    IAdvancedConfig,
+    IAppConfig,
     IConfigState,
     IDetectionConfig,
     IModelConfig,
@@ -23,17 +25,25 @@ export const initialDetectionConfig: IDetectionConfig = {
     nmsRadius: 20,
 };
 
-export const initialState: IConfigState = {
+export const initialAppConfig: IAppConfig = {
     xSensitivity: 1,
     ySensitivity: 1,
     fps: 2,
-    toggleDebug: false,
     irisColor: '#55acee', // must be hex value, as this is passed to colour picker input
+    toggleAdvanced: false,
+};
+
+export const initialAdvancedConfig: IAdvancedConfig = {
+    toggleDebug: false,
     modelConfig: initalModelConfig,
     detectionConfig: initialDetectionConfig,
     toggleReflection: true,
     reflectionOpacity: 0.2,
-    toggleAdvanced: false,
+};
+
+export const initialConfig: IConfigState = {
+    advancedConfig: initialAdvancedConfig,
+    appConfig: initialAppConfig,
 };
 
 const configActionMapping = {
@@ -44,7 +54,7 @@ const configActionMapping = {
 };
 
 const configStore = (
-    state: IConfigState = initialState,
+    state: IConfigState = initialConfig,
     action: ConfigAction,
 ): IConfigState => {
     return configActionMapping.hasOwnProperty(action.type)
@@ -62,9 +72,12 @@ function setModelConfig(
 ): IConfigState {
     return {
         ...state,
-        modelConfig: {
-            ...state.modelConfig,
-            ...(action as ISetModelConfigAction).payload,
+        advancedConfig: {
+            ...state.advancedConfig,
+            modelConfig: {
+                ...state.advancedConfig.modelConfig,
+                ...(action as ISetModelConfigAction).payload,
+            },
         },
     };
 }
@@ -75,15 +88,18 @@ function setDetectionConfig(
 ): IConfigState {
     return {
         ...state,
-        detectionConfig: {
-            ...state.detectionConfig,
-            ...(action as ISetDetectionConfigAction).payload,
+        advancedConfig: {
+            ...state.advancedConfig,
+            detectionConfig: {
+                ...state.advancedConfig.detectionConfig,
+                ...(action as ISetDetectionConfigAction).payload,
+            },
         },
     };
 }
 
 function resetConfig(): IConfigState {
-    return initialState;
+    return initialConfig;
 }
 
 export default configStore;

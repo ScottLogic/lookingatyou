@@ -8,8 +8,7 @@ import thunk from 'redux-thunk';
 import ConfigMenu, {
     IConfigMenuProps,
 } from '../../components/configMenu/ConfigMenu';
-import { HelpWith } from '../../components/configMenu/Help';
-import { initialState } from '../../store/reducers/configReducer';
+import { initialConfig } from '../../store/reducers/configReducer';
 
 let props: IConfigMenuProps;
 let window: Window;
@@ -28,7 +27,7 @@ describe('ConfigMenu', () => {
             window,
         };
         const mockStore = configureStore([thunk]);
-        store = mockStore(initialState);
+        store = mockStore(initialConfig);
     });
 
     it('should render correctly', () => {

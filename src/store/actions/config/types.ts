@@ -16,9 +16,9 @@ export enum ConfigSetAction {
     RESET = 'RESET_CONFIG',
 }
 
-export interface IConfigState extends IAppConfig {
-    modelConfig: IModelConfig;
-    detectionConfig: IDetectionConfig;
+export interface IConfigState {
+    advancedConfig: IAdvancedConfig;
+    appConfig: IAppConfig;
 }
 
 export type PartialConfig =
@@ -31,11 +31,16 @@ export interface IAppConfig {
     xSensitivity: number;
     ySensitivity: number;
     fps: number;
-    toggleDebug: boolean;
     toggleAdvanced: boolean;
     irisColor: string;
+}
+
+export interface IAdvancedConfig {
     toggleReflection: boolean;
     reflectionOpacity: number;
+    toggleDebug: boolean;
+    modelConfig: IModelConfig;
+    detectionConfig: IDetectionConfig;
 }
 
 export interface IModelConfig {

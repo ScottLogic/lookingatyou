@@ -24,15 +24,18 @@ import UserConfigItems from './UserConfigItems';
 export interface IConfigMenuProps {
     window: Window;
 }
+
 interface IConfigMenuMapStateToProps {
     config: IConfigState;
 }
+
 interface IConfigMenuMapDispatchToProps {
     updateAppConfig: (payload: PartialConfig) => void;
     updateModelConfig: (payload: PartialConfig) => void;
     updateDetectionConfig: (payload: PartialConfig) => void;
     resetConfig: () => void;
 }
+
 export type ConfigMenuProps = IConfigMenuProps &
     IConfigMenuMapStateToProps &
     IConfigMenuMapDispatchToProps;
@@ -41,6 +44,7 @@ interface IConfigMenuState {
     leftPosition: string;
     isUnderMouse: boolean;
 }
+
 class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
     private hideTimeout: number = 0;
 
@@ -59,7 +63,10 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
     mouseMoveHandler() {
         this.setState({ leftPosition: '0px' });
         this.props.window.clearInterval(this.hideTimeout);
-        if (!this.state.isUnderMouse && !this.props.config.toggleDebug) {
+        if (
+            !this.state.isUnderMouse &&
+            !this.props.config.advancedConfig.toggleDebug
+        ) {
             this.hideTimeout = this.props.window.setTimeout(
                 () =>
                     this.setState({
@@ -117,7 +124,7 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
                     ?
                 </span>
                 <UserConfigItems {...this.props} />
-                {this.props.config.toggleAdvanced && (
+                {this.props.config.appConfig.toggleAdvanced && (
                     <AdvancedConfigItems {...this.props} />
                 )}
 
