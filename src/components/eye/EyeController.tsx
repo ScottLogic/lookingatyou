@@ -243,7 +243,6 @@ export const EyeController = React.memo(
         );
     },
     (previous, next) =>
-        false &&
         isEqual(previous.animation, next.animation) &&
         previous.dilation === next.dilation &&
         previous.openCoefficient === next.openCoefficient &&
