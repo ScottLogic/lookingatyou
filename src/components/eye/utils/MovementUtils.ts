@@ -1,4 +1,3 @@
-import convert from 'color-convert';
 import {
     eyeCoords,
     idleMovementConsts,
@@ -14,11 +13,10 @@ export function analyseLight(image: ImageData): number {
 
     let colorSum = 0;
     for (let i = 0; i < data.length; i += 4) {
-        const pixelL = convert.rgb.lab([data[i], data[i + 1], data[i + 2]])[0];
-        colorSum += pixelL;
+        colorSum += data[i] + data[i + 1] + data[i + 2];
     }
 
-    const brightness = Math.floor(colorSum / (image.width * image.height));
+    const brightness = Math.floor(colorSum / (image.width * image.height * 3));
     return Math.min(brightness, lightConsts.maxBrightness);
 }
 

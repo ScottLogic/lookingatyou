@@ -189,7 +189,7 @@ export class MovementHandler extends React.Component<
                     .reduce((x, y) => x + y);
                 let random = Math.random() * totalFrequency;
                 let i = 0;
-                while (random >= 0) {
+                while (random >= 0 && i < userInteraction.texts.length - 1) {
                     random -= userInteraction.texts[i].frequency;
                     i++;
                 }
