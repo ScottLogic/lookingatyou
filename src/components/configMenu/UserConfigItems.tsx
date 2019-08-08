@@ -12,7 +12,7 @@ interface IUserConfigProps {
 }
 export default function UserConfig(props: IUserConfigProps) {
     return (
-        <React.Fragment>
+        <>
             <NumberMenuItem
                 name={'FPS'}
                 configName={'fps'}
@@ -57,14 +57,20 @@ export default function UserConfig(props: IUserConfigProps) {
             <br />
 
             <CheckBoxMenuItem
-                window={props.window}
-                alert={!props.config.toggleAdvanced}
                 name={'Toggle Advanced'}
                 configName={'toggleAdvanced'}
                 helpWith={HelpWith.ADVANCE_SETTINGS}
                 checked={props.config.toggleAdvanced}
                 onInputChange={props.updateAppConfig}
+                warning={
+                    <>
+                        The advanced settings are intended for users with a
+                        technical understanding of the app and changing them
+                        from the defaults could lead to the app becoming
+                        unstable.
+                    </>
+                }
             />
-        </React.Fragment>
+        </>
     );
 }

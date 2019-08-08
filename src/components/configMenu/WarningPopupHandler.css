@@ -1,0 +1,14 @@
+.accept {
+    position: absolute;
+    right: 0%;
+}
+
+button {
+    align-self: right;
+}
+
+.decline,
+.accept {
+    margin: 15px !important;
+    float: right;
+}

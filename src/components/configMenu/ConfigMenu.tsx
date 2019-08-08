@@ -1,3 +1,4 @@
+import { Button } from '@material-ui/core';
 import React from 'react';
 import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
@@ -114,9 +115,13 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
 
                 <br />
 
-                <button className="reset" onClick={this.props.resetConfig}>
+                <Button
+                    variant="contained"
+                    className="reset"
+                    onClick={this.props.resetConfig}
+                >
                     RESET TO DEFAULTS
-                </button>
+                </Button>
 
                 {Object.values(HelpWith).map((type, key: number) => (
                     <Help key={key} problemWith={HelpWith[type] as HelpWith} />
