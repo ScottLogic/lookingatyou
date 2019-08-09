@@ -48,14 +48,14 @@ export const InnerEye = React.memo((props: IInnerEyeProps) => {
             <path
                 className="irisStyling"
                 d={props.innerPath}
-                fill={tinycolor(props.animation!.irisColor)
+                fill={tinycolor(props.animation.irisColor)
                     .darken(10)
                     .toHexString()}
             />
             <g
                 className="pupil"
                 style={transitionStyle}
-                transform={`scale(${props.animation!.dilation})`}
+                transform={`scale(${props.animation.dilation})`}
             >
                 <foreignObject
                     width={props.pupilRadius * 2}
