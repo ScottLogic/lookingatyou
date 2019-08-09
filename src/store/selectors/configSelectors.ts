@@ -20,3 +20,7 @@ export function getAdvancedConfig(state: IRootStore): IAdvancedConfig {
 export function getFPS(state: IRootStore): number {
     return state.configStore.appConfig.fps;
 }
+
+export function getShowHelp(state: IRootStore): boolean {
+    return state.configStore.appConfig.showHelp;
+}

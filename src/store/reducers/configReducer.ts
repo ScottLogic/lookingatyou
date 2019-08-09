@@ -32,6 +32,7 @@ export const initialAppConfig: IAppConfig = {
     fps: 2,
     irisColor: '#55acee', // must be hex value, as this is passed to colour picker input
     toggleAdvanced: false,
+    showHelp: true,
 };
 
 export const initialAdvancedConfig: IAdvancedConfig = {
@@ -40,7 +41,6 @@ export const initialAdvancedConfig: IAdvancedConfig = {
     detectionConfig: initialDetectionConfig,
     toggleReflection: false,
     reflectionOpacity: 0.2,
-    showHelp: true,
 };
 
 export const initialConfig: IConfigState = {
