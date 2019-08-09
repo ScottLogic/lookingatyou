@@ -1,3 +1,4 @@
+import { Checkbox, FormControl, FormControlLabel } from '@material-ui/core';
 import React, { useState } from 'react';
 import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
@@ -16,12 +17,13 @@ const CheckBoxMenuItem = React.memo(
     (props: ICheckBoxMenuItemProps) => {
         const [showModal, setShowModal] = useState(false);
 
-        function onChange(event: React.ChangeEvent<HTMLInputElement>) {
+        function onChange(event: object, checked: boolean) {
             if (props.warning && !props.checked) {
                 setShowModal(true);
             } else {
+                setShowModal(false);
                 props.onInputChange({
-                    [props.configName]: event.target.checked,
+                    [props.configName]: checked,
                 });
             }
         }
@@ -38,14 +40,22 @@ const CheckBoxMenuItem = React.memo(
         }
 
         return (
-            <div data-tip={true} data-for={HelpWith[props.helpWith]}>
-                <label>{props.name}</label>
-
-                <input
-                    type="checkbox"
-                    checked={props.checked}
-                    onChange={onChange}
-                />
+            <div
+                className="checkbox"
+                data-tip={true}
+                data-for={HelpWith[props.helpWith]}
+            >
+                <FormControl>
+                    <FormControlLabel
+                        value="start"
+                        onChange={onChange}
+                        control={
+                            <Checkbox checked={props.checked} color="primary" />
+                        }
+                        label={props.name}
+                        labelPlacement="start"
+                    />
+                </FormControl>
 
                 {props.warning && (
                     <WarningPopupHandler

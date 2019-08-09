@@ -35,7 +35,7 @@ export function loadModel(window: Window) {
     ) => {
         dispatch(setModel(null));
         const config = getConfig(getState());
-        const model = await load(config.modelConfig);
+        const model = await load(config.advancedConfig.modelConfig);
         dispatch(setModel(model));
         dispatch(restartDetection(window));
     };
@@ -65,7 +65,7 @@ export function handleDetection(document: Document) {
         const state = getState();
         const video = getVideo(state);
         const model = state.detectionStore.model;
-        const detectionConfig = getConfig(state).detectionConfig;
+        const detectionConfig = getConfig(state).advancedConfig.detectionConfig;
 
         if (!video || !model) {
             return;

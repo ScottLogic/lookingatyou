@@ -5,16 +5,18 @@ exports[`DropDownMenuItem should render correctly 1`] = `
   <label>
     test
   </label>
-  <select onChange={[Function: onChange]} value=\\"a\\">
-    <option value=\\"a\\">
-      a
-    </option>
-    <option value=\\"b\\">
-      b
-    </option>
-    <option value=\\"c\\">
-      c
-    </option>
-  </select>
+  <WithStyles(ForwardRef(FormControl)) className=\\"selectForm\\">
+    <WithStyles(ForwardRef(Select)) value=\\"a\\" onChange={[Function: handleChange]} name=\\"test\\">
+      <WithStyles(ForwardRef(MenuItem)) value=\\"a\\">
+        a
+      </WithStyles(ForwardRef(MenuItem))>
+      <WithStyles(ForwardRef(MenuItem)) value=\\"b\\">
+        b
+      </WithStyles(ForwardRef(MenuItem))>
+      <WithStyles(ForwardRef(MenuItem)) value=\\"c\\">
+        c
+      </WithStyles(ForwardRef(MenuItem))>
+    </WithStyles(ForwardRef(Select))>
+  </WithStyles(ForwardRef(FormControl))>
 </div>"
 `;

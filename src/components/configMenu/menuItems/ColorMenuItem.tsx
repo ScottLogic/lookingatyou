@@ -1,6 +1,10 @@
-import React from 'react';
+import { Button } from '@material-ui/core';
+import React, { useState } from 'react';
+import { SketchPicker } from 'react-color';
+import Popup from 'reactjs-popup';
 import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
+import './ColorMenuItem.css';
 
 export interface IColorMenuItemProps {
     name: string;
@@ -12,15 +16,63 @@ export interface IColorMenuItemProps {
 
 const ColorMenuItem = React.memo(
     (props: IColorMenuItemProps) => {
-        function onChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const [showPopup, setShowPopup] = useState(false);
+
+        function onChange(
+            event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+        ) {
+            setShowPopup(true);
+        }
+
+        function handleChangeComplete(color: any) {
             props.onInputChange({
-                [props.configName]: event.target.value,
+                [props.configName]: color.hex,
             });
         }
+
+        function close(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            setShowPopup(false);
+        }
+
         return (
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>
-                <label>{props.name}</label>
-                <input type="color" value={props.color} onChange={onChange} />
+                <Button
+                    style={{
+                        backgroundColor: props.color,
+                    }}
+                    value={props.color}
+                    variant="contained"
+                    onClick={onChange}
+                    className="launchColorPicker"
+                >
+                    Pick {props.name}
+                </Button>
+
+                {showPopup && (
+                    <Popup
+                        className="colorPicker"
+                        open={showPopup}
+                        modal={true}
+                        closeOnDocumentClick={false}
+                    >
+                        <>
+                            <SketchPicker
+                                color={props.color}
+                                onChangeComplete={handleChangeComplete}
+                            />
+
+                            <br />
+
+                            <Button
+                                className="closeColorPicker"
+                                variant="contained"
+                                onClick={close}
+                            >
+                                Close
+                            </Button>
+                        </>
+                    </Popup>
+                )}
             </div>
         );
     },

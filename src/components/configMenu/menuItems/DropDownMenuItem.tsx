@@ -1,3 +1,4 @@
+import { FormControl, MenuItem, Select } from '@material-ui/core';
 import React from 'react';
 import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
@@ -13,7 +14,16 @@ export interface IDropDownMenuItemProps {
 
 const DropDownMenuItem = React.memo(
     (props: IDropDownMenuItemProps) => {
-        function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
+        function getMenuItems(): JSX.Element[] {
+            const menuItem = props.values.map((element, index) => (
+                <MenuItem key={index} value={element}>
+                    {element}
+                </MenuItem>
+            ));
+            return menuItem;
+        }
+
+        function handleChange(event: any) {
             props.onInputChange({
                 [props.configName]: event.target.value,
             });
@@ -22,13 +32,15 @@ const DropDownMenuItem = React.memo(
         return (
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>
                 <label>{props.name}</label>
-                <select onChange={onChange} value={props.defaultValue}>
-                    {props.values.map((value, index) => (
-                        <option value={value} key={index}>
-                            {value}
-                        </option>
-                    ))}
-                </select>
+                <FormControl className="selectForm">
+                    <Select
+                        value={props.defaultValue}
+                        onChange={handleChange}
+                        name={props.name}
+                    >
+                        {getMenuItems()}
+                    </Select>
+                </FormControl>
             </div>
         );
     },

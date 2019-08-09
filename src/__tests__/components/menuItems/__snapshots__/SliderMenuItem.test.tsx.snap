@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render correctly 1`] = `
+"<div data-tip={true} data-for=\\"FPS\\">
+  <label>
+    test
+  </label>
+  <WithStyles(ForwardRef(Slider)) ValueLabelComponent={[Function: ValueLabelComponent]} aria-label=\\"custom thumb label\\" defaultValue={30} value={30} onChange={[Function: onChange]} min={1} max={[undefined]} step={1} className=\\"slider\\" />
+</div>"
+`;
