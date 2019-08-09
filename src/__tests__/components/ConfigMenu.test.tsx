@@ -9,7 +9,11 @@ import {
     ConfigMenu,
     ConfigMenuProps,
 } from '../../components/configMenu/ConfigMenu';
-import { initialConfig } from '../../store/reducers/configReducer';
+import {
+    initialAdvancedConfig,
+    initialAppConfig,
+    initialConfig,
+} from '../../store/reducers/configReducer';
 
 let props: ConfigMenuProps;
 let window: Window;
@@ -30,7 +34,8 @@ describe('ConfigMenu', () => {
 
         props = {
             window,
-            config: initialConfig,
+            appConfig: initialAppConfig,
+            advancedConfig: initialAdvancedConfig,
             updateAppConfig: jest.fn(),
             updateModelConfig: jest.fn(),
             updateDetectionConfig: jest.fn(),

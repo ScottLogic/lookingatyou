@@ -11,12 +11,16 @@ import {
 } from '../../store/actions/config/actions';
 import {
     ConfigSetAction,
-    IConfigState,
+    IAdvancedConfig,
+    IAppConfig,
     PartialConfig,
     UpdateConfigAction,
 } from '../../store/actions/config/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
-import { getConfig } from '../../store/selectors/configSelectors';
+import {
+    getAdvancedConfig,
+    getAppConfig,
+} from '../../store/selectors/configSelectors';
 import AdvancedConfigItems from './AdvancedConfigItems';
 import './ConfigMenu.css';
 import Help, { HelpWith } from './Help';
@@ -27,7 +31,8 @@ export interface IConfigMenuProps {
 }
 
 interface IConfigMenuMapStateToProps {
-    config: IConfigState;
+    appConfig: IAppConfig;
+    advancedConfig: IAdvancedConfig;
 }
 
 interface IConfigMenuMapDispatchToProps {
@@ -70,7 +75,7 @@ export class ConfigMenu extends React.Component<
         this.props.window.clearInterval(this.hideTimeout);
         if (
             !this.state.isUnderMouse &&
-            !this.props.config.advancedConfig.toggleDebug
+            !this.props.advancedConfig.toggleDebug
         ) {
             this.hideTimeout = this.props.window.setTimeout(
                 () =>
@@ -129,7 +134,7 @@ export class ConfigMenu extends React.Component<
                     ?
                 </span>
                 <UserConfigItems {...this.props} />
-                {this.props.config.appConfig.toggleAdvanced && (
+                {this.props.appConfig.toggleAdvanced && (
                     <AdvancedConfigItems {...this.props} />
                 )}
 
@@ -153,7 +158,8 @@ export class ConfigMenu extends React.Component<
     }
 }
 const mapStateToProps = (state: IRootStore): IConfigMenuMapStateToProps => ({
-    config: getConfig(state),
+    appConfig: getAppConfig(state),
+    advancedConfig: getAdvancedConfig(state),
 });
 
 const mapDispatchToProps = (

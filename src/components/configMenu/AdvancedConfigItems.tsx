@@ -1,6 +1,7 @@
 import React from 'react';
 import {
-    IConfigState,
+    IAdvancedConfig,
+    IAppConfig,
     UpdateConfigAction,
 } from '../../store/actions/config/types';
 import { HelpWith } from './Help';
@@ -12,12 +13,13 @@ import SliderMenuItem from './menuItems/SliderMenuItem';
 
 interface IAdvancedConfigProps {
     window: Window;
-    config: IConfigState;
+    advancedConfig: IAdvancedConfig;
     updateModelConfig: UpdateConfigAction;
     updateDetectionConfig: UpdateConfigAction;
     updateAppConfig: UpdateConfigAction;
     updateAdvancedConfig: UpdateConfigAction;
 }
+
 export default function AdvancedConfig(props: IAdvancedConfigProps) {
     return (
         <>
@@ -25,16 +27,16 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 name={'Show Reflection'}
                 configName={'toggleReflection'}
                 helpWith={HelpWith.REFLECTION}
-                checked={props.config.advancedConfig.toggleReflection}
+                checked={props.advancedConfig.toggleReflection}
                 onInputChange={props.updateAdvancedConfig}
             />
 
-            {props.config.advancedConfig.toggleReflection && (
+            {props.advancedConfig.toggleReflection && (
                 <SliderMenuItem
                     name={'Reflection Opacity'}
                     configName={'reflectionOpacity'}
                     step={0.05}
-                    defaultValue={props.config.advancedConfig.reflectionOpacity}
+                    defaultValue={props.advancedConfig.reflectionOpacity}
                     onValidInput={props.updateAdvancedConfig}
                     helpWith={HelpWith.REFLECTION_OPACITY}
                     min={0.0}
@@ -45,10 +47,10 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 name={'Toggle Camera Feed'}
                 configName={'toggleDebug'}
                 helpWith={HelpWith.DEBUG}
-                checked={props.config.advancedConfig.toggleDebug}
+                checked={props.advancedConfig.toggleDebug}
                 onInputChange={props.updateAdvancedConfig}
             />
-            {props.config.advancedConfig.toggleDebug && (
+            {props.advancedConfig.toggleDebug && (
                 <CanvasMenuItem
                     name={'Camera'}
                     helpWith={HelpWith.VIDEO_STREAM}
@@ -64,9 +66,7 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 configName={'architecture'}
                 onInputChange={props.updateModelConfig}
                 values={['MobileNetV1', 'ResNet50']}
-                defaultValue={
-                    props.config.advancedConfig.modelConfig.architecture
-                }
+                defaultValue={props.advancedConfig.modelConfig.architecture}
                 helpWith={HelpWith.ARCHITECTURE}
             />
             <DropDownMenuItem
@@ -74,12 +74,12 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 configName={'outputStride'}
                 onInputChange={props.updateModelConfig}
                 values={
-                    props.config.advancedConfig.modelConfig.architecture ===
+                    props.advancedConfig.modelConfig.architecture ===
                     'MobileNetV1'
                         ? ['8', '16']
                         : ['16', '32']
                 }
-                defaultValue={props.config.advancedConfig.modelConfig.outputStride.toString()}
+                defaultValue={props.advancedConfig.modelConfig.outputStride.toString()}
                 helpWith={HelpWith.OUTPUT_STRIDE}
             />
             <DropDownMenuItem
@@ -100,17 +100,17 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                     '513',
                     '801',
                 ]}
-                defaultValue={props.config.advancedConfig.modelConfig.inputResolution.toString()}
+                defaultValue={props.advancedConfig.modelConfig.inputResolution.toString()}
                 helpWith={HelpWith.RESOLUTION}
             />
-            {props.config.advancedConfig.modelConfig.architecture ===
+            {props.advancedConfig.modelConfig.architecture ===
                 'MobileNetV1' && (
                 <DropDownMenuItem
                     name={'Multiplier'}
                     configName={'multiplier'}
                     onInputChange={props.updateModelConfig}
                     values={['0.5', '0.75', '1']}
-                    defaultValue={props.config.advancedConfig.modelConfig.multiplier.toString()}
+                    defaultValue={props.advancedConfig.modelConfig.multiplier.toString()}
                     helpWith={HelpWith.MULTIPLIER}
                 />
             )}
@@ -123,7 +123,7 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 configName={'maxDetections'}
                 step={1}
                 defaultValue={
-                    props.config.advancedConfig.detectionConfig.maxDetections
+                    props.advancedConfig.detectionConfig.maxDetections
                 }
                 onValidInput={props.updateDetectionConfig}
                 helpWith={HelpWith.DETECTIONS}
@@ -136,7 +136,7 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 helpWith={HelpWith.MIN_SCORE}
                 step={0.01}
                 defaultValue={
-                    props.config.advancedConfig.detectionConfig.scoreThreshold
+                    props.advancedConfig.detectionConfig.scoreThreshold
                 }
                 onValidInput={props.updateDetectionConfig}
                 min={0}
@@ -147,9 +147,7 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 configName={'nmsRadius'}
                 helpWith={HelpWith.NMS_RADIUS}
                 step={1}
-                defaultValue={
-                    props.config.advancedConfig.detectionConfig.nmsRadius
-                }
+                defaultValue={props.advancedConfig.detectionConfig.nmsRadius}
                 onValidInput={props.updateDetectionConfig}
                 min={1}
             />
