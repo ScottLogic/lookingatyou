@@ -31,7 +31,7 @@ export const initialState: IConfigState = {
     irisColor: '#55acee', // must be hex value, as this is passed to colour picker input
     modelConfig: initalModelConfig,
     detectionConfig: initialDetectionConfig,
-    toggleReflection: false,
+    toggleReflection: true,
     reflectionOpacity: 0.2,
     toggleAdvanced: false,
 };
