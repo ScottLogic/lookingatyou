@@ -5,7 +5,7 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import './App.css';
 import ConfigMenu from './components/configMenu/ConfigMenu';
-import HelpPopup from './components/helpPopup/HelpPopup';
+import HelpPopup from './components/configMenu/HelpPopupHandler';
 import MovementHandler from './components/intelligentMovement/MovementHandler';
 import VideoHandler from './components/video/VideoHandler';
 import { loadModel } from './store/actions/detections/actions';
@@ -85,8 +85,6 @@ export class App extends React.Component<AppProps, IAppState> {
     render() {
         return (
             <div className="App">
-                <HelpPopup window={this.props.environment} />
-
                 <VideoHandler {...this.props} />
 
                 {this.props.webcamAvailable ? (

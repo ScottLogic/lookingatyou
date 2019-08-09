@@ -19,6 +19,7 @@ import { getConfig } from '../../store/selectors/configSelectors';
 import AdvancedConfigItems from './AdvancedConfigItems';
 import './ConfigMenu.css';
 import Help, { HelpWith } from './Help';
+import HelpPopupHandler from './HelpPopupHandler';
 import UserConfigItems from './UserConfigItems';
 
 export interface IConfigMenuProps {
@@ -122,6 +123,7 @@ export class ConfigMenu extends React.Component<
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
             >
+                <HelpPopupHandler window={this.props.window} />
                 <h1>Settings</h1>
                 <button className="icon" onClick={showAppHelp}>
                     ?
