@@ -158,16 +158,12 @@ export class MovementHandler extends React.Component<
         } else {
             this.setNoTarget();
 
-            if (this.props.animation.length === 0) {
-                if (
-                    !this.state.isSleeping &&
-                    Math.random() < chanceOfIdleEyesMovement
-                ) {
-                    this.hasMovedLeft = !this.hasMovedLeft;
-                    this.props.updateAnimation(
-                        naturalMovement(this.hasMovedLeft),
-                    );
-                }
+            if (
+                !this.state.isSleeping &&
+                Math.random() < chanceOfIdleEyesMovement
+            ) {
+                this.hasMovedLeft = !this.hasMovedLeft;
+                this.props.updateAnimation(naturalMovement(this.hasMovedLeft));
             }
         }
     }
