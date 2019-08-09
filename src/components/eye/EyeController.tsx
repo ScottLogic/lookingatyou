@@ -77,8 +77,8 @@ export const EyeController = React.memo(
             props.animationExists && props.animation[0].normalisedCoords
                 ? props.animation[0].normalisedCoords
                 : {
-                      x: props.target.x * props.config.xSensitivity,
-                      y: props.target.y * props.config.ySensitivity,
+                      x: props.target.x * props.config.appConfig.xSensitivity,
+                      y: props.target.y * props.config.appConfig.ySensitivity,
                   };
 
         const maxDisplacement =
@@ -110,7 +110,7 @@ export const EyeController = React.memo(
         const irisColor =
             props.animationExists && props.animation[0].irisColor
                 ? props.animation[0].irisColor
-                : props.config.irisColor;
+                : props.config.appConfig.irisColor;
 
         const detectedRef = useRef(props.detected);
         useEffect(() => {
@@ -170,7 +170,7 @@ export const EyeController = React.memo(
         }, [animation, updateAnimation, environment, props.animationExists]);
 
         useEffect(() => {
-            if (props.config.toggleReflection && props.image) {
+            if (props.config.advancedConfig.toggleReflection && props.image) {
                 reflectionRef.current = getReflection(
                     pupilRadius,
                     props.target,
@@ -182,7 +182,7 @@ export const EyeController = React.memo(
         }, [
             props.target,
             props.image,
-            props.config.toggleReflection,
+            props.config.advancedConfig.toggleReflection,
             pupilRadius,
         ]);
 
@@ -220,7 +220,7 @@ export const EyeController = React.memo(
                             pupilRadius={pupilRadius}
                             dilatedCoefficient={dilatedCoefficient}
                             innerCenter={innerCenter}
-                            fps={props.config.fps}
+                            fps={props.config.appConfig.fps}
                             bezier={bezier}
                             eyeShape={eyeShape}
                             reflection={reflectionRef.current}
@@ -236,7 +236,9 @@ export const EyeController = React.memo(
                 })}
                 <Gradients
                     irisColor={irisColor}
-                    reflectionOpacity={props.config.reflectionOpacity}
+                    reflectionOpacity={
+                        props.config.advancedConfig.reflectionOpacity
+                    }
                 />
                 <Shadows openCoefficient={props.openCoefficient} />
             </div>

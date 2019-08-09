@@ -24,15 +24,18 @@ import UserConfigItems from './UserConfigItems';
 export interface IConfigMenuProps {
     window: Window;
 }
+
 interface IConfigMenuMapStateToProps {
     config: IConfigState;
 }
+
 interface IConfigMenuMapDispatchToProps {
     updateAppConfig: (payload: PartialConfig) => void;
     updateModelConfig: (payload: PartialConfig) => void;
     updateDetectionConfig: (payload: PartialConfig) => void;
     resetConfig: () => void;
 }
+
 export type ConfigMenuProps = IConfigMenuProps &
     IConfigMenuMapStateToProps &
     IConfigMenuMapDispatchToProps;
@@ -41,7 +44,11 @@ interface IConfigMenuState {
     leftPosition: string;
     isUnderMouse: boolean;
 }
-class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
+
+export class ConfigMenu extends React.Component<
+    ConfigMenuProps,
+    IConfigMenuState
+> {
     private hideTimeout: number = 0;
 
     constructor(props: ConfigMenuProps) {
@@ -58,9 +65,12 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
 
     mouseMoveHandler() {
         this.setState({ leftPosition: '0px' });
-        clearInterval(this.hideTimeout);
-        if (!this.state.isUnderMouse && !this.props.config.toggleDebug) {
-            this.hideTimeout = window.setTimeout(
+        this.props.window.clearInterval(this.hideTimeout);
+        if (
+            !this.state.isUnderMouse &&
+            !this.props.config.advancedConfig.toggleDebug
+        ) {
+            this.hideTimeout = this.props.window.setTimeout(
                 () =>
                     this.setState({
                         leftPosition: '-' + configMenuConsts.width,
@@ -71,7 +81,7 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
     }
 
     onMouseEnter() {
-        clearInterval(this.hideTimeout);
+        this.props.window.clearInterval(this.hideTimeout);
         this.setState({ isUnderMouse: true });
     }
 
@@ -86,6 +96,14 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
         return (
             nextState.leftPosition !== this.state.leftPosition ||
             !isEqual(nextProps, this.props)
+        );
+    }
+
+    componentWillUnmount() {
+        this.props.window.clearInterval(this.hideTimeout);
+        this.props.window.removeEventListener(
+            'mousemove',
+            this.mouseMoveHandler,
         );
     }
 
@@ -109,7 +127,7 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
                     ?
                 </span>
                 <UserConfigItems {...this.props} />
-                {this.props.config.toggleAdvanced && (
+                {this.props.config.appConfig.toggleAdvanced && (
                     <AdvancedConfigItems {...this.props} />
                 )}
 
@@ -122,6 +140,11 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
                 >
                     RESET TO DEFAULTS
                 </Button>
+<<<<<<< HEAD
+=======
+
+                <br />
+>>>>>>> refactor/387-config
 
                 {Object.values(HelpWith).map((type, key: number) => (
                     <Help key={key} problemWith={HelpWith[type] as HelpWith} />

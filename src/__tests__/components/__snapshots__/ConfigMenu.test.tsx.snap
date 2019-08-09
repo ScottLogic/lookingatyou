@@ -2,6 +2,6 @@
 
 exports[`ConfigMenu should render correctly 1`] = `
 "<ContextProvider value={{...}}>
-  <Connect(ConfigMenu) window={{...}} />
+  <ConfigMenu window={{...}} config={{...}} updateAppConfig={[Function: mockConstructor]} updateModelConfig={[Function: mockConstructor]} updateDetectionConfig={[Function: mockConstructor]} resetConfig={[Function: mockConstructor]} />
 </ContextProvider>"
 `;
