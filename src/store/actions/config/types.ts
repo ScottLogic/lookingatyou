@@ -35,9 +35,13 @@ export interface IAppConfig {
 export interface IAdvancedConfig {
     toggleReflection: boolean;
     reflectionOpacity: number;
+<<<<<<< HEAD
     toggleDebug: boolean;
     modelConfig: IModelConfig;
     detectionConfig: IDetectionConfig;
+=======
+    showHelp: boolean;
+>>>>>>> feature/418-pop-up-to-explain-app
 }
 
 export interface IModelConfig {

@@ -40,6 +40,7 @@ export const initialAdvancedConfig: IAdvancedConfig = {
     detectionConfig: initialDetectionConfig,
     toggleReflection: false,
     reflectionOpacity: 0.2,
+    showHelp: true,
 };
 
 export const initialConfig: IConfigState = {

@@ -108,6 +108,9 @@ export class ConfigMenu extends React.Component<
     }
 
     render() {
+        const showAppHelp = () => {
+            this.props.updateAppConfig({ showHelp: true });
+        };
         return (
             <div
                 style={{
@@ -119,13 +122,9 @@ export class ConfigMenu extends React.Component<
                 onMouseLeave={this.onMouseLeave}
             >
                 <h1>Settings</h1>
-                <span
-                    className="icon"
-                    data-tip={true}
-                    data-for={HelpWith[HelpWith.APP]}
-                >
+                <button className="icon" onClick={showAppHelp}>
                     ?
-                </span>
+                </button>
                 <UserConfigItems {...this.props} />
                 {this.props.config.appConfig.toggleAdvanced && (
                     <AdvancedConfigItems {...this.props} />
