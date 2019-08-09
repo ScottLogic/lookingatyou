@@ -1,5 +1,8 @@
 import React from 'react';
-import { IConfigState, PartialConfig } from '../../store/actions/config/types';
+import {
+    IConfigState,
+    UpdateConfigAction,
+} from '../../store/actions/config/types';
 import { HelpWith } from './Help';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
@@ -8,7 +11,7 @@ import SliderMenuItem from './menuItems/SliderMenuItem';
 
 interface IUserConfigProps {
     config: IConfigState;
-    updateAppConfig: (payload: PartialConfig) => void;
+    updateAppConfig: UpdateConfigAction;
     window: Window;
 }
 export default function UserConfig(props: IUserConfigProps) {

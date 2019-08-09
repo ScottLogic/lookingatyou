@@ -13,6 +13,7 @@ import {
     ConfigSetAction,
     IConfigState,
     PartialConfig,
+    UpdateConfigAction,
 } from '../../store/actions/config/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getConfig } from '../../store/selectors/configSelectors';
@@ -30,9 +31,10 @@ interface IConfigMenuMapStateToProps {
 }
 
 interface IConfigMenuMapDispatchToProps {
-    updateAppConfig: (payload: PartialConfig) => void;
-    updateModelConfig: (payload: PartialConfig) => void;
-    updateDetectionConfig: (payload: PartialConfig) => void;
+    updateAppConfig: UpdateConfigAction;
+    updateModelConfig: UpdateConfigAction;
+    updateDetectionConfig: UpdateConfigAction;
+    updateAdvancedConfig: UpdateConfigAction;
     resetConfig: () => void;
 }
 
@@ -161,6 +163,14 @@ const mapDispatchToProps = (
     updateAppConfig: (payload: PartialConfig) =>
         dispatch(
             updateConfigAction(ConfigSetAction.APP, payload, ownProps.window),
+        ),
+    updateAdvancedConfig: (payload: PartialConfig) =>
+        dispatch(
+            updateConfigAction(
+                ConfigSetAction.ADVANCED,
+                payload,
+                ownProps.window,
+            ),
         ),
     updateModelConfig: (payload: PartialConfig) =>
         dispatch(

@@ -1,6 +1,6 @@
 import { Slider, Tooltip } from '@material-ui/core';
 import React from 'react';
-import { PartialConfig } from '../../../store/actions/config/types';
+import { UpdateConfigAction } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 
 function ValueLabelComponent(props: any) {
@@ -34,7 +34,7 @@ export interface ISliderMenuItemProps {
     step: number;
     min?: number;
     max?: number;
-    onValidInput: (payload: PartialConfig) => void;
+    onValidInput: UpdateConfigAction;
     defaultValue: number;
     helpWith: HelpWith;
 }

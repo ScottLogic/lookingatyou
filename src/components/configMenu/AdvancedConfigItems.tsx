@@ -1,5 +1,8 @@
 import React from 'react';
-import { IConfigState, PartialConfig } from '../../store/actions/config/types';
+import {
+    IConfigState,
+    UpdateConfigAction,
+} from '../../store/actions/config/types';
 import { HelpWith } from './Help';
 import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
@@ -10,9 +13,10 @@ import SliderMenuItem from './menuItems/SliderMenuItem';
 interface IAdvancedConfigProps {
     window: Window;
     config: IConfigState;
-    updateModelConfig: (payload: PartialConfig) => void;
-    updateDetectionConfig: (payload: PartialConfig) => void;
-    updateAppConfig: (payload: PartialConfig) => void;
+    updateModelConfig: UpdateConfigAction;
+    updateDetectionConfig: UpdateConfigAction;
+    updateAppConfig: UpdateConfigAction;
+    updateAdvancedConfig: UpdateConfigAction;
 }
 export default function AdvancedConfig(props: IAdvancedConfigProps) {
     return (
@@ -22,7 +26,7 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 configName={'toggleReflection'}
                 helpWith={HelpWith.REFLECTION}
                 checked={props.config.advancedConfig.toggleReflection}
-                onInputChange={props.updateAppConfig}
+                onInputChange={props.updateAdvancedConfig}
             />
 
             {props.config.advancedConfig.toggleReflection && (
@@ -31,7 +35,7 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                     configName={'reflectionOpacity'}
                     step={0.05}
                     defaultValue={props.config.advancedConfig.reflectionOpacity}
-                    onValidInput={props.updateAppConfig}
+                    onValidInput={props.updateAdvancedConfig}
                     helpWith={HelpWith.REFLECTION_OPACITY}
                     min={0.0}
                     max={1.0}
@@ -42,7 +46,7 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 configName={'toggleDebug'}
                 helpWith={HelpWith.DEBUG}
                 checked={props.config.advancedConfig.toggleDebug}
-                onInputChange={props.updateAppConfig}
+                onInputChange={props.updateAdvancedConfig}
             />
             {props.config.advancedConfig.toggleDebug && (
                 <CanvasMenuItem

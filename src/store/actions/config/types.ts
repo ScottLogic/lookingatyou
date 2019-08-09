@@ -24,6 +24,8 @@ export type PartialConfig =
     | Partial<IModelConfig>
     | Partial<IDetectionConfig>;
 
+export type UpdateConfigAction = (payload: PartialConfig) => void;
+
 export interface IAppConfig {
     xSensitivity: number;
     ySensitivity: number;
