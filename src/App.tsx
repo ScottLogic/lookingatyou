@@ -1,5 +1,4 @@
 import { PoseNet } from '@tensorflow-models/posenet';
-import { thistle } from 'color-name';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Action } from 'redux';
