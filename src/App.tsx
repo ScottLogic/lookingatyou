@@ -1,4 +1,5 @@
 import { PoseNet } from '@tensorflow-models/posenet';
+import { thistle } from 'color-name';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Action } from 'redux';
@@ -85,21 +86,21 @@ export class App extends React.Component<AppProps, IAppState> {
             <div className="App">
                 <VideoHandler {...this.props} />
 
-                {this.props.webcamAvailable ? (
-                    !this.props.model ? (
-                        <div className="loading-spinner" />
-                    ) : (
-                        <>
-                            <MovementHandler {...this.state} {...this.props} />
-                            <ConfigMenu
-                                window={this.props.environment.window}
-                            />
-                        </>
-                    )
-                ) : (
+                {!this.props.webcamAvailable && (
                     <div className="Error">
                         No webcam connected. Please connect a webcam.
                     </div>
+                )}
+
+                {this.props.webcamAvailable && !this.props.model && (
+                    <div className="loading-spinner" />
+                )}
+
+                {this.props.webcamAvailable && this.props.model && (
+                    <>
+                        <MovementHandler {...this.state} {...this.props} />
+                        <ConfigMenu window={this.props.environment.window} />
+                    </>
                 )}
             </div>
         );
