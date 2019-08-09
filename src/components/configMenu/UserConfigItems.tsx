@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    IAdvancedConfig,
     IAppConfig,
     UpdateConfigAction,
 } from '../../store/actions/config/types';
