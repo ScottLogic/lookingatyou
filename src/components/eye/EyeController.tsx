@@ -5,6 +5,7 @@ import { Dispatch } from 'redux';
 import {
     blinkConsts,
     eyeCoefficients,
+    eyeSensitivtyScale,
     EyeSide,
     minIrisScale,
     numInnerEyeSectors,
@@ -72,8 +73,14 @@ export const EyeController = React.memo(
             props.animationExists && props.animation[0].normalisedCoords
                 ? confineToCircle(props.animation[0].normalisedCoords)
                 : confineToCircle({
-                      x: props.target.x * props.config.xSensitivity,
-                      y: props.target.y * props.config.ySensitivity,
+                      x:
+                          props.target.x *
+                          props.config.xSensitivity *
+                          eyeSensitivtyScale,
+                      y:
+                          props.target.y *
+                          props.config.ySensitivity *
+                          eyeSensitivtyScale,
                   });
 
         const scale = (scleraRadius - irisRadius * minIrisScale) / minIrisScale;
