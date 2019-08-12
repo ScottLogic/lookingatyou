@@ -73,9 +73,7 @@ export const EyeController = React.memo(
             props.animationExists && props.animation[0].normalisedCoords
                 ? confineToCircle(props.animation[0].normalisedCoords)
                 : confineToCircle({
-                      x:
-                          props.target.x *
-                          props.config.xSensitivity
+                      x: props.target.x * props.config.xSensitivity,
                       y:
                           props.target.y *
                           props.config.ySensitivity *
