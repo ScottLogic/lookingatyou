@@ -17,10 +17,9 @@ export function analyseLight(image: ImageData): number {
     return Math.min(brightness, lightConsts.maxBrightness);
 }
 
-export function confineToCircle(target: ICoords) {
-    const radius = Math.min(1, Math.hypot(target.x, target.y));
+export function confineToCircle(target: ICoords, radius: number = 1) {
+    const hypotenuse = Math.hypot(target.x, target.y);
+    const scale = hypotenuse > radius ? radius / hypotenuse : 1;
 
-    return radius === 0
-        ? { x: 0, y: 0 }
-        : { x: radius * (target.x / radius), y: radius * (target.y / radius) };
+    return { x: scale * target.x, y: scale * target.y };
 }
