@@ -24,9 +24,9 @@ const poseMapping: { [key: string]: (selection: IPoseKeypoints) => boolean } = {
 
 export function getPose(selection: IDetection): string | undefined {
     const poseKeypoints = getPoseKeypoints(selection);
-    return Object.keys(poseMapping).find(element =>
-        poseMapping[element](poseKeypoints),
-    );
+    return Object.keys(poseMapping).find(element => {
+        return poseMapping[element](poseKeypoints);
+    });
 }
 
 function getPoseKeypoints(selection: IDetection): IPoseKeypoints {
@@ -89,12 +89,15 @@ function wave(
     stationaryElbow: Keypoint,
 ) {
     const validWavingPoints = checkKeypoints(wavingWrist, wavingElbow);
+
     const validStationaryPoints = checkKeypoints(
         stationaryWrist,
         stationaryElbow,
     );
+
     const wavingWristAboveElbow =
         wavingWrist.position.y < wavingElbow.position.y;
+
     const stationaryWristBelowElbow =
         stationaryWrist.position.y > stationaryElbow.position.y;
 
