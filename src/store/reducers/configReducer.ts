@@ -121,7 +121,10 @@ function setDetectionConfig(
 }
 
 function resetConfig(): IConfigState {
-    return initialConfig;
+    return {
+        ...initialConfig,
+        appConfig: { ...initialConfig.appConfig, showHelp: false },
+    };
 }
 
 export default configStore;
