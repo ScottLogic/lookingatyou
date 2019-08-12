@@ -93,3 +93,7 @@ export function getOpenCoefficient(state: IRootStore): number {
 export function getAnimations(state: IRootStore): Animation {
     return state.detectionStore.animation;
 }
+
+export function getAnimationExists(state: IRootStore): boolean {
+    return state.detectionStore.animation.length > 0;
+}

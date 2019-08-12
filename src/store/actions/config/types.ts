@@ -32,6 +32,7 @@ export interface IAppConfig {
     irisColor: string;
     toggleReflection: boolean;
     reflectionOpacity: number;
+    showHelp: boolean;
 }
 
 export interface IModelConfig {

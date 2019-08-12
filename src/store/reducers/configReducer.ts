@@ -34,6 +34,7 @@ export const initialState: IConfigState = {
     toggleReflection: false,
     reflectionOpacity: 0.2,
     toggleAdvanced: false,
+    showHelp: true,
 };
 
 const configActionMapping = {

@@ -8,3 +8,7 @@ export function getConfig(state: IRootStore): IConfigState {
 export function getFPS(state: IRootStore): number {
     return state.configStore.fps;
 }
+
+export function getShowHelp(state: IRootStore): boolean {
+    return state.configStore.showHelp;
+}
