@@ -23,7 +23,6 @@ import {
 } from '../../store/selectors/configSelectors';
 import AdvancedConfigItems from './AdvancedConfigItems';
 import './ConfigMenu.css';
-import Help, { HelpWith } from './Help';
 import UserConfigItems from './UserConfigItems';
 
 export interface IConfigMenuProps {
@@ -148,10 +147,6 @@ export class ConfigMenu extends React.Component<
                 </Button>
 
                 <br />
-
-                {Object.values(HelpWith).map((type, key: number) => (
-                    <Help key={key} problemWith={HelpWith[type] as HelpWith} />
-                ))}
             </div>
         );
     }

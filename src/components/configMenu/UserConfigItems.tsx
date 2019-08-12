@@ -3,7 +3,7 @@ import {
     IAppConfig,
     UpdateConfigAction,
 } from '../../store/actions/config/types';
-import { HelpWith } from './Help';
+import Help, { HelpWith } from './Help';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
 import NumberMenuItem from './menuItems/NumberMenuItem';
@@ -24,7 +24,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 step={1}
                 defaultValue={props.appConfig.fps}
                 onValidInput={props.updateAppConfig}
-                helpWith={HelpWith.FPS}
+                helpWith={HelpWith.APP_FPS}
                 min={1}
             />
 
@@ -34,7 +34,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 step={0.05}
                 defaultValue={props.appConfig.xSensitivity}
                 onValidInput={props.updateAppConfig}
-                helpWith={HelpWith.X_SENSITIVITY}
+                helpWith={HelpWith.APP_X_SENSITIVITY}
                 min={0}
                 max={1}
             />
@@ -44,7 +44,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 step={0.05}
                 defaultValue={props.appConfig.ySensitivity}
                 onValidInput={props.updateAppConfig}
-                helpWith={HelpWith.Y_SENSITIVITY}
+                helpWith={HelpWith.APP_Y_SENSITIVITY}
                 min={0}
                 max={1}
             />
@@ -56,7 +56,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 configName={'irisColor'}
                 color={props.appConfig.irisColor}
                 onInputChange={props.updateAppConfig}
-                helpWith={HelpWith.IRIS_COLOR}
+                helpWith={HelpWith.APP_IRIS_COLOR}
             />
 
             <br />
@@ -64,7 +64,6 @@ export default function UserConfig(props: IUserConfigProps) {
             <CheckBoxMenuItem
                 name={'Show Advanced Settings'}
                 configName={'toggleAdvanced'}
-                helpWith={HelpWith.ADVANCE_SETTINGS}
                 checked={props.appConfig.toggleAdvanced}
                 onInputChange={props.updateAppConfig}
                 warning={
@@ -76,6 +75,14 @@ export default function UserConfig(props: IUserConfigProps) {
                     </>
                 }
             />
+
+            {Object.values(HelpWith).map((type, key: number) => {
+                return type.toString().includes('APP') ? (
+                    <Help key={key} problemWith={HelpWith[type] as HelpWith} />
+                ) : (
+                    <></>
+                );
+            })}
         </>
     );
 }
