@@ -22,5 +22,5 @@ export function getFPS(state: IRootStore): number {
 }
 
 export function getShowHelp(state: IRootStore): boolean {
-    return state.configStore.showHelp;
+    return state.configStore.appConfig.showHelp;
 }
