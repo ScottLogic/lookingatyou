@@ -152,10 +152,13 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
             />
 
             {Object.values(HelpWith).map((type, key: number) => {
-                return type.toString().includes('ADV') ? (
-                    <Help key={key} problemWith={HelpWith[type] as HelpWith} />
-                ) : (
-                    <></>
+                return (
+                    type.toString().includes('ADV') && (
+                        <Help
+                            key={key}
+                            problemWith={HelpWith[type] as HelpWith}
+                        />
+                    )
                 );
             })}
         </>

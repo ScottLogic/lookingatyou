@@ -77,10 +77,13 @@ export default function UserConfig(props: IUserConfigProps) {
             />
 
             {Object.values(HelpWith).map((type, key: number) => {
-                return type.toString().includes('APP') ? (
-                    <Help key={key} problemWith={HelpWith[type] as HelpWith} />
-                ) : (
-                    <></>
+                return (
+                    type.toString().includes('APP') && (
+                        <Help
+                            key={key}
+                            problemWith={HelpWith[type] as HelpWith}
+                        />
+                    )
                 );
             })}
         </>
