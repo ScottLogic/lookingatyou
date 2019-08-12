@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
     blinkConsts,
-    eyeRadiiCoefficients,
+    eyeCoefficients,
     EyeSide,
     minIrisScale,
     numInnerEyeSectors,
@@ -28,6 +28,7 @@ import { ICoords } from '../../utils/types';
 import Eye from './Eye';
 import { Gradients } from './Gradients';
 import { Shadows } from './Shadows';
+import { confineToCircle } from './utils/MovementUtils';
 import { getReflection } from './utils/ReflectionUtils';
 import { generateInnerPath, irisMatrixTransform } from './utils/VisualUtils';
 
@@ -61,32 +62,25 @@ export const EyeController = React.memo(
     (props: EyeControllerProps) => {
         const { environment, updateAnimation, animation } = props;
 
-        const scleraRadius = Math.floor(
-            props.width * eyeRadiiCoefficients.sclera,
-        );
-        const irisRadius = Math.floor(props.width * eyeRadiiCoefficients.iris);
-        const pupilRadius = Math.floor(
-            props.width * eyeRadiiCoefficients.pupil,
-        );
+        const scleraRadius = Math.floor(props.width * eyeCoefficients.sclera);
+        const irisRadius = Math.floor(props.width * eyeCoefficients.iris);
+        const pupilRadius = Math.floor(props.width * eyeCoefficients.pupil);
 
         const reflectionRef = useRef<ImageData | undefined>(undefined);
 
         const target =
             props.animationExists && props.animation[0].normalisedCoords
-                ? props.animation[0].normalisedCoords
-                : {
+                ? confineToCircle(props.animation[0].normalisedCoords)
+                : confineToCircle({
                       x: props.target.x * props.config.xSensitivity,
                       y: props.target.y * props.config.ySensitivity,
-                  };
+                  });
 
-        const maxDisplacement =
-            (scleraRadius - irisRadius * minIrisScale) / minIrisScale;
-        const polarDistance = Math.hypot(target.y, -target.x);
-        const polarAngle = Math.atan2(target.y, -target.x);
-        const displacement = Math.min(1, polarDistance) * maxDisplacement;
-        const innerX = props.width / 4 + displacement * Math.cos(polarAngle);
-        const innerY = props.height / 2 + displacement * Math.sin(polarAngle);
-        const innerCenter = { x: innerX, y: innerY };
+        const scale = (scleraRadius - irisRadius * minIrisScale) / minIrisScale;
+        const innerCenter = {
+            x: props.width / 4 + -target.x * scale,
+            y: props.height / 2 + target.y * scale,
+        };
 
         const calculatedEyesOpenCoefficient =
             props.animationExists &&
