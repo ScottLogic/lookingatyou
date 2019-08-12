@@ -1,8 +1,5 @@
-import {
-    eyeCoords,
-    idleMovementConsts,
-    lightConsts,
-} from '../../../AppConstants';
+import { lightConsts } from '../../../AppConstants';
+import { ICoords } from '../../../utils/types';
 
 export function analyseLight(image: ImageData): number {
     if (!image) {
@@ -20,24 +17,9 @@ export function analyseLight(image: ImageData): number {
     return Math.min(brightness, lightConsts.maxBrightness);
 }
 
-export function naturalMovement(currentX: number, isMovingLeft: boolean) {
-    const eyeBoundary = 1 - idleMovementConsts.sideBuffer;
+export function confineToCircle(target: ICoords, radius: number = 1) {
+    const hypotenuse = Math.hypot(target.x, target.y);
+    const scale = hypotenuse > radius ? radius / hypotenuse : 1;
 
-    if (currentX === eyeCoords.middleX) {
-        return Math.random() < idleMovementConsts.moveCenterChance
-            ? newEyePos(currentX, isMovingLeft)
-            : { newX: currentX, isMovingLeft };
-    } else if (Math.abs(currentX) >= eyeBoundary) {
-        return Math.random() < idleMovementConsts.moveSideChance
-            ? newEyePos(currentX, !isMovingLeft)
-            : { newX: currentX, isMovingLeft };
-    } else {
-        return newEyePos(currentX, isMovingLeft);
-    }
-}
-
-function newEyePos(currentX: number, isMovingLeft: boolean) {
-    let xDelta = idleMovementConsts.xDelta;
-    xDelta = isMovingLeft ? 0 - xDelta : xDelta;
-    return { newX: currentX + xDelta, isMovingLeft };
+    return { x: scale * target.x, y: scale * target.y };
 }
