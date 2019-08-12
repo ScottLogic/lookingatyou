@@ -1,3 +1,4 @@
+import { Button } from '@material-ui/core';
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import Popup from 'reactjs-popup';
@@ -43,7 +44,14 @@ function HelpPopup(props: HelpPopupProps) {
                     information. Click the Help (?) icon to see this message
                     again.
                     <br />
-                    <button onClick={close}>Close</button>
+                    <Button
+                        variant="contained"
+                        className="accept"
+                        color="primary"
+                        onClick={close}
+                    >
+                        Close
+                    </Button>
                 </Fragment>
             )}
         </Popup>

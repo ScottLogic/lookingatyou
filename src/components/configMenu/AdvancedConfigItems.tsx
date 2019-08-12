@@ -5,6 +5,7 @@ import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import DropDownMenuItem from './menuItems/DropDownMenuItem';
 import NumberMenuItem from './menuItems/NumberMenuItem';
+import SliderMenuItem from './menuItems/SliderMenuItem';
 
 interface IAdvancedConfigProps {
     window: Window;
@@ -15,7 +16,7 @@ interface IAdvancedConfigProps {
 }
 export default function AdvancedConfig(props: IAdvancedConfigProps) {
     return (
-        <React.Fragment>
+        <>
             <CheckBoxMenuItem
                 name={'Show Reflection'}
                 configName={'toggleReflection'}
@@ -25,19 +26,19 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
             />
 
             {props.config.toggleReflection && (
-                <NumberMenuItem
-                    name={'Reflect Opacity'}
+                <SliderMenuItem
+                    name={'Reflection Opacity'}
                     configName={'reflectionOpacity'}
-                    step={0.01}
+                    step={0.05}
                     defaultValue={props.config.reflectionOpacity}
                     onValidInput={props.updateAppConfig}
                     helpWith={HelpWith.REFLECTION_OPACITY}
-                    min={0.01}
+                    min={0.0}
                     max={1.0}
                 />
             )}
             <CheckBoxMenuItem
-                name={'Toggle Debug'}
+                name={'Toggle Camera Feed'}
                 configName={'toggleDebug'}
                 helpWith={HelpWith.DEBUG}
                 checked={props.config.toggleDebug}
@@ -51,7 +52,9 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 />
             )}
 
-            <h3>Model Config</h3>
+            <br />
+
+            <h3>Model Settings</h3>
             <DropDownMenuItem
                 name={'Pose Model'}
                 configName={'architecture'}
@@ -98,13 +101,15 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                     name={'Multiplier'}
                     configName={'multiplier'}
                     onInputChange={props.updateModelConfig}
-                    values={['0.50', '0.75', '1']}
+                    values={['0.5', '0.75', '1']}
                     defaultValue={props.config.modelConfig.multiplier.toString()}
                     helpWith={HelpWith.MULTIPLIER}
                 />
             )}
 
-            <h3>Detection Config</h3>
+            <br />
+
+            <h3>Detection Settings</h3>
             <NumberMenuItem
                 name={'Detections'}
                 configName={'maxDetections'}
@@ -114,15 +119,9 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 helpWith={HelpWith.DETECTIONS}
                 min={1}
             />
-            <CheckBoxMenuItem
-                name={'Flip Horizontal'}
-                configName={'flipHorizontal'}
-                helpWith={HelpWith.FLIP}
-                checked={props.config.detectionConfig.flipHorizontal}
-                onInputChange={props.updateDetectionConfig}
-            />
-            <NumberMenuItem
-                name={'Min Score'}
+
+            <SliderMenuItem
+                name={'Minimum Confidence'}
                 configName={'scoreThreshold'}
                 helpWith={HelpWith.MIN_SCORE}
                 step={0.01}
@@ -140,6 +139,6 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 onValidInput={props.updateDetectionConfig}
                 min={1}
             />
-        </React.Fragment>
+        </>
     );
 }

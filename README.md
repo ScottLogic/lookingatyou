@@ -74,14 +74,13 @@ When you first access the application, you will be asked for the permission to a
 
 When mouse movement is detected on the screen, the configuration menu will open where certain settings can be adjusted. Following options are currently available:
 
-| Option          | Description                                            |
-| --------------- | ------------------------------------------------------ |
-| FPS             | Sets the FPS for the object detection                  |
-| X Sensitivity   | X axis eyes sensitivity                                |
-| Y Sensitivity   | Y axis eyes sensitivity                                |
-| Iris Colour     | Changes the colour of the Iris                         |
-| Toggle Debug    | Displays the camera feed with all detected poses drawn |
-| Show Reflection | Draws the face of the selected target in the iris      |
+| Option                 | Description                                                                             |
+| ---------------------- | --------------------------------------------------------------------------------------- |
+| Detections per Second  | Sets the number of detections per second for the object detection                       |
+| X Sensitivity          | X axis eyes sensitivity                                                                 |
+| Y Sensitivity          | Y axis eyes sensitivity                                                                 |
+| Iris Colour            | Changes the colour of the Iris                                                          |
+| Show Advanced Settings | Shows some extra settings for users that are technically familiar with object detection |
 
 ## Testing
 

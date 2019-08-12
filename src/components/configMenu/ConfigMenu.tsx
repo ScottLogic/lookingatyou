@@ -58,9 +58,9 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
 
     mouseMoveHandler() {
         this.setState({ leftPosition: '0px' });
-        clearInterval(this.hideTimeout);
+        this.props.window.clearInterval(this.hideTimeout);
         if (!this.state.isUnderMouse && !this.props.config.toggleDebug) {
-            this.hideTimeout = window.setTimeout(
+            this.hideTimeout = this.props.window.setTimeout(
                 () =>
                     this.setState({
                         leftPosition: '-' + configMenuConsts.width,
@@ -71,7 +71,7 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
     }
 
     onMouseEnter() {
-        clearInterval(this.hideTimeout);
+        this.props.window.clearInterval(this.hideTimeout);
         this.setState({ isUnderMouse: true });
     }
 
@@ -86,6 +86,14 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
         return (
             nextState.leftPosition !== this.state.leftPosition ||
             !isEqual(nextProps, this.props)
+        );
+    }
+
+    componentWillUnmount() {
+        this.props.window.clearInterval(this.hideTimeout);
+        this.props.window.removeEventListener(
+            'mousemove',
+            this.mouseMoveHandler,
         );
     }
 
@@ -121,6 +129,8 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
                 >
                     RESET TO DEFAULTS
                 </Button>
+
+                <br />
 
                 {Object.values(HelpWith).map((type, key: number) => (
                     <Help key={key} problemWith={HelpWith[type] as HelpWith} />
