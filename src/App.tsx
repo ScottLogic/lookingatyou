@@ -5,6 +5,7 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import './App.css';
 import ConfigMenu from './components/configMenu/ConfigMenu';
+import HelpPopup from './components/helpPopup/HelpPopup';
 import MovementHandler from './components/intelligentMovement/MovementHandler';
 import VideoHandler from './components/video/VideoHandler';
 import { loadModel } from './store/actions/detections/actions';
@@ -42,6 +43,7 @@ export class App extends React.Component<AppProps, IAppState> {
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);
+        this.setDoShowPopup = this.setDoShowPopup.bind(this);
     }
 
     async componentDidMount() {
@@ -83,6 +85,8 @@ export class App extends React.Component<AppProps, IAppState> {
     render() {
         return (
             <div className="App">
+                <HelpPopup window={this.props.environment} />
+
                 <VideoHandler {...this.props} />
 
                 {this.props.webcamAvailable ? (
@@ -103,6 +107,9 @@ export class App extends React.Component<AppProps, IAppState> {
                 )}
             </div>
         );
+    }
+    private setDoShowPopup() {
+        this.props.environment.localStorage.setItem('dontShowPopup', 'true');
     }
 }
 

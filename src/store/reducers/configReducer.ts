@@ -32,6 +32,7 @@ export const initialAppConfig: IAppConfig = {
     fps: 2,
     irisColor: '#55acee', // must be hex value, as this is passed to colour picker input
     toggleAdvanced: false,
+    showHelp: true,
 };
 
 export const initialAdvancedConfig: IAdvancedConfig = {

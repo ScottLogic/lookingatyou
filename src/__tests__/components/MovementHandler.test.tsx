@@ -23,6 +23,7 @@ describe('Movement Handler', () => {
             target: { x: 0, y: 0 },
             image: imageData,
             animation: [],
+            animationExists: false,
             updateAnimation: mockUpdateAnimation,
         };
 
@@ -43,7 +44,7 @@ describe('Movement Handler', () => {
         jest.useFakeTimers();
         const wrapper = shallow(<MovementHandler {...props} />);
         wrapper.setProps({
-            detections: [],
+            animationExists: true,
         });
         jest.advanceTimersByTime(20);
         expect(mockUpdateAnimation).toBeCalled();

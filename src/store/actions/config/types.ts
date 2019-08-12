@@ -32,6 +32,7 @@ export interface IAppConfig {
     fps: number;
     toggleAdvanced: boolean;
     irisColor: string;
+    showHelp: boolean;
 }
 
 export interface IAdvancedConfig {
