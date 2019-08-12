@@ -15,21 +15,21 @@ import {
 export const initalModelConfig: IModelConfig = {
     architecture: 'MobileNetV1',
     outputStride: 16,
-    inputResolution: 161,
-    multiplier: 0.5,
+    inputResolution: 257,
+    multiplier: 0.75,
 };
 
 export const initialDetectionConfig: IDetectionConfig = {
     flipHorizontal: false,
-    maxDetections: 5,
-    scoreThreshold: 0.6,
+    maxDetections: 4,
+    scoreThreshold: 0.25,
     nmsRadius: 20,
 };
 
 export const initialAppConfig: IAppConfig = {
     xSensitivity: 1,
     ySensitivity: 1,
-    fps: 2,
+    fps: 4,
     irisColor: '#55acee', // must be hex value, as this is passed to colour picker input
     toggleAdvanced: false,
     showHelp: true,
