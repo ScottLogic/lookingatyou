@@ -49,13 +49,7 @@ function rightWave(pose: IPoseKeypoints) {
 
     return (
         armOutToSide &&
-        wave(
-            pose.rightWrist,
-            pose.rightElbow,
-            pose.rightEye,
-            pose.leftWrist,
-            pose.leftEye,
-        )
+        wave(pose.rightWrist, pose.rightElbow, pose.leftWrist, pose.leftElbow)
     );
 }
 
@@ -65,35 +59,31 @@ function leftWave(pose: IPoseKeypoints) {
 
     return (
         armOutToSide &&
-        wave(
-            pose.leftWrist,
-            pose.leftElbow,
-            pose.leftEye,
-            pose.rightWrist,
-            pose.rightEye,
-        )
+        wave(pose.leftWrist, pose.leftElbow, pose.rightWrist, pose.rightElbow)
     );
 }
 
 function wave(
-    waveWrist: Keypoint,
-    waveElbow: Keypoint,
-    waveEye: Keypoint,
+    wavingWrist: Keypoint,
+    wavingElbow: Keypoint,
     stationaryWrist: Keypoint,
-    stationaryEye: Keypoint,
+    stationaryElbow: Keypoint,
 ) {
-    const validPoints = checkKeypoints(
-        waveWrist,
-        waveEye,
-        stationaryEye,
+    const validWavingPoints = checkKeypoints(wavingWrist, wavingElbow);
+    const validStationaryPoints = checkKeypoints(
         stationaryWrist,
+        stationaryElbow,
     );
-    const wristAboveEye =
-        waveWrist.position.y < waveEye.position.y &&
-        stationaryWrist.position.y > stationaryEye.position.y;
-    const wristAboveElbow = waveElbow.position.y > waveWrist.position.y;
+    const wavingWristAboveElbow =
+        wavingWrist.position.y < wavingElbow.position.y;
+    const stationaryWristBelowElbow =
+        stationaryWrist.position.y > stationaryElbow.position.y;
 
-    return validPoints && wristAboveEye && wristAboveElbow;
+    return (
+        validWavingPoints &&
+        wavingWristAboveElbow &&
+        (!validStationaryPoints || stationaryWristBelowElbow)
+    );
 }
 
 function handsUp(pose: IPoseKeypoints) {

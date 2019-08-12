@@ -79,7 +79,7 @@ export const targetingConsts = {
     maxInterval: 7000,
     maxNum: 8,
 };
-export const eyeRadiiCoefficients = {
+export const eyeCoefficients = {
     // multiple screen width by these values to get size of eye parts
     sclera: 1 / 4.5,
     iris: 1 / 10,
