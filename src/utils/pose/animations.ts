@@ -75,8 +75,8 @@ export const shock: Animation = [
 export const animationMapping: {
     [key: string]: (() => Animation) | Animation;
 } = {
-    [Pose.LEFT_WAVE]: leftWink,
-    [Pose.RIGHT_WAVE]: rightWink,
+    [Pose.LEFT_WAVE]: rightWink,
+    [Pose.RIGHT_WAVE]: leftWink,
     [Pose.HANDS_UP]: rollEyes,
     [Pose.ARMS_OUT]: shock,
     [Pose.DAB]: dab,

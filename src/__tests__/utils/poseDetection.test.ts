@@ -66,7 +66,7 @@ describe('getPose', () => {
         },
     };
 
-    const waveRightWrist = getPart(1, { x: 0, y: 0 }, 'rightWrist');
+    const waveRightWrist = getPart(1, { x: 0, y: 10 }, 'rightWrist');
     const waveLeftWrist = getPart(1, { x: 0, y: 0 }, 'leftWrist');
     const waveRightElbow = getPart(1, { x: 0, y: 0 }, 'rightElbow');
     const waveLeftElbow = getPart(1, { x: 10, y: 20 }, 'leftElbow');

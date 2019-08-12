@@ -89,21 +89,21 @@ export class App extends React.Component<AppProps, IAppState> {
 
                 <VideoHandler {...this.props} />
 
-                {this.props.webcamAvailable ? (
-                    !this.props.model ? (
-                        <div className="loading-spinner" />
-                    ) : (
-                        <>
-                            <MovementHandler {...this.state} {...this.props} />
-                            <ConfigMenu
-                                window={this.props.environment.window}
-                            />
-                        </>
-                    )
-                ) : (
+                {!this.props.webcamAvailable && (
                     <div className="Error">
                         No webcam connected. Please connect a webcam.
                     </div>
+                )}
+
+                {this.props.webcamAvailable && !this.props.model && (
+                    <div className="loading-spinner" />
+                )}
+
+                {this.props.webcamAvailable && this.props.model && (
+                    <>
+                        <MovementHandler {...this.state} {...this.props} />
+                        <ConfigMenu window={this.props.environment.window} />
+                    </>
                 )}
             </div>
         );
