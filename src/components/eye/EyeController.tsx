@@ -75,8 +75,7 @@ export const EyeController = React.memo(
                 : confineToCircle({
                       x:
                           props.target.x *
-                          props.config.xSensitivity *
-                          eyeSensitivtyScale,
+                          props.config.xSensitivity
                       y:
                           props.target.y *
                           props.config.ySensitivity *
