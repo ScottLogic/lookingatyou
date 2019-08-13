@@ -44,7 +44,7 @@ describe('Movement Handler', () => {
         jest.useFakeTimers();
         const wrapper = shallow(<MovementHandler {...props} />);
         wrapper.setProps({
-            animationExists: true,
+            animationExists: false,
         });
         jest.advanceTimersByTime(20);
         expect(mockUpdateAnimation).toBeCalled();
