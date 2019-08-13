@@ -96,7 +96,7 @@ export class MovementHandler extends React.Component<
 
     shouldComponentUpdate(nextProps: MovementHandlerProps) {
         return (
-            this.props.animationExists &&
+            !this.props.animationExists &&
             (this.props.height !== nextProps.height ||
                 this.props.width !== nextProps.width ||
                 this.props.target !== nextProps.target ||
