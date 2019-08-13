@@ -19,6 +19,11 @@ const ColorMenuItem = React.memo(
     (props: IColorMenuItemProps) => {
         const [showPopup, setShowPopup] = useState(false);
 
+        function getTextColor(): string {
+            const [r, g, b] = convert.hex.rgb(props.color);
+            return (r + g + b) / 3 > 127 ? 'black' : 'white';
+        }
+
         function onChange(
             event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
         ) {
@@ -35,17 +40,12 @@ const ColorMenuItem = React.memo(
             setShowPopup(false);
         }
 
-        function getBrightness(): string {
-            const [r, g, b] = convert.hex.rgb(props.color);
-            return (r + g + b) / 3 > 127 ? 'black' : 'white';
-        }
-
         return (
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>
                 <Button
                     style={{
                         backgroundColor: props.color,
-                        color: getBrightness(),
+                        color: props.color ? getTextColor() : 'white',
                     }}
                     value={props.color}
                     variant="contained"

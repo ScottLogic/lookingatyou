@@ -8,7 +8,6 @@ import thunk from 'redux-thunk';
 import ConfigMenu, {
     IConfigMenuProps,
 } from '../../components/configMenu/ConfigMenu';
-import { HelpWith } from '../../components/configMenu/Help';
 import { initialState } from '../../store/reducers/configReducer';
 
 let props: IConfigMenuProps;
