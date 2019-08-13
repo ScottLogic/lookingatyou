@@ -2,6 +2,7 @@ import { Keypoint } from '@tensorflow-models/posenet';
 import { Pose } from '../../AppConstants';
 import { getPose } from '../../utils/pose/poseDetection';
 import { Bbox, ICoords } from '../../utils/types';
+import { checkAngle } from '../../utils/utils';
 
 const genericBbox: Bbox = [0, 1, 2, 3];
 const origin = { x: 0, y: 0 };
@@ -67,11 +68,11 @@ describe('getPose', () => {
     };
 
     const waveRightWrist = getPart(1, { x: 0, y: 10 }, 'rightWrist');
-    const waveLeftWrist = getPart(1, { x: 0, y: 0 }, 'leftWrist');
+    const waveLeftWrist = getPart(1, { x: 10, y: 0 }, 'leftWrist');
     const waveRightElbow = getPart(1, { x: 0, y: 0 }, 'rightElbow');
     const waveLeftElbow = getPart(1, { x: 10, y: 20 }, 'leftElbow');
     const waveRightShoulder = getPart(1, { x: 0, y: 0 }, 'rightShoulder');
-    const waveLeftShoulder = getPart(1, { x: 0, y: 30 }, 'leftShoulder');
+    const waveLeftShoulder = getPart(1, { x: 0, y: 20 }, 'leftShoulder');
     const waveRightEye = getPart(1, { x: 0, y: -10 }, 'rightEye');
     const waveLeftEye = getPart(1, { x: 0, y: 10 }, 'leftEye');
 
@@ -143,9 +144,11 @@ describe('getPose', () => {
     it('should be undefined for low confidence', () => {
         expect(getPose(lowCofidenceDetection)).toBe(undefined);
     });
+
     it(`should return ${Pose.LEFT_WAVE}`, () => {
         expect(getPose(wave)).toStrictEqual('LEFT_WAVE');
     });
+
     it(`should return ${Pose.ARMS_OUT}`, () => {
         expect(getPose(arms)).toStrictEqual('ARMS_OUT');
     });
