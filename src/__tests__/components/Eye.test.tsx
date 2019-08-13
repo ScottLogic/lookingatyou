@@ -9,21 +9,24 @@ const dimension = 500;
 const scleraRadius = 100;
 const openCoefficient = 0.5;
 let props: IEyeProps;
+const animation = {
+    target: { x: 250, y: 250 },
+    dilation: 1,
+    openCoefficient,
+    duration: 100,
+    irisColor: 'blue',
+};
 
 describe('Eye', () => {
     beforeEach(() => {
         props = {
+            animation,
             class: EyeSide.LEFT,
             width: dimension,
             height: dimension,
-            irisColor: 'blue',
             scleraRadius,
             irisRadius: 50,
             pupilRadius: 20,
-            dilatedCoefficient: 1,
-            innerX: 250,
-            innerY: 250,
-            fps: 10,
             eyeShape: getEyeShape(
                 dimension,
                 dimension,
@@ -33,7 +36,7 @@ describe('Eye', () => {
             bezier: getBezier(scleraRadius, openCoefficient),
             reflection: undefined,
             innerPath: generateInnerPath(20, 100),
-            irisAdjustment: { scale: 1, angle: 0 },
+            skewTransform: '',
         };
     });
 
