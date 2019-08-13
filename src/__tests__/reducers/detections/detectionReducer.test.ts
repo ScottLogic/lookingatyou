@@ -121,14 +121,14 @@ describe('Detection Reducer Tests', () => {
     it('should update animation correctly', () => {
         const animation: Animation = [
             {
-                normalisedCoords: { x: 5, y: 6 },
+                target: { x: 5, y: 6 },
                 openCoefficient: 0.2,
                 dilation: 6,
                 irisColor: 'red',
                 duration: 10,
             },
             {
-                normalisedCoords: { x: 50, y: 60 },
+                target: { x: 50, y: 60 },
                 openCoefficient: 0.02,
                 dilation: 56,
                 irisColor: 'red',

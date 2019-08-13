@@ -32,7 +32,7 @@ export const Eyelids = React.memo((props: IEyelidsProps) => {
                 filter="url(#shadowTop)"
                 d={
                     // upper eyelid
-                    `M ${props.eyeShape.leftX} ${props.eyeShape.middleY},
+                    `M ${props.eyeShape.leftX} ${props.eyeShape.middleY}
                          A ${props.scleraRadius} ${props.scleraRadius} 0 0 1 ${
                         props.eyeShape.rightX
                     } ${props.eyeShape.middleY}
@@ -60,7 +60,7 @@ export const Eyelids = React.memo((props: IEyelidsProps) => {
                 filter="url(#shadowBottom)"
                 d={
                     // lower eyelid
-                    `M ${props.eyeShape.leftX} ${props.eyeShape.middleY},
+                    `M ${props.eyeShape.leftX} ${props.eyeShape.middleY}
                          A ${props.scleraRadius} ${props.scleraRadius} 0 0 0 ${
                         props.eyeShape.rightX
                     } ${props.eyeShape.middleY}
