@@ -45,9 +45,12 @@ function getPoseKeypoints(selection: IDetection): IPoseKeypoints {
 }
 
 function rightWave(pose: IPoseKeypoints) {
-    const armOutToSide =
+    const armOutToSide = pose.rightWrist.position.x < pose.rightElbow.position.x &&
         pose.rightElbow.position.x < pose.rightShoulder.position.x;
-
+   
+    const pointingUpAngle = Math.atan2(rightWrist.position.y, pose.rightWrist.pose.x);
+    const validAngle = pointingUpAngle > 60 && pointingUpAngle < 120;
+    
     const angle = checkAngle(
         pose.rightShoulder,
         pose.rightElbow,
@@ -57,6 +60,7 @@ function rightWave(pose: IPoseKeypoints) {
     );
 
     return (
+        validAngle &&
         armOutToSide &&
         angle &&
         wave(pose.rightWrist, pose.rightElbow, pose.leftWrist, pose.leftElbow)
@@ -67,6 +71,9 @@ function leftWave(pose: IPoseKeypoints) {
     const armOutToSide =
         pose.leftElbow.position.x > pose.leftShoulder.position.x;
 
+     const pointingUpAngle = Math.atan2(leftWrist.position.y, pose.leftWrist.pose.x);
+    const validAngle = pointingUpAngle > 60 && pointingUpAngle < 120;
+   
     const angle = checkAngle(
         pose.leftShoulder,
         pose.leftElbow,
