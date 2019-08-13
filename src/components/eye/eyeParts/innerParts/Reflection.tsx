@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { IAnimationFrame } from '../../../../utils/pose/animations';
-import { IInnerPartProps } from '../../types';
+import { IInnerPartProps } from './IInnerPartsProps';
 interface IReflectionProps extends IInnerPartProps {
     animation: IAnimationFrame;
     reflection?: ImageData;
