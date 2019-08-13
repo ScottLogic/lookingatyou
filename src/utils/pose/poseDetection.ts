@@ -71,7 +71,7 @@ function leftWave(pose: IPoseKeypoints) {
     const armOutToSide =
         pose.leftElbow.position.x > pose.leftShoulder.position.x;
 
-     const pointingUpAngle = Math.atan2(leftWrist.position.y, pose.leftWrist.pose.x);
+    const pointingUpAngle = Math.atan2(leftWrist.position.y, pose.leftWrist.pose.x);
     const validAngle = pointingUpAngle > 60 && pointingUpAngle < 120;
    
     const angle = checkAngle(
