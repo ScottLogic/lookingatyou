@@ -49,7 +49,7 @@ function rightWave(pose: IPoseKeypoints) {
         pose.rightElbow.position.x < pose.rightShoulder.position.x;
    
     const pointingUpAngle = Math.atan2(pose.rightWrist.position.y - pose.rightElbow.position.y, 
-                   pose.rightWrist.pose.x - pose.rightElbow.position.x);
+                   pose.rightWrist.position.x - pose.rightElbow.position.x);
     const validAngle = pointingUpAngle > 60 && pointingUpAngle < 120;
     
     const angle = checkAngle(
@@ -73,7 +73,7 @@ function leftWave(pose: IPoseKeypoints) {
         pose.leftElbow.position.x > pose.leftShoulder.position.x;
 
     const pointingUpAngle = Math.atan2(pose.leftWrist.position.y - pose.leftElbow.position.y, 
-                   pose.leftWrist.pose.x - pose.leftElbow.position.x);
+                   pose.leftWrist.position.x - pose.leftElbow.position.x);
     const validAngle = pointingUpAngle > 60 && pointingUpAngle < 120;
    
     const angle = checkAngle(
