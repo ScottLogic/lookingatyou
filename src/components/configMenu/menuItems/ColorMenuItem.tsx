@@ -1,4 +1,5 @@
 import { Button } from '@material-ui/core';
+import convert from 'color-convert';
 import React, { useState } from 'react';
 import { SketchPicker } from 'react-color';
 import Popup from 'reactjs-popup';
@@ -34,11 +35,17 @@ const ColorMenuItem = React.memo(
             setShowPopup(false);
         }
 
+        function getBrightness(): string {
+            const [r, g, b] = convert.hex.rgb(props.color);
+            return (r + g + b) / 3 > 127 ? 'black' : 'white';
+        }
+
         return (
             <div data-tip={true} data-for={HelpWith[props.helpWith]}>
                 <Button
                     style={{
                         backgroundColor: props.color,
+                        color: getBrightness(),
                     }}
                     value={props.color}
                     variant="contained"
