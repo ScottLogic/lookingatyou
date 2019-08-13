@@ -6,14 +6,14 @@ import { Store } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import HelpPopup from '../../../components/helpPopup/HelpPopup';
-import { initialState } from '../../../store/reducers/configReducer';
+import { initialConfig } from '../../../store/reducers/configReducer';
 
 describe('HelpPopup', () => {
     let window: DOMWindow;
     let store: Store;
     beforeEach(() => {
         const mockStore = configureStore([thunk]);
-        store = mockStore(initialState);
+        store = mockStore(initialConfig);
         window = new jsdom.JSDOM().window;
     });
     it('should render correctly', () => {
