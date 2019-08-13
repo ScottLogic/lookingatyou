@@ -1,7 +1,7 @@
 import React from 'react';
 import tinycolor from 'tinycolor2';
 import { IAnimationFrame } from '../../../../utils/pose/animations';
-import { IInnerPartProps } from './IInnerPartsProps';
+import { IInnerPartProps } from '../../types';
 
 export interface IIrisProps extends IInnerPartProps {
     irisRadius: number;
