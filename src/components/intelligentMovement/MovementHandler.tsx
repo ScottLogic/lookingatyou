@@ -150,7 +150,7 @@ export class MovementHandler extends React.Component<
         } else {
             this.setNoTarget();
 
-            if (this.props.animationExists) {
+            if (!this.props.animationExists) {
                 if (Math.random() < chanceOfIdleEyesMovement) {
                     this.hasMovedLeft = !this.hasMovedLeft;
                     this.props.updateAnimation(
