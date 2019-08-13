@@ -45,7 +45,7 @@ function getPoseKeypoints(selection: IDetection): IPoseKeypoints {
 }
 
 function rightWave(pose: IPoseKeypoints) {
-    const armOutToSide = pose.rightWrist.position.x < pose.rightElbow.position.x &&
+    const armOutToSide =
         pose.rightElbow.position.x < pose.rightShoulder.position.x;
    
     const pointingUpAngle = Math.atan2(rightWrist.position.y, pose.rightWrist.pose.x);
