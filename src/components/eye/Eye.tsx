@@ -4,7 +4,10 @@ import { IAnimationFrame } from '../../utils/pose/animations';
 import './Eye.css';
 import { BlackFill } from './eyeParts/BlackFill';
 import { Eyelids } from './eyeParts/Eyelids';
-import InnerEye from './eyeParts/InnerEye';
+import Iris from './eyeParts/innerParts/Iris';
+import { Pupil } from './eyeParts/innerParts/Pupil';
+import { Reflection } from './eyeParts/innerParts/Reflection';
+import { Shines } from './eyeParts/innerParts/Shines';
 import { Sclera } from './eyeParts/Sclera';
 
 export interface IEyeProps {
@@ -30,6 +33,7 @@ export interface IEyeProps {
         topEyelidY: number;
         bottomEyelidY: number;
     };
+    reflectionOpacity: number;
     reflection?: ImageData;
 }
 
@@ -39,22 +43,60 @@ export default function Eye(props: IEyeProps) {
     const eyelidTransitionStyle = {
         transition: `d ${duration}ms`,
     };
+    const transitionStyle = {
+        transition: `transform ${props.animation.duration}ms`,
+    };
 
+    const overlaySvgProps = {
+        className: 'overlay',
+        width: props.width,
+        height: props.height,
+    };
+    const innerEyeGroupProps = {
+        // for same transform on all SVGs
+        className: 'inner',
+        style: transitionStyle,
+        transform: `${props.skewTransform} translate(${
+            props.animation.target!.x
+        },${props.animation.target!.y})`,
+    };
+    const innerProps = {
+        ...props,
+        transitionStyle,
+        groupProps: innerEyeGroupProps,
+    };
     return (
-        <svg className={props.class} width={props.width} height={props.height}>
-            <Sclera
-                radius={props.scleraRadius}
-                width={props.width / 2}
-                height={props.height / 2}
-            />
-            <InnerEye {...props} />
-            <Eyelids
-                {...props}
-                transitionStyle={eyelidTransitionStyle}
-                cornerShape={cornerShape}
-            />
-            <BlackFill {...props} leftX={props.eyeShape.leftX} />
-        </svg>
+        <div className={props.class}>
+            <svg {...overlaySvgProps}>
+                <Sclera
+                    radius={props.scleraRadius}
+                    width={props.width / 2}
+                    height={props.height / 2}
+                />
+                <Iris {...innerProps} />
+            </svg>
+
+            <svg {...overlaySvgProps}>
+                <Reflection {...innerProps} />
+            </svg>
+
+            <svg {...overlaySvgProps}>
+                <g {...innerEyeGroupProps}>
+                    <Pupil
+                        {...props}
+                        transitionStyle={transitionStyle}
+                        useGradient={props.reflection !== undefined}
+                    />
+                    <Shines {...innerProps} />
+                </g>
+                <Eyelids
+                    {...props}
+                    transitionStyle={eyelidTransitionStyle}
+                    cornerShape={cornerShape}
+                />
+                <BlackFill {...props} leftX={props.eyeShape.leftX} />
+            </svg>
+        </div>
     );
 }
 
