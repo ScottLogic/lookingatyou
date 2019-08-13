@@ -48,13 +48,7 @@ function rightWave(pose: IPoseKeypoints) {
     const armOutToSide =
         pose.rightElbow.position.x < pose.rightShoulder.position.x;
 
-    const pointingUpAngle = Math.atan2(
-        pose.rightWrist.position.y - pose.rightElbow.position.y,
-        pose.rightWrist.position.x - pose.rightElbow.position.x,
-    );
-    const validAngle = pointingUpAngle > 60 && pointingUpAngle < 120;
-
-    const angle = checkAngle(
+    const validAngle = checkAngle(
         pose.rightShoulder,
         pose.rightElbow,
         pose.rightWrist,
@@ -63,9 +57,8 @@ function rightWave(pose: IPoseKeypoints) {
     );
 
     return (
-        validAngle &&
         armOutToSide &&
-        angle &&
+        validAngle &&
         wave(pose.rightWrist, pose.rightElbow, pose.leftWrist, pose.leftElbow)
     );
 }
@@ -74,13 +67,7 @@ function leftWave(pose: IPoseKeypoints) {
     const armOutToSide =
         pose.leftElbow.position.x > pose.leftShoulder.position.x;
 
-    const pointingUpAngle = Math.atan2(
-        pose.leftWrist.position.y - pose.leftElbow.position.y,
-        pose.leftWrist.position.x - pose.leftElbow.position.x,
-    );
-    const validAngle = pointingUpAngle > 60 && pointingUpAngle < 120;
-
-    const angle = checkAngle(
+    const validAngle = checkAngle(
         pose.leftShoulder,
         pose.leftElbow,
         pose.leftWrist,
@@ -89,9 +76,8 @@ function leftWave(pose: IPoseKeypoints) {
     );
 
     return (
-        validAngle &&
         armOutToSide &&
-        angle &&
+        validAngle &&
         wave(pose.leftWrist, pose.leftElbow, pose.rightWrist, pose.rightElbow)
     );
 }
@@ -109,6 +95,16 @@ function wave(
         stationaryElbow,
     );
 
+    const pointingUpAngle =
+        (180 *
+            Math.atan2(
+                wavingElbow.position.y - wavingElbow.position.y,
+                wavingWrist.position.x - wavingElbow.position.x,
+            )) /
+        Math.PI;
+
+    const validAngle = pointingUpAngle > 60 && pointingUpAngle < 120;
+
     const wavingWristAboveElbow =
         wavingWrist.position.y < wavingElbow.position.y;
 
@@ -116,6 +112,7 @@ function wave(
         stationaryWrist.position.y > stationaryElbow.position.y;
 
     return (
+        validAngle &&
         validWavingPoints &&
         wavingWristAboveElbow &&
         (!validStationaryPoints || stationaryWristBelowElbow)
@@ -162,10 +159,12 @@ function armsOutToSide(pose: IPoseKeypoints) {
     const leftArmOut =
         pose.leftWrist.position.x > pose.leftElbow.position.x &&
         pose.leftElbow.position.x > pose.leftShoulder.position.x;
+
     const leftWristShoulderHeight = isWristAtShoulderHeight(
         pose.leftWrist,
         pose.leftShoulder,
     );
+
     const leftArmAngle = checkAngle(
         pose.leftShoulder,
         pose.leftElbow,
@@ -177,10 +176,12 @@ function armsOutToSide(pose: IPoseKeypoints) {
     const rightArmOut =
         pose.rightWrist.position.x < pose.rightElbow.position.x &&
         pose.rightElbow.position.x < pose.rightShoulder.position.x;
+
     const rightWristShoulderHeight = isWristAtShoulderHeight(
         pose.rightWrist,
         pose.rightShoulder,
     );
+
     const rightArmAngle = checkAngle(
         pose.rightShoulder,
         pose.rightElbow,
