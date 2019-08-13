@@ -98,7 +98,7 @@ function wave(
     const pointingUpAngle =
         (180 *
             Math.atan2(
-                wavingElbow.position.y - wavingElbow.position.y,
+                wavingElbow.position.y - wavingWrist.position.y,
                 wavingWrist.position.x - wavingElbow.position.x,
             )) /
         Math.PI;
