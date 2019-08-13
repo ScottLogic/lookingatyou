@@ -3,14 +3,7 @@
     stroke: black;
     stroke-width: 2;
     position: absolute;
-}
-
-.BlackFill path {
-    fill: black;
     fill-rule: evenodd;
-    stroke: black;
-    stroke-width: 2;
-    position: absolute;
 }
 
 .inner,
