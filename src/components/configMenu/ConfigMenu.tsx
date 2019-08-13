@@ -112,9 +112,13 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
                 onMouseLeave={this.onMouseLeave}
             >
                 <h1>Settings</h1>
-                <button className="icon" onClick={showAppHelp}>
+                <Button
+                    variant="contained"
+                    className="icon"
+                    onClick={showAppHelp}
+                >
                     ?
-                </button>
+                </Button>
                 <UserConfigItems {...this.props} />
                 {this.props.config.toggleAdvanced && (
                     <AdvancedConfigItems {...this.props} />
@@ -130,6 +134,7 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
                     RESET TO DEFAULTS
                 </Button>
 
+                <br />
                 <br />
 
                 {Object.values(HelpWith).map((type, key: number) => (
