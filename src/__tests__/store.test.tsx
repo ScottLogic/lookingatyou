@@ -1,17 +1,17 @@
-import { hasKeysOf } from '../store/store';
-describe('hasPropsOf', () => {
+import { hasPropertiesOf } from '../store/store';
+describe('hasPropertiesof', () => {
     it('should return true when objToMatch is empty object', () => {
         const objToCheck = { test: 'test', num: 5 };
-        expect(hasKeysOf(objToCheck, {})).toBeTruthy();
+        expect(hasPropertiesOf(objToCheck, {})).toBeTruthy();
     });
     const objToMatch = { a: 4, c: false };
     it('should return true when objToCheck has all keys of objToMatch', () => {
         const objToCheck = { a: 5, b: 'wee', c: false };
-        expect(hasKeysOf(objToCheck, objToMatch)).toBeTruthy();
+        expect(hasPropertiesOf(objToCheck, objToMatch)).toBeTruthy();
     });
     it('should return false when objToMatch has some key that objToCheck does not have', () => {
         const objToCheck = { a: 6, b: 'test', d: true };
-        expect(hasKeysOf(objToCheck, objToMatch)).toBeFalsy();
+        expect(hasPropertiesOf(objToCheck, objToMatch)).toBeFalsy();
     });
     const complexObjToMatch = {
         obj1: {
@@ -36,7 +36,7 @@ describe('hasPropsOf', () => {
             y: false,
             w: false,
         };
-        expect(hasKeysOf(objToCheck, complexObjToMatch)).toBeTruthy();
+        expect(hasPropertiesOf(objToCheck, complexObjToMatch)).toBeTruthy();
     });
     it('should return false when some child of objToMatch has a key which does not belong to that same child of objToCheck', () => {
         const objToCheck = {
@@ -50,6 +50,6 @@ describe('hasPropsOf', () => {
             y: false,
             w: false,
         };
-        expect(hasKeysOf(objToCheck, complexObjToMatch)).toBeFalsy();
+        expect(hasPropertiesOf(objToCheck, complexObjToMatch)).toBeFalsy();
     });
 });

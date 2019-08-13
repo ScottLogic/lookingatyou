@@ -20,7 +20,9 @@ export function createStore() {
         const previousConfigState: IConfigState = (savedState as {
             configStore: IConfigState;
         }).configStore;
-        savedStateIsValid = hasKeysOfInitialConfigState(previousConfigState);
+        savedStateIsValid = hasPropertiesOfInitialConfigState(
+            previousConfigState,
+        );
     } else {
         savedStateIsValid = false;
     }
@@ -32,25 +34,25 @@ export function createStore() {
     );
 }
 
-export function hasKeysOfInitialConfigState(objToCheck: object) {
-    return hasKeysOf(objToCheck, initialState);
+export function hasPropertiesOfInitialConfigState(objToCheck: object) {
+    return hasPropertiesOf(objToCheck, initialState);
 }
 
-export function hasKeysOf(objToCheck: object, objToMatch: object): boolean {
-    const propsToCheck = Object.keys(objToCheck);
-    const propsToMatch = Object.keys(objToMatch);
-    return (
-        typeof objToCheck === 'string' ||
-        typeof objToMatch === 'string' || // prevents infinite recursion
-        propsToMatch.every(prop => {
-            return (
-                propsToCheck.indexOf(prop) >= 0 &&
-                hasKeysOf(
-                    (objToCheck as { [prop: string]: object })[prop],
-                    (objToMatch as { [prop: string]: object })[prop],
-                )
-            );
-        })
+export function hasPropertiesOf(
+    objToCheck: object,
+    objWithRequiredProps: object,
+): boolean {
+    if (typeof objWithRequiredProps === 'string') {
+        return true;
+    }
+    const requiredProps = Object.getOwnPropertyNames(objWithRequiredProps);
+    return requiredProps.every(
+        prop =>
+            objToCheck.hasOwnProperty(prop) &&
+            hasPropertiesOf(
+                (objToCheck as { [prop: string]: object })[prop],
+                (objWithRequiredProps as { [prop: string]: object })[prop],
+            ),
     );
 }
 
