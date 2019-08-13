@@ -85,6 +85,7 @@ function leftWave(pose: IPoseKeypoints) {
     );
 
     return (
+        validAngle &&
         armOutToSide &&
         angle &&
         wave(pose.leftWrist, pose.leftElbow, pose.rightWrist, pose.rightElbow)
