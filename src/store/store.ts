@@ -38,22 +38,24 @@ export function hasPropertiesOfInitialConfigState(objToCheck: object) {
     return hasPropertiesOf(objToCheck, initialState);
 }
 
-export function hasPropertiesOf(
-    objToCheck: object,
-    objWithRequiredProps: object,
-): boolean {
-    if (typeof objWithRequiredProps === 'string') {
+export function hasPropertiesOf(source: unknown, target: unknown): boolean {
+    if (typeof target !== 'object') {
         return true;
+    } else {
+        const requiredProps = Object.getOwnPropertyNames(target);
+        if (typeof source !== 'object') {
+            return requiredProps.length > 0;
+        } else {
+            return requiredProps.every(
+                prop =>
+                    (source as object).hasOwnProperty(prop) &&
+                    hasPropertiesOf(
+                        (source as { [prop: string]: unknown })[prop],
+                        (target as { [prop: string]: unknown })[prop],
+                    ),
+            );
+        }
     }
-    const requiredProps = Object.getOwnPropertyNames(objWithRequiredProps);
-    return requiredProps.every(
-        prop =>
-            objToCheck.hasOwnProperty(prop) &&
-            hasPropertiesOf(
-                (objToCheck as { [prop: string]: object })[prop],
-                (objWithRequiredProps as { [prop: string]: object })[prop],
-            ),
-    );
 }
 
 export type AppStore = Store<IRootStore>;
