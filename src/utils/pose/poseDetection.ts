@@ -1,6 +1,7 @@
 import { Keypoint, partIds } from '@tensorflow-models/posenet';
 import { minPoseConfidence, Pose } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
+import { checkAngle } from '../utils';
 
 interface IPoseKeypoints {
     leftEye: Keypoint;
@@ -23,9 +24,9 @@ const poseMapping: { [key: string]: (selection: IPoseKeypoints) => boolean } = {
 
 export function getPose(selection: IDetection): string | undefined {
     const poseKeypoints = getPoseKeypoints(selection);
-    return Object.keys(poseMapping).find(element =>
-        poseMapping[element](poseKeypoints),
-    );
+    return Object.keys(poseMapping).find(element => {
+        return poseMapping[element](poseKeypoints);
+    });
 }
 
 function getPoseKeypoints(selection: IDetection): IPoseKeypoints {
@@ -47,15 +48,18 @@ function rightWave(pose: IPoseKeypoints) {
     const armOutToSide =
         pose.rightElbow.position.x < pose.rightShoulder.position.x;
 
+    const angle = checkAngle(
+        pose.rightShoulder,
+        pose.rightElbow,
+        pose.rightWrist,
+        70,
+        95,
+    );
+
     return (
         armOutToSide &&
-        wave(
-            pose.rightWrist,
-            pose.rightElbow,
-            pose.rightEye,
-            pose.leftWrist,
-            pose.leftEye,
-        )
+        angle &&
+        wave(pose.rightWrist, pose.rightElbow, pose.leftWrist, pose.leftElbow)
     );
 }
 
@@ -63,37 +67,45 @@ function leftWave(pose: IPoseKeypoints) {
     const armOutToSide =
         pose.leftElbow.position.x > pose.leftShoulder.position.x;
 
+    const angle = checkAngle(
+        pose.leftShoulder,
+        pose.leftElbow,
+        pose.leftWrist,
+        70,
+        95,
+    );
+
     return (
         armOutToSide &&
-        wave(
-            pose.leftWrist,
-            pose.leftElbow,
-            pose.leftEye,
-            pose.rightWrist,
-            pose.rightEye,
-        )
+        angle &&
+        wave(pose.leftWrist, pose.leftElbow, pose.rightWrist, pose.rightElbow)
     );
 }
 
 function wave(
-    waveWrist: Keypoint,
-    waveElbow: Keypoint,
-    waveEye: Keypoint,
+    wavingWrist: Keypoint,
+    wavingElbow: Keypoint,
     stationaryWrist: Keypoint,
-    stationaryEye: Keypoint,
+    stationaryElbow: Keypoint,
 ) {
-    const validPoints = checkKeypoints(
-        waveWrist,
-        waveEye,
-        stationaryEye,
-        stationaryWrist,
-    );
-    const wristAboveEye =
-        waveWrist.position.y < waveEye.position.y &&
-        stationaryWrist.position.y > stationaryEye.position.y;
-    const wristAboveElbow = waveElbow.position.y > waveWrist.position.y;
+    const validWavingPoints = checkKeypoints(wavingWrist, wavingElbow);
 
-    return validPoints && wristAboveEye && wristAboveElbow;
+    const validStationaryPoints = checkKeypoints(
+        stationaryWrist,
+        stationaryElbow,
+    );
+
+    const wavingWristAboveElbow =
+        wavingWrist.position.y < wavingElbow.position.y;
+
+    const stationaryWristBelowElbow =
+        stationaryWrist.position.y > stationaryElbow.position.y;
+
+    return (
+        validWavingPoints &&
+        wavingWristAboveElbow &&
+        (!validStationaryPoints || stationaryWristBelowElbow)
+    );
 }
 
 function handsUp(pose: IPoseKeypoints) {
@@ -140,6 +152,13 @@ function armsOutToSide(pose: IPoseKeypoints) {
         pose.leftWrist,
         pose.leftShoulder,
     );
+    const leftArmAngle = checkAngle(
+        pose.leftShoulder,
+        pose.leftElbow,
+        pose.leftWrist,
+        150,
+        180,
+    );
 
     const rightArmOut =
         pose.rightWrist.position.x < pose.rightElbow.position.x &&
@@ -148,12 +167,21 @@ function armsOutToSide(pose: IPoseKeypoints) {
         pose.rightWrist,
         pose.rightShoulder,
     );
+    const rightArmAngle = checkAngle(
+        pose.rightShoulder,
+        pose.rightElbow,
+        pose.rightWrist,
+        150,
+        180,
+    );
 
     return (
         leftArmOut &&
         rightArmOut &&
         leftWristShoulderHeight &&
-        rightWristShoulderHeight
+        rightWristShoulderHeight &&
+        leftArmAngle &&
+        rightArmAngle
     );
 }
 
@@ -184,22 +212,28 @@ function checkRightDab(pose: IPoseKeypoints): boolean {
         return false;
     }
 
-    const eyesBetweenWristAndShoulder =
-        pose.leftWrist.position.x < pose.rightEye.position.x;
+    const rightArmAngle = checkAngle(
+        pose.rightShoulder,
+        pose.rightElbow,
+        pose.rightWrist,
+        150,
+        180,
+    );
+
+    const leftArmAngle = checkAngle(
+        pose.leftShoulder,
+        pose.leftElbow,
+        pose.leftWrist,
+        30,
+        70,
+    );
 
     const armPointingToTheSky =
         pose.rightWrist.position.x < pose.rightElbow.position.x &&
         pose.rightElbow.position.x < pose.rightShoulder.position.x &&
         armPointingUp(pose.rightWrist, pose.rightElbow, pose.rightShoulder);
 
-    const bentWristAboveShoulder =
-        pose.leftWrist.position.y < pose.rightShoulder.position.y;
-
-    return (
-        eyesBetweenWristAndShoulder &&
-        armPointingToTheSky &&
-        bentWristAboveShoulder
-    );
+    return rightArmAngle && leftArmAngle && armPointingToTheSky;
 }
 
 function checkLeftDab(pose: IPoseKeypoints): boolean {
@@ -215,22 +249,28 @@ function checkLeftDab(pose: IPoseKeypoints): boolean {
         return false;
     }
 
-    const eyesBetweenWristAndShoulder =
-        pose.rightWrist.position.x > pose.leftEye.position.x;
+    const leftArmAngle = checkAngle(
+        pose.leftShoulder,
+        pose.leftElbow,
+        pose.leftWrist,
+        150,
+        180,
+    );
+
+    const rightArmAngle = checkAngle(
+        pose.rightShoulder,
+        pose.rightElbow,
+        pose.rightWrist,
+        30,
+        70,
+    );
 
     const armPointingToTheSky =
         pose.leftWrist.position.x > pose.leftElbow.position.x &&
         pose.leftElbow.position.x > pose.leftShoulder.position.x &&
         armPointingUp(pose.leftWrist, pose.leftElbow, pose.leftShoulder);
 
-    const bendWristAboveOppositeShoulder =
-        pose.rightWrist.position.y < pose.leftShoulder.position.y;
-
-    return (
-        eyesBetweenWristAndShoulder &&
-        armPointingToTheSky &&
-        bendWristAboveOppositeShoulder
-    );
+    return leftArmAngle && rightArmAngle && armPointingToTheSky;
 }
 
 function armPointingUp(wrist: Keypoint, elbow: Keypoint, shoulder: Keypoint) {

@@ -4,6 +4,7 @@ import { HelpWith } from './Help';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
 import NumberMenuItem from './menuItems/NumberMenuItem';
+import SliderMenuItem from './menuItems/SliderMenuItem';
 
 interface IUserConfigProps {
     config: IConfigState;
@@ -14,7 +15,7 @@ export default function UserConfig(props: IUserConfigProps) {
     return (
         <>
             <NumberMenuItem
-                name={'FPS'}
+                name={'Detections Per Second'}
                 configName={'fps'}
                 step={1}
                 defaultValue={props.config.fps}
@@ -23,25 +24,25 @@ export default function UserConfig(props: IUserConfigProps) {
                 min={1}
             />
 
-            <br />
-
-            <NumberMenuItem
+            <SliderMenuItem
                 name={'X Sensitivity'}
                 configName={'xSensitivity'}
-                step={0.1}
+                step={0.05}
                 defaultValue={props.config.xSensitivity}
                 onValidInput={props.updateAppConfig}
                 helpWith={HelpWith.X_SENSITIVITY}
                 min={0}
+                max={1}
             />
-            <NumberMenuItem
+            <SliderMenuItem
                 name={'Y Sensitivity'}
                 configName={'ySensitivity'}
-                step={0.1}
+                step={0.05}
                 defaultValue={props.config.ySensitivity}
                 onValidInput={props.updateAppConfig}
                 helpWith={HelpWith.Y_SENSITIVITY}
                 min={0}
+                max={1}
             />
 
             <br />
@@ -57,7 +58,7 @@ export default function UserConfig(props: IUserConfigProps) {
             <br />
 
             <CheckBoxMenuItem
-                name={'Toggle Advanced'}
+                name={'Show Advanced Settings'}
                 configName={'toggleAdvanced'}
                 helpWith={HelpWith.ADVANCE_SETTINGS}
                 checked={props.config.toggleAdvanced}

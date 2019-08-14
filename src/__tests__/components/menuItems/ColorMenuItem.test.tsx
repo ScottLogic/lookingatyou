@@ -24,12 +24,4 @@ describe('NumberMenuItem tests', () => {
         const wrapper = shallow(<ColorMenuItem {...props} />).debug();
         expect(wrapper).toMatchSnapshot();
     });
-
-    it('should call onInputChange on change event', () => {
-        const wrapper = mount(<ColorMenuItem {...props} />);
-        wrapper
-            .find('input')
-            .simulate('change', { target: { value: '#ABABAB' } });
-        expect(mockOnInputChange).toHaveBeenCalledTimes(1);
-    });
 });

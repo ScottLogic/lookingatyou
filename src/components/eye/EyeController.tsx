@@ -45,10 +45,10 @@ interface IEyeControllerProps {
 interface IEyeControllerMapStateToProps {
     config: IConfigState;
     target: ICoords;
-    image?: HTMLVideoElement;
-    selection?: IDetection;
     animation: Animation;
     animationExists: boolean;
+    image?: HTMLVideoElement;
+    selection?: IDetection;
 }
 
 interface IEyeControllerMapDispatchToState {
@@ -69,9 +69,9 @@ export const EyeController = React.memo(
 
         const reflectionRef = useRef<ImageData | undefined>(undefined);
 
-        const target =
-            props.animationExists && props.animation[0].normalisedCoords
-                ? confineToCircle(props.animation[0].normalisedCoords)
+        const position =
+            props.animationExists && animation[0].target
+                ? confineToCircle(animation[0].target)
                 : confineToCircle({
                       x: props.target.x * props.config.xSensitivity,
                       y:
@@ -81,30 +81,23 @@ export const EyeController = React.memo(
                   });
 
         const scale = (scleraRadius - irisRadius * minIrisScale) / minIrisScale;
-        const innerCenter = {
-            x: props.width / 4 + -target.x * scale,
-            y: props.height / 2 + target.y * scale,
+        const target = {
+            x: props.width / 4 + -position.x * scale,
+            y: props.height / 2 + position.y * scale,
         };
 
-        const calculatedEyesOpenCoefficient =
-            props.animationExists &&
-            props.animation[0].hasOwnProperty('openCoefficient')
-                ? props.animation[0].openCoefficient!
-                : props.openCoefficient;
-
-        const dilatedCoefficient =
-            props.animationExists && props.animation[0].dilation !== undefined
-                ? props.animation[0].dilation
-                : props.dilation;
+        const frame = {
+            openCoefficient: props.openCoefficient,
+            dilation: props.dilation,
+            irisColor: props.config.irisColor,
+            duration: 1000 / props.config.fps,
+            ...animation[0],
+            target,
+        };
 
         const [innerPath, setInnerPath] = useState(
             generateInnerPath(irisRadius, numInnerEyeSectors),
         );
-
-        const irisColor =
-            props.animationExists && props.animation[0].irisColor
-                ? props.animation[0].irisColor
-                : props.config.irisColor;
 
         const animationRef = useRef(animation);
         const detectedRef = useRef(props.detected);
@@ -171,18 +164,18 @@ export const EyeController = React.memo(
                 {[EyeSide.RIGHT, EyeSide.LEFT].map((eye, index) => {
                     const bezier = getBezier(
                         scleraRadius,
-                        typeof calculatedEyesOpenCoefficient === 'number'
-                            ? calculatedEyesOpenCoefficient
-                            : calculatedEyesOpenCoefficient[eye],
+                        typeof frame.openCoefficient === 'number'
+                            ? frame.openCoefficient
+                            : frame.openCoefficient[eye],
                     );
 
                     const eyeShape = getEyeShape(
                         props.width,
                         props.height,
                         scleraRadius,
-                        typeof calculatedEyesOpenCoefficient === 'number'
-                            ? calculatedEyesOpenCoefficient
-                            : calculatedEyesOpenCoefficient[eye],
+                        typeof frame.openCoefficient === 'number'
+                            ? frame.openCoefficient
+                            : frame.openCoefficient[eye],
                     );
                     return (
                         <Eye
@@ -190,28 +183,20 @@ export const EyeController = React.memo(
                             class={eye}
                             key={index}
                             width={props.width / 2}
-                            irisColor={irisColor}
+                            animation={frame}
                             scleraRadius={scleraRadius}
                             irisRadius={irisRadius}
                             pupilRadius={pupilRadius}
-                            dilatedCoefficient={dilatedCoefficient}
-                            innerCenter={innerCenter}
-                            fps={props.config.fps}
                             bezier={bezier}
                             eyeShape={eyeShape}
                             reflection={reflectionRef.current}
                             innerPath={innerPath}
-                            skewTransform={irisMatrixTransform(target)}
-                            transformDuration={
-                                props.animationExists
-                                    ? props.animation[0].duration
-                                    : undefined
-                            }
+                            skewTransform={irisMatrixTransform(position)}
                         />
                     );
                 })}
                 <Gradients
-                    irisColor={irisColor}
+                    irisColor={frame.irisColor}
                     reflectionOpacity={props.config.reflectionOpacity}
                 />
                 <Shadows openCoefficient={props.openCoefficient} />

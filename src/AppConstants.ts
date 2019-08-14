@@ -119,3 +119,4 @@ export const CIELabOffset = 128;
 export const centerPoint = { x: 0, y: 0 };
 export const chanceOfIdleEyesMovement = 0.1;
 export const eyeSensitivtyScale = 0.7;
+export const animationCooldownTimeout = 5000;
