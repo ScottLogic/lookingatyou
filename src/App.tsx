@@ -85,8 +85,6 @@ export class App extends React.Component<AppProps, IAppState> {
     render() {
         return (
             <div className="App">
-                <HelpPopup window={this.props.environment} />
-
                 <VideoHandler {...this.props} />
 
                 {!this.props.webcamAvailable && (
@@ -101,6 +99,7 @@ export class App extends React.Component<AppProps, IAppState> {
 
                 {this.props.webcamAvailable && this.props.model && (
                     <>
+                        <HelpPopup window={this.props.environment} />
                         <MovementHandler {...this.state} {...this.props} />
                         <ConfigMenu window={this.props.environment.window} />
                     </>
