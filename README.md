@@ -101,7 +101,7 @@ If you would like to add additional poses go to `src/utils/pose/poseDetection.ts
 
 ## Reflection
 
-By default there is a reflection of the target shown in the iris with a slight fish-eye effect applied. The intesity of the reflection can be changed in the advanced settings and even switched off entirely.
+By default there is a reflection of the target shown in the iris with a slight fish-eye effect applied. The intesity of the reflection can be changed in the advanced settings or switched off entirely.
 
 ## Advanced Settings
 
