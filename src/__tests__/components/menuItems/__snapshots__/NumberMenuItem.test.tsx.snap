@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`NumberMenuItem tests should render correctly 1`] = `
-"<div data-tip={true} data-for={[undefined]}>
+"<div data-tip={true} data-for=\\"APP_FPS\\">
   <label>
     test
   </label>

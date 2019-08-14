@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`should render correctly 1`] = `
-"<div data-tip={true} data-for={[undefined]}>
+"<div data-tip={true} data-for=\\"APP_X_SENSITIVITY\\">
   <label>
     test
   </label>

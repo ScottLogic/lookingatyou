@@ -16,7 +16,7 @@ describe('CheckBoxMenuItem tests', () => {
             configName: 'test',
             checked: false,
             onInputChange: mockOnInputChange,
-            helpWith: HelpWith.DEBUG,
+            helpWith: HelpWith.ADV_DEBUG,
         };
     });
 
