@@ -45,7 +45,7 @@ function HelpPopup(props: HelpPopupProps) {
                     information. Click the Help &nbsp;
                     <Button variant="contained" className="icon">
                         ?
-                    </Button>{' '}
+                    </Button>
                     &nbsp; icon to see this message again.
                     <br />
                     <Button
