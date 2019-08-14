@@ -34,6 +34,8 @@
 
 Looking At You is a single page application that tracks a person using [PoseNet](https://github.com/tensorflow/tfjs-models/tree/master/posenet) and follows them with a pair of eyes on the screen.
 
+[Eyes](./images/eyes.gif)
+
 Research notes can be found [here](https://docs.google.com/document/d/1qzaegY8RV-7zI8W8PFPsT_O9LhHEo22WNC5yQh8-n_Q/edit#heading=h.e2w0fl8vj3ca_).
 
 ## Prerequisites
@@ -81,6 +83,8 @@ When mouse movement is detected on the screen, the configuration menu will open 
 | Y Sensitivity          | Y axis eyes sensitivity                                                                 |
 | Iris Colour            | Changes the colour of the Iris                                                          |
 | Show Advanced Settings | Shows some extra settings for users that are technically familiar with object detection |
+
+[Settings Menu](./images/settings.gif)
 
 ## Pose Interaction
 
