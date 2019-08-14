@@ -2,8 +2,6 @@
 
 [![CircleCI](https://img.shields.io/circleci/build/github/ScottLogic/lookingatyou/master.svg?label=master&style=badge&token=ab5d53d5a9479d50259a1d2febaa710964b4bd8c)](https://circleci.com/gh/ScottLogic/lookingatyou)
 
-[![HitCount](http://hits.dwyl.io/ScottLogic/lookingatyou.svg)](http://hits.dwyl.io/ScottLogic/lookingatyou)
-
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
