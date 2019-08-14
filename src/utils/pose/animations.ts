@@ -145,15 +145,6 @@ export function blink(): Animation {
     ];
 }
 
-export const animationMapping: {
-    [key: string]: (() => Animation) | Animation;
-} = {
-    [Pose.LEFT_WAVE]: rightWink,
-    [Pose.RIGHT_WAVE]: leftWink,
-    [Pose.HANDS_UP]: rollEyes,
-    [Pose.ARMS_OUT]: shock,
-    [Pose.DAB]: dab,
-};
 export function peek(openLeft: boolean, openRight: boolean): Animation {
     return [
         {
@@ -176,3 +167,13 @@ export function peek(openLeft: boolean, openRight: boolean): Animation {
         },
     ];
 }
+
+export const animationMapping: {
+    [key: string]: (() => Animation) | Animation;
+} = {
+    [Pose.LEFT_WAVE]: rightWink,
+    [Pose.RIGHT_WAVE]: leftWink,
+    [Pose.HANDS_UP]: rollEyes,
+    [Pose.ARMS_OUT]: shock,
+    [Pose.DAB]: dab,
+};
