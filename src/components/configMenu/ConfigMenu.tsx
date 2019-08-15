@@ -19,6 +19,7 @@ import { getConfig } from '../../store/selectors/configSelectors';
 import AdvancedConfigItems from './AdvancedConfigItems';
 import './ConfigMenu.css';
 import Help, { HelpWith } from './Help';
+import ColorPopup from './menuItems/ColorPopup';
 import UserConfigItems from './UserConfigItems';
 
 export interface IConfigMenuProps {
@@ -40,6 +41,7 @@ export type ConfigMenuProps = IConfigMenuProps &
 interface IConfigMenuState {
     leftPosition: string;
     isUnderMouse: boolean;
+    showColorPopup: boolean;
 }
 class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
     private hideTimeout: number = 0;
@@ -49,10 +51,12 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
         this.state = {
             leftPosition: '0px',
             isUnderMouse: false,
+            showColorPopup: false,
         };
         this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.mouseMoveHandler = this.mouseMoveHandler.bind(this);
+        this.toggleShowColorPopup = this.toggleShowColorPopup.bind(this);
         this.props.window.addEventListener('mousemove', this.mouseMoveHandler);
     }
 
@@ -84,6 +88,7 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
         nextState: IConfigMenuState,
     ) {
         return (
+            this.state.showColorPopup !== nextState.showColorPopup ||
             nextState.leftPosition !== this.state.leftPosition ||
             !isEqual(nextProps, this.props)
         );
@@ -97,45 +102,68 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
         );
     }
 
+    toggleShowColorPopup() {
+        this.setState({
+            showColorPopup: !this.state.showColorPopup,
+        });
+    }
+
     render() {
         const showAppHelp = () => {
             this.props.updateAppConfig({ showHelp: true });
         };
         return (
-            <div
-                style={{
-                    left: this.state.leftPosition,
-                    width: configMenuConsts.width,
-                }}
-                className={'ConfigMenu'}
-                onMouseEnter={this.onMouseEnter}
-                onMouseLeave={this.onMouseLeave}
-            >
-                <h1>Settings</h1>
-                <button className="icon" onClick={showAppHelp}>
-                    ?
-                </button>
-                <UserConfigItems {...this.props} />
-                {this.props.config.toggleAdvanced && (
-                    <AdvancedConfigItems {...this.props} />
-                )}
-
-                <br />
-
-                <Button
-                    variant="contained"
-                    className="reset"
-                    onClick={this.props.resetConfig}
+            <>
+                <div
+                    style={{
+                        left: this.state.leftPosition,
+                        width: configMenuConsts.width,
+                    }}
+                    className={'ConfigMenu'}
+                    onMouseEnter={this.onMouseEnter}
+                    onMouseLeave={this.onMouseLeave}
                 >
-                    RESET TO DEFAULTS
-                </Button>
+                    <h1>Settings</h1>
+                    <button className="icon" onClick={showAppHelp}>
+                        ?
+                    </button>
+                    <UserConfigItems
+                        {...this.props}
+                        colorPopupOnClick={this.toggleShowColorPopup}
+                    />
+                    {this.props.config.toggleAdvanced && (
+                        <AdvancedConfigItems {...this.props} />
+                    )}
 
-                <br />
+                    <br />
 
-                {Object.values(HelpWith).map((type, key: number) => (
-                    <Help key={key} problemWith={HelpWith[type] as HelpWith} />
-                ))}
-            </div>
+                    <Button
+                        variant="contained"
+                        className="reset"
+                        onClick={this.props.resetConfig}
+                    >
+                        RESET TO DEFAULTS
+                    </Button>
+
+                    <br />
+
+                    {Object.values(HelpWith).map((type, key: number) => (
+                        <Help
+                            key={key}
+                            problemWith={HelpWith[type] as HelpWith}
+                        />
+                    ))}
+                </div>
+                {this.state.showColorPopup && (
+                    <ColorPopup
+                        showPopup={this.state.showColorPopup}
+                        configName="irisColor"
+                        onInputChange={this.props.updateAppConfig}
+                        color={this.props.config.irisColor}
+                        close={this.toggleShowColorPopup}
+                    />
+                )}
+            </>
         );
     }
 }

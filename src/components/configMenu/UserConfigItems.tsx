@@ -10,6 +10,7 @@ interface IUserConfigProps {
     config: IConfigState;
     updateAppConfig: (payload: PartialConfig) => void;
     window: Window;
+    colorPopupOnClick: () => void;
 }
 export default function UserConfig(props: IUserConfigProps) {
     return (
@@ -51,7 +52,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 name={'Iris Colour'}
                 configName={'irisColor'}
                 color={props.config.irisColor}
-                onInputChange={props.updateAppConfig}
+                onClick={props.colorPopupOnClick}
                 helpWith={HelpWith.IRIS_COLOR}
             />
 
