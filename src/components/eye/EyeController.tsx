@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -100,13 +100,16 @@ export const EyeController = React.memo(
         );
 
         const detectedRef = useRef(props.detected);
+
         useEffect(() => {
             detectedRef.current = props.detected;
         }, [props.detected]);
 
         useEffect(() => {
-            return props.isSleeping ? peekHandler() : blinkHandler();
-        }, [props.isSleeping]);
+            return props.isSleeping
+                ? peekHandler(environment, updateAnimation)
+                : blinkHandler(environment, detectedRef, updateAnimation);
+        }, [props.isSleeping, environment, updateAnimation, detectedRef]);
 
         useEffect(() => {
             if (props.animationExists) {
@@ -139,43 +142,6 @@ export const EyeController = React.memo(
         useEffect(() => {
             setInnerPath(generateInnerPath(irisRadius, 100));
         }, [irisRadius]);
-
-        function peekHandler() {
-            let peekInterval = environment.setInterval(() => {
-                const peekProbability =
-                    blinkConsts.peekFrequency / (1000 / transitionTimes.peek);
-
-                if (Math.random() < peekProbability) {
-                    const random = Math.random();
-                    updateAnimation(peek(random > 1 / 3, random < 2 / 3));
-                }
-            }, transitionTimes.peek);
-
-            return () => {
-                environment.clearInterval(peekInterval);
-                peekInterval = 0;
-            };
-        }
-
-        function blinkHandler() {
-            let blinkInterval = environment.setInterval(() => {
-                const blinkFrequency = detectedRef.current
-                    ? blinkConsts.focusedFrequency
-                    : blinkConsts.frequency;
-
-                const blinkProbability =
-                    blinkFrequency / (1000 / transitionTimes.blink);
-
-                if (Math.random() < blinkProbability) {
-                    updateAnimation(blink());
-                }
-            }, transitionTimes.blink);
-
-            return () => {
-                environment.clearInterval(blinkInterval);
-                blinkInterval = 0;
-            };
-        }
 
         return (
             <div className="container">
@@ -229,6 +195,50 @@ export const EyeController = React.memo(
         previous.target.y === next.target.y &&
         previous.isSleeping === next.isSleeping,
 );
+
+function blinkHandler(
+    environment: Window,
+    detectedRef: MutableRefObject<boolean>,
+    updateAnimation: (animation: Animation) => ISetAnimationAction,
+) {
+    let blinkInterval = environment.setInterval(() => {
+        const blinkFrequency = detectedRef.current
+            ? blinkConsts.focusedFrequency
+            : blinkConsts.frequency;
+
+        const blinkProbability =
+            blinkFrequency / (1000 / transitionTimes.blink);
+
+        if (Math.random() < blinkProbability) {
+            updateAnimation(blink());
+        }
+    }, transitionTimes.blink);
+
+    return () => {
+        environment.clearInterval(blinkInterval);
+        blinkInterval = 0;
+    };
+}
+
+function peekHandler(
+    environment: Window,
+    updateAnimation: (animation: Animation) => ISetAnimationAction,
+) {
+    let peekInterval = environment.setInterval(() => {
+        const peekProbability =
+            blinkConsts.peekFrequency / (1000 / transitionTimes.peek);
+
+        if (Math.random() < peekProbability) {
+            const random = Math.random();
+            updateAnimation(peek(random > 1 / 3, random < 2 / 3));
+        }
+    }, transitionTimes.peek);
+
+    return () => {
+        environment.clearInterval(peekInterval);
+        peekInterval = 0;
+    };
+}
 
 export function getBezier(scleraRadius: number, openCoefficient: number) {
     const curveConstant = 0.55228474983; // (4/3)tan(pi/8)
