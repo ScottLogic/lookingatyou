@@ -8,6 +8,7 @@ import ConfigMenu from './components/configMenu/ConfigMenu';
 import HelpPopup from './components/helpPopup/HelpPopup';
 import MovementHandler from './components/intelligentMovement/MovementHandler';
 import VideoHandler from './components/video/VideoHandler';
+import eyeImage from './img/eye.png';
 import { loadModel } from './store/actions/detections/actions';
 import { IRootStore } from './store/reducers/rootReducer';
 import { getWebcamAvailable } from './store/selectors/videoSelectors';
@@ -94,7 +95,17 @@ export class App extends React.Component<AppProps, IAppState> {
                 )}
 
                 {this.props.webcamAvailable && !this.props.model && (
-                    <div className="loading-spinner" />
+                    <div className="spinner">
+                        <div className="bounce1">
+                            <img src={eyeImage} alt="eye" />
+                        </div>
+                        <div className="bounce2">
+                            <img src={eyeImage} alt="eye" />
+                        </div>
+                        <div className="bounce3">
+                            <img src={eyeImage} alt="eye" />
+                        </div>
+                    </div>
                 )}
 
                 {this.props.webcamAvailable && this.props.model && (
