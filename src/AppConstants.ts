@@ -88,6 +88,7 @@ export const eyeCoefficients = {
 export const configMenuConsts = {
     visibleTimer: 1000,
     width: '17.5em',
+    leftPos: 'calc(- 17.5em - 10px)',
 };
 
 export const userInteraction = {

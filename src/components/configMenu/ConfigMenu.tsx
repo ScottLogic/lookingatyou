@@ -63,7 +63,7 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
             this.hideTimeout = this.props.window.setTimeout(
                 () =>
                     this.setState({
-                        leftPosition: '-' + configMenuConsts.width,
+                        leftPosition: configMenuConsts.leftPos,
                     }),
                 configMenuConsts.visibleTimer,
             );
