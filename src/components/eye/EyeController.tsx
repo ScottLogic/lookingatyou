@@ -105,45 +105,8 @@ export const EyeController = React.memo(
         }, [props.detected]);
 
         useEffect(() => {
-            if (props.isSleeping) {
-                let peekInterval = environment.setInterval(() => {
-                    const peekProbability =
-                        blinkConsts.peekFrequency /
-                        (1000 / transitionTimes.peek);
-                    if (Math.random() < peekProbability) {
-                        const random = Math.random();
-                        if (random < 1 / 3) {
-                            updateAnimation(peek(true, false));
-                        } else if (random < 2 / 3) {
-                            updateAnimation(peek(false, true));
-                        } else {
-                            updateAnimation(peek(true, true));
-                        }
-                    }
-                }, transitionTimes.peek);
-                return () => {
-                    environment.clearInterval(peekInterval);
-                    peekInterval = 0;
-                };
-            } else {
-                {
-                    let blinkInterval = environment.setInterval(() => {
-                        const blinkFrequency = detectedRef.current
-                            ? blinkConsts.focusedFrequency
-                            : blinkConsts.frequency;
-                        const blinkProbability =
-                            blinkFrequency / (1000 / transitionTimes.blink);
-                        if (Math.random() < blinkProbability) {
-                            updateAnimation(blink());
-                        }
-                    }, transitionTimes.blink);
-                    return () => {
-                        environment.clearInterval(blinkInterval);
-                        blinkInterval = 0;
-                    };
-                }
-            }
-        }, [props.isSleeping, environment, updateAnimation]);
+            return props.isSleeping ? peekHandler() : blinkHandler();
+        }, [props.isSleeping]);
 
         useEffect(() => {
             if (props.animationExists) {
@@ -176,6 +139,43 @@ export const EyeController = React.memo(
         useEffect(() => {
             setInnerPath(generateInnerPath(irisRadius, 100));
         }, [irisRadius]);
+
+        function peekHandler() {
+            let peekInterval = environment.setInterval(() => {
+                const peekProbability =
+                    blinkConsts.peekFrequency / (1000 / transitionTimes.peek);
+
+                if (Math.random() < peekProbability) {
+                    const random = Math.random();
+                    updateAnimation(peek(random > 1 / 3, random < 2 / 3));
+                }
+            }, transitionTimes.peek);
+
+            return () => {
+                environment.clearInterval(peekInterval);
+                peekInterval = 0;
+            };
+        }
+
+        function blinkHandler() {
+            let blinkInterval = environment.setInterval(() => {
+                const blinkFrequency = detectedRef.current
+                    ? blinkConsts.focusedFrequency
+                    : blinkConsts.frequency;
+
+                const blinkProbability =
+                    blinkFrequency / (1000 / transitionTimes.blink);
+
+                if (Math.random() < blinkProbability) {
+                    updateAnimation(blink());
+                }
+            }, transitionTimes.blink);
+
+            return () => {
+                environment.clearInterval(blinkInterval);
+                blinkInterval = 0;
+            };
+        }
 
         return (
             <div className="container">

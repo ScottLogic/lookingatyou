@@ -200,28 +200,35 @@ export class MovementHandler extends React.Component<
     }
 
     startTextTimer() {
-        if (!this.textTimeout) {
-            this.textTimeout = this.props.environment.setTimeout(() => {
-                const totalFrequency = userInteraction.texts
-                    .map(text => text.frequency)
-                    .reduce((x, y) => x + y);
-                let random = Math.random() * totalFrequency;
-                let i = 0;
-                while (random >= 0 && i < userInteraction.texts.length - 1) {
-                    random -= userInteraction.texts[i].frequency;
-                    i++;
-                }
-                const phrase = userInteraction.texts[i - 1].phrase;
-                this.setState({
-                    showText: true,
-                    text: phrase,
-                });
-                this.props.environment.setTimeout(() => {
-                    this.setState({ showText: false });
-                    this.textTimeout = 0;
-                }, userInteraction.textDuration);
-            }, userInteraction.delay);
+        if (this.textTimeout) {
+            return;
         }
+
+        this.textTimeout = this.props.environment.setTimeout(() => {
+            const totalFrequency = userInteraction.texts
+                .map(text => text.frequency)
+                .reduce((x, y) => x + y);
+
+            let random = Math.random() * totalFrequency;
+            let i = 0;
+
+            while (random >= 0 && i < userInteraction.texts.length - 1) {
+                random -= userInteraction.texts[i].frequency;
+                i++;
+            }
+
+            const phrase = userInteraction.texts[i - 1].phrase;
+
+            this.setState({
+                showText: true,
+                text: phrase,
+            });
+
+            this.props.environment.setTimeout(() => {
+                this.setState({ showText: false });
+                this.textTimeout = 0;
+            }, userInteraction.textDuration);
+        }, userInteraction.delay);
     }
 
     render() {
