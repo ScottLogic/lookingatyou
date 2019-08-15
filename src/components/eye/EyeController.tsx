@@ -230,7 +230,7 @@ function peekHandler(
 
         if (Math.random() < peekProbability) {
             const random = Math.random();
-            updateAnimation(peek(random > 1 / 3, random < 2 / 3));
+            updateAnimation(peek(random > 0.1, random < 0.9));
         }
     }, transitionTimes.peek);
 
