@@ -4,10 +4,10 @@ exports[`Shadows should render correctly 1`] = `
 "<svg className=\\"collapse\\">
   <defs>
     <filter id=\\"shadowTop\\">
-      <feDropShadow dx=\\"0\\" dy={44.44444444444444} stdDeviation={44.44444444444444} floodColor=\\"#000000\\" floodOpacity={0.8} />
+      <feDropShadow dx=\\"0\\" dy={0.11111111111111112} stdDeviation={0.11111111111111112} floodColor=\\"#000000\\" floodOpacity={0.8} />
     </filter>
     <filter id=\\"shadowBottom\\">
-      <feDropShadow dx=\\"0\\" dy={-11.11111111111111} stdDeviation={33.333333333333336} floodColor=\\"#000000\\" floodOpacity={0.8} />
+      <feDropShadow dx=\\"0\\" dy={-0.02777777777777778} stdDeviation={0.08333333333333333} floodColor=\\"#000000\\" floodOpacity={0.8} />
     </filter>
   </defs>
 </svg>"

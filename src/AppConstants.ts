@@ -82,10 +82,9 @@ export const targetingConsts = {
     maxNum: 8,
 };
 export const eyeCoefficients = {
-    // multiple screen width by these values to get size of eye parts
-    sclera: 1 / 4.5,
-    iris: 1 / 10,
-    pupil: 1 / 24,
+    sclera: 0.9,
+    iris: 0.4,
+    pupil: 0.16,
 };
 export const configMenuConsts = {
     visibleTimer: 1000,

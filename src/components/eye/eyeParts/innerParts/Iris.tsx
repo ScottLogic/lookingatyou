@@ -1,10 +1,10 @@
 import React from 'react';
 import tinycolor from 'tinycolor2';
+import { eyeCoefficients } from '../../../../AppConstants';
 import { IAnimationFrame } from '../../../../utils/pose/animations';
 import { IInnerPartProps } from './IInnerPartsProps';
 
 export interface IIrisProps extends IInnerPartProps {
-    irisRadius: number;
     animation: IAnimationFrame;
     innerPath: string;
 }
@@ -14,7 +14,7 @@ const Iris = React.memo((props: IIrisProps) => {
         <g {...props.groupProps}>
             <circle
                 className={'iris'}
-                r={props.irisRadius}
+                r={eyeCoefficients.iris}
                 fill={'url(#irisGradient)'}
             />
             <path
