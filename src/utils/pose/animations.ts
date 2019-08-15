@@ -158,6 +158,7 @@ export function peek(openLeft: boolean, openRight: boolean): Animation {
             },
             duration: transitionTimes.peek,
         },
+        { duration: transitionTimes.peek },
         {
             openCoefficient: {
                 [EyeSide.RIGHT]: eyelidPosition.CLOSED,
