@@ -22,7 +22,7 @@ const WarningPopupHandler = React.memo((props: ICheckBoxMenuItemProps) => {
     return (
         <>
             {showModal && (
-                <Popup open={true} modal={true} closeOnDocumentClick={false}>
+                <Popup open={true} modal={true} closeOnDocumentClick={false} closeOnEscape={false}> 
                     <>
                         <h1>Warning!</h1>
                         <br />
