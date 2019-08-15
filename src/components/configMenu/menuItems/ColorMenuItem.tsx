@@ -1,6 +1,7 @@
 import { Button } from '@material-ui/core';
 import React, { useState } from 'react';
 import { SketchPicker } from 'react-color';
+import ReactTooltip from 'react-tooltip';
 import Popup from 'reactjs-popup';
 import { UpdateConfigAction } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
@@ -18,9 +19,8 @@ const ColorMenuItem = React.memo(
     (props: IColorMenuItemProps) => {
         const [showPopup, setShowPopup] = useState(false);
 
-        function onChange(
-            event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-        ) {
+        function onChange() {
+            ReactTooltip.hide();
             setShowPopup(true);
         }
 
@@ -30,7 +30,7 @@ const ColorMenuItem = React.memo(
             });
         }
 
-        function close(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        function close() {
             setShowPopup(false);
         }
 
