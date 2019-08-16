@@ -193,7 +193,9 @@ export const EyeController = React.memo(
         previous.openCoefficient === next.openCoefficient &&
         previous.target.x === next.target.x &&
         previous.target.y === next.target.y &&
-        previous.isSleeping === next.isSleeping,
+        previous.isSleeping === next.isSleeping &&
+        previous.width === next.width &&
+        previous.height === next.height,
 );
 
 function blinkHandler(

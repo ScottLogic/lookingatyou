@@ -103,7 +103,7 @@ export class MovementHandler extends React.Component<
     ) {
         return (
             this.state.isSleeping !== nextState.isSleeping ||
-            (this.props.animationExists &&
+            (!this.props.animationExists &&
                 (this.props.height !== nextProps.height ||
                     this.props.width !== nextProps.width ||
                     this.props.target !== nextProps.target ||
@@ -158,12 +158,13 @@ export class MovementHandler extends React.Component<
         } else {
             this.setNoTarget();
 
-            if (
-                !this.state.isSleeping &&
-                Math.random() < chanceOfIdleEyesMovement
-            ) {
-                this.hasMovedLeft = !this.hasMovedLeft;
-                this.props.updateAnimation(naturalMovement(this.hasMovedLeft));
+            if (!this.props.animationExists && !this.state.isSleeping) {
+                if (Math.random() < chanceOfIdleEyesMovement) {
+                    this.hasMovedLeft = !this.hasMovedLeft;
+                    this.props.updateAnimation(
+                        naturalMovement(this.hasMovedLeft),
+                    );
+                }
             }
         }
     }
