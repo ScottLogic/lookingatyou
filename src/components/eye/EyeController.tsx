@@ -193,7 +193,9 @@ export const EyeController = React.memo(
                             reflection={reflectionRef.current}
                             innerPath={innerPath}
                             skewTransform={irisMatrixTransform(position)}
-                            reflectionOpacity={props.config.reflectionOpacity}
+                            reflectionOpacity={
+                                props.advancedConfig.reflectionOpacity
+                            }
                         />
                     );
                 })}
