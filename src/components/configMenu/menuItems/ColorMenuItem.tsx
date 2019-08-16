@@ -59,6 +59,7 @@ const ColorMenuItem = React.memo(
                             <SketchPicker
                                 color={props.color}
                                 onChangeComplete={handleChangeComplete}
+                                disableAlpha={true}
                             />
 
                             <br />
