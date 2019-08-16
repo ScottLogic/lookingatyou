@@ -11,11 +11,16 @@ import {
 } from '../../store/actions/config/actions';
 import {
     ConfigSetAction,
-    IConfigState,
+    IAdvancedConfig,
+    IAppConfig,
     PartialConfig,
+    UpdateConfigAction,
 } from '../../store/actions/config/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
-import { getConfig } from '../../store/selectors/configSelectors';
+import {
+    getAdvancedConfig,
+    getAppConfig,
+} from '../../store/selectors/configSelectors';
 import AdvancedConfigItems from './AdvancedConfigItems';
 import './ConfigMenu.css';
 import Help, { HelpWith } from './Help';
@@ -24,15 +29,20 @@ import UserConfigItems from './UserConfigItems';
 export interface IConfigMenuProps {
     window: Window;
 }
+
 interface IConfigMenuMapStateToProps {
-    config: IConfigState;
+    appConfig: IAppConfig;
+    advancedConfig: IAdvancedConfig;
 }
+
 interface IConfigMenuMapDispatchToProps {
-    updateAppConfig: (payload: PartialConfig) => void;
-    updateModelConfig: (payload: PartialConfig) => void;
-    updateDetectionConfig: (payload: PartialConfig) => void;
+    updateAppConfig: UpdateConfigAction;
+    updateModelConfig: UpdateConfigAction;
+    updateDetectionConfig: UpdateConfigAction;
+    updateAdvancedConfig: UpdateConfigAction;
     resetConfig: () => void;
 }
+
 export type ConfigMenuProps = IConfigMenuProps &
     IConfigMenuMapStateToProps &
     IConfigMenuMapDispatchToProps;
@@ -41,7 +51,11 @@ interface IConfigMenuState {
     leftPosition: string;
     isUnderMouse: boolean;
 }
-class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
+
+export class ConfigMenu extends React.Component<
+    ConfigMenuProps,
+    IConfigMenuState
+> {
     private hideTimeout: number = 0;
 
     constructor(props: ConfigMenuProps) {
@@ -59,7 +73,11 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
     mouseMoveHandler() {
         this.setState({ leftPosition: '0px' });
         this.props.window.clearInterval(this.hideTimeout);
-        if (!this.state.isUnderMouse && !this.props.config.toggleDebug) {
+        if (
+            !this.state.isUnderMouse &&
+            (!this.props.advancedConfig.toggleDebug &&
+                this.props.appConfig.toggleAdvanced)
+        ) {
             this.hideTimeout = this.props.window.setTimeout(
                 () =>
                     this.setState({
@@ -102,45 +120,48 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
             this.props.updateAppConfig({ showHelp: true });
         };
         return (
-            <div
-                style={{
-                    left: this.state.leftPosition,
-                    width: configMenuConsts.width,
-                }}
-                className={'ConfigMenu'}
-                onMouseEnter={this.onMouseEnter}
-                onMouseLeave={this.onMouseLeave}
-            >
-                <h1>Settings</h1>
-                <button className="icon" onClick={showAppHelp}>
-                    ?
-                </button>
-                <UserConfigItems {...this.props} />
-                {this.props.config.toggleAdvanced && (
-                    <AdvancedConfigItems {...this.props} />
-                )}
-
-                <br />
-
-                <Button
-                    variant="contained"
-                    className="reset"
-                    onClick={this.props.resetConfig}
+            <>
+                <div
+                    style={{
+                        left: this.state.leftPosition,
+                        width: configMenuConsts.width,
+                    }}
+                    className={'ConfigMenu'}
+                    onMouseEnter={this.onMouseEnter}
+                    onMouseLeave={this.onMouseLeave}
                 >
-                    RESET TO DEFAULTS
-                </Button>
+                    <h1>Settings</h1>
+                    <button className="icon" onClick={showAppHelp}>
+                        ?
+                    </button>
+                    <UserConfigItems {...this.props} />
+                    {this.props.appConfig.toggleAdvanced && (
+                        <AdvancedConfigItems {...this.props} />
+                    )}
 
-                <br />
+                    <br />
 
+                    <Button
+                        variant="contained"
+                        className="reset"
+                        onClick={this.props.resetConfig}
+                    >
+                        RESET TO DEFAULTS
+                    </Button>
+
+                    <br />
+                    <br />
+                </div>
                 {Object.values(HelpWith).map((type, key: number) => (
                     <Help key={key} problemWith={HelpWith[type] as HelpWith} />
                 ))}
-            </div>
+            </>
         );
     }
 }
 const mapStateToProps = (state: IRootStore): IConfigMenuMapStateToProps => ({
-    config: getConfig(state),
+    appConfig: getAppConfig(state),
+    advancedConfig: getAdvancedConfig(state),
 });
 
 const mapDispatchToProps = (
@@ -150,6 +171,14 @@ const mapDispatchToProps = (
     updateAppConfig: (payload: PartialConfig) =>
         dispatch(
             updateConfigAction(ConfigSetAction.APP, payload, ownProps.window),
+        ),
+    updateAdvancedConfig: (payload: PartialConfig) =>
+        dispatch(
+            updateConfigAction(
+                ConfigSetAction.ADVANCED,
+                payload,
+                ownProps.window,
+            ),
         ),
     updateModelConfig: (payload: PartialConfig) =>
         dispatch(

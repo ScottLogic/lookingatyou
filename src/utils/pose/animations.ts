@@ -72,16 +72,6 @@ export const shock: Animation = [
     dilated,
 ];
 
-export const animationMapping: {
-    [key: string]: (() => Animation) | Animation;
-} = {
-    [Pose.LEFT_WAVE]: rightWink,
-    [Pose.RIGHT_WAVE]: leftWink,
-    [Pose.HANDS_UP]: rollEyes,
-    [Pose.ARMS_OUT]: shock,
-    [Pose.DAB]: dab,
-};
-
 export function rollEyes(): Animation {
     const path = [];
 
@@ -154,3 +144,37 @@ export function blink(): Animation {
         },
     ];
 }
+
+export function peek(openLeft: boolean, openRight: boolean): Animation {
+    return [
+        {
+            openCoefficient: {
+                [EyeSide.RIGHT]: openRight
+                    ? eyelidPosition.OPEN
+                    : eyelidPosition.CLOSED,
+                [EyeSide.LEFT]: openLeft
+                    ? eyelidPosition.OPEN
+                    : eyelidPosition.CLOSED,
+            },
+            duration: transitionTimes.peek,
+        },
+        { duration: transitionTimes.peek },
+        {
+            openCoefficient: {
+                [EyeSide.RIGHT]: eyelidPosition.CLOSED,
+                [EyeSide.LEFT]: eyelidPosition.CLOSED,
+            },
+            duration: transitionTimes.peek,
+        },
+    ];
+}
+
+export const animationMapping: {
+    [key: string]: (() => Animation) | Animation;
+} = {
+    [Pose.LEFT_WAVE]: rightWink,
+    [Pose.RIGHT_WAVE]: leftWink,
+    [Pose.HANDS_UP]: rollEyes,
+    [Pose.ARMS_OUT]: shock,
+    [Pose.DAB]: dab,
+};
