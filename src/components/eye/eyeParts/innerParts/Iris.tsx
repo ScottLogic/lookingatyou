@@ -6,7 +6,7 @@ import { IInnerPartProps } from '../../types';
 export interface IIrisProps extends IInnerPartProps {
     irisRadius: number;
     animation: IAnimationFrame;
-    innerPath: any;
+    innerPath: string;
 }
 
 const Iris = React.memo((props: IIrisProps) => {
