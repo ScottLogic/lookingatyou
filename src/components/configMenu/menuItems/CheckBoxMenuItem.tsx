@@ -1,13 +1,13 @@
 import { Checkbox, FormControl, FormControlLabel } from '@material-ui/core';
 import React, { useState } from 'react';
-import { PartialConfig } from '../../../store/actions/config/types';
+import { UpdateConfigAction } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 import WarningPopupHandler from '../WarningPopupHandler';
 
 export interface ICheckBoxMenuItemProps {
     name: string;
     configName: string;
-    onInputChange: (payload: PartialConfig) => void;
+    onInputChange: UpdateConfigAction;
     checked: boolean;
     helpWith: HelpWith;
     warning?: JSX.Element;

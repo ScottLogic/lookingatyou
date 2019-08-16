@@ -1,6 +1,6 @@
 import { TextField } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { PartialConfig } from '../../../store/actions/config/types';
+import { UpdateConfigAction } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 
 export interface INumberMenuItemProps {
@@ -9,7 +9,7 @@ export interface INumberMenuItemProps {
     step: number;
     min?: number;
     max?: number;
-    onValidInput: (payload: PartialConfig) => void;
+    onValidInput: UpdateConfigAction;
     defaultValue: number;
     helpWith: HelpWith;
 }
