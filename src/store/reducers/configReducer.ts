@@ -24,8 +24,8 @@ export const initialDetectionConfig: IDetectionConfig = {
 };
 
 export const initialState: IConfigState = {
-    xSensitivity: 1,
-    ySensitivity: 1,
+    xSensitivity: 0.8,
+    ySensitivity: 0.6,
     fps: 2,
     toggleDebug: false,
     irisColor: '#55acee', // must be hex value, as this is passed to colour picker input
