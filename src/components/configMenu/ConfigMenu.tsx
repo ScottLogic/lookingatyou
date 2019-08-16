@@ -147,8 +147,10 @@ export class ConfigMenu extends React.Component<
                     >
                         RESET TO DEFAULTS
                     </Button>
-                </div>
 
+                    <br />
+                    <br />
+                </div>
                 {Object.values(HelpWith).map((type, key: number) => (
                     <Help key={key} problemWith={HelpWith[type] as HelpWith} />
                 ))}
