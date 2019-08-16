@@ -34,12 +34,11 @@ const NumberMenuItem = React.memo(
             const newValue = Number(event.target.value);
             setValue(newValue);
 
-            const isValidDecimal = props.noDecimals
-                ? Number.isInteger(newValue)
-                : true;
+            const isAllowDecimalValid =
+                !props.noDecimals || Number.isInteger(newValue);
 
             const newIsValid =
-                isValidDecimal &&
+                isAllowDecimalValid &&
                 !isNaN(newValue) &&
                 (!props.min || newValue >= props.min) &&
                 (!props.max || newValue <= props.max);
