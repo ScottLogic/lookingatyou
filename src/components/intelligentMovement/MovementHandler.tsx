@@ -201,7 +201,7 @@ export class MovementHandler extends React.Component<
     }
 
     startTextTimer() {
-        if (this.textTimeout) {
+        if (this.textTimeout > 0) {
             return;
         }
 
