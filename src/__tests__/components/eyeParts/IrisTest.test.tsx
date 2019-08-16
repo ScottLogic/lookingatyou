@@ -1,11 +1,10 @@
 import { shallow } from 'enzyme';
 import React from 'react';
-import {
-    InnerEye,
-    InnerEyeProps,
-} from '../../../components/eye/eyeParts/InnerEye';
+import Iris, {
+    IIrisProps,
+} from '../../../components/eye/eyeParts/innerParts/Iris';
 
-let props: InnerEyeProps;
+let props: IIrisProps;
 const data = new Uint8ClampedArray(400);
 const animation = {
     target: { x: 0, y: 0 },
@@ -24,7 +23,7 @@ for (let i = 0; i < 400; i += 4) {
 
 const imageData = { data, width: 10, height: 10 };
 
-describe('InnerEye', () => {
+describe('Iris', () => {
     beforeEach(() => {
         props = {
             height: 800,
@@ -40,7 +39,7 @@ describe('InnerEye', () => {
     });
 
     it('should render correctly', () => {
-        const wrapper = shallow(<InnerEye {...props} />).debug();
+        const wrapper = shallow(<Iris {...props} />).debug();
         expect(wrapper).toMatchSnapshot();
     });
 });

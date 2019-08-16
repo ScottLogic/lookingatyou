@@ -1,7 +1,10 @@
 import { load, PoseNet } from '@tensorflow-models/posenet';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { targetingConsts } from '../../../AppConstants';
+import {
+    animationCooldownTimeout,
+    targetingConsts,
+} from '../../../AppConstants';
 import { Detections, IDetection } from '../../../models/objectDetection';
 import calculateTargetPos from '../../../utils/objectTracking/calculateFocus';
 import { Animation, animationMapping } from '../../../utils/pose/animations';
@@ -11,12 +14,13 @@ import { getImageDataFromVideo, reshapeDetections } from '../../../utils/utils';
 import { IRootStore } from '../../reducers/rootReducer';
 import { getConfig, getFPS } from '../../selectors/configSelectors';
 import {
+    getAnimationExists,
     getColor,
     getSelections,
     getTargets,
 } from '../../selectors/detectionSelectors';
 import { getVideo } from '../../selectors/videoSelectors';
-import { createActionPayload } from '../creators';
+import { createAction, createActionPayload } from '../creators';
 import { setImageDataAction } from '../video/actions';
 import {
     ISwapSelectionActionPayload,
@@ -26,6 +30,7 @@ import {
     SET_MODEL,
     SET_OPEN,
     SWAP_SELECTION,
+    TOGGLE_ANIMATION_COOLDOWN,
 } from './types';
 
 export function loadModel(window: Window) {
@@ -85,7 +90,11 @@ export function handleDetection(document: Document) {
         dispatch(setDetectionsAndMaybeSwapTarget(detections));
 
         const selection = getSelections(getState());
-        if (selection && getState().detectionStore.animation.length === 0) {
+        if (
+            selection &&
+            !getAnimationExists(getState()) &&
+            !getState().detectionStore.animationCoolDown
+        ) {
             const pose = getPose(selection);
             if (pose) {
                 let poseAnimation = animationMapping[pose];
@@ -93,6 +102,10 @@ export function handleDetection(document: Document) {
                     ? poseAnimation
                     : poseAnimation();
                 dispatch(setAnimation(poseAnimation));
+                dispatch(toggleAnimationCoolDown());
+                window.setTimeout(() => {
+                    dispatch(toggleAnimationCoolDown());
+                }, animationCooldownTimeout);
             }
         }
     };
@@ -179,3 +192,7 @@ export const setAnimation = createActionPayload<
     typeof SET_ANIMATION,
     Animation
 >(SET_ANIMATION);
+
+export const toggleAnimationCoolDown = createAction<
+    typeof TOGGLE_ANIMATION_COOLDOWN
+>(TOGGLE_ANIMATION_COOLDOWN);

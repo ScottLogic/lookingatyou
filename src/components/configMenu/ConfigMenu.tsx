@@ -23,6 +23,7 @@ import {
 } from '../../store/selectors/configSelectors';
 import AdvancedConfigItems from './AdvancedConfigItems';
 import './ConfigMenu.css';
+import Help, { HelpWith } from './Help';
 import UserConfigItems from './UserConfigItems';
 
 export interface IConfigMenuProps {
@@ -74,7 +75,8 @@ export class ConfigMenu extends React.Component<
         this.props.window.clearInterval(this.hideTimeout);
         if (
             !this.state.isUnderMouse &&
-            !this.props.advancedConfig.toggleDebug
+            (!this.props.advancedConfig.toggleDebug ||
+                !this.props.appConfig.toggleAdvanced)
         ) {
             this.hideTimeout = this.props.window.setTimeout(
                 () =>
@@ -118,36 +120,52 @@ export class ConfigMenu extends React.Component<
             this.props.updateAppConfig({ showHelp: true });
         };
         return (
-            <div
-                style={{
-                    left: this.state.leftPosition,
-                    width: configMenuConsts.width,
-                }}
-                className={'ConfigMenu'}
-                onMouseEnter={this.onMouseEnter}
-                onMouseLeave={this.onMouseLeave}
-            >
-                <h1>Settings</h1>
-                <button className="icon" onClick={showAppHelp}>
-                    ?
-                </button>
-                <UserConfigItems {...this.props} />
-                {this.props.appConfig.toggleAdvanced && (
-                    <AdvancedConfigItems {...this.props} />
-                )}
-
-                <br />
-
-                <Button
-                    variant="contained"
-                    className="reset"
-                    onClick={this.props.resetConfig}
+            <>
+                <div
+                    style={{
+                        left: this.state.leftPosition,
+                        width: configMenuConsts.width,
+                    }}
+                    className={'ConfigMenu'}
+                    onMouseEnter={this.onMouseEnter}
+                    onMouseLeave={this.onMouseLeave}
                 >
-                    RESET TO DEFAULTS
-                </Button>
+                    <h1>Settings</h1>
+                    <button className="icon" onClick={showAppHelp}>
+                        ?
+                    </button>
+                    <UserConfigItems {...this.props} />
+                    {this.props.appConfig.toggleAdvanced && (
+                        <AdvancedConfigItems {...this.props} />
+                    )}
 
-                <br />
-            </div>
+                    <br />
+
+                    <Button
+                        variant="contained"
+                        className="reset"
+                        onClick={this.props.resetConfig}
+                    >
+                        RESET TO DEFAULTS
+                    </Button>
+
+                    <br />
+                </div>
+
+                {Object.values(HelpWith).map((type, key: number) => {
+                    const showHelp =
+                        this.props.appConfig.toggleAdvanced ||
+                        type.toString().includes('APP');
+                    return (
+                        showHelp && (
+                            <Help
+                                key={key}
+                                problemWith={HelpWith[type] as HelpWith}
+                            />
+                        )
+                    );
+                })}
+            </>
         );
     }
 }
