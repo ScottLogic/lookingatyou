@@ -1,6 +1,10 @@
 import React from 'react';
 import { IAnimationFrame } from '../../../../utils/pose/animations';
+<<<<<<< HEAD
 import { IInnerPartProps } from './IInnerPartsProps';
+=======
+import { IInnerPartProps } from '../../types';
+>>>>>>> master
 
 interface IShineProps extends IInnerPartProps {
     irisRadius: number;

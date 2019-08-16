@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { IAnimationFrame } from '../../../../utils/pose/animations';
-import { IInnerPartProps } from './IInnerPartsProps';
+import { IInnerPartProps } from '../../types';
 interface IReflectionProps extends IInnerPartProps {
     animation: IAnimationFrame;
     reflection?: ImageData;
@@ -19,25 +19,26 @@ export function Reflection(props: IReflectionProps) {
             }
         }
     }, [props.reflection]);
-
     return (
-        <g {...props.groupProps}>
-            <foreignObject
-                width={props.pupilRadius * 2}
-                height={props.pupilRadius * 2}
-                x={-props.pupilRadius}
-                y={-props.pupilRadius}
-                style={props.transitionStyle}
-                transform={`scale(${props.animation.dilation})`}
-            >
-                {props.reflection && (
+        <>
+            return props.reflection && (
+            <g {...props.groupProps}>
+                <foreignObject
+                    width={props.pupilRadius * 2}
+                    height={props.pupilRadius * 2}
+                    x={-props.pupilRadius}
+                    y={-props.pupilRadius}
+                    style={props.transitionStyle}
+                    transform={`scale(${props.animation.dilation})`}
+                >
                     <canvas
                         ref={canvasRef}
                         width={props.pupilRadius * 2}
                         height={props.pupilRadius * 2}
                     />
-                )}
-            </foreignObject>
-        </g>
+                </foreignObject>
+            </g>
+            )
+        </>
     );
 }

@@ -45,7 +45,6 @@ export default function Eye(props: IEyeProps) {
     const transitionStyle = {
         transition: `transform ${props.animation.duration}ms`,
     };
-
     const overlaySvgProps = {
         className: 'overlay',
         width: props.width,
