@@ -150,17 +150,6 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
                 onValidInput={props.updateDetectionConfig}
                 min={1}
             />
-
-            {Object.values(HelpWith).map((type, key: number) => {
-                return (
-                    type.toString().includes('ADV') && (
-                        <Help
-                            key={key}
-                            problemWith={HelpWith[type] as HelpWith}
-                        />
-                    )
-                );
-            })}
         </>
     );
 }

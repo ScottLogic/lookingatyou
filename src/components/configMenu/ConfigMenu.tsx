@@ -150,6 +150,7 @@ export class ConfigMenu extends React.Component<
                     </Button>
 
                     <br />
+                    <br />
                 </div>
 
                 {Object.values(HelpWith).map((type, key: number) => {

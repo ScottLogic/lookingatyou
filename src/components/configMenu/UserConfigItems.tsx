@@ -3,7 +3,7 @@ import {
     IAppConfig,
     UpdateConfigAction,
 } from '../../store/actions/config/types';
-import Help, { HelpWith } from './Help';
+import { HelpWith } from './Help';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
 import NumberMenuItem from './menuItems/NumberMenuItem';
@@ -75,17 +75,6 @@ export default function UserConfig(props: IUserConfigProps) {
                     </>
                 }
             />
-
-            {Object.values(HelpWith).map((type, key: number) => {
-                return (
-                    type.toString().includes('APP') && (
-                        <Help
-                            key={key}
-                            problemWith={HelpWith[type] as HelpWith}
-                        />
-                    )
-                );
-            })}
         </>
     );
 }
