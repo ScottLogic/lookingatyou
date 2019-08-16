@@ -102,45 +102,47 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
             this.props.updateAppConfig({ showHelp: true });
         };
         return (
-            <div
-                style={{
-                    left: this.state.leftPosition,
-                    width: configMenuConsts.width,
-                }}
-                className={'ConfigMenu'}
-                onMouseEnter={this.onMouseEnter}
-                onMouseLeave={this.onMouseLeave}
-            >
-                <h1>Settings</h1>
-                <Button
-                    variant="contained"
-                    className="icon"
-                    onClick={showAppHelp}
+            <>
+                <div
+                    style={{
+                        left: this.state.leftPosition,
+                        width: configMenuConsts.width,
+                    }}
+                    className={'ConfigMenu'}
+                    onMouseEnter={this.onMouseEnter}
+                    onMouseLeave={this.onMouseLeave}
                 >
-                    ?
-                </Button>
-                <UserConfigItems {...this.props} />
-                {this.props.config.toggleAdvanced && (
-                    <AdvancedConfigItems {...this.props} />
-                )}
+                    <h1>Settings</h1>
+                    <Button
+                        variant="contained"
+                        className="icon"
+                        onClick={showAppHelp}
+                    >
+                        ?
+                    </Button>
+                    <UserConfigItems {...this.props} />
+                    {this.props.config.toggleAdvanced && (
+                        <AdvancedConfigItems {...this.props} />
+                    )}
 
-                <br />
+                    <br />
 
-                <Button
-                    variant="contained"
-                    className="reset"
-                    onClick={this.props.resetConfig}
-                >
-                    RESET TO DEFAULTS
-                </Button>
+                    <Button
+                        variant="contained"
+                        className="reset"
+                        onClick={this.props.resetConfig}
+                    >
+                        RESET TO DEFAULTS
+                    </Button>
 
-                <br />
-                <br />
+                    <br />
+                    <br />
+                </div>
 
                 {Object.values(HelpWith).map((type, key: number) => (
                     <Help key={key} problemWith={HelpWith[type] as HelpWith} />
                 ))}
-            </div>
+            </>
         );
     }
 }
