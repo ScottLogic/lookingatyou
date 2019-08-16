@@ -26,7 +26,7 @@ import {
     getSelections,
     getTargets,
 } from '../../store/selectors/detectionSelectors';
-import { getVideo } from '../../store/selectors/videoSelectors';
+import { getImageData, getVideo } from '../../store/selectors/videoSelectors';
 import { Animation, blink, peek } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import Eye from './Eye';
@@ -55,6 +55,7 @@ interface IEyeControllerMapStateToProps {
     animationExists: boolean;
     image?: HTMLVideoElement;
     selection?: IDetection;
+    imageData?: ImageData;
 }
 
 interface IEyeControllerMapDispatchToState {
@@ -128,7 +129,11 @@ export const EyeController = React.memo(
         }, [animation, updateAnimation, environment, props.animationExists]);
 
         useEffect(() => {
-            if (props.advancedConfig.toggleReflection && props.image) {
+            if (
+                props.advancedConfig.toggleReflection &&
+                props.image &&
+                props.imageData
+            ) {
                 reflectionRef.current = getReflection(
                     pupilRadius,
                     props.target,
@@ -142,6 +147,7 @@ export const EyeController = React.memo(
             props.image,
             props.advancedConfig.toggleReflection,
             pupilRadius,
+            props.imageData,
         ]);
 
         useEffect(() => {
@@ -290,6 +296,7 @@ const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     selection: getSelections(state),
     animation: getAnimations(state),
     animationExists: getAnimationExists(state),
+    imageData: getImageData(state),
 });
 
 const mapDispatchToProps = (

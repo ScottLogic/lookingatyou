@@ -24,7 +24,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 step={1}
                 defaultValue={props.appConfig.fps}
                 onValidInput={props.updateAppConfig}
-                helpWith={HelpWith.APP_FPS}
+                helpWith={HelpWith.FPS}
                 min={1}
             />
 
@@ -34,7 +34,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 step={0.05}
                 defaultValue={props.appConfig.xSensitivity}
                 onValidInput={props.updateAppConfig}
-                helpWith={HelpWith.APP_X_SENSITIVITY}
+                helpWith={HelpWith.X_SENSITIVITY}
                 min={0}
                 max={1}
             />
@@ -44,7 +44,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 step={0.05}
                 defaultValue={props.appConfig.ySensitivity}
                 onValidInput={props.updateAppConfig}
-                helpWith={HelpWith.APP_Y_SENSITIVITY}
+                helpWith={HelpWith.Y_SENSITIVITY}
                 min={0}
                 max={1}
             />
@@ -56,7 +56,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 configName={'irisColor'}
                 color={props.appConfig.irisColor}
                 onInputChange={props.updateAppConfig}
-                helpWith={HelpWith.APP_IRIS_COLOR}
+                helpWith={HelpWith.IRIS_COLOR}
             />
 
             <br />
@@ -65,6 +65,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 name={'Show Advanced Settings'}
                 configName={'toggleAdvanced'}
                 checked={props.appConfig.toggleAdvanced}
+                helpWith={HelpWith.ADVANCE_SETTINGS}
                 onInputChange={props.updateAppConfig}
                 warning={
                     <>
