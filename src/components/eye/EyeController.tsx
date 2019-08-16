@@ -27,6 +27,7 @@ import { getVideo } from '../../store/selectors/videoSelectors';
 import { Animation, blink, peek } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import Eye from './Eye';
+import './Eye.css';
 import { Gradients } from './Gradients';
 import { Shadows } from './Shadows';
 import { confineToCircle } from './utils/MovementUtils';
@@ -176,6 +177,7 @@ export const EyeController = React.memo(
                             reflection={reflectionRef.current}
                             innerPath={innerPath}
                             skewTransform={irisMatrixTransform(position)}
+                            reflectionOpacity={props.config.reflectionOpacity}
                         />
                     );
                 })}
