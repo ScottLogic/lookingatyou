@@ -1,6 +1,6 @@
 import { TextField } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { UpdateConfigAction } from '../../../store/actions/config/types';
+import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 
 export interface INumberMenuItemProps {
