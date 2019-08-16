@@ -29,6 +29,7 @@ import { getVideo } from '../../store/selectors/videoSelectors';
 import { Animation, blink } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import Eye from './Eye';
+import './Eye.css';
 import { Gradients } from './Gradients';
 import { Shadows } from './Shadows';
 import { confineToCircle } from './utils/MovementUtils';
@@ -192,6 +193,7 @@ export const EyeController = React.memo(
                             reflection={reflectionRef.current}
                             innerPath={innerPath}
                             skewTransform={irisMatrixTransform(position)}
+                            reflectionOpacity={props.config.reflectionOpacity}
                         />
                     );
                 })}
@@ -209,8 +211,8 @@ export const EyeController = React.memo(
         previous.openCoefficient === next.openCoefficient &&
         previous.target.x === next.target.x &&
         previous.target.y === next.target.y &&
-        previous.width === next.width &&
-        previous.height === next.height,
+        previous.height === next.height &&
+        previous.width === next.width,
 );
 
 export function getBezier(scleraRadius: number, openCoefficient: number) {
