@@ -3,7 +3,7 @@ import {
     IAdvancedConfig,
     UpdateConfigAction,
 } from '../../store/actions/config/types';
-import Help, { HelpWith } from './Help';
+import { HelpWith } from './Help';
 import CanvasMenuItem from './menuItems/CanvasMenuItem';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import DropDownMenuItem from './menuItems/DropDownMenuItem';
