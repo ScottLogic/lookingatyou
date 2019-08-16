@@ -1,5 +1,8 @@
 import React from 'react';
-import { IConfigState, PartialConfig } from '../../store/actions/config/types';
+import {
+    IAppConfig,
+    UpdateConfigAction,
+} from '../../store/actions/config/types';
 import { HelpWith } from './Help';
 import CheckBoxMenuItem from './menuItems/CheckBoxMenuItem';
 import ColorMenuItem from './menuItems/ColorMenuItem';
@@ -7,10 +10,11 @@ import NumberMenuItem from './menuItems/NumberMenuItem';
 import SliderMenuItem from './menuItems/SliderMenuItem';
 
 interface IUserConfigProps {
-    config: IConfigState;
-    updateAppConfig: (payload: PartialConfig) => void;
+    appConfig: IAppConfig;
+    updateAppConfig: UpdateConfigAction;
     window: Window;
 }
+
 export default function UserConfig(props: IUserConfigProps) {
     return (
         <>
@@ -18,7 +22,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 name={'Detections Per Second'}
                 configName={'fps'}
                 step={1}
-                defaultValue={props.config.fps}
+                defaultValue={props.appConfig.fps}
                 onValidInput={props.updateAppConfig}
                 helpWith={HelpWith.FPS}
                 min={1}
@@ -28,7 +32,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 name={'X Sensitivity'}
                 configName={'xSensitivity'}
                 step={0.05}
-                defaultValue={props.config.xSensitivity}
+                defaultValue={props.appConfig.xSensitivity}
                 onValidInput={props.updateAppConfig}
                 helpWith={HelpWith.X_SENSITIVITY}
                 min={0}
@@ -38,7 +42,7 @@ export default function UserConfig(props: IUserConfigProps) {
                 name={'Y Sensitivity'}
                 configName={'ySensitivity'}
                 step={0.05}
-                defaultValue={props.config.ySensitivity}
+                defaultValue={props.appConfig.ySensitivity}
                 onValidInput={props.updateAppConfig}
                 helpWith={HelpWith.Y_SENSITIVITY}
                 min={0}
@@ -50,7 +54,7 @@ export default function UserConfig(props: IUserConfigProps) {
             <ColorMenuItem
                 name={'Iris Colour'}
                 configName={'irisColor'}
-                color={props.config.irisColor}
+                color={props.appConfig.irisColor}
                 onInputChange={props.updateAppConfig}
                 helpWith={HelpWith.IRIS_COLOR}
             />
@@ -60,8 +64,8 @@ export default function UserConfig(props: IUserConfigProps) {
             <CheckBoxMenuItem
                 name={'Show Advanced Settings'}
                 configName={'toggleAdvanced'}
+                checked={props.appConfig.toggleAdvanced}
                 helpWith={HelpWith.ADVANCE_SETTINGS}
-                checked={props.config.toggleAdvanced}
                 onInputChange={props.updateAppConfig}
                 warning={
                     <>

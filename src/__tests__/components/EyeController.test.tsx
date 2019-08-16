@@ -9,7 +9,7 @@ import {
 } from '../../components/eye/EyeController';
 import { IConfigState } from '../../store/actions/config/types';
 import configStore, {
-    initialState as initialConfigState,
+    initialConfig as initialConfigState,
 } from '../../store/reducers/configReducer';
 import { initialState as initialDetectionState } from '../../store/reducers/detectionReducer';
 import { IRootStore } from '../../store/reducers/rootReducer';
@@ -21,26 +21,44 @@ let configState: IConfigState;
 describe('Eye Controller', () => {
     beforeEach(() => {
         configState = {
-            config: {
+            appConfig: {
                 xSensitivity: 1,
                 ySensitivity: 1,
                 fps: 2,
-                swapEyes: false,
-                toggleDebug: false,
                 irisColor: '#ff8080',
-                bbox: [0, 0, 0, 0],
+                toggleAdvanced: false,
+            },
+            advancedConfig: {
+                toggleReflection: false,
+                toggleDebug: false,
+                reflectionOpacity: 0.2,
+                modelConfig: {
+                    architecture: 'MobileNetV1',
+                    inputResolution: 161,
+                    multiplier: 0.5,
+                    outputStride: 16,
+                },
+                detectionConfig: {
+                    flipHorizontal: false,
+                    maxDetections: 3,
+                    nmsRadius: 20,
+                    scoreThreshold: 0.5,
+                },
             },
         };
         props = {
             width: 500,
             height: 500,
             environment: new jsdom.JSDOM().window,
-            target: { left: { x: 250, y: 250 }, right: null },
-            config: configState.config,
+            target: { x: 250, y: 250 },
+            config: configState,
             dilation: 1,
             openCoefficient: 0.45,
             detected: true,
-            videos: [],
+            image: undefined,
+            selection: undefined,
+            animation: [],
+            updateAnimation: jest.fn(),
         };
     });
 

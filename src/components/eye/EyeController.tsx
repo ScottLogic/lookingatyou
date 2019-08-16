@@ -12,11 +12,14 @@ import {
     transitionTimes,
 } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
-import { IConfigState } from '../../store/actions/config/types';
+import { IAdvancedConfig, IAppConfig } from '../../store/actions/config/types';
 import { setAnimation } from '../../store/actions/detections/actions';
 import { ISetAnimationAction } from '../../store/actions/detections/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
-import { getConfig } from '../../store/selectors/configSelectors';
+import {
+    getAdvancedConfig,
+    getAppConfig,
+} from '../../store/selectors/configSelectors';
 import {
     getAnimationExists,
     getAnimations,
@@ -45,7 +48,8 @@ interface IEyeControllerProps {
 }
 
 interface IEyeControllerMapStateToProps {
-    config: IConfigState;
+    appConfig: IAppConfig;
+    advancedConfig: IAdvancedConfig;
     target: ICoords;
     animation: Animation;
     animationExists: boolean;
@@ -76,8 +80,8 @@ export const EyeController = React.memo(
             props.animationExists && animation[0].target
                 ? confineToCircle(animation[0].target)
                 : confineToCircle({
-                      x: props.target.x * props.config.xSensitivity,
-                      y: props.target.y * props.config.ySensitivity,
+                      x: props.target.x * props.appConfig.xSensitivity,
+                      y: props.target.y * props.appConfig.ySensitivity,
                   });
 
         const scale = (scleraRadius - irisRadius * minIrisScale) / minIrisScale;
@@ -91,8 +95,8 @@ export const EyeController = React.memo(
                 ? eyelidPosition.CLOSED
                 : props.openCoefficient,
             dilation: props.dilation,
-            irisColor: props.config.irisColor,
-            duration: 1000 / props.config.fps,
+            irisColor: props.appConfig.irisColor,
+            duration: 1000 / props.appConfig.fps,
             ...animation[0],
             target,
         };
@@ -126,7 +130,7 @@ export const EyeController = React.memo(
 
         useEffect(() => {
             if (
-                props.config.toggleReflection &&
+                props.advancedConfig.toggleReflection &&
                 props.image &&
                 props.imageData
             ) {
@@ -141,7 +145,7 @@ export const EyeController = React.memo(
         }, [
             props.target,
             props.image,
-            props.config.toggleReflection,
+            props.advancedConfig.toggleReflection,
             pupilRadius,
             props.imageData,
         ]);
@@ -183,13 +187,15 @@ export const EyeController = React.memo(
                             reflection={reflectionRef.current}
                             innerPath={innerPath}
                             skewTransform={irisMatrixTransform(position)}
-                            reflectionOpacity={props.config.reflectionOpacity}
+                            reflectionOpacity={
+                                props.advancedConfig.reflectionOpacity
+                            }
                         />
                     );
                 })}
                 <Gradients
                     irisColor={frame.irisColor}
-                    reflectionOpacity={props.config.reflectionOpacity}
+                    reflectionOpacity={props.advancedConfig.reflectionOpacity}
                 />
                 <Shadows openCoefficient={props.openCoefficient} />
             </div>
@@ -283,7 +289,8 @@ export function getEyeShape(
 }
 
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
-    config: getConfig(state),
+    appConfig: getAppConfig(state),
+    advancedConfig: getAdvancedConfig(state),
     target: getTargets(state),
     image: getVideo(state),
     selection: getSelections(state),
