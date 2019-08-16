@@ -50,6 +50,7 @@ interface IDispatchProps {
 interface IMovementState {
     showText: boolean;
     text: string;
+    isSleeping: boolean;
 }
 
 export type MovementHandlerProps = IMovementProps &
@@ -74,6 +75,7 @@ export class MovementHandler extends React.Component<
         this.state = {
             showText: false,
             text: '',
+            isSleeping: false,
         };
 
         this.movementInterval = 0;
@@ -85,6 +87,7 @@ export class MovementHandler extends React.Component<
         this.personDetected = false;
 
         this.animateEye = this.animateEye.bind(this);
+        this.sleep = this.sleep.bind(this);
     }
 
     componentDidMount() {
@@ -94,13 +97,18 @@ export class MovementHandler extends React.Component<
         );
     }
 
-    shouldComponentUpdate(nextProps: MovementHandlerProps) {
+    shouldComponentUpdate(
+        nextProps: MovementHandlerProps,
+        nextState: IMovementState,
+    ) {
         return (
-            this.props.animationExists &&
-            (this.props.height !== nextProps.height ||
-                this.props.width !== nextProps.width ||
-                this.props.target !== nextProps.target ||
-                this.props.selection !== nextProps.selection)
+            this.state.isSleeping !== nextState.isSleeping ||
+            (!this.props.animationExists &&
+                (this.props.height !== nextProps.height ||
+                    this.props.width !== nextProps.width ||
+                    this.props.target !== nextProps.target ||
+                    this.props.selection !== nextProps.selection ||
+                    this.state.isSleeping !== nextState.isSleeping))
         );
     }
 
@@ -150,7 +158,7 @@ export class MovementHandler extends React.Component<
         } else {
             this.setNoTarget();
 
-            if (this.props.animationExists) {
+            if (!this.props.animationExists && !this.state.isSleeping) {
                 if (Math.random() < chanceOfIdleEyesMovement) {
                     this.hasMovedLeft = !this.hasMovedLeft;
                     this.props.updateAnimation(
@@ -162,7 +170,7 @@ export class MovementHandler extends React.Component<
     }
 
     setNewTarget() {
-        this.openCoefficient = eyelidPosition.OPEN;
+        this.wake();
         this.props.environment.clearTimeout(this.sleepTimeout);
         if (!this.personDetected) {
             this.personDetected = true;
@@ -175,37 +183,53 @@ export class MovementHandler extends React.Component<
             this.personDetected = false;
             this.dilationCoefficient = eyelidPosition.SQUINT;
             this.openCoefficient = eyelidPosition.SQUINT;
-            this.sleepTimeout = this.props.environment.setTimeout(() => {
-                this.openCoefficient = eyelidPosition.CLOSED;
-            }, intervals.sleep);
+            this.sleepTimeout = this.props.environment.setTimeout(
+                this.sleep,
+                intervals.sleep,
+            );
         }
         this.props.environment.clearTimeout(this.textTimeout);
         this.textTimeout = 0;
     }
 
+    sleep() {
+        this.setState({ isSleeping: true });
+    }
+
+    wake() {
+        this.setState({ isSleeping: false });
+    }
+
     startTextTimer() {
-        if (!this.textTimeout) {
-            this.textTimeout = this.props.environment.setTimeout(() => {
-                const totalFrequency = userInteraction.texts
-                    .map(text => text.frequency)
-                    .reduce((x, y) => x + y);
-                let random = Math.random() * totalFrequency;
-                let i = 0;
-                while (random >= 0 && i < userInteraction.texts.length - 1) {
-                    random -= userInteraction.texts[i].frequency;
-                    i++;
-                }
-                const phrase = userInteraction.texts[i - 1].phrase;
-                this.setState({
-                    showText: true,
-                    text: phrase,
-                });
-                this.props.environment.setTimeout(() => {
-                    this.setState({ showText: false });
-                    this.textTimeout = 0;
-                }, userInteraction.textDuration);
-            }, userInteraction.delay);
+        if (this.textTimeout > 0) {
+            return;
         }
+
+        this.textTimeout = this.props.environment.setTimeout(() => {
+            const totalFrequency = userInteraction.texts
+                .map(text => text.frequency)
+                .reduce((x, y) => x + y);
+
+            let random = Math.random() * totalFrequency;
+            let i = 0;
+
+            while (random >= 0 && i < userInteraction.texts.length - 1) {
+                random -= userInteraction.texts[i].frequency;
+                i++;
+            }
+
+            const phrase = userInteraction.texts[i - 1].phrase;
+
+            this.setState({
+                showText: true,
+                text: phrase,
+            });
+
+            this.props.environment.setTimeout(() => {
+                this.setState({ showText: false });
+                this.textTimeout = 0;
+            }, userInteraction.textDuration);
+        }, userInteraction.delay);
     }
 
     render() {
@@ -215,6 +239,7 @@ export class MovementHandler extends React.Component<
                     dilation={this.dilationCoefficient}
                     detected={this.personDetected}
                     openCoefficient={this.openCoefficient}
+                    isSleeping={this.state.isSleeping}
                     {...this.props}
                 />
                 <FadeInText text={this.state.text} show={this.state.showText} />

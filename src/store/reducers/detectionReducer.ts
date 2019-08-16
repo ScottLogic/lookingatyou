@@ -1,17 +1,20 @@
-import { PoseNet } from '@tensorflow-models/posenet';
 import { eyelidPosition, targetingConsts } from '../../AppConstants';
-import { Animation } from '../../utils/pose/animations';
 import {
     DetectionActionType,
     IDetectionState,
-    ISetDetectionsActionPayload,
-    ISwapSelectionActionPayload,
+    ISetAnimationAction,
+    ISetDetectionsAction,
+    ISetIntervalAction,
+    ISetModelAction,
+    ISetOpenAction,
+    ISwapSelectionAction,
     SET_ANIMATION,
     SET_DETECTIONS,
     SET_INTERVAL,
     SET_MODEL,
     SET_OPEN,
     SWAP_SELECTION,
+    TOGGLE_ANIMATION_COOLDOWN,
 } from '../actions/detections/types';
 
 export const initialState: IDetectionState = {
@@ -20,6 +23,7 @@ export const initialState: IDetectionState = {
     eyesOpenCoefficient: eyelidPosition.OPEN,
     detectionInterval: 0,
     animation: [],
+    animationCoolDown: false,
     nextSelectionSwapTime: -1,
     history: [],
 };
@@ -31,6 +35,7 @@ const detectionActionMapping = {
     [SET_OPEN]: setOpen,
     [SET_ANIMATION]: setAnimation,
     [SWAP_SELECTION]: swapSelection,
+    [TOGGLE_ANIMATION_COOLDOWN]: toggleAnimationCooldown,
 };
 
 const detectionStore = (
@@ -46,21 +51,24 @@ function setModel(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    return { ...state, model: action.payload as PoseNet };
+    return { ...state, model: (action as ISetModelAction).payload };
 }
 
 function setDetectionInterval(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    return { ...state, detectionInterval: action.payload as number };
+    return {
+        ...state,
+        detectionInterval: (action as ISetIntervalAction).payload,
+    };
 }
 
 function setDetections(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    const payload = action.payload as ISetDetectionsActionPayload;
+    const payload = (action as ISetDetectionsAction).payload;
     const newHistory = [...state.history];
     if (state.history.length >= targetingConsts.maxNum) {
         newHistory.shift();
@@ -81,7 +89,7 @@ function swapSelection(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    const payload = action.payload as ISwapSelectionActionPayload;
+    const payload = (action as ISwapSelectionAction).payload;
     return {
         ...state,
         history: initialState.history,
@@ -94,14 +102,24 @@ function setOpen(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    return { ...state, eyesOpenCoefficient: action.payload as number };
+    return {
+        ...state,
+        eyesOpenCoefficient: (action as ISetOpenAction).payload,
+    };
 }
 
 function setAnimation(
     state: IDetectionState,
     action: DetectionActionType,
 ): IDetectionState {
-    return { ...state, animation: action.payload as Animation };
+    return { ...state, animation: (action as ISetAnimationAction).payload };
+}
+
+function toggleAnimationCooldown(
+    state: IDetectionState,
+    ignore: DetectionActionType,
+): IDetectionState {
+    return { ...state, animationCoolDown: !state.animationCoolDown };
 }
 
 export default detectionStore;

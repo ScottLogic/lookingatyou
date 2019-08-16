@@ -1,11 +1,11 @@
 import { Button } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import Popup from 'reactjs-popup';
-import { PartialConfig } from '../../store/actions/config/types';
+import { UpdateConfigAction } from '../../store/actions/config/types';
 import './WarningPopupHandler.css';
 export interface ICheckBoxMenuItemProps {
     configName: string;
-    onInputChange: (payload: PartialConfig) => void;
+    onInputChange: UpdateConfigAction;
     showModal: boolean;
     warning: JSX.Element;
     accept: () => void;
@@ -22,7 +22,12 @@ const WarningPopupHandler = React.memo((props: ICheckBoxMenuItemProps) => {
     return (
         <>
             {showModal && (
-                <Popup open={true} modal={true} closeOnDocumentClick={false}>
+                <Popup 
+                    open={true} 
+                    modal={true} 
+                    closeOnDocumentClick={false} 
+                    closeOnEscape={false}
+                > 
                     <>
                         <h1>Warning!</h1>
                         <br />

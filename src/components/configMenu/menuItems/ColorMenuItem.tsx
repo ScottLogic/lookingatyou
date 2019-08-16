@@ -3,14 +3,14 @@ import convert from 'color-convert';
 import React, { useState } from 'react';
 import { SketchPicker } from 'react-color';
 import Popup from 'reactjs-popup';
-import { PartialConfig } from '../../../store/actions/config/types';
+import { UpdateConfigAction } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 import './ColorMenuItem.css';
 
 export interface IColorMenuItemProps {
     name: string;
     configName: string;
-    onInputChange: (payload: PartialConfig) => void;
+    onInputChange: UpdateConfigAction;
     color: string;
     helpWith: HelpWith;
 }

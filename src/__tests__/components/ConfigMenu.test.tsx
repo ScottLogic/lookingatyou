@@ -5,12 +5,17 @@ import { Provider } from 'react-redux';
 import { Store } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import ConfigMenu, {
-    IConfigMenuProps,
+import {
+    ConfigMenu,
+    ConfigMenuProps,
 } from '../../components/configMenu/ConfigMenu';
-import { initialState } from '../../store/reducers/configReducer';
+import {
+    initialAdvancedConfig,
+    initialAppConfig,
+    initialConfig,
+} from '../../store/reducers/configReducer';
 
-let props: IConfigMenuProps;
+let props: ConfigMenuProps;
 let window: Window;
 let map: { [key: string]: any };
 let store: Store;
@@ -23,11 +28,20 @@ describe('ConfigMenu', () => {
         window.addEventListener = jest.fn((event, cb) => {
             map[event] = cb;
         });
+
+        const mockStore = configureStore([thunk]);
+        store = mockStore(initialConfig);
+
         props = {
             window,
+            appConfig: initialAppConfig,
+            advancedConfig: initialAdvancedConfig,
+            updateAppConfig: jest.fn(),
+            updateAdvancedConfig: jest.fn(),
+            updateModelConfig: jest.fn(),
+            updateDetectionConfig: jest.fn(),
+            resetConfig: jest.fn(),
         };
-        const mockStore = configureStore([thunk]);
-        store = mockStore(initialState);
     });
 
     it('should render correctly', () => {

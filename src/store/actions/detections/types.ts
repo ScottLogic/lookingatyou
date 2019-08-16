@@ -10,6 +10,7 @@ export const SET_OPEN = 'SET_OPEN';
 export const SET_ANIMATION = 'SET_ANIMATION';
 export const SWAP_SELECTION = 'SWAP_SELECTION';
 export const SET_INTERVAL = 'SET_INTERVAL';
+export const TOGGLE_ANIMATION_COOLDOWN = 'TOGGLE_ANIMATION_COOLDOWN';
 
 export interface IDetectionState {
     model: PoseNet | null;
@@ -18,6 +19,7 @@ export interface IDetectionState {
     detections: Detections;
     history: IHistory[];
     animation: Animation;
+    animationCoolDown: boolean;
     nextSelectionSwapTime: number;
 }
 
@@ -62,10 +64,15 @@ export interface ISwapSelectionAction {
     readonly payload: ISwapSelectionActionPayload;
 }
 
+export interface IToggleAnimationCooldown {
+    readonly type: typeof TOGGLE_ANIMATION_COOLDOWN;
+}
+
 export type DetectionActionType =
     | ISetModelAction
     | ISetIntervalAction
     | ISetDetectionsAction
     | ISetOpenAction
     | ISetAnimationAction
-    | ISwapSelectionAction;
+    | ISwapSelectionAction
+    | IToggleAnimationCooldown;
