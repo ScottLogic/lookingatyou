@@ -48,17 +48,8 @@ function rightWave(pose: IPoseKeypoints) {
     const isArmOutToSide =
         pose.rightElbow.position.x < pose.rightShoulder.position.x;
 
-    const isValidAngle = checkAngle(
-        pose.rightShoulder,
-        pose.rightElbow,
-        pose.rightWrist,
-        70,
-        95,
-    );
-
     return (
         isArmOutToSide &&
-        isValidAngle &&
         wave(pose.rightWrist, pose.rightElbow, pose.leftWrist, pose.leftElbow)
     );
 }
@@ -67,17 +58,8 @@ function leftWave(pose: IPoseKeypoints) {
     const isArmOutToSide =
         pose.leftElbow.position.x > pose.leftShoulder.position.x;
 
-    const isValidAngle = checkAngle(
-        pose.leftShoulder,
-        pose.leftElbow,
-        pose.leftWrist,
-        70,
-        95,
-    );
-
     return (
         isArmOutToSide &&
-        isValidAngle &&
         wave(pose.leftWrist, pose.leftElbow, pose.rightWrist, pose.rightElbow)
     );
 }
