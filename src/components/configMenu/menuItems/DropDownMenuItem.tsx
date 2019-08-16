@@ -1,12 +1,12 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core';
 import React from 'react';
-import { PartialConfig } from '../../../store/actions/config/types';
+import { UpdateConfigAction } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 
 export interface IDropDownMenuItemProps {
     name: string;
     configName: string;
-    onInputChange: (payload: PartialConfig) => void;
+    onInputChange: UpdateConfigAction;
     values: string[];
     defaultValue: string;
     helpWith: HelpWith;

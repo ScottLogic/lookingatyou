@@ -7,14 +7,15 @@ import {
 
 export enum ConfigSetAction {
     APP = 'SET_APP_CONFIG',
+    ADVANCED = 'SET_ADVANCED',
     MODEL = 'SET_MODEL_CONFIG',
     DETECTION = 'SET_DETECTION_CONFIG',
     RESET = 'RESET_CONFIG',
 }
 
-export interface IConfigState extends IAppConfig {
-    modelConfig: IModelConfig;
-    detectionConfig: IDetectionConfig;
+export interface IConfigState {
+    advancedConfig: IAdvancedConfig;
+    appConfig: IAppConfig;
 }
 
 export type PartialConfig =
@@ -23,16 +24,23 @@ export type PartialConfig =
     | Partial<IModelConfig>
     | Partial<IDetectionConfig>;
 
+export type UpdateConfigAction = (payload: PartialConfig) => void;
+
 export interface IAppConfig {
     xSensitivity: number;
     ySensitivity: number;
     fps: number;
-    toggleDebug: boolean;
     toggleAdvanced: boolean;
     irisColor: string;
+    showHelp: boolean;
+}
+
+export interface IAdvancedConfig {
     toggleReflection: boolean;
     reflectionOpacity: number;
-    showHelp: boolean;
+    toggleDebug: boolean;
+    modelConfig: IModelConfig;
+    detectionConfig: IDetectionConfig;
 }
 
 export interface IModelConfig {
@@ -71,12 +79,18 @@ export interface ISetDetectionConfigAction {
     readonly payload: Partial<IDetectionConfig>;
 }
 
+export interface ISetAdvancedConfigAction {
+    readonly type: ConfigSetAction.ADVANCED;
+    readonly payload: Partial<IAdvancedConfig>;
+}
+
 export interface IResetConfigAction {
     readonly type: ConfigSetAction.RESET;
 }
 
 export type ConfigAction =
     | ISetAppConfigAction
+    | ISetAdvancedConfigAction
     | ISetModelConfigAction
     | ISetDetectionConfigAction
     | IResetConfigAction;

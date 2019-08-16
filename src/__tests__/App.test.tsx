@@ -7,7 +7,7 @@ import { AnyAction, Store } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import ConnectedApp from '../App';
-import { initialState as initialConfigState } from '../store/reducers/configReducer';
+import { initialConfig as initialConfigState } from '../store/reducers/configReducer';
 import { initialState as initialDetectionState } from '../store/reducers/detectionReducer';
 import { IRootStore } from '../store/reducers/rootReducer';
 import { initialState as initialVideoState } from '../store/reducers/videoReducer';

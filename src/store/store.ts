@@ -7,7 +7,7 @@ import {
 import { load, save } from 'redux-localstorage-simple';
 import thunk from 'redux-thunk';
 import { IConfigState } from './actions/config/types';
-import { initialState } from './reducers/configReducer';
+import { initialConfig } from './reducers/configReducer';
 import reducer, { IRootStore } from './reducers/rootReducer';
 
 const states = ['configStore'];
@@ -35,7 +35,7 @@ export function createStore() {
 }
 
 export function hasPropertiesOfInitialConfigState(objToCheck: object) {
-    return hasPropertiesOf(objToCheck, initialState);
+    return hasPropertiesOf(objToCheck, initialConfig);
 }
 
 export function hasPropertiesOf(source: unknown, target: unknown): boolean {
