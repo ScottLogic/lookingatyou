@@ -1,9 +1,12 @@
 import {
     ConfigAction,
     ConfigSetAction,
+    IAdvancedConfig,
+    IAppConfig,
     IConfigState,
     IDetectionConfig,
     IModelConfig,
+    ISetAdvancedConfigAction,
     ISetAppConfigAction,
     ISetDetectionConfigAction,
     ISetModelConfigAction,
@@ -23,29 +26,38 @@ export const initialDetectionConfig: IDetectionConfig = {
     nmsRadius: 20,
 };
 
-export const initialState: IConfigState = {
+export const initialAppConfig: IAppConfig = {
     xSensitivity: 1,
     ySensitivity: 1,
     fps: 2,
-    toggleDebug: false,
     irisColor: '#55acee', // must be hex value, as this is passed to colour picker input
-    modelConfig: initalModelConfig,
-    detectionConfig: initialDetectionConfig,
-    toggleReflection: false,
-    reflectionOpacity: 0.2,
     toggleAdvanced: false,
     showHelp: true,
 };
 
+export const initialAdvancedConfig: IAdvancedConfig = {
+    toggleDebug: false,
+    modelConfig: initalModelConfig,
+    detectionConfig: initialDetectionConfig,
+    toggleReflection: true,
+    reflectionOpacity: 0.2,
+};
+
+export const initialConfig: IConfigState = {
+    advancedConfig: initialAdvancedConfig,
+    appConfig: initialAppConfig,
+};
+
 const configActionMapping = {
     [ConfigSetAction.APP]: setAppConfig,
+    [ConfigSetAction.ADVANCED]: setAdvancedConfig,
     [ConfigSetAction.MODEL]: setModelConfig,
     [ConfigSetAction.DETECTION]: setDetectionConfig,
     [ConfigSetAction.RESET]: resetConfig,
 };
 
 const configStore = (
-    state: IConfigState = initialState,
+    state: IConfigState = initialConfig,
     action: ConfigAction,
 ): IConfigState => {
     return configActionMapping.hasOwnProperty(action.type)
@@ -54,7 +66,26 @@ const configStore = (
 };
 
 function setAppConfig(state: IConfigState, action: ConfigAction): IConfigState {
-    return { ...state, ...(action as ISetAppConfigAction).payload };
+    return {
+        ...state,
+        appConfig: {
+            ...state.appConfig,
+            ...(action as ISetAppConfigAction).payload,
+        },
+    };
+}
+
+function setAdvancedConfig(
+    state: IConfigState,
+    action: ConfigAction,
+): IConfigState {
+    return {
+        ...state,
+        advancedConfig: {
+            ...state.advancedConfig,
+            ...(action as ISetAdvancedConfigAction).payload,
+        },
+    };
 }
 
 function setModelConfig(
@@ -63,9 +94,12 @@ function setModelConfig(
 ): IConfigState {
     return {
         ...state,
-        modelConfig: {
-            ...state.modelConfig,
-            ...(action as ISetModelConfigAction).payload,
+        advancedConfig: {
+            ...state.advancedConfig,
+            modelConfig: {
+                ...state.advancedConfig.modelConfig,
+                ...(action as ISetModelConfigAction).payload,
+            },
         },
     };
 }
@@ -76,15 +110,21 @@ function setDetectionConfig(
 ): IConfigState {
     return {
         ...state,
-        detectionConfig: {
-            ...state.detectionConfig,
-            ...(action as ISetDetectionConfigAction).payload,
+        advancedConfig: {
+            ...state.advancedConfig,
+            detectionConfig: {
+                ...state.advancedConfig.detectionConfig,
+                ...(action as ISetDetectionConfigAction).payload,
+            },
         },
     };
 }
 
 function resetConfig(): IConfigState {
-    return initialState;
+    return {
+        ...initialConfig,
+        appConfig: { ...initialConfig.appConfig, showHelp: false },
+    };
 }
 
 export default configStore;
