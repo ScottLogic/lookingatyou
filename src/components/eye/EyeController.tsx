@@ -208,7 +208,7 @@ export const EyeController = React.memo(
         previous.target.x === next.target.x &&
         previous.target.y === next.target.y &&
         previous.height === next.height &&
-        previous.width === next.height,
+        previous.width === next.width,
 );
 
 export function getBezier(scleraRadius: number, openCoefficient: number) {
