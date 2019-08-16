@@ -59,7 +59,10 @@ class ConfigMenu extends React.Component<ConfigMenuProps, IConfigMenuState> {
     mouseMoveHandler() {
         this.setState({ leftPosition: '0px' });
         this.props.window.clearInterval(this.hideTimeout);
-        if (!this.state.isUnderMouse && !this.props.config.toggleDebug) {
+        if (
+            !this.state.isUnderMouse &&
+            (!this.props.config.toggleDebug && this.props.config.toggleAdvanced)
+        ) {
             this.hideTimeout = this.props.window.setTimeout(
                 () =>
                     this.setState({
