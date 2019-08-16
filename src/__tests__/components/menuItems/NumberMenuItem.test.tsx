@@ -1,6 +1,6 @@
 import { mount, shallow } from 'enzyme';
 import React from 'react';
-import Help, { HelpWith } from '../../../components/configMenu/Help';
+import { HelpWith } from '../../../components/configMenu/Help';
 import NumberMenuItem, {
     INumberMenuItemProps,
 } from '../../../components/configMenu/menuItems/NumberMenuItem';
