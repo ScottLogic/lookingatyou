@@ -19,23 +19,26 @@ export function Reflection(props: IReflectionProps) {
             }
         }
     }, [props.reflection]);
-
-    return props.reflection ? (
-        <g {...props.groupProps}>
-            <foreignObject
-                width={props.pupilRadius * 2}
-                height={props.pupilRadius * 2}
-                x={-props.pupilRadius}
-                y={-props.pupilRadius}
-                style={props.transitionStyle}
-                transform={`scale(${props.animation.dilation})`}
-            >
-                <canvas
-                    ref={canvasRef}
+    return (
+        <>
+            return props.reflection && (
+            <g {...props.groupProps}>
+                <foreignObject
                     width={props.pupilRadius * 2}
                     height={props.pupilRadius * 2}
-                />
-            </foreignObject>
-        </g>
-    ) : null;
+                    x={-props.pupilRadius}
+                    y={-props.pupilRadius}
+                    style={props.transitionStyle}
+                    transform={`scale(${props.animation.dilation})`}
+                >
+                    <canvas
+                        ref={canvasRef}
+                        width={props.pupilRadius * 2}
+                        height={props.pupilRadius * 2}
+                    />
+                </foreignObject>
+            </g>
+            )
+        </>
+    );
 }
