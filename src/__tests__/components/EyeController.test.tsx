@@ -27,6 +27,7 @@ describe('Eye Controller', () => {
                 fps: 2,
                 irisColor: '#ff8080',
                 toggleAdvanced: false,
+                showHelp: false,
             },
             advancedConfig: {
                 toggleReflection: false,
@@ -50,7 +51,7 @@ describe('Eye Controller', () => {
             width: 500,
             height: 500,
             environment: new jsdom.JSDOM().window,
-            target: { x: 250, y: 250 },
+            targetOverwrite: { x: 250, y: 250 },
             config: configState,
             dilation: 1,
             openCoefficient: 0.45,
