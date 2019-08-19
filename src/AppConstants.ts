@@ -106,9 +106,8 @@ export const userInteraction = {
     textDuration: 3000,
 };
 export const fadeInText = {
-    threshold: 0.2,
-    delayMin: 200,
-    delayMax: 1000,
+    delay: 1000,
+    transitionTime: 2500,
     fontSize: '5em',
     defaultTextLength: 20,
 };
