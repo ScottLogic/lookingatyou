@@ -1,7 +1,7 @@
 import {
     ISetImageDataAction,
     ISetVideoAction,
-    ISetVideoStreamsAction,
+    ISetVideoStreamAction,
     IVideoState,
     VideoAction,
     VideoSetAction,
@@ -19,7 +19,7 @@ const videoActionMapping = {
     [VideoSetAction.IMAGE_DATA]: setImageData,
     [VideoSetAction.TOGGLE_WEBCAM]: toggleWebcam,
     [VideoSetAction.VIDEO]: setVideo,
-    [VideoSetAction.VIDEO_STREAMS]: setVideoStreams,
+    [VideoSetAction.VIDEO_STREAM]: setVideoStream,
 };
 
 const videoStore = (
@@ -35,10 +35,10 @@ function setImageData(state: IVideoState, action: VideoAction): IVideoState {
     return { ...state, image: (action as ISetImageDataAction).payload };
 }
 
-function setVideoStreams(state: IVideoState, action: VideoAction): IVideoState {
+function setVideoStream(state: IVideoState, action: VideoAction): IVideoState {
     return {
         ...state,
-        video: { ...(action as ISetVideoStreamsAction).payload },
+        video: { ...(action as ISetVideoStreamAction).payload },
     };
 }
 

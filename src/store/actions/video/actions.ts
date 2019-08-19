@@ -1,13 +1,13 @@
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { configureStreams } from '../../../components/webcamHandler/WebcamHandler';
+import { configureStream } from '../../../components/webcamHandler/WebcamHandler';
 import { IRootStore } from '../../reducers/rootReducer';
 import { createAction, createActionPayload } from '../creators';
 import {
     IVideo,
     SET_IMAGE_DATA,
     SET_VIDEO,
-    SET_VIDEO_STREAMS,
+    SET_VIDEO_STREAM,
     TOGGLE_WEBCAM_AVAILABLE,
 } from './types';
 
@@ -16,15 +16,15 @@ export function setStream(mediaDevices: MediaDevices) {
         dispatch: ThunkDispatch<IRootStore, void, Action>,
         getState: () => IRootStore,
     ) => {
-        const streams = await configureStreams(mediaDevices);
-        const videoStore = getState().videoStore;
-        if (streams) {
-            dispatch(setVideoStreamsAction(streams));
-            if (!videoStore.webcamAvailable) {
+        const stream = await configureStream(mediaDevices);
+        const webcamAvailable = getState().videoStore.webcamAvailable;
+        if (stream) {
+            dispatch(setVideoStreamAction(stream));
+            if (!webcamAvailable) {
                 dispatch(toggleWebcamAvailable());
             }
         } else {
-            if (videoStore.webcamAvailable) {
+            if (webcamAvailable) {
                 dispatch(toggleWebcamAvailable());
             }
         }
@@ -36,10 +36,10 @@ export const setVideoAction = createActionPayload<
     HTMLVideoElement
 >(SET_VIDEO);
 
-export const setVideoStreamsAction = createActionPayload<
-    typeof SET_VIDEO_STREAMS,
+export const setVideoStreamAction = createActionPayload<
+    typeof SET_VIDEO_STREAM,
     IVideo
->(SET_VIDEO_STREAMS);
+>(SET_VIDEO_STREAM);
 
 export const toggleWebcamAvailable = createAction<
     typeof TOGGLE_WEBCAM_AVAILABLE

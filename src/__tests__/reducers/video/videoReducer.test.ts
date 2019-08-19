@@ -2,14 +2,11 @@ import {
     IVideo,
     IVideoState,
     SET_VIDEO,
-    SET_VIDEO_STREAMS,
+    SET_VIDEO_STREAM,
     TOGGLE_WEBCAM_AVAILABLE,
     VideoAction,
 } from '../../../store/actions/video/types';
 import videoStore from '../../../store/reducers/videoReducer';
-
-export const testDevice1 = 'testDevice1';
-export const testDevice2 = 'testDevice2';
 
 const mockInitialState: IVideo = {
     width: 260,
@@ -27,7 +24,7 @@ describe('Video Reducer', () => {
     beforeEach(() => {
         mockStore = videoStore(
             { video, webcamAvailable: false, image: imgData },
-            { type: SET_VIDEO_STREAMS, payload: mockInitialState },
+            { type: SET_VIDEO_STREAM, payload: mockInitialState },
         );
     });
 
@@ -40,9 +37,9 @@ describe('Video Reducer', () => {
         expect(mockStore).toEqual(expectedState);
     });
 
-    it('should return a new state when dispaching Set Video Streams action', () => {
+    it('should return a new state when dispaching Set Video Stream action', () => {
         const newState = videoStore(mockStore, {
-            type: SET_VIDEO_STREAMS,
+            type: SET_VIDEO_STREAM,
             payload: mockInitialState,
         });
         const expectedState = {
