@@ -45,6 +45,7 @@ interface IEyeControllerProps {
     openCoefficient: number;
     detected: boolean;
     isSleeping: boolean;
+    target?: ICoords;
 }
 
 interface IEyeControllerMapStateToProps {
@@ -306,7 +307,22 @@ const mapDispatchToProps = (
         dispatch(setAnimation(animation)),
 });
 
+const mergeProps = (
+    stateProps: IEyeControllerMapStateToProps,
+    dispatchProps: IEyeControllerMapDispatchToState,
+    ownProps: IEyeControllerProps,
+): EyeControllerProps => {
+    const props: EyeControllerProps = {
+        ...ownProps,
+        ...stateProps,
+        ...dispatchProps,
+    };
+    props.target = ownProps.target ? ownProps.target : stateProps.target;
+    return props;
+};
+
 export default connect(
     mapStateToProps,
     mapDispatchToProps,
+    mergeProps,
 )(EyeController);
