@@ -14,7 +14,7 @@ describe('CanvasMenuItem', () => {
             name: 'test',
             videoIndex: 0,
             helpWith: HelpWith.DEBUG,
-            videos: [],
+            video: undefined,
             selection: undefined,
             detections: [],
         };
