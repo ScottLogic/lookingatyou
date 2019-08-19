@@ -4,14 +4,15 @@ import { PartialConfig } from '../../../store/actions/config/types';
 import { HelpWith } from '../Help';
 
 export interface INumberMenuItemProps {
-    name: string;
     configName: string;
-    step: number;
-    min?: number;
-    max?: number;
-    onValidInput: (payload: PartialConfig) => void;
     defaultValue: number;
     helpWith: HelpWith;
+    name: string;
+    step: number;
+    onValidInput: (payload: PartialConfig) => void;
+    max?: number;
+    min?: number;
+    noDecimals?: boolean;
 }
 const NumberMenuItem = React.memo(
     (props: INumberMenuItemProps) => {
@@ -32,10 +33,16 @@ const NumberMenuItem = React.memo(
         function onChange(event: React.ChangeEvent<HTMLInputElement>) {
             const newValue = Number(event.target.value);
             setValue(newValue);
+
+            const isAllowDecimalValid =
+                !props.noDecimals || Number.isInteger(newValue);
+
             const newIsValid =
+                isAllowDecimalValid &&
                 !isNaN(newValue) &&
                 (!props.min || newValue >= props.min) &&
                 (!props.max || newValue <= props.max);
+
             setIsValid(newIsValid);
             if (newIsValid) {
                 setLastValidValue(newValue);

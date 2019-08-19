@@ -28,9 +28,10 @@ export const pupilSizes = {
 };
 export const transitionTimes = {
     blink: 100,
+    peek: 1000,
 };
 export const intervals = {
-    sleep: 25000, // eyes go to sleep after this much time without targets
+    sleep: 18000, // eyes go to sleep after this much time without targets
 };
 export const debugFeedColors = {
     chosen: 'green', // chosen target drawn to debug feed in this colour
@@ -54,6 +55,7 @@ export const lightConsts = {
 export const blinkConsts = {
     frequency: 0.25,
     focusedFrequency: 0.0625,
+    peekFrequency: 0.0475, // frequency with which the eye peeks when eyes are closed
     movementThreshold: 0.8, // eye blinks when, between frames, it mvoes this distance
 };
 export const debugFeedConsts = {
@@ -107,8 +109,6 @@ export const fadeInText = {
     threshold: 0.2,
     delayMin: 200,
     delayMax: 1000,
-    transitionMax: 2000,
-    transitionMin: 200,
     fontSize: '5em',
     defaultTextLength: 20,
 };

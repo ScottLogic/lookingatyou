@@ -2,7 +2,7 @@ import {
     IVideoState,
     SET_VIDEO_STREAMS,
 } from '../../../store/actions/video/types';
-import { initialState as initialConfigStore } from '../../../store/reducers/configReducer';
+import { initialConfig as initialConfigStore } from '../../../store/reducers/configReducer';
 import { initialState as initialDetectionStore } from '../../../store/reducers/detectionReducer';
 import { IRootStore } from '../../../store/reducers/rootReducer';
 import videoStore from '../../../store/reducers/videoReducer';
