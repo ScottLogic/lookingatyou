@@ -50,6 +50,7 @@ export type ConfigMenuProps = IConfigMenuProps &
 interface IConfigMenuState {
     leftPosition: string;
     isUnderMouse: boolean;
+    showColorPopup: boolean;
 }
 
 export class ConfigMenu extends React.Component<
@@ -63,10 +64,12 @@ export class ConfigMenu extends React.Component<
         this.state = {
             leftPosition: '0px',
             isUnderMouse: false,
+            showColorPopup: false,
         };
         this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.mouseMoveHandler = this.mouseMoveHandler.bind(this);
+        this.toggleShowColorPopup = this.toggleShowColorPopup.bind(this);
         this.props.window.addEventListener('mousemove', this.mouseMoveHandler);
     }
 
@@ -102,6 +105,7 @@ export class ConfigMenu extends React.Component<
         nextState: IConfigMenuState,
     ) {
         return (
+            this.state.showColorPopup !== nextState.showColorPopup ||
             nextState.leftPosition !== this.state.leftPosition ||
             !isEqual(nextProps, this.props)
         );
@@ -113,6 +117,12 @@ export class ConfigMenu extends React.Component<
             'mousemove',
             this.mouseMoveHandler,
         );
+    }
+
+    toggleShowColorPopup() {
+        this.setState({
+            showColorPopup: !this.state.showColorPopup,
+        });
     }
 
     render() {
@@ -134,7 +144,10 @@ export class ConfigMenu extends React.Component<
                     <button className="icon" onClick={showAppHelp}>
                         ?
                     </button>
-                    <UserConfigItems {...this.props} />
+                    <UserConfigItems
+                        {...this.props}
+                        colorPopupOnClick={this.toggleShowColorPopup}
+                    />
                     {this.props.appConfig.toggleAdvanced && (
                         <AdvancedConfigItems {...this.props} />
                     )}

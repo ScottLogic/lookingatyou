@@ -2,7 +2,7 @@
 
 exports[`NumberMenuItem tests should render correctly 1`] = `
 "<div data-tip={true} data-for=\\"IRIS_COLOR\\">
-  <WithStyles(ForwardRef(Button)) style={{...}} value=\\"#cbcbcb\\" variant=\\"contained\\" onClick={[Function: onChange]} className=\\"launchColorPicker\\">
+  <WithStyles(ForwardRef(Button)) style={{...}} value=\\"#cbcbcb\\" variant=\\"contained\\" onClick={[undefined]} className=\\"launchColorPicker\\">
     Pick 
     test
   </WithStyles(ForwardRef(Button))>

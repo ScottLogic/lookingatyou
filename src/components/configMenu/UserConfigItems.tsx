@@ -13,6 +13,7 @@ interface IUserConfigProps {
     appConfig: IAppConfig;
     updateAppConfig: UpdateConfigAction;
     window: Window;
+    colorPopupOnClick: () => void;
 }
 
 export default function UserConfig(props: IUserConfigProps) {
@@ -54,8 +55,8 @@ export default function UserConfig(props: IUserConfigProps) {
             <ColorMenuItem
                 name={'Iris Colour'}
                 configName={'irisColor'}
+                onClick={props.colorPopupOnClick}
                 color={props.appConfig.irisColor}
-                onInputChange={props.updateAppConfig}
                 helpWith={HelpWith.IRIS_COLOR}
             />
 
