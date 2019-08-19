@@ -114,7 +114,6 @@ export const EyeController = React.memo(
             target,
         };
 
-        const animationRef = useRef(animation);
         const detectedRef = useRef(props.detected);
 
         useEffect(() => {
@@ -179,16 +178,12 @@ export const EyeController = React.memo(
         return (
             <div className="container">
                 {[EyeSide.RIGHT, EyeSide.LEFT].map((eye, index) => {
-                    const bezier = getBezier(
-                        typeof frame.openCoefficient === 'number'
-                            ? frame.openCoefficient
-                            : frame.openCoefficient[eye],
-                    );
-
                     const openCoefficient =
                         typeof frame.openCoefficient === 'number'
                             ? frame.openCoefficient
                             : frame.openCoefficient[eye];
+
+                    const bezier = getBezier(openCoefficient);
 
                     return (
                         <Eye
