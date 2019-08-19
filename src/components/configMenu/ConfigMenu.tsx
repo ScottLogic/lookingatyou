@@ -72,7 +72,9 @@ export class ConfigMenu extends React.Component<
 
     mouseMoveHandler() {
         this.setState({ leftPosition: '0px' });
+        this.props.window.document.body.style.cursor = 'default';
         this.props.window.clearInterval(this.hideTimeout);
+        
         if (
             !this.state.isUnderMouse &&
             (!this.props.advancedConfig.toggleDebug ||
@@ -82,6 +84,7 @@ export class ConfigMenu extends React.Component<
                 this.setState({
                     leftPosition: '-' + configMenuConsts.width,
                 });
+                this.props.window.document.body.style.cursor = 'none';
             }, configMenuConsts.visibleTimer);
         }
     }
