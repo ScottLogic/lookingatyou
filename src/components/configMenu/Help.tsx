@@ -2,28 +2,28 @@ import React, { Fragment } from 'react';
 import ReactTooltip from 'react-tooltip';
 
 export enum HelpWith {
-    APP_FPS = 'APP_FPS',
-    APP_X_SENSITIVITY = 'APP_X_SENSITIVITY',
-    APP_Y_SENSITIVITY = 'APP_Y_SENSITIVITY',
-    ADV_VIDEO_STREAM = 'ADV_VIDEO_STREAM',
-    APP_IRIS_COLOR = 'APP_IRIS_COLOR',
-    ADV_DEBUG = 'ADV_DEBUG',
-    ADV_REFLECTION = 'ADV_REFLECTION',
-    ADV_REFLECTION_OPACITY = 'ADV_REFLECTION_OPACITY',
-    ADV_ARCHITECTURE = 'ADV_ARCHITECTURE',
-    ADV_OUTPUT_STRIDE = 'ADV_OUTPUT_STRIDE',
-    ADV_RESOLUTION = 'ADV_RESOLUTION',
-    ADV_MULTIPLIER = 'ADV_MULTIPLIER',
-    ADV_DETECTIONS = 'ADV_DETECTIONS',
-    ADV_MIN_SCORE = 'ADV_MIN_SCORE',
-    ADV_NMS_RADIUS = 'ADV_NMS_RADIUS',
+    FPS = 'FPS',
+    X_SENSITIVITY = 'X_SENSITIVITY',
+    Y_SENSITIVITY = 'Y_SENSITIVITY',
+    VIDEO_STREAM = 'VIDEO_STREAM',
+    IRIS_COLOR = 'IRIS_COLOR',
+    DEBUG = 'DEBUG',
+    REFLECTION = 'REFLECTION',
+    REFLECTION_OPACITY = 'REFLECTION_OPACITY',
+    ARCHITECTURE = 'ARCHITECTURE',
+    OUTPUT_STRIDE = 'OUTPUT_STRIDE',
+    RESOLUTION = 'RESOLUTION',
+    MULTIPLIER = 'MULTIPLIER',
+    DETECTIONS = 'DETECTIONS',
+    MIN_SCORE = 'MIN_SCORE',
+    NMS_RADIUS = 'NMS_RADIUS',
 }
 
 export const appHelp = [
-    HelpWith.APP_FPS,
-    HelpWith.APP_IRIS_COLOR,
-    HelpWith.APP_X_SENSITIVITY,
-    HelpWith.APP_X_SENSITIVITY,
+    HelpWith.FPS,
+    HelpWith.IRIS_COLOR,
+    HelpWith.Y_SENSITIVITY,
+    HelpWith.X_SENSITIVITY,
 ];
 
 const fps = () => {
@@ -154,21 +154,21 @@ interface IHelpSectionMap {
 }
 
 const helpSections: IHelpSectionMap = {
-    APP_FPS: fps,
-    APP_X_SENSITIVITY: xSense,
-    APP_Y_SENSITIVITY: ySense,
-    ADV_VIDEO_STREAM: video,
-    APP_IRIS_COLOR: iris,
-    ADV_DEBUG: debug,
-    ADV_REFLECTION: reflection,
-    ADV_REFLECTION_OPACITY: reflectionOpacity,
-    ADV_ARCHITECTURE: architecture,
-    ADV_OUTPUT_STRIDE: outputStride,
-    ADV_RESOLUTION: resolution,
-    ADV_MULTIPLIER: multiplier,
-    ADV_DETECTIONS: detections,
-    ADV_MIN_SCORE: minScore,
-    ADV_NMS_RADIUS: nmsRadius,
+    FPS: fps,
+    X_SENSITIVITY: xSense,
+    Y_SENSITIVITY: ySense,
+    VIDEO_STREAM: video,
+    IRIS_COLOR: iris,
+    DEBUG: debug,
+    REFLECTION: reflection,
+    REFLECTION_OPACITY: reflectionOpacity,
+    ARCHITECTURE: architecture,
+    OUTPUT_STRIDE: outputStride,
+    RESOLUTION: resolution,
+    MULTIPLIER: multiplier,
+    DETECTIONS: detections,
+    MIN_SCORE: minScore,
+    NMS_RADIUS: nmsRadius,
 };
 
 function text(section: HelpWith) {
