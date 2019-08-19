@@ -103,7 +103,7 @@ export const userInteraction = {
         { phrase: 'I HAVE NO MOUTH AND I MUST SCREAM', frequency: 0.03 },
         { phrase: 'PUT YOUR HANDS UP IN THE AIR', frequency: 0.8 },
         { phrase: 'DAB FOR ME', frequency: 0.2 },
-        { phrase: 'NEVER SHOULD\'ve COME HERE', frequency: 0.15},
+        { phrase: 'NEVER SHOULD\'VE COME HERE', frequency: 0.15},
         { phrase: 'LET ME GUESS, SOMEONE STOLE YOUR SWEET ROLL?', frequency: 0.05},
     ],
     delay: 30000,
