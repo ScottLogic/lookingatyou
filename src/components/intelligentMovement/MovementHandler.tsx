@@ -22,11 +22,7 @@ import {
 } from '../../store/selectors/detectionSelectors';
 import { getImageData } from '../../store/selectors/videoSelectors';
 import { normalise } from '../../utils/objectTracking/calculateFocus';
-import {
-    Animation,
-    keyToPose,
-    naturalMovement,
-} from '../../utils/pose/animations';
+import { Animation, naturalMovement } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import EyeController from '../eye/EyeController';
 import { analyseLight } from '../eye/utils/MovementUtils';
@@ -99,13 +95,6 @@ export class MovementHandler extends React.Component<
             this.animateEye,
             1000 / this.props.fps,
         );
-        this.props.environment.document.addEventListener('keyup', e => {
-            let animation = keyToPose[e.key];
-            if (animation) {
-                animation = Array.isArray(animation) ? animation : animation();
-                this.props.updateAnimation(animation);
-            }
-        });
     }
 
     shouldComponentUpdate(

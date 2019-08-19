@@ -27,7 +27,7 @@ import {
     getTargets,
 } from '../../store/selectors/detectionSelectors';
 import { getImageData, getVideo } from '../../store/selectors/videoSelectors';
-import { Animation, blink, peek } from '../../utils/pose/animations';
+import { Animation, blink, keyToPose, peek } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import Eye from './Eye';
 import './Eye.css';
@@ -153,6 +153,18 @@ export const EyeController = React.memo(
         useEffect(() => {
             setInnerPath(generateInnerPath(irisRadius, 100));
         }, [irisRadius]);
+
+        useEffect(() => {
+            props.environment.document.addEventListener('keyup', e => {
+                let keyAnimation = keyToPose[e.key];
+                if (keyAnimation) {
+                    keyAnimation = Array.isArray(keyAnimation)
+                        ? keyAnimation
+                        : keyAnimation();
+                    props.updateAnimation(keyAnimation);
+                }
+            });
+        }, [props, props.environment, props.updateAnimation]);
 
         return (
             <div className="container">
