@@ -3,9 +3,9 @@ import jsdom from 'jsdom';
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import {
-    EyeController,
+import EyeController, {
     EyeControllerProps,
+    IEyeControllerProps,
 } from '../../components/eye/EyeController';
 import { IConfigState } from '../../store/actions/config/types';
 import configStore, {
@@ -15,7 +15,7 @@ import { initialState as initialDetectionState } from '../../store/reducers/dete
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { initialState as initialVideoState } from '../../store/reducers/videoReducer';
 
-let props: EyeControllerProps;
+let props: IEyeControllerProps;
 let configState: IConfigState;
 
 describe('Eye Controller', () => {
@@ -51,15 +51,11 @@ describe('Eye Controller', () => {
             width: 500,
             height: 500,
             environment: new jsdom.JSDOM().window,
-            targetOverwrite: { x: 250, y: 250 },
-            config: configState,
+            target: { x: 250, y: 250 },
             dilation: 1,
             openCoefficient: 0.45,
             detected: true,
-            image: undefined,
-            selection: undefined,
-            animation: [],
-            updateAnimation: jest.fn(),
+            isSleeping: false,
         };
     });
 

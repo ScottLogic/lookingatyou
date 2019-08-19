@@ -2,6 +2,6 @@
 
 exports[`Eye Controller should render correctly 1`] = `
 "<ContextProvider value={{...}}>
-  <Memo() width={500} height={500} environment={{...}} targetOverwrite={{...}} config={{...}} dilation={1} openCoefficient={0.45} detected={true} image={[undefined]} selection={[undefined]} animation={{...}} updateAnimation={[Function: mockConstructor]} />
+  <Connect(Component) width={500} height={500} environment={{...}} target={{...}} dilation={1} openCoefficient={0.45} detected={true} isSleeping={false} />
 </ContextProvider>"
 `;

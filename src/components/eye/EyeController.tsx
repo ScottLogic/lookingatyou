@@ -37,7 +37,7 @@ import { confineToCircle } from './utils/MovementUtils';
 import { getReflection } from './utils/ReflectionUtils';
 import { generateInnerPath, irisMatrixTransform } from './utils/VisualUtils';
 
-interface IEyeControllerProps {
+export interface IEyeControllerProps {
     width: number;
     height: number;
     environment: Window;
