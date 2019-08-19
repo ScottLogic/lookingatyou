@@ -120,7 +120,7 @@ export const userInteraction = {
         { phrase: 'WORKING HARD OR HARDLY WORKING?', frequency: 0.35 },
         { phrase: 'WHAT DAY IS IT?', frequency: 0.15 },
     ],
-    delay: 30000,
+    delay: 13000,
     textDuration: 3000,
 };
 export const fadeInText = {
