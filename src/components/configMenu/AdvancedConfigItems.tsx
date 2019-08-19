@@ -120,6 +120,7 @@ export default function AdvancedConfig(props: IAdvancedConfigProps) {
             <NumberMenuItem
                 name={'Detections'}
                 configName={'maxDetections'}
+                noDecimals={true}
                 step={1}
                 defaultValue={
                     props.advancedConfig.detectionConfig.maxDetections
