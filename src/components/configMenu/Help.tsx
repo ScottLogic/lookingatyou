@@ -15,11 +15,16 @@ export enum HelpWith {
     RESOLUTION = 'RESOLUTION',
     MULTIPLIER = 'MULTIPLIER',
     DETECTIONS = 'DETECTIONS',
-    FLIP = 'FLIP',
     MIN_SCORE = 'MIN_SCORE',
     NMS_RADIUS = 'NMS_RADIUS',
-    ADVANCE_SETTINGS = 'ADVANCE_SETTINGS',
 }
+
+export const appHelp = [
+    HelpWith.FPS,
+    HelpWith.IRIS_COLOR,
+    HelpWith.Y_SENSITIVITY,
+    HelpWith.X_SENSITIVITY,
+];
 
 const fps = () => {
     return (
@@ -125,17 +130,6 @@ const detections = () => {
     );
 };
 
-const flip = () => {
-    return (
-        <Fragment>
-            When checked this value horizontally flips the location of the
-            detected target.
-            <br />
-            This is useful for mirroring poses.
-        </Fragment>
-    );
-};
-
 const minScore = () => {
     return (
         <Fragment>
@@ -153,10 +147,6 @@ const nmsRadius = () => {
             detections being made in within the specified number of pixels.
         </Fragment>
     );
-};
-
-const advancedSettings = () => {
-    return <Fragment>Advanced settings.</Fragment>;
 };
 
 interface IHelpSectionMap {
@@ -177,10 +167,8 @@ const helpSections: IHelpSectionMap = {
     RESOLUTION: resolution,
     MULTIPLIER: multiplier,
     DETECTIONS: detections,
-    FLIP: flip,
     MIN_SCORE: minScore,
     NMS_RADIUS: nmsRadius,
-    ADVANCE_SETTINGS: advancedSettings,
 };
 
 function text(section: HelpWith) {

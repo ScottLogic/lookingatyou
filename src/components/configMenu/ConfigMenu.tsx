@@ -23,7 +23,7 @@ import {
 } from '../../store/selectors/configSelectors';
 import AdvancedConfigItems from './AdvancedConfigItems';
 import './ConfigMenu.css';
-import Help, { HelpWith } from './Help';
+import Help, { appHelp, HelpWith } from './Help';
 import UserConfigItems from './UserConfigItems';
 
 export interface IConfigMenuProps {
@@ -75,8 +75,8 @@ export class ConfigMenu extends React.Component<
         this.props.window.clearInterval(this.hideTimeout);
         if (
             !this.state.isUnderMouse &&
-            (!this.props.advancedConfig.toggleDebug &&
-                this.props.appConfig.toggleAdvanced)
+            (!this.props.advancedConfig.toggleDebug ||
+                !this.props.appConfig.toggleAdvanced)
         ) {
             this.hideTimeout = this.props.window.setTimeout(
                 () =>
@@ -157,9 +157,19 @@ export class ConfigMenu extends React.Component<
                     <br />
                 </div>
 
-                {Object.values(HelpWith).map((type, key: number) => (
-                    <Help key={key} problemWith={HelpWith[type] as HelpWith} />
-                ))}
+                {Object.values(HelpWith).map((type, key: number) => {
+                    const showHelp =
+                        this.props.appConfig.toggleAdvanced ||
+                        appHelp.includes(type);
+                    return (
+                        showHelp && (
+                            <Help
+                                key={key}
+                                problemWith={HelpWith[type] as HelpWith}
+                            />
+                        )
+                    );
+                })}
             </>
         );
     }

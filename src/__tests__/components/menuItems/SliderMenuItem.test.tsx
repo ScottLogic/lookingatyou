@@ -10,7 +10,7 @@ const props = {
     configName: 'test',
     step: 1,
     min: 1,
-    helpWith: HelpWith.FPS,
+    helpWith: HelpWith.X_SENSITIVITY,
 };
 
 it('should render correctly', () => {

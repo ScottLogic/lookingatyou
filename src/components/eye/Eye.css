@@ -3,19 +3,29 @@
     stroke: black;
     stroke-width: 2;
     position: absolute;
-}
-
-.BlackFill path {
-    fill: black;
     fill-rule: evenodd;
-    stroke: black;
-    stroke-width: 2;
-    position: absolute;
 }
 
 .inner,
 g.reflection {
     transform-origin: center;
+}
+
+svg.overlay {
+    transform-origin: center;
+    position: absolute;
+}
+
+div.container {
+    height: 100%;
+    width: 100%;
+}
+
+.LEFT,
+.RIGHT {
+    display: inline-block;
+    height: 100%;
+    width: 50%;
 }
 
 svg.overlay {

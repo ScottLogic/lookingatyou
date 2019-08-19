@@ -6,7 +6,9 @@ import { ThunkDispatch } from 'redux-thunk';
 import './App.css';
 import ConfigMenu from './components/configMenu/ConfigMenu';
 import HelpPopup from './components/helpPopup/HelpPopup';
+import { ManualMovementHandler } from './components/intelligentMovement/ManualMovementHandler';
 import MovementHandler from './components/intelligentMovement/MovementHandler';
+import NoWebcamPopup from './components/noWebcamPopup/NoWebcamPopup';
 import VideoHandler from './components/video/VideoHandler';
 import eyeImage from './img/eye.png';
 import { loadModel } from './store/actions/detections/actions';
@@ -89,9 +91,13 @@ export class App extends React.Component<AppProps, IAppState> {
                 <VideoHandler {...this.props} />
 
                 {!this.props.webcamAvailable && (
-                    <div className="Error">
-                        No webcam connected. Please connect a webcam.
-                    </div>
+                    <>
+                        <NoWebcamPopup />
+                        <ManualMovementHandler
+                            {...this.state}
+                            {...this.props}
+                        />
+                    </>
                 )}
 
                 {this.props.webcamAvailable && !this.props.model && (

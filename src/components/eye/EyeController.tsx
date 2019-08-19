@@ -37,7 +37,7 @@ import { confineToCircle } from './utils/MovementUtils';
 import { getReflection } from './utils/ReflectionUtils';
 import { generateInnerPath, irisMatrixTransform } from './utils/VisualUtils';
 
-interface IEyeControllerProps {
+export interface IEyeControllerProps {
     width: number;
     height: number;
     environment: Window;
@@ -45,6 +45,8 @@ interface IEyeControllerProps {
     openCoefficient: number;
     detected: boolean;
     isSleeping: boolean;
+    target?: ICoords;
+    appConfig?: IAppConfig;
 }
 
 interface IEyeControllerMapStateToProps {
@@ -306,7 +308,23 @@ const mapDispatchToProps = (
         dispatch(setAnimation(animation)),
 });
 
+const mergeProps = (
+    stateProps: IEyeControllerMapStateToProps,
+    dispatchProps: IEyeControllerMapDispatchToState,
+    ownProps: IEyeControllerProps,
+): EyeControllerProps => {
+    const props: EyeControllerProps = {
+        ...ownProps,
+        ...stateProps,
+        ...dispatchProps,
+    };
+    props.appConfig = ownProps.appConfig || stateProps.appConfig;
+    props.target = ownProps.target || stateProps.target;
+    return props;
+};
+
 export default connect(
     mapStateToProps,
     mapDispatchToProps,
+    mergeProps,
 )(EyeController);
