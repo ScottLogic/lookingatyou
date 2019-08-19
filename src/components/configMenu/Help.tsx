@@ -19,6 +19,13 @@ export enum HelpWith {
     ADV_NMS_RADIUS = 'ADV_NMS_RADIUS',
 }
 
+export const appHelp = [
+    HelpWith.APP_FPS,
+    HelpWith.APP_IRIS_COLOR,
+    HelpWith.APP_X_SENSITIVITY,
+    HelpWith.APP_X_SENSITIVITY,
+];
+
 const fps = () => {
     return (
         <Fragment>

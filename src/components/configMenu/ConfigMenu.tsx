@@ -23,7 +23,7 @@ import {
 } from '../../store/selectors/configSelectors';
 import AdvancedConfigItems from './AdvancedConfigItems';
 import './ConfigMenu.css';
-import Help, { HelpWith } from './Help';
+import Help, { appHelp, HelpWith } from './Help';
 import UserConfigItems from './UserConfigItems';
 
 export interface IConfigMenuProps {
@@ -156,7 +156,7 @@ export class ConfigMenu extends React.Component<
                 {Object.values(HelpWith).map((type, key: number) => {
                     const showHelp =
                         this.props.appConfig.toggleAdvanced ||
-                        type.toString().includes('APP');
+                        appHelp.includes(type);
                     return (
                         showHelp && (
                             <Help
