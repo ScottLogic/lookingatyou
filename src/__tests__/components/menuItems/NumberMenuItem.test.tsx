@@ -18,7 +18,7 @@ describe('NumberMenuItem tests', () => {
             configName: 'test',
             step: 1,
             min: 1,
-            helpWith: HelpWith.APP_FPS,
+            helpWith: HelpWith.FPS,
         };
     });
 

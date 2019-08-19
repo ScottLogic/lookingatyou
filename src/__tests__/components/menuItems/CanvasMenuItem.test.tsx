@@ -13,7 +13,7 @@ describe('CanvasMenuItem', () => {
         props = {
             name: 'test',
             videoIndex: 0,
-            helpWith: HelpWith.ADV_DEBUG,
+            helpWith: HelpWith.DEBUG,
             video: undefined,
             selection: undefined,
             detections: [],

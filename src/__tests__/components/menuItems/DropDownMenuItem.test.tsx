@@ -16,7 +16,7 @@ describe('DropDownMenuItem', () => {
             onInputChange: jest.fn(),
             values: ['a', 'b', 'c'],
             defaultValue: 'a',
-            helpWith: HelpWith.ADV_OUTPUT_STRIDE,
+            helpWith: HelpWith.OUTPUT_STRIDE,
         };
     });
 
