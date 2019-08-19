@@ -101,6 +101,8 @@ export const userInteraction = {
         { phrase: "DON'T LEAVE ME", frequency: 0.5 },
         { phrase: 'NOTHING TO SEE HERE', frequency: 0.6 },
         { phrase: 'I HAVE NO MOUTH AND I MUST SCREAM', frequency: 0.03 },
+        { phrase: 'PUT YOUR HANDS UP IN THE AIR', frequency: 0.8 },
+        { phrase: 'DAB FOR ME', frequency: 0.2 },
     ],
     delay: 30000,
     textDuration: 3000,
