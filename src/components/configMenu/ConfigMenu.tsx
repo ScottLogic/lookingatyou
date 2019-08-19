@@ -75,16 +75,14 @@ export class ConfigMenu extends React.Component<
         this.props.window.clearInterval(this.hideTimeout);
         if (
             !this.state.isUnderMouse &&
-            (!this.props.advancedConfig.toggleDebug &&
-                this.props.appConfig.toggleAdvanced)
+            (!this.props.advancedConfig.toggleDebug ||
+                !this.props.appConfig.toggleAdvanced)
         ) {
-            this.hideTimeout = this.props.window.setTimeout(
-                () =>
-                    this.setState({
-                        leftPosition: '-' + configMenuConsts.width,
-                    }),
-                configMenuConsts.visibleTimer,
-            );
+            this.hideTimeout = this.props.window.setTimeout(() => {
+                this.setState({
+                    leftPosition: '-' + configMenuConsts.width,
+                });
+            }, configMenuConsts.visibleTimer);
         }
     }
 
