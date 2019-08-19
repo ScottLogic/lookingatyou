@@ -2,7 +2,6 @@ import React from 'react';
 import { EyeSide, transitionTimes } from '../../AppConstants';
 import { IAnimationFrame } from '../../utils/pose/animations';
 import './Eye.css';
-import { BlackFill } from './eyeParts/BlackFill';
 import { Eyelids } from './eyeParts/Eyelids';
 import Iris from './eyeParts/innerParts/Iris';
 import { Pupil } from './eyeParts/innerParts/Pupil';
@@ -93,7 +92,6 @@ export default function Eye(props: IEyeProps) {
                     transitionStyle={eyelidTransitionStyle}
                     cornerShape={cornerShape}
                 />
-                <BlackFill {...props} leftX={props.eyeShape.leftX} />
             </svg>
         </div>
     );

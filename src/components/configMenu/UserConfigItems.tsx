@@ -65,7 +65,6 @@ export default function UserConfig(props: IUserConfigProps) {
                 name={'Show Advanced Settings'}
                 configName={'toggleAdvanced'}
                 checked={props.appConfig.toggleAdvanced}
-                helpWith={HelpWith.ADVANCE_SETTINGS}
                 onInputChange={props.updateAppConfig}
                 warning={
                     <>

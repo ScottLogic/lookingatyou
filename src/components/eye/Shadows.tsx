@@ -21,7 +21,8 @@ export const Shadows = React.memo(
                                 (20 * props.openCoefficient) /
                                 eyelidPosition.OPEN
                             }
-                            floodColor="#333333"
+                            floodColor="#000000"
+                            floodOpacity={0.8}
                         />
                     </filter>
                     <filter id="shadowBottom">
@@ -35,7 +36,8 @@ export const Shadows = React.memo(
                                 (15 * props.openCoefficient) /
                                 eyelidPosition.OPEN
                             }
-                            floodColor="#333333"
+                            floodColor="#000000"
+                            floodOpacity={0.8}
                         />
                     </filter>
                 </defs>
