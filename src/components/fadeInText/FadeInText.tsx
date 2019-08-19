@@ -1,5 +1,5 @@
 import React from 'react';
-import { fadeInText } from '../../AppConstants';
+import { fadeInText, userInteraction } from '../../AppConstants';
 import { normalise } from '../../utils/objectTracking/calculateFocus';
 import './fadeInText.css';
 
@@ -30,13 +30,8 @@ const FadeInText = React.memo((props: IFadeInTextProps) => {
         characterProps: { character: string; delay: number },
         index: number,
     ) {
-        const transitionTime = normalise(
-            Math.random(),
-            1,
-            0,
-            fadeInText.transitionMax,
-            fadeInText.transitionMin,
-        );
+        const transitionTime =
+            userInteraction.textDuration - characterProps.delay;
         const style = {
             opacity: props.show ? 1 : 0,
             transition: `opacity ${transitionTime}ms`,

@@ -24,6 +24,7 @@ import {
 import AdvancedConfigItems from './AdvancedConfigItems';
 import './ConfigMenu.css';
 import Help, { HelpWith } from './Help';
+import ColorPopup from './menuItems/ColorPopup';
 import UserConfigItems from './UserConfigItems';
 
 export interface IConfigMenuProps {
@@ -168,6 +169,15 @@ export class ConfigMenu extends React.Component<
                 {Object.values(HelpWith).map((type, key: number) => (
                     <Help key={key} problemWith={HelpWith[type] as HelpWith} />
                 ))}
+                {this.state.showColorPopup && (
+                    <ColorPopup
+                        showPopup={this.state.showColorPopup}
+                        color={this.props.appConfig.irisColor}
+                        configName={'irisColor'}
+                        close={this.toggleShowColorPopup}
+                        onInputChange={this.props.updateAppConfig}
+                    />
+                )}
             </>
         );
     }
