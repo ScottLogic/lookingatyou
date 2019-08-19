@@ -46,6 +46,7 @@ interface IEyeControllerProps {
     detected: boolean;
     isSleeping: boolean;
     target?: ICoords;
+    appConfig?: IAppConfig;
 }
 
 interface IEyeControllerMapStateToProps {
@@ -317,7 +318,8 @@ const mergeProps = (
         ...stateProps,
         ...dispatchProps,
     };
-    props.target = ownProps.target ? ownProps.target : stateProps.target;
+    props.appConfig = ownProps.appConfig || stateProps.appConfig;
+    props.target = ownProps.target || stateProps.target;
     return props;
 };
 
