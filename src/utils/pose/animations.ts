@@ -178,3 +178,11 @@ export const animationMapping: {
     [Pose.ARMS_OUT]: shock,
     [Pose.DAB]: dab,
 };
+
+export const keyToPose: {[key: string]: (() => Animation) | Animation} = {
+    't': shock,
+    'd': dab,
+    'l': leftWink,
+    'r': rightWink,
+    'u': rollEyes,
+}
