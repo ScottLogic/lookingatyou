@@ -141,6 +141,41 @@ describe('getPose', () => {
         },
     };
 
+    const hipsLeftWrist = getPart(1, { x: -1, y: 1 }, 'leftWrist');
+    const hipsLeftElbow = getPart(1, { x: -2, y: 0 }, 'leftElbow');
+    const hipsLeftShoulder = getPart(1, { x: -1, y: -1 }, 'leftShoulder');
+    const hipsLeftHip = getPart(1, { x: -1, y: 1 }, 'leftHip');
+    const hipsRightWrist = getPart(1, { x: 1, y: 1 }, 'rightWrist');
+    const hipsRightElbow = getPart(1, { x: 2, y: 0 }, 'rightElbow');
+    const hipsRightShoulder = getPart(1, { x: 1, y: -1 }, 'rightShoulder');
+    const hipsRightHip = getPart(1, { x: 1, y: 1 }, 'rightHip');
+    const hipsKeypoints: Keypoint[] = [
+        nose,
+        leftEye,
+        rightEye,
+        leftEar,
+        rightEar,
+        hipsLeftShoulder,
+        hipsRightShoulder,
+        hipsLeftElbow,
+        hipsRightElbow,
+        hipsLeftWrist,
+        hipsRightWrist,
+        hipsLeftHip,
+        hipsRightHip,
+        leftKnee,
+        rightKnee,
+        leftAnkle,
+        rightAnkle,
+    ];
+    const hips = {
+        bbox: genericBbox,
+        info: {
+            score: 1,
+            keypoints: hipsKeypoints,
+        },
+    };
+
     it('should be undefined for low confidence', () => {
         expect(getPose(lowCofidenceDetection)).toBe(undefined);
     });
@@ -151,5 +186,9 @@ describe('getPose', () => {
 
     it(`should return ${Pose.ARMS_OUT}`, () => {
         expect(getPose(arms)).toStrictEqual('ARMS_OUT');
+    });
+
+    it(`should return ${Pose.HANDS_HIPS}`, () => {
+        expect(getPose(hips)).toStrictEqual('HANDS_HIPS');
     });
 });
