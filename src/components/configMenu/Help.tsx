@@ -28,7 +28,9 @@ export const appHelp = [
 
 const fps = () => {
     return (
-        <Fragment>Configures how many detections are made per second.</Fragment>
+        <Fragment>
+            Configures how many frames are processed per second.
+        </Fragment>
     );
 };
 
