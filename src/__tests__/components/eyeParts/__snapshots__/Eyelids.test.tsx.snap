@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Eyelids should render correctly 1`] = `
-"<svg className=\\"Eyelids\\">
-  <path style={{...}} filter=\\"url(#shadowTop)\\" d=\\"M 0 0\\\\n                    H 0\\\\n                    V 0\\\\n                    H undefined\\\\n                    V 0\\\\n                    H 0\\\\n                    C 0 \\\\n                      -30\\\\n                      20 \\\\n                      0\\\\n                      0 \\\\n                      0\\\\n                    S 0 \\\\n                      -30 \\\\n                      0 \\\\n                      0\\" />
-  <path style={{...}} filter=\\"url(#shadowBottom)\\" d=\\"M 0 0\\\\n                    H 0\\\\n                    V undefined\\\\n                    H undefined\\\\n                    V 0\\\\n                    H 0\\\\n                    C 0 \\\\n                      30\\\\n                      20 \\\\n                      0 \\\\n                      0 \\\\n                      0\\\\n                    S 0 \\\\n                      30 \\\\n                      0\\\\n                      0\\" />
-</svg>"
+"<Fragment>
+  <path style={{...}} filter=\\"url(#shadowTop)\\" d=\\"M -1 0 \\\\n                    V -1\\\\n                    H 1\\\\n                    V 0\\\\n                    H 0.9\\\\n                    C 0.9\\\\n                        -30\\\\n                        20\\\\n                        NaN\\\\n                        0\\\\n                        NaN\\\\n                    S -0.9\\\\n                        -30\\\\n                        -0.9\\\\n                        0\\\\n                    Z\\" />
+  <path style={{...}} filter=\\"url(#shadowBottom)\\" d=\\"M -1 0 \\\\n                    V 1\\\\n                    H 1\\\\n                    V 0\\\\n                    H 0.9\\\\n                    C 0.9\\\\n                        30\\\\n                        20\\\\n                        NaN\\\\n                        0\\\\n                        NaN\\\\n                    S -0.9\\\\n                        30\\\\n                        -0.9\\\\n                        0\\\\n                    Z\\" />
+</Fragment>"
 `;

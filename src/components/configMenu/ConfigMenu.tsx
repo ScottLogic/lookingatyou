@@ -24,6 +24,7 @@ import {
 import AdvancedConfigItems from './AdvancedConfigItems';
 import './ConfigMenu.css';
 import Help, { appHelp, HelpWith } from './Help';
+import ColorPopup from './menuItems/ColorPopup';
 import UserConfigItems from './UserConfigItems';
 
 export interface IConfigMenuProps {
@@ -50,6 +51,7 @@ export type ConfigMenuProps = IConfigMenuProps &
 interface IConfigMenuState {
     leftPosition: string;
     isUnderMouse: boolean;
+    showColorPopup: boolean;
 }
 
 export class ConfigMenu extends React.Component<
@@ -63,10 +65,12 @@ export class ConfigMenu extends React.Component<
         this.state = {
             leftPosition: '0px',
             isUnderMouse: false,
+            showColorPopup: false,
         };
         this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.mouseMoveHandler = this.mouseMoveHandler.bind(this);
+        this.toggleShowColorPopup = this.toggleShowColorPopup.bind(this);
         this.props.window.addEventListener('mousemove', this.mouseMoveHandler);
     }
 
@@ -103,6 +107,7 @@ export class ConfigMenu extends React.Component<
         nextState: IConfigMenuState,
     ) {
         return (
+            this.state.showColorPopup !== nextState.showColorPopup ||
             nextState.leftPosition !== this.state.leftPosition ||
             !isEqual(nextProps, this.props)
         );
@@ -114,6 +119,12 @@ export class ConfigMenu extends React.Component<
             'mousemove',
             this.mouseMoveHandler,
         );
+    }
+
+    toggleShowColorPopup() {
+        this.setState({
+            showColorPopup: !this.state.showColorPopup,
+        });
     }
 
     render() {
@@ -136,10 +147,13 @@ export class ConfigMenu extends React.Component<
                         variant="contained"
                         className="icon"
                         onClick={showAppHelp}
-                    >
-                        ?
-                    </Button>
-                    <UserConfigItems {...this.props} />
+                    />
+
+                    <UserConfigItems
+                        {...this.props}
+                        colorPopupOnClick={this.toggleShowColorPopup}
+                    />
+
                     {this.props.appConfig.toggleAdvanced && (
                         <AdvancedConfigItems {...this.props} />
                     )}
@@ -171,6 +185,16 @@ export class ConfigMenu extends React.Component<
                         )
                     );
                 })}
+
+                {this.state.showColorPopup && (
+                    <ColorPopup
+                        showPopup={this.state.showColorPopup}
+                        color={this.props.appConfig.irisColor}
+                        configName={'irisColor'}
+                        close={this.toggleShowColorPopup}
+                        onInputChange={this.props.updateAppConfig}
+                    />
+                )}
             </>
         );
     }

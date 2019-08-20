@@ -14,11 +14,11 @@ export const Shadows = React.memo(
                         <feDropShadow
                             dx="0"
                             dy={
-                                (20 * props.openCoefficient) /
+                                (0.05 * props.openCoefficient) /
                                 eyelidPosition.OPEN
                             }
                             stdDeviation={
-                                (20 * props.openCoefficient) /
+                                (0.05 * props.openCoefficient) /
                                 eyelidPosition.OPEN
                             }
                             floodColor="#000000"
@@ -29,11 +29,11 @@ export const Shadows = React.memo(
                         <feDropShadow
                             dx="0"
                             dy={
-                                (-5 * props.openCoefficient) /
+                                (-0.0125 * props.openCoefficient) /
                                 eyelidPosition.OPEN
                             }
                             stdDeviation={
-                                (15 * props.openCoefficient) /
+                                (0.0375 * props.openCoefficient) /
                                 eyelidPosition.OPEN
                             }
                             floodColor="#000000"
