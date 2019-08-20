@@ -16,8 +16,7 @@ export function Video(props: VideoProps) {
     function getVideo(element: HTMLVideoElement | null) {
         if (element && props.stream) {
             element.srcObject = props.stream;
-            const payload = element;
-            props.setVideo(payload);
+            props.setVideo(element);
         }
     }
 

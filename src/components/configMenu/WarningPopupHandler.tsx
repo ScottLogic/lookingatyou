@@ -30,7 +30,6 @@ const WarningPopupHandler = React.memo((props: ICheckBoxMenuItemProps) => {
                 > 
                     <>
                         <h1>Warning!</h1>
-                        <br />
                         {props.warning}
                         <br />
                         <Button

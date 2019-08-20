@@ -1,0 +1,16 @@
+.popup-content {
+    padding: 15px !important;
+    border-radius: 0.5em;
+    font-size: 1.2vw;
+}
+
+.popup-content h1 {
+    text-align: center;
+}
+
+.popup-content .icon {
+    pointer-events: none;
+    position: relative !important;
+    top: 0em !important;
+    left: 0em;
+}

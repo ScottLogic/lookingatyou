@@ -27,13 +27,13 @@
     font-size: 1.2em;
 
     transition: 500ms;
+    padding: 5px;
 }
 
 .ConfigMenu a,
 .ConfigMenu label,
 .ConfigMenu input,
 .ConfigMenu select,
-.ConfigMenu h1,
 .ConfigMenu h3 {
     padding: 10px;
     display: inline-block;
@@ -53,16 +53,9 @@
 }
 
 .icon {
-    width: 2em;
-    border-radius: 25%;
-    color: #fff;
-    line-height: 2em;
-    text-align: center;
-    background: rgb(61, 61, 61);
-    display: inline-block;
-    position: absolute;
-    top: 1em;
-    right: 1em;
+    position: absolute !important;
+    top: 1em !important;
+    right: 1em !important;
 }
 
 .reset {

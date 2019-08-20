@@ -7,7 +7,6 @@ let props: VideoProps;
 describe('Video component tests', () => {
     beforeEach(() => {
         props = {
-            deviceId: 'testDevice',
             width: 100,
             height: 100,
             stream: (jest.fn() as unknown) as MediaStream,

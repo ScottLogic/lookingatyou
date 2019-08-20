@@ -12,10 +12,6 @@ export function getReflection(
     if (!ctx) {
         return new ImageData(image.width, image.height);
     }
-    ctx.beginPath();
-    ctx.arc(radius, radius, radius, 0, Math.PI * 2, true);
-    ctx.closePath();
-    ctx.clip();
     const crop = getCrop(target, image);
     ctx.scale(-1, 1);
     const diameter = radius * 2;

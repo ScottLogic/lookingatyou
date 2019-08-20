@@ -1,5 +1,5 @@
 import { Button } from '@material-ui/core';
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import Popup from 'reactjs-popup';
 import { Action } from 'redux';
@@ -9,6 +9,7 @@ import { ConfigSetAction } from '../../store/actions/config/types';
 import { IRootStore } from '../../store/reducers/rootReducer';
 import { getShowHelp } from '../../store/selectors/configSelectors';
 import { IConfigMenuProps } from '../configMenu/ConfigMenu';
+import './HelpPopup.css';
 
 interface IHelpPopupProps {
     window: Window;
@@ -36,23 +37,25 @@ function HelpPopup(props: HelpPopupProps) {
             closeOnEscape={false}
         >
             {close => (
-                <Fragment>
+                <>
                     <h1>Looking At You</h1>
                     This is an app designed to track users using a webcam. The
                     eyes will follow you around and react differently depending
                     on what they see. Hover over any of the menu items for more
-                    information. Click the Help (?) icon to see this message
-                    again.
+                    information. Click the Help &nbsp;
+                    <Button variant="contained" className="icon">
+                        ?
+                    </Button>
+                    &nbsp; icon to see this message again.
                     <br />
                     <Button
                         variant="contained"
                         className="accept"
-                        color="primary"
                         onClick={close}
                     >
                         Close
                     </Button>
-                </Fragment>
+                </>
             )}
         </Popup>
     );

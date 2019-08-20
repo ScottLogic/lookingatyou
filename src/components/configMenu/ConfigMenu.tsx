@@ -86,7 +86,7 @@ export class ConfigMenu extends React.Component<
         ) {
             this.hideTimeout = this.props.window.setTimeout(() => {
                 this.setState({
-                    leftPosition: '-' + configMenuConsts.width,
+                    leftPosition: configMenuConsts.leftPos,
                 });
                 this.props.window.document.body.style.cursor = 'none';
             }, configMenuConsts.visibleTimer);
@@ -143,13 +143,17 @@ export class ConfigMenu extends React.Component<
                     onMouseLeave={this.onMouseLeave}
                 >
                     <h1>Settings</h1>
-                    <button className="icon" onClick={showAppHelp}>
-                        ?
-                    </button>
+                    <Button
+                        variant="contained"
+                        className="icon"
+                        onClick={showAppHelp}
+                    />
+
                     <UserConfigItems
                         {...this.props}
                         colorPopupOnClick={this.toggleShowColorPopup}
                     />
+
                     {this.props.appConfig.toggleAdvanced && (
                         <AdvancedConfigItems {...this.props} />
                     )}
