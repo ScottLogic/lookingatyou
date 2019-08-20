@@ -51,6 +51,7 @@ interface IMovementState {
     showText: boolean;
     text: string;
     isSleeping: boolean;
+    previousTextIndex: number;
 }
 
 export type MovementHandlerProps = IMovementProps &
@@ -76,6 +77,7 @@ export class MovementHandler extends React.Component<
             showText: false,
             text: '',
             isSleeping: false,
+            previousTextIndex: -1,
         };
 
         this.movementInterval = 0;
@@ -214,7 +216,10 @@ export class MovementHandler extends React.Component<
             let i = 0;
 
             while (random >= 0 && i < userInteraction.texts.length - 1) {
-                random -= userInteraction.texts[i].frequency;
+                random -=
+                    i !== this.state.previousTextIndex
+                        ? userInteraction.texts[i].frequency
+                        : 0;
                 i++;
             }
 
@@ -223,6 +228,7 @@ export class MovementHandler extends React.Component<
             this.setState({
                 showText: true,
                 text: phrase,
+                previousTextIndex: i - 1,
             });
 
             this.props.environment.setTimeout(() => {
