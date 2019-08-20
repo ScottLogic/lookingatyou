@@ -2,7 +2,7 @@
 
 exports[`Eyelids should render correctly 1`] = `
 "<svg className=\\"Eyelids\\">
-  <path style={{...}} filter=\\"url(#shadowTop)\\" d=\\"M 0 0\\\\n                         A 300 300 0 0 1 0 0\\\\n                         C 0 -30,\\\\n                         20 0, 0 0\\\\n                         C -20 0, 0 -30, 0 0\\" />
-  <path style={{...}} filter=\\"url(#shadowBottom)\\" d=\\"M 0 0\\\\n                         A 300 300 0 0 0 0 0\\\\n                         C 0 30,\\\\n                         20 0, 0 0\\\\n                         C -20 0, 0 30, 0 0\\" />
+  <path style={{...}} filter=\\"url(#shadowTop)\\" d=\\"M 0 0\\\\n                    H 0\\\\n                    V 0\\\\n                    H undefined\\\\n                    V 0\\\\n                    H 0\\\\n                    C 0 \\\\n                      -30\\\\n                      20 \\\\n                      0\\\\n                      0 \\\\n                      0\\\\n                    S 0 \\\\n                      -30 \\\\n                      0 \\\\n                      0\\" />
+  <path style={{...}} filter=\\"url(#shadowBottom)\\" d=\\"M 0 0\\\\n                    H 0\\\\n                    V undefined\\\\n                    H undefined\\\\n                    V 0\\\\n                    H 0\\\\n                    C 0 \\\\n                      30\\\\n                      20 \\\\n                      0 \\\\n                      0 \\\\n                      0\\\\n                    S 0 \\\\n                      30 \\\\n                      0\\\\n                      0\\" />
 </svg>"
 `;

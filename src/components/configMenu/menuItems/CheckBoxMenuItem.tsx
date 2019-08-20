@@ -9,7 +9,7 @@ export interface ICheckBoxMenuItemProps {
     configName: string;
     onInputChange: UpdateConfigAction;
     checked: boolean;
-    helpWith: HelpWith;
+    helpWith?: HelpWith;
     warning?: JSX.Element;
 }
 
@@ -39,35 +39,52 @@ const CheckBoxMenuItem = React.memo(
             setShowModal(false);
         }
 
-        return (
-            <div
-                className="checkbox"
-                data-tip={true}
-                data-for={HelpWith[props.helpWith]}
-            >
-                <FormControl>
-                    <FormControlLabel
-                        value="start"
-                        onChange={onChange}
-                        control={
-                            <Checkbox checked={props.checked} color="primary" />
-                        }
-                        label={props.name}
-                        labelPlacement="start"
-                    />
-                </FormControl>
+        function checkBox(): JSX.Element {
+            return (
+                <>
+                    <FormControl>
+                        <FormControlLabel
+                            value="start"
+                            onChange={onChange}
+                            control={
+                                <Checkbox
+                                    checked={props.checked}
+                                    color="primary"
+                                />
+                            }
+                            label={props.name}
+                            labelPlacement="start"
+                        />
+                    </FormControl>
 
-                {props.warning && (
-                    <WarningPopupHandler
-                        configName={props.configName}
-                        onInputChange={props.onInputChange}
-                        showModal={showModal}
-                        warning={props.warning}
-                        accept={accept}
-                        decline={decline}
-                    />
+                    {props.warning && (
+                        <WarningPopupHandler
+                            configName={props.configName}
+                            onInputChange={props.onInputChange}
+                            showModal={showModal}
+                            warning={props.warning}
+                            accept={accept}
+                            decline={decline}
+                        />
+                    )}
+                </>
+            );
+        }
+
+        return (
+            <>
+                {props.helpWith ? (
+                    <div
+                        className="checkbox"
+                        data-tip={true}
+                        data-for={HelpWith[props.helpWith]}
+                    >
+                        {checkBox()}
+                    </div>
+                ) : (
+                    <div className="checkbox"> {checkBox()} </div>
                 )}
-            </div>
+            </>
         );
     },
     (previous, next) => previous.checked === next.checked,

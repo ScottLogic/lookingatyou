@@ -23,7 +23,7 @@ import {
 } from '../../store/selectors/configSelectors';
 import AdvancedConfigItems from './AdvancedConfigItems';
 import './ConfigMenu.css';
-import Help, { HelpWith } from './Help';
+import Help, { appHelp, HelpWith } from './Help';
 import ColorPopup from './menuItems/ColorPopup';
 import UserConfigItems from './UserConfigItems';
 
@@ -76,19 +76,20 @@ export class ConfigMenu extends React.Component<
 
     mouseMoveHandler() {
         this.setState({ leftPosition: '0px' });
+        this.props.window.document.body.style.cursor = 'default';
         this.props.window.clearInterval(this.hideTimeout);
+
         if (
             !this.state.isUnderMouse &&
-            (!this.props.advancedConfig.toggleDebug &&
-                this.props.appConfig.toggleAdvanced)
+            (!this.props.advancedConfig.toggleDebug ||
+                !this.props.appConfig.toggleAdvanced)
         ) {
-            this.hideTimeout = this.props.window.setTimeout(
-                () =>
-                    this.setState({
-                        leftPosition: '-' + configMenuConsts.width,
-                    }),
-                configMenuConsts.visibleTimer,
-            );
+            this.hideTimeout = this.props.window.setTimeout(() => {
+                this.setState({
+                    leftPosition: '-' + configMenuConsts.width,
+                });
+                this.props.window.document.body.style.cursor = 'none';
+            }, configMenuConsts.visibleTimer);
         }
     }
 
@@ -166,9 +167,21 @@ export class ConfigMenu extends React.Component<
                     <br />
                     <br />
                 </div>
-                {Object.values(HelpWith).map((type, key: number) => (
-                    <Help key={key} problemWith={HelpWith[type] as HelpWith} />
-                ))}
+
+                {Object.values(HelpWith).map((type, key: number) => {
+                    const showHelp =
+                        this.props.appConfig.toggleAdvanced ||
+                        appHelp.includes(type);
+                    return (
+                        showHelp && (
+                            <Help
+                                key={key}
+                                problemWith={HelpWith[type] as HelpWith}
+                            />
+                        )
+                    );
+                })}
+
                 {this.state.showColorPopup && (
                     <ColorPopup
                         showPopup={this.state.showColorPopup}

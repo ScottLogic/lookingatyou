@@ -1,6 +1,5 @@
 import React from 'react';
-import { fadeInText, userInteraction } from '../../AppConstants';
-import { normalise } from '../../utils/objectTracking/calculateFocus';
+import { fadeInText } from '../../AppConstants';
 import './fadeInText.css';
 
 interface IFadeInTextProps {
@@ -9,42 +8,12 @@ interface IFadeInTextProps {
 }
 
 const FadeInText = React.memo((props: IFadeInTextProps) => {
-    function renderSpans(text: string) {
-        const textArray = text.split('');
-
-        const combineWithDelays = (character: string) => ({
-            character,
-            delay: normalise(
-                Math.random(),
-                1,
-                0,
-                fadeInText.delayMax,
-                fadeInText.delayMin,
-            ),
-        });
-
-        return textArray.map(combineWithDelays).map(renderToSpan);
-    }
-
-    function renderToSpan(
-        characterProps: { character: string; delay: number },
-        index: number,
-    ) {
-        const transitionTime =
-            userInteraction.textDuration - characterProps.delay;
-        const style = {
-            opacity: props.show ? 1 : 0,
-            transition: `opacity ${transitionTime}ms`,
-            transitionDelay: `${characterProps.delay}ms`,
-            transitionTimingFunction: 'linear',
-        };
-
-        return (
-            <span style={style} key={index}>
-                {characterProps.character}
-            </span>
-        );
-    }
+    const style = {
+        opacity: props.show ? 1 : 0,
+        transition: `opacity ${fadeInText.transitionTime}ms`,
+        transitionDelay: `${fadeInText.delay}ms`,
+        transitionTimingFunction: 'ease',
+    };
 
     function getFontSize(text: string) {
         if (text.length > fadeInText.defaultTextLength) {
@@ -59,7 +28,7 @@ const FadeInText = React.memo((props: IFadeInTextProps) => {
 
     return (
         <div className="revealText" style={getFontSize(props.text)}>
-            {renderSpans(props.text)}
+            <span style={style}>{props.text}</span>
         </div>
     );
 });
