@@ -1,7 +1,6 @@
 import { Keypoint, partIds } from '@tensorflow-models/posenet';
 import { minPoseConfidence, Pose } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
-import { ICoords } from '../types';
 import { checkAngle } from '../utils';
 
 interface IPoseKeypoints {
