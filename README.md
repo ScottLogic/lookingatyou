@@ -18,7 +18,6 @@
     <a href="https://github.com/ScottLogic/lookingatyou/issues">Request Feature</a>
     ·
     <a href="https://blog.scottlogic.com/2019/08/19/LookingAtYou.html">Read the  Blog</a>
-    
   </p>
 </p>
 
