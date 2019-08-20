@@ -102,11 +102,11 @@ export class MovementHandler extends React.Component<
         nextState: IMovementState,
     ) {
         return (
+            this.props.height !== nextProps.height ||
+            this.props.width !== nextProps.width ||
             this.state.isSleeping !== nextState.isSleeping ||
             (!this.props.animationExists &&
-                (this.props.height !== nextProps.height ||
-                    this.props.width !== nextProps.width ||
-                    this.props.target !== nextProps.target ||
+                (this.props.target !== nextProps.target ||
                     this.props.selection !== nextProps.selection ||
                     this.state.isSleeping !== nextState.isSleeping))
         );

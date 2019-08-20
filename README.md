@@ -32,7 +32,9 @@
 
 ## About The Project
 
-Looking At You is a single page application that tracks the object/motion with a pair of eyes on the screen.
+Looking At You is a single page application that tracks a person using [PoseNet](https://github.com/tensorflow/tfjs-models/tree/master/posenet) and follows them with a pair of eyes on the screen.
+
+![Eyes](./images/eyes.gif)
 
 Research notes can be found [here](https://docs.google.com/document/d/1qzaegY8RV-7zI8W8PFPsT_O9LhHEo22WNC5yQh8-n_Q/edit#heading=h.e2w0fl8vj3ca_).
 
@@ -81,6 +83,29 @@ When mouse movement is detected on the screen, the configuration menu will open 
 | Y Sensitivity          | Y axis eyes sensitivity                                                                 |
 | Iris Colour            | Changes the colour of the Iris                                                          |
 | Show Advanced Settings | Shows some extra settings for users that are technically familiar with object detection |
+
+![Settings Menu](./images/settings.gif)
+
+## Pose Interaction
+
+There is a feature in the application that will make the eyes interact in a unique way if you hold certain poses.
+
+| Current Poses   |
+| --------------- |
+| Left hand wave  |
+| Right hand wave |
+| Arms above head |
+| T-shape pose    |
+
+If you would like to add additional poses go to `src/utils/pose/poseDetection.ts` and define a new pose based on the available key point data. You can then define an animation in `src/utils/pose/animations.ts` as an array of keyframes where you can control the iris position, the iris colour, the open coefficient, and the dilation coefficient. This animation can then be mapped to the pose as shown in the file.
+
+## Reflection
+
+By default there is a reflection of the target shown in the iris with a slight fish-eye effect applied. The intesity of the reflection can be changed in the advanced settings or switched off entirely.
+
+## Advanced Settings
+
+The advanced settings contain the settings to configure PoseNet, all the settings have a descriptive tooltip when you hover over them that should help you understand what each setting is for. These settings provide in-depth performance controls for the app and will help you tune the app to run best on your machine. However, if you do change some settings and that has a bad impact on the performance of the app you can click the 'reset to defaults' button which will return the settings to the defaults.
 
 ## Testing
 

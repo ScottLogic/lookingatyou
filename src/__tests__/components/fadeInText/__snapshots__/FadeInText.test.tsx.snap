@@ -3,16 +3,7 @@
 exports[`FadeInText should render correctly 1`] = `
 "<div className=\\"revealText\\" style={{...}}>
   <span style={{...}}>
-    t
-  </span>
-  <span style={{...}}>
-    e
-  </span>
-  <span style={{...}}>
-    s
-  </span>
-  <span style={{...}}>
-    t
+    test
   </span>
 </div>"
 `;

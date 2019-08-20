@@ -97,11 +97,8 @@ export function handleDetection(document: Document) {
         ) {
             const pose = getPose(selection);
             if (pose) {
-                let poseAnimation = animationMapping[pose];
-                poseAnimation = Array.isArray(poseAnimation)
-                    ? poseAnimation
-                    : poseAnimation();
-                dispatch(setAnimation(poseAnimation));
+                const poseAnimation = animationMapping[pose];
+                dispatch(setAnimation(poseAnimation()));
                 dispatch(toggleAnimationCoolDown());
                 window.setTimeout(() => {
                     dispatch(toggleAnimationCoolDown());
