@@ -159,11 +159,6 @@ export const EyeController = React.memo(
             props.imageData,
         ]);
 
-<<<<<<< HEAD
-        useEffect(() => {
-            setInnerPath(generateInnerPath(irisRadius, 100));
-        }, [irisRadius]);
-
         useEffect(() => {
             props.environment.document.addEventListener('keyup', e => {
                 const keyAnimation = keyToPose[e.key];
@@ -173,8 +168,6 @@ export const EyeController = React.memo(
             });
         }, [props, props.environment, props.updateAnimation]);
 
-=======
->>>>>>> Refactored Eyes to render to unit size
         return (
             <div className="container">
                 {[EyeSide.RIGHT, EyeSide.LEFT].map((eye, index) => {
