@@ -1,24 +1,7 @@
-.Eyelids path {
-    fill: black;
-    stroke: black;
-    stroke-width: 2;
+svg.layer {
     position: absolute;
-    fill-rule: evenodd;
-}
-
-.inner,
-g.reflection {
-    transform-origin: center;
-}
-
-svg.overlay {
-    transform-origin: center;
-    position: absolute;
-}
-
-div.container {
+    width: 50%;
     height: 100%;
-    width: 100%;
 }
 
 .LEFT,

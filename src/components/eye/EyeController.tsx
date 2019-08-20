@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
+import React, { MutableRefObject, useEffect, useRef } from 'react';
 import isEqual from 'react-fast-compare';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -34,6 +34,7 @@ import Eye from './Eye';
 import './Eye.css';
 import { Gradients } from './Gradients';
 import { Shadows } from './Shadows';
+import { getBezier } from './utils/EyeShapeUtils';
 import { confineToCircle } from './utils/MovementUtils';
 import { getReflection } from './utils/ReflectionUtils';
 import { generateInnerPath, irisMatrixTransform } from './utils/VisualUtils';
@@ -72,10 +73,14 @@ export type EyeControllerProps = IEyeControllerProps &
 export const EyeController = React.memo(
     (props: EyeControllerProps) => {
         const { environment, updateAnimation, animation } = props;
+        const innerPath = generateInnerPath(
+            eyeCoefficients.iris,
+            numInnerEyeSectors,
+        );
 
-        const scleraRadius = Math.floor(props.width * eyeCoefficients.sclera);
-        const irisRadius = Math.floor(props.width * eyeCoefficients.iris);
-        const pupilRadius = Math.floor(props.width * eyeCoefficients.pupil);
+        const pupilRadius = Math.floor(
+            (props.width * eyeCoefficients.pupil) / 4,
+        );
 
         const reflectionRef = useRef<ImageData | undefined>(undefined);
 
@@ -90,10 +95,12 @@ export const EyeController = React.memo(
                           eyeSensitivityScale,
                   });
 
-        const scale = (scleraRadius - irisRadius * minIrisScale) / minIrisScale;
+        const scale =
+            (eyeCoefficients.sclera - eyeCoefficients.iris * minIrisScale) /
+            minIrisScale;
         const target = {
-            x: props.width / 4 + -position.x * scale,
-            y: props.height / 2 + position.y * scale,
+            x: -position.x * scale,
+            y: position.y * scale,
         };
 
         const frame = {
@@ -106,10 +113,6 @@ export const EyeController = React.memo(
             ...animation[0],
             target,
         };
-
-        const [innerPath, setInnerPath] = useState(
-            generateInnerPath(irisRadius, numInnerEyeSectors),
-        );
 
         const detectedRef = useRef(props.detected);
 
@@ -157,10 +160,6 @@ export const EyeController = React.memo(
         ]);
 
         useEffect(() => {
-            setInnerPath(generateInnerPath(irisRadius, 100));
-        }, [irisRadius]);
-
-        useEffect(() => {
             const handleKeyUpEventHandler = (event: KeyboardEvent) => {
                 return handleKeyUp(event, updateAnimation);
             };
@@ -176,39 +175,27 @@ export const EyeController = React.memo(
         return (
             <div className="container">
                 {[EyeSide.RIGHT, EyeSide.LEFT].map((eye, index) => {
-                    const bezier = getBezier(
-                        scleraRadius,
+                    const openCoefficient =
                         typeof frame.openCoefficient === 'number'
                             ? frame.openCoefficient
-                            : frame.openCoefficient[eye],
-                    );
+                            : frame.openCoefficient[eye];
 
-                    const eyeShape = getEyeShape(
-                        props.width,
-                        props.height,
-                        scleraRadius,
-                        typeof frame.openCoefficient === 'number'
-                            ? frame.openCoefficient
-                            : frame.openCoefficient[eye],
-                    );
+                    const bezier = getBezier(openCoefficient);
+
                     return (
                         <Eye
                             {...props}
                             class={eye}
                             key={index}
-                            width={props.width / 2}
                             animation={frame}
-                            scleraRadius={scleraRadius}
-                            irisRadius={irisRadius}
-                            pupilRadius={pupilRadius}
                             bezier={bezier}
-                            eyeShape={eyeShape}
                             reflection={reflectionRef.current}
                             innerPath={innerPath}
                             skewTransform={irisMatrixTransform(position)}
                             reflectionOpacity={
                                 props.advancedConfig.reflectionOpacity
                             }
+                            openCoefficient={openCoefficient}
                         />
                     );
                 })}
@@ -274,6 +261,7 @@ function peekHandler(
         peekInterval = 0;
     };
 }
+<<<<<<< HEAD
 
 function handleKeyUp(
     event: KeyboardEvent,
@@ -317,6 +305,8 @@ export function getEyeShape(
     };
 }
 
+=======
+>>>>>>> master
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     appConfig: getAppConfig(state),
     advancedConfig: getAdvancedConfig(state),

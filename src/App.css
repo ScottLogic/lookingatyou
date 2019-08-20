@@ -6,7 +6,7 @@
 
 .Error {
     text-decoration: none;
-    color: var(--menu-text-colour);
+    color: white;
     font-size: 2em;
     display: flex;
     justify-content: center;

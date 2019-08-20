@@ -1,19 +1,12 @@
 import React from 'react';
+import { eyeCoefficients } from '../../../AppConstants';
 
-export interface IScleraProps {
-    radius: number;
-    width: number;
-    height: number;
-}
-
-export const Sclera = React.memo((props: IScleraProps) => {
+export const Sclera = React.memo(() => {
     return (
         <circle
             className={'sclera'}
-            r={props.radius}
+            r={eyeCoefficients.sclera}
             fill={'url(#scleraGradient)'}
-            cx={props.width}
-            cy={props.height}
         />
     );
 });

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { eyeCoefficients } from '../../../../AppConstants';
 import { IAnimationFrame } from '../../../../utils/pose/animations';
 import { IInnerPartProps } from '../../types';
 interface IReflectionProps extends IInnerPartProps {
@@ -19,26 +20,30 @@ export function Reflection(props: IReflectionProps) {
             }
         }
     }, [props.reflection]);
+
+    let size = 256;
+    if (props.reflection) {
+        size = props.reflection.width;
+    }
+    let scale = (eyeCoefficients.pupil * 2) / size;
+    if (props.animation.dilation) {
+        scale *= props.animation.dilation;
+    }
+
     return (
-        <>
-            return props.reflection && (
-            <g {...props.groupProps}>
-                <foreignObject
-                    width={props.pupilRadius * 2}
-                    height={props.pupilRadius * 2}
-                    x={-props.pupilRadius}
-                    y={-props.pupilRadius}
-                    style={props.transitionStyle}
-                    transform={`scale(${props.animation.dilation})`}
-                >
-                    <canvas
-                        ref={canvasRef}
-                        width={props.pupilRadius * 2}
-                        height={props.pupilRadius * 2}
-                    />
-                </foreignObject>
-            </g>
-            )
-        </>
+        <g {...props.groupProps}>
+            <foreignObject
+                width={size}
+                height={size}
+                x={-size / 2}
+                y={-size / 2}
+                style={props.transitionStyle}
+                transform={`scale(${scale})`}
+            >
+                {props.reflection && (
+                    <canvas ref={canvasRef} width={size} height={size} />
+                )}
+            </foreignObject>
+        </g>
     );
 }
