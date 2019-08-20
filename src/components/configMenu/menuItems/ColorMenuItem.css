@@ -1,5 +1,6 @@
 .colorPicker-content {
     width: fit-content !important;
+    padding: 1px !important;
 }
 
 .colorPicker-overlay {
