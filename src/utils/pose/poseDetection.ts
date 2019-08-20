@@ -1,6 +1,7 @@
 import { Keypoint, partIds } from '@tensorflow-models/posenet';
 import { minPoseConfidence, Pose } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
+import { ICoords } from '../types';
 import { checkAngle } from '../utils';
 
 interface IPoseKeypoints {
@@ -12,6 +13,8 @@ interface IPoseKeypoints {
     rightElbow: Keypoint;
     leftWrist: Keypoint;
     rightWrist: Keypoint;
+    leftHip: Keypoint;
+    rightHip: Keypoint;
 }
 
 const poseMapping: { [key: string]: (selection: IPoseKeypoints) => boolean } = {
@@ -20,6 +23,7 @@ const poseMapping: { [key: string]: (selection: IPoseKeypoints) => boolean } = {
     [Pose.ARMS_OUT]: armsOutToSide,
     [Pose.LEFT_WAVE]: leftWave,
     [Pose.RIGHT_WAVE]: rightWave,
+    [Pose.HANDS_HIPS]: handsHips,
 };
 
 export function getPose(selection: IDetection): string | undefined {
@@ -41,6 +45,8 @@ function getPoseKeypoints(selection: IDetection): IPoseKeypoints {
         rightElbow: keypoints[partIds.rightElbow],
         leftWrist: keypoints[partIds.leftWrist],
         rightWrist: keypoints[partIds.rightWrist],
+        leftHip: keypoints[partIds.leftHip],
+        rightHip: keypoints[partIds.rightHip],
     };
 }
 
@@ -274,6 +280,66 @@ function armPointingUp(wrist: Keypoint, elbow: Keypoint, shoulder: Keypoint) {
     return (
         wrist.position.y < elbow.position.y &&
         elbow.position.y < shoulder.position.y
+    );
+}
+
+function isBelow(a: Keypoint, b: Keypoint) {
+    return a.position.y > b.position.y;
+}
+
+function handsHips(pose: IPoseKeypoints) {
+    const {
+        leftWrist,
+        leftElbow,
+        leftShoulder,
+        leftHip,
+        rightWrist,
+        rightElbow,
+        rightShoulder,
+        rightHip,
+    } = { ...pose };
+
+    const isValidLeftElbowAngle = checkAngle(
+        leftWrist,
+        leftElbow,
+        leftShoulder,
+        60,
+        120,
+    );
+
+    const isValidLeftShoulderAngle = checkAngle(
+        leftElbow,
+        leftShoulder,
+        leftHip,
+        20,
+        70,
+    );
+
+    const isValidRightElbowAngle = checkAngle(
+        rightWrist,
+        rightElbow,
+        rightShoulder,
+        60,
+        120,
+    );
+
+    const isValidRightShoulderAngle = checkAngle(
+        rightElbow,
+        rightShoulder,
+        rightHip,
+        20,
+        70,
+    );
+
+    return (
+        isValidLeftElbowAngle &&
+        isValidLeftShoulderAngle &&
+        isValidRightElbowAngle &&
+        isValidRightShoulderAngle &&
+        isBelow(leftWrist, leftElbow) &&
+        isBelow(leftElbow, leftShoulder) &&
+        isBelow(rightWrist, rightElbow) &&
+        isBelow(rightElbow, rightShoulder)
     );
 }
 
