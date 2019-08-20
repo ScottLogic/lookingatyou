@@ -147,7 +147,9 @@ export class ConfigMenu extends React.Component<
                         variant="contained"
                         className="icon"
                         onClick={showAppHelp}
-                    />
+                    >
+                        ?
+                    </Button>
 
                     <UserConfigItems
                         {...this.props}
