@@ -37,6 +37,7 @@ describe('ConfigMenu', () => {
             appConfig: initialAppConfig,
             advancedConfig: initialAdvancedConfig,
             updateAppConfig: jest.fn(),
+            updateAdvancedConfig: jest.fn(),
             updateModelConfig: jest.fn(),
             updateDetectionConfig: jest.fn(),
             resetConfig: jest.fn(),
