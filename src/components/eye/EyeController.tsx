@@ -261,7 +261,6 @@ function peekHandler(
         peekInterval = 0;
     };
 }
-<<<<<<< HEAD
 
 function handleKeyUp(
     event: KeyboardEvent,
@@ -273,40 +272,6 @@ function handleKeyUp(
     }
 }
 
-export function getBezier(scleraRadius: number, openCoefficient: number) {
-    const curveConstant = 0.55228474983; // (4/3)tan(pi/8)
-    const controlOffset = scleraRadius * curveConstant;
-    const scaledYcontrolOffset = controlOffset * openCoefficient;
-    const scaledXcontrolOffset = controlOffset - scaledYcontrolOffset;
-    return { controlOffset, scaledXcontrolOffset, scaledYcontrolOffset };
-}
-
-export function getEyeShape(
-    width: number,
-    height: number,
-    scleraRadius: number,
-    openCoefficient: number,
-) {
-    const middleX = width / 4;
-    const leftX = middleX - scleraRadius;
-    const rightX = middleX + scleraRadius;
-    const middleY = height / 2;
-
-    const topEyelidY = middleY - scleraRadius * openCoefficient;
-    const bottomEyelidY = middleY + scleraRadius * openCoefficient;
-
-    return {
-        middleX,
-        leftX,
-        rightX,
-        middleY,
-        topEyelidY,
-        bottomEyelidY,
-    };
-}
-
-=======
->>>>>>> master
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     appConfig: getAppConfig(state),
     advancedConfig: getAdvancedConfig(state),
