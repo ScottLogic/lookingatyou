@@ -1,4 +1,4 @@
-export async function configureStreams(mediaDevices: MediaDevices) {
+export async function configureStream(mediaDevices: MediaDevices) {
     try {
         const stream = await mediaDevices.getUserMedia({
             video: { width: 320, height: 240 },

@@ -1,6 +1,6 @@
 import {
     IVideoState,
-    SET_VIDEO_STREAMS,
+    SET_VIDEO_STREAM,
 } from '../../../store/actions/video/types';
 import { initialConfig as initialConfigStore } from '../../../store/reducers/configReducer';
 import { initialState as initialDetectionStore } from '../../../store/reducers/detectionReducer';
@@ -24,7 +24,7 @@ describe('Video Selectors', () => {
     beforeEach(() => {
         mockVideoStore = videoStore(
             { video, webcamAvailable: false, image: imgData },
-            { type: SET_VIDEO_STREAMS, payload: device1 },
+            { type: SET_VIDEO_STREAM, payload: device1 },
         );
         mockRootStore = {
             videoStore: mockVideoStore,
