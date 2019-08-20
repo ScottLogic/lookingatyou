@@ -13,4 +13,6 @@
     position: relative !important;
     top: 0em !important;
     left: 0em;
+    margin-left: 10px;
+    margin-right: 10px;
 }

@@ -42,11 +42,11 @@ function HelpPopup(props: HelpPopupProps) {
                     This is an app designed to track users using a webcam. The
                     eyes will follow you around and react differently depending
                     on what they see. Hover over any of the menu items for more
-                    information. Click the Help &nbsp;
+                    information. Click the Help
                     <Button variant="contained" className="icon">
                         ?
                     </Button>
-                    &nbsp; icon to see this message again.
+                    icon to see this message again.
                     <br />
                     <Button
                         variant="contained"

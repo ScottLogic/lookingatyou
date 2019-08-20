@@ -160,13 +160,17 @@ export const EyeController = React.memo(
         ]);
 
         useEffect(() => {
-            props.environment.document.addEventListener('keyup', e => {
-                const keyAnimation = keyToPose[e.key];
-                if (keyAnimation) {
-                    props.updateAnimation(keyAnimation());
-                }
-            });
-        }, [props, props.environment, props.updateAnimation]);
+            const handleKeyUpEventHandler = (event: KeyboardEvent) => {
+                return handleKeyUp(event, updateAnimation);
+            };
+
+            environment.addEventListener('keyup', handleKeyUpEventHandler);
+            return () =>
+                environment.removeEventListener(
+                    'keyup',
+                    handleKeyUpEventHandler,
+                );
+        }, [environment, updateAnimation]);
 
         return (
             <div className="container">
@@ -257,6 +261,17 @@ function peekHandler(
         peekInterval = 0;
     };
 }
+
+function handleKeyUp(
+    event: KeyboardEvent,
+    updateAnimation: (animation: Animation) => ISetAnimationAction,
+) {
+    const keyAnimation = keyToPose[event.key];
+    if (keyAnimation) {
+        updateAnimation(keyAnimation());
+    }
+}
+
 const mapStateToProps = (state: IRootStore): IEyeControllerMapStateToProps => ({
     appConfig: getAppConfig(state),
     advancedConfig: getAdvancedConfig(state),
