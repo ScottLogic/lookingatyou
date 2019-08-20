@@ -6,6 +6,7 @@ import {
     blinkConsts,
     eyeCoefficients,
     eyelidPosition,
+    eyeSensitivityScale,
     EyeSide,
     minIrisScale,
     numInnerEyeSectors,
@@ -83,7 +84,10 @@ export const EyeController = React.memo(
                 ? confineToCircle(animation[0].target)
                 : confineToCircle({
                       x: props.target.x * props.appConfig.xSensitivity,
-                      y: props.target.y * props.appConfig.ySensitivity,
+                      y:
+                          props.target.y *
+                          props.appConfig.ySensitivity *
+                          eyeSensitivityScale,
                   });
 
         const scale = (scleraRadius - irisRadius * minIrisScale) / minIrisScale;

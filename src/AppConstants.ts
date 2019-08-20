@@ -151,5 +151,6 @@ export const minPoseConfidence = 0.2;
 export const minIrisScale = 0.8; // factor by which to squish iris when iris is all the way to edge of sclera
 export const CIELabOffset = 128;
 export const centerPoint = { x: 0, y: 0 };
+export const eyeSensitivityScale = 0.7;
 export const chanceOfIdleEyesMovement = 0.2;
 export const animationCooldownTimeout = 5000;
