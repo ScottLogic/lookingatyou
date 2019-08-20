@@ -161,13 +161,9 @@ export const EyeController = React.memo(
         }, [irisRadius]);
 
         useEffect(() => {
-            props.environment.document.addEventListener('keyup', e => {
-                const keyAnimation = keyToPose[e.key];
-                if (keyAnimation) {
-                    props.updateAnimation(keyAnimation());
-                }
-            });
-        }, [props, props.environment, props.updateAnimation]);
+            environment.addEventListener('keyup', handleKeyUp);
+            return () => environment.removeEventListener("keyup", handleKeyUp);
+        }, [environment, updateAnimation]);
 
         return (
             <div className="container">
@@ -269,6 +265,13 @@ function peekHandler(
         environment.clearInterval(peekInterval);
         peekInterval = 0;
     };
+}
+
+function handleKeyUp(event: Event, updateAnimation: (animation: Animation) => ISetAnimationAction) {
+    const keyAnimation = keyToPose[event.key];
+    if (keyAnimation) {
+        updateAnimation(keyAnimation());
+    }
 }
 
 export function getBezier(scleraRadius: number, openCoefficient: number) {
