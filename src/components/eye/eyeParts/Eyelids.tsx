@@ -1,15 +1,9 @@
 import React from 'react';
+import { eyeCoefficients } from '../../../AppConstants';
+import '../Eye.css';
 
 export interface IEyelidsProps {
     transitionStyle: { transition: string };
-    eyeShape: {
-        leftX: number;
-        rightX: number;
-        middleY: number;
-        middleX: number;
-        topEyelidY: number;
-        bottomEyelidY: number;
-    };
     cornerShape: {
         leftTop: number;
         rightTop: number;
@@ -21,60 +15,57 @@ export interface IEyelidsProps {
         scaledXcontrolOffset: number;
         scaledYcontrolOffset: number;
     };
-    width: number;
-    height: number;
+    openCoefficient: number;
 }
 
 export const Eyelids = React.memo((props: IEyelidsProps) => {
-    const { eyeShape, cornerShape, bezier, transitionStyle } = {
-        ...props,
-    };
-    return (
-        <svg className="Eyelids">
+    const bezier = props.bezier;
+    const scleraRadius = eyeCoefficients.sclera;
+    const eyeHeight = scleraRadius * props.openCoefficient;
+
+    function renderEyelid(isTop: boolean) {
+        const filter = `url(#shadow${isTop ? 'Top' : 'Bottom'})`;
+        const sign = isTop ? -1 : 1;
+        const shape = isTop
+            ? {
+                  right: props.cornerShape.rightTop,
+                  left: props.cornerShape.leftTop,
+              }
+            : {
+                  right: props.cornerShape.rightBottom,
+                  left: props.cornerShape.leftBottom,
+              };
+
+        return (
             <path
-                style={transitionStyle}
-                filter="url(#shadowTop)"
-                d={`M ${eyeShape.leftX} ${eyeShape.middleY}
-                    H 0
+                style={props.transitionStyle}
+                filter={filter}
+                d={`M -1 0 
+                    V ${sign}
+                    H 1
                     V 0
-                    H ${props.width}
-                    V ${eyeShape.middleY}
-                    H ${eyeShape.rightX}
-                    C ${eyeShape.rightX -
-                        cornerShape.rightTop * bezier.scaledXcontrolOffset} 
-                      ${props.eyeShape.middleY - bezier.scaledYcontrolOffset}
-                      ${eyeShape.middleX + bezier.controlOffset} 
-                      ${eyeShape.topEyelidY}
-                      ${eyeShape.middleX} 
-                      ${eyeShape.topEyelidY}
-                    S ${eyeShape.leftX +
-                        cornerShape.leftTop * bezier.scaledXcontrolOffset} 
-                      ${eyeShape.middleY - bezier.scaledYcontrolOffset} 
-                      ${eyeShape.leftX} 
-                      ${eyeShape.middleY}`}
+                    H ${scleraRadius}
+                    C ${scleraRadius -
+                        bezier.scaledXcontrolOffset * shape.right}
+                        ${sign * bezier.scaledYcontrolOffset}
+                        ${bezier.controlOffset}
+                        ${sign * eyeHeight}
+                        0
+                        ${sign * eyeHeight}
+                    S ${-scleraRadius +
+                        bezier.scaledXcontrolOffset * shape.left}
+                        ${sign * bezier.scaledYcontrolOffset}
+                        ${-scleraRadius}
+                        0
+                    Z`}
             />
-            <path
-                style={transitionStyle}
-                filter="url(#shadowBottom)"
-                d={`M ${eyeShape.leftX} ${eyeShape.middleY}
-                    H 0
-                    V ${props.height}
-                    H ${props.width}
-                    V ${eyeShape.middleY}
-                    H ${eyeShape.rightX}
-                    C ${eyeShape.rightX -
-                        cornerShape.rightBottom * bezier.scaledXcontrolOffset} 
-                      ${props.eyeShape.middleY + bezier.scaledYcontrolOffset}
-                      ${eyeShape.middleX + bezier.controlOffset} 
-                      ${eyeShape.bottomEyelidY} 
-                      ${eyeShape.middleX} 
-                      ${eyeShape.bottomEyelidY}
-                    S ${eyeShape.leftX +
-                        cornerShape.leftBottom * bezier.scaledXcontrolOffset} 
-                      ${eyeShape.middleY + bezier.scaledYcontrolOffset} 
-                      ${eyeShape.leftX}
-                      ${eyeShape.middleY}`}
-            />
-        </svg>
+        );
+    }
+
+    return (
+        <>
+            {renderEyelid(true)}
+            {renderEyelid(false)}
+        </>
     );
 });

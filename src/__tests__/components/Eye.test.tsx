@@ -1,12 +1,10 @@
 import { shallow } from 'enzyme';
 import React from 'react';
-import { EyeSide } from '../../AppConstants';
+import { eyeCoefficients, EyeSide } from '../../AppConstants';
 import Eye, { IEyeProps } from '../../components/eye/Eye';
-import { getBezier, getEyeShape } from '../../components/eye/EyeController';
+import { getBezier } from '../../components/eye/utils/EyeShapeUtils';
 import { generateInnerPath } from '../../components/eye/utils/VisualUtils';
 
-const dimension = 500;
-const scleraRadius = 100;
 const openCoefficient = 0.5;
 let props: IEyeProps;
 const animation = {
@@ -22,21 +20,12 @@ describe('Eye', () => {
         props = {
             animation,
             class: EyeSide.LEFT,
-            width: dimension,
-            height: dimension,
-            scleraRadius,
-            irisRadius: 50,
-            pupilRadius: 20,
-            eyeShape: getEyeShape(
-                dimension,
-                dimension,
-                scleraRadius,
-                openCoefficient,
-            ),
-            bezier: getBezier(scleraRadius, openCoefficient),
+            bezier: getBezier(openCoefficient),
             reflection: undefined,
-            innerPath: generateInnerPath(20, 100),
+            innerPath: generateInnerPath(eyeCoefficients.iris, 100),
             skewTransform: '',
+            openCoefficient,
+            reflectionOpacity: 0.2,
         };
     });
 
