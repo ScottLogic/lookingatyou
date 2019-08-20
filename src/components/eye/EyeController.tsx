@@ -161,8 +161,16 @@ export const EyeController = React.memo(
         }, [irisRadius]);
 
         useEffect(() => {
-            environment.addEventListener('keyup', handleKeyUp);
-            return () => environment.removeEventListener("keyup", handleKeyUp);
+            const handleKeyUpEventHandler = (event: KeyboardEvent) => {
+                return handleKeyUp(event, updateAnimation);
+            };
+
+            environment.addEventListener('keyup', handleKeyUpEventHandler);
+            return () =>
+                environment.removeEventListener(
+                    'keyup',
+                    handleKeyUpEventHandler,
+                );
         }, [environment, updateAnimation]);
 
         return (
@@ -267,7 +275,10 @@ function peekHandler(
     };
 }
 
-function handleKeyUp(event: Event, updateAnimation: (animation: Animation) => ISetAnimationAction) {
+function handleKeyUp(
+    event: KeyboardEvent,
+    updateAnimation: (animation: Animation) => ISetAnimationAction,
+) {
     const keyAnimation = keyToPose[event.key];
     if (keyAnimation) {
         updateAnimation(keyAnimation());
