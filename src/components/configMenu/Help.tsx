@@ -28,10 +28,7 @@ export const appHelp = [
 
 const fps = () => {
     return (
-        <Fragment>
-            How often the eyes will update in Frames per second. Affects
-            performance.
-        </Fragment>
+        <Fragment>Configures how many detections are made per second.</Fragment>
     );
 };
 
