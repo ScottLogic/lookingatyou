@@ -156,12 +156,9 @@ export const EyeController = React.memo(
 
         useEffect(() => {
             props.environment.document.addEventListener('keyup', e => {
-                let keyAnimation = keyToPose[e.key];
+                const keyAnimation = keyToPose[e.key];
                 if (keyAnimation) {
-                    keyAnimation = Array.isArray(keyAnimation)
-                        ? keyAnimation
-                        : keyAnimation();
-                    props.updateAnimation(keyAnimation);
+                    props.updateAnimation(keyAnimation());
                 }
             });
         }, [props, props.environment, props.updateAnimation]);

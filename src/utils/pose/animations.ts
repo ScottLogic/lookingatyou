@@ -26,7 +26,7 @@ export const wink = {
     duration: 500,
 };
 
-export const leftWink: Animation = [
+export const leftWink: () => Animation = () => [
     {
         openCoefficient: {
             [EyeSide.LEFT]: eyelidPosition.CLOSED,
@@ -37,7 +37,7 @@ export const leftWink: Animation = [
     wink,
 ];
 
-export const rightWink: Animation = [
+export const rightWink: () => Animation = () => [
     {
         openCoefficient: {
             [EyeSide.RIGHT]: eyelidPosition.CLOSED,
@@ -60,7 +60,7 @@ const dilated = {
     duration: 100,
 };
 
-export const shock: Animation = [
+export const shock: () => Animation = () => [
     {
         dilation: pupilSizes.dilated,
         openCoefficient: eyelidPosition.SQUINT,
@@ -170,7 +170,7 @@ export function peek(openLeft: boolean, openRight: boolean): Animation {
 }
 
 export const animationMapping: {
-    [key: string]: (() => Animation) | Animation;
+    [key: string]: () => Animation;
 } = {
     [Pose.LEFT_WAVE]: rightWink,
     [Pose.RIGHT_WAVE]: leftWink,
@@ -179,10 +179,10 @@ export const animationMapping: {
     [Pose.DAB]: dab,
 };
 
-export const keyToPose: {[key: string]: (() => Animation) | Animation} = {
-    't': shock,
-    'd': dab,
-    'l': leftWink,
-    'r': rightWink,
-    'u': rollEyes,
-}
+export const keyToPose: { [key: string]: () => Animation } = {
+    t: shock,
+    d: dab,
+    l: leftWink,
+    r: rightWink,
+    u: rollEyes,
+};
