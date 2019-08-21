@@ -2,11 +2,7 @@ import { fisheyeConsts } from '../../../AppConstants';
 import { normalise } from '../../../utils/objectTracking/calculateFocus';
 import { ICoords } from '../../../utils/types';
 
-export function getReflection(
-    radius: number,
-    target: ICoords,
-    image: HTMLVideoElement,
-) {
+export function getReflection(target: ICoords, image: HTMLVideoElement) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) {
@@ -14,7 +10,7 @@ export function getReflection(
     }
     const crop = getCrop(target, image);
     ctx.scale(-1, 1);
-    const diameter = radius * 2;
+    const diameter = image.width * 0.4;
     ctx.drawImage(
         image,
         crop.sourceX,

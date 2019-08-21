@@ -40,7 +40,6 @@ import { getReflection } from './utils/ReflectionUtils';
 import { generateInnerPath, irisMatrixTransform } from './utils/VisualUtils';
 
 export interface IEyeControllerProps {
-    width: number;
     environment: Window;
     dilation: number;
     openCoefficient: number;
@@ -75,10 +74,6 @@ export const EyeController = React.memo(
         const innerPath = generateInnerPath(
             eyeCoefficients.iris,
             numInnerEyeSectors,
-        );
-
-        const pupilRadius = Math.floor(
-            (props.width * eyeCoefficients.pupil) / 4,
         );
 
         const reflectionRef = useRef<ImageData | undefined>(undefined);
@@ -143,7 +138,6 @@ export const EyeController = React.memo(
                 props.imageData
             ) {
                 reflectionRef.current = getReflection(
-                    pupilRadius,
                     props.target,
                     props.image,
                 );
@@ -154,7 +148,6 @@ export const EyeController = React.memo(
             props.target,
             props.image,
             props.advancedConfig.toggleReflection,
-            pupilRadius,
             props.imageData,
         ]);
 
@@ -212,8 +205,7 @@ export const EyeController = React.memo(
         previous.openCoefficient === next.openCoefficient &&
         previous.target.x === next.target.x &&
         previous.target.y === next.target.y &&
-        previous.isSleeping === next.isSleeping &&
-        previous.width === next.width,
+        previous.isSleeping === next.isSleeping,
 );
 
 function blinkHandler(
