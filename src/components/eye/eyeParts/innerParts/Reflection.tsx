@@ -25,7 +25,7 @@ export function Reflection(props: IReflectionProps) {
     if (props.reflection) {
         size = props.reflection.width;
     }
-    let scale = (eyeCoefficients.pupil * 2) / size;
+    let scale = (0.95 * (eyeCoefficients.pupil * 2)) / size;
     if (props.animation.dilation) {
         scale *= props.animation.dilation;
     }
