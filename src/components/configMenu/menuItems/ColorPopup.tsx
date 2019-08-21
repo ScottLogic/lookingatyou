@@ -30,6 +30,7 @@ const ColorPopup = (props: IColorPopup) => {
                 <SketchPicker
                     color={props.color}
                     onChangeComplete={handleChangeComplete}
+                    disableAlpha={true}
                 />
 
                 <br />
