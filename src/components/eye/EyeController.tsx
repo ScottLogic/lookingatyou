@@ -41,7 +41,6 @@ import { generateInnerPath, irisMatrixTransform } from './utils/VisualUtils';
 
 export interface IEyeControllerProps {
     width: number;
-    height: number;
     environment: Window;
     dilation: number;
     openCoefficient: number;
@@ -214,8 +213,7 @@ export const EyeController = React.memo(
         previous.target.x === next.target.x &&
         previous.target.y === next.target.y &&
         previous.isSleeping === next.isSleeping &&
-        previous.width === next.width &&
-        previous.height === next.height,
+        previous.width === next.width,
 );
 
 function blinkHandler(
