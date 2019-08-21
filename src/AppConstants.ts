@@ -8,6 +8,7 @@ export enum Pose {
     HANDS_UP = 'HANDS_UP',
     ARMS_OUT = 'ARMS_OUT',
     DAB = 'DAB',
+    HANDS_HIPS = 'HANDS_HIPS',
 }
 export const eyeRatio = {
     sclera: 4.5,

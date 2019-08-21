@@ -169,6 +169,26 @@ export function peek(openLeft: boolean, openRight: boolean): Animation {
     ];
 }
 
+export function leer(): Animation {
+    return [
+        {
+            openCoefficient: eyelidPosition.SQUINT,
+            target: { x: 0, y: 0 },
+            duration: 1000,
+        },
+        {
+            openCoefficient: eyelidPosition.SQUINT,
+            target: { x: 0, y: 0 },
+            duration: 2000,
+        },
+        {
+            openCoefficient: eyelidPosition.OPEN,
+            target: { x: 0, y: 0 },
+            duration: 500,
+        },
+    ];
+}
+
 export const animationMapping: {
     [key: string]: () => Animation;
 } = {
@@ -177,6 +197,7 @@ export const animationMapping: {
     [Pose.HANDS_UP]: rollEyes,
     [Pose.ARMS_OUT]: shock,
     [Pose.DAB]: dab,
+    [Pose.HANDS_HIPS]: leer,
 };
 
 export const keyToPose: { [key: string]: () => Animation } = {
