@@ -181,7 +181,6 @@ export class MovementHandler extends React.Component<
     setNoTarget() {
         if (this.personDetected) {
             this.personDetected = false;
-            this.dilationCoefficient = eyelidPosition.SQUINT;
             this.openCoefficient = eyelidPosition.SQUINT;
             this.sleepTimeout = this.props.environment.setTimeout(
                 this.sleep,
