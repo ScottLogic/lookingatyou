@@ -42,7 +42,17 @@ function HelpPopup(props: HelpPopupProps) {
                     This is an app designed to track users using a webcam. The
                     eyes will follow you around and react differently depending
                     on what they see. Hover over any of the menu items for more
-                    information. Click the Help button to see this message again.
+                    information. Click the Help button to see this message
+                    again.
+                    <br />
+                    <br />
+                    <a
+                        href="https://blog.scottlogic.com/2019/08/19/LookingAtYou.html"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Developed by interns at Scott Logic
+                    </a>
                     <br />
                     <Button
                         variant="contained"
