@@ -7,7 +7,6 @@ import {
     intervals,
     lightConsts,
     pupilSizes,
-    userInteraction,
 } from '../../AppConstants';
 import { IDetection } from '../../models/objectDetection';
 import { setAnimation } from '../../store/actions/detections/actions';
@@ -26,6 +25,7 @@ import { Animation, naturalMovement } from '../../utils/pose/animations';
 import { ICoords } from '../../utils/types';
 import EyeController from '../eye/EyeController';
 import { analyseLight } from '../eye/utils/MovementUtils';
+import { userInteraction } from '../fadeInText/FadeInConstants';
 import FadeInText from '../fadeInText/FadeInText';
 
 interface IMovementProps {

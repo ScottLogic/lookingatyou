@@ -1,5 +1,5 @@
 import React from 'react';
-import { fadeInText } from '../../AppConstants';
+import { fadeInText } from './FadeInConstants';
 import './fadeInText.css';
 
 interface IFadeInTextProps {
