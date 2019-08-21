@@ -29,8 +29,7 @@ export const appHelp = [
 const fps = () => {
     return (
         <Fragment>
-            How often the eyes will update in Frames per second. Affects
-            performance.
+            Configures how many frames are processed per second.
         </Fragment>
     );
 };

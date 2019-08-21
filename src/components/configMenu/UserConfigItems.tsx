@@ -20,7 +20,7 @@ export default function UserConfig(props: IUserConfigProps) {
     return (
         <>
             <NumberMenuItem
-                name={'Detections Per Second'}
+                name={'Frames Processed Per Second'}
                 configName={'fps'}
                 step={1}
                 defaultValue={props.appConfig.fps}
