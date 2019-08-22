@@ -4,11 +4,13 @@ import { eyelidPosition, pupilSizes } from '../../AppConstants';
 import { initialAppConfig } from '../../store/reducers/configReducer';
 import { normalise } from '../../utils/objectTracking/calculateFocus';
 import EyeController from '../eye/EyeController';
+
 interface IManualMovementHandlerProps {
     width: number;
     height: number;
     environment: Window;
 }
+
 export function ManualMovementHandler(props: IManualMovementHandlerProps) {
     const [target, setTarget] = useState({ x: 0, y: 0 });
     useEffect(() => {
@@ -21,14 +23,19 @@ export function ManualMovementHandler(props: IManualMovementHandlerProps) {
                 initialAppConfig.ySensitivity;
             setTarget({ x, y });
         };
+
         const throttledMouseMoveHandler = throttle(
             mouseMoveHandler,
             initialAppConfig.fps,
         );
+
         props.environment.addEventListener(
             'mousemove',
             throttledMouseMoveHandler,
         );
+
+        props.environment.document.body.style.cursor = 'crosshair';
+
         return () => {
             props.environment.removeEventListener(
                 'mousemove',
