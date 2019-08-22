@@ -1,7 +1,6 @@
 import { Button } from '@material-ui/core';
 import React, { Fragment } from 'react';
 import Popup from 'reactjs-popup';
-import './NoWebcamPopup.css';
 
 export default function NoWebcamPopup() {
     return (
