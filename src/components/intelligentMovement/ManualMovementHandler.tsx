@@ -34,7 +34,7 @@ export function ManualMovementHandler(props: IManualMovementHandlerProps) {
             throttledMouseMoveHandler,
         );
 
-        props.environment.document.body.style.cursor = 'crosshair';
+        props.environment.document.body.style.cursor = 'default';
 
         return () => {
             props.environment.removeEventListener(
