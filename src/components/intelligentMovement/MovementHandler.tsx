@@ -107,8 +107,7 @@ export class MovementHandler extends React.Component<
             this.state.isSleeping !== nextState.isSleeping ||
             (!this.props.animationExists &&
                 (this.props.target !== nextProps.target ||
-                    this.props.selection !== nextProps.selection ||
-                    this.state.isSleeping !== nextState.isSleeping))
+                    this.props.selection !== nextProps.selection))
         );
     }
 

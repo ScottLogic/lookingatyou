@@ -71,10 +71,14 @@ export type EyeControllerProps = IEyeControllerProps &
 export const EyeController = React.memo(
     (props: EyeControllerProps) => {
         const { environment, updateAnimation, animation } = props;
-        const innerPath = generateInnerPath(
-            eyeCoefficients.iris,
-            numInnerEyeSectors,
-        );
+        const innerPath = useRef('');
+
+        useEffect(() => {
+            innerPath.current = generateInnerPath(
+                eyeCoefficients.iris,
+                numInnerEyeSectors,
+            );
+        }, []);
 
         const reflectionRef = useRef<ImageData | undefined>(undefined);
 
@@ -182,7 +186,7 @@ export const EyeController = React.memo(
                             animation={frame}
                             bezier={bezier}
                             reflection={reflectionRef.current}
-                            innerPath={innerPath}
+                            innerPath={innerPath.current}
                             skewTransform={irisMatrixTransform(position)}
                             reflectionOpacity={
                                 props.advancedConfig.reflectionOpacity
