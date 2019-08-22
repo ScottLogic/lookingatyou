@@ -1,8 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Eyelids should render correctly 1`] = `
-"<Fragment>
-  <path style={{...}} filter=\\"url(#shadowTop)\\" d=\\"M -1 0 \\\\n                    V -1\\\\n                    H 1\\\\n                    V 0\\\\n                    H 0.9\\\\n                    C 0.9\\\\n                        -30\\\\n                        20\\\\n                        NaN\\\\n                        0\\\\n                        NaN\\\\n                    S -0.9\\\\n                        -30\\\\n                        -0.9\\\\n                        0\\\\n                    Z\\" />
-  <path style={{...}} filter=\\"url(#shadowBottom)\\" d=\\"M -1 0 \\\\n                    V 1\\\\n                    H 1\\\\n                    V 0\\\\n                    H 0.9\\\\n                    C 0.9\\\\n                        30\\\\n                        20\\\\n                        NaN\\\\n                        0\\\\n                        NaN\\\\n                    S -0.9\\\\n                        30\\\\n                        -0.9\\\\n                        0\\\\n                    Z\\" />
-</Fragment>"
-`;

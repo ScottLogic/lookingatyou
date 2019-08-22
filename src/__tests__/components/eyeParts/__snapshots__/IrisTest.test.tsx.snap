@@ -1,8 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Iris should render correctly 1`] = `
-"<g>
-  <circle className=\\"iris\\" r={0.4} fill=\\"url(#irisGradient)\\" />
-  <path className=\\"irisStyling\\" d=\\"\\" fill=\\"#0000cc\\" />
-</g>"
-`;

@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`ConfigMenu should render correctly 1`] = `
-"<ContextProvider value={{...}}>
-  <ConfigMenu window={{...}} appConfig={{...}} advancedConfig={{...}} updateAppConfig={[Function: mockConstructor]} updateAdvancedConfig={[Function: mockConstructor]} updateModelConfig={[Function: mockConstructor]} updateDetectionConfig={[Function: mockConstructor]} resetConfig={[Function: mockConstructor]} />
-</ContextProvider>"
-`;

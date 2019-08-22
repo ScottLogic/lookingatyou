@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Eye Controller should render correctly 1`] = `
-"<ContextProvider value={{...}}>
-  <Connect(Component) width={500} height={500} environment={{...}} target={{...}} dilation={1} openCoefficient={0.45} detected={true} isSleeping={false} />
-</ContextProvider>"
-`;

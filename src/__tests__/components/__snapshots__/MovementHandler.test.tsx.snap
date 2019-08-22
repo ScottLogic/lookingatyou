@@ -1,8 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Movement Handler should render correctly 1`] = `
-"<div className=\\"movementHandler\\">
-  <Connect(Component) dilation={1} detected={false} openCoefficient={0.45} isSleeping={false} width={1920} height={1080} environment={{...}} fps={1000} target={{...}} image={{...}} animation={{...}} animationExists={false} updateAnimation={[Function: mockConstructor]} />
-  <Memo() text=\\"\\" show={false} />
-</div>"
-`;
