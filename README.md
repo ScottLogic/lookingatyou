@@ -34,11 +34,9 @@
 
 ## About The Project
 
-Looking At You is a single page application that tracks a person using [PoseNet](https://github.com/tensorflow/tfjs-models/tree/master/posenet) and follows them with a pair of eyes on the screen.
+Looking At You is a single page application that tracks a person using [PoseNet](https://github.com/tensorflow/tfjs-models/tree/master/posenet) and follows them with a pair of eyes on the screen. Looking At You was developed by [Scott Logic](https://www.scottlogic.com/)'s Summer 2019 interns in the Edinburgh office.
 
 ![Eyes](./images/eyes.gif)
-
-Research notes can be found [here](https://docs.google.com/document/d/1qzaegY8RV-7zI8W8PFPsT_O9LhHEo22WNC5yQh8-n_Q/edit#heading=h.e2w0fl8vj3ca_).
 
 ## Prerequisites
 
