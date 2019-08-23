@@ -11,7 +11,7 @@
   <p align="center">
     <a href="https://github.com/ScottLogic/lookingatyou/blob/master/README.md"><strong>Explore the docs »</strong></a>
     <br />
-    <a href="https://looking-at-you.s3.amazonaws.com/index.html">View Demo</a>
+    <a href="https://scottlogic.github.io/lookingatyou/">View Demo</a>
     ·
     <a href="https://github.com/ScottLogic/lookingatyou/issues">Report Bug</a>
     ·
