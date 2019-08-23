@@ -65,7 +65,7 @@ export const userInteraction = {
             frequency: 0.1,
         },
     ],
-    delay: 13000,
+    delay: 20000,
     textDuration: 3000,
 };
 
@@ -73,5 +73,5 @@ export const fadeInText = {
     delay: 1000,
     transitionTime: 2500,
     fontSize: '5em',
-    defaultTextLength: 20,
+    defaultTextLength: 50,
 };

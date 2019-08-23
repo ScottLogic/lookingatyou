@@ -8,4 +8,5 @@
 
 .revealText span {
     letter-spacing: 10px;
+    overflow-wrap: normal;
 }

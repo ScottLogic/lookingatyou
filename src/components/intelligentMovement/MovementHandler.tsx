@@ -51,6 +51,7 @@ interface IMovementState {
     showText: boolean;
     text: string;
     isSleeping: boolean;
+    previousIndex: number;
 }
 
 export type MovementHandlerProps = IMovementProps &
@@ -68,6 +69,7 @@ export class MovementHandler extends React.Component<
     private openCoefficient: number;
     private hasMovedLeft: boolean;
     private personDetected: boolean;
+    private text: string;
 
     constructor(props: MovementHandlerProps) {
         super(props);
@@ -76,6 +78,7 @@ export class MovementHandler extends React.Component<
             showText: false,
             text: '',
             isSleeping: false,
+            previousIndex: 0,
         };
 
         this.movementInterval = 0;
@@ -85,6 +88,7 @@ export class MovementHandler extends React.Component<
         this.openCoefficient = eyelidPosition.OPEN;
         this.hasMovedLeft = false;
         this.personDetected = false;
+        this.text = '';
 
         this.animateEye = this.animateEye.bind(this);
         this.sleep = this.sleep.bind(this);
@@ -112,7 +116,7 @@ export class MovementHandler extends React.Component<
     }
 
     componentWillReceiveProps(nextProps: MovementHandlerProps) {
-        if (nextProps.animationExists && this.textTimeout) {
+        if (nextProps.animationExists && this.textTimeout !== 0) {
             this.props.environment.clearTimeout(this.textTimeout);
             this.textTimeout = 0;
         }
@@ -209,6 +213,17 @@ export class MovementHandler extends React.Component<
                 .reduce((x, y) => x + y);
 
             let random = Math.random() * totalFrequency;
+            while (
+                random < this.state.previousIndex + 1 &&
+                random > this.state.previousIndex - 1
+            ) {
+                random = Math.random() * totalFrequency;
+            }
+
+            this.setState({
+                previousIndex: random,
+            });
+
             let i = 0;
 
             while (random >= 0 && i < userInteraction.texts.length - 1) {
@@ -217,10 +232,10 @@ export class MovementHandler extends React.Component<
             }
 
             const phrase = userInteraction.texts[i - 1].phrase;
+            this.text = phrase;
 
             this.setState({
                 showText: true,
-                text: phrase,
             });
 
             this.props.environment.setTimeout(() => {
@@ -240,7 +255,7 @@ export class MovementHandler extends React.Component<
                     isSleeping={this.state.isSleeping}
                     {...this.props}
                 />
-                <FadeInText text={this.state.text} show={this.state.showText} />
+                <FadeInText text={this.text} show={this.state.showText} />
             </div>
         );
     }
