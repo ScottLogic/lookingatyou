@@ -73,5 +73,5 @@ export const fadeInText = {
     delay: 1000,
     transitionTime: 2500,
     fontSize: '5em',
-    defaultTextLength: 50,
+    defaultTextLength: 35,
 };
