@@ -51,6 +51,9 @@ interface IMovementState {
     showText: boolean;
     text: string;
     isSleeping: boolean;
+    dilationCoefficient: number;
+    openCoefficient: number;
+    personDetected: boolean;
 }
 
 export type MovementHandlerProps = IMovementProps &
@@ -64,10 +67,7 @@ export class MovementHandler extends React.Component<
     private movementInterval: number;
     private sleepTimeout: number;
     private textTimeout: number;
-    private dilationCoefficient: number;
-    private openCoefficient: number;
     private hasMovedLeft: boolean;
-    private personDetected: boolean;
 
     constructor(props: MovementHandlerProps) {
         super(props);
@@ -76,15 +76,15 @@ export class MovementHandler extends React.Component<
             showText: false,
             text: '',
             isSleeping: false,
+            dilationCoefficient: pupilSizes.neutral,
+            openCoefficient: eyelidPosition.OPEN,
+            personDetected: false,
         };
 
         this.movementInterval = 0;
         this.sleepTimeout = 0;
         this.textTimeout = 0;
-        this.dilationCoefficient = pupilSizes.neutral;
-        this.openCoefficient = eyelidPosition.OPEN;
         this.hasMovedLeft = false;
-        this.personDetected = false;
 
         this.animateEye = this.animateEye.bind(this);
         this.sleep = this.sleep.bind(this);
@@ -131,24 +131,25 @@ export class MovementHandler extends React.Component<
         if (this.props.image) {
             const brightness = analyseLight(this.props.image);
 
-            this.dilationCoefficient = normalise(
+            const dilationCoefficient = normalise(
                 lightConsts.maxBrightness - brightness,
                 lightConsts.maxBrightness,
                 0,
                 lightConsts.dilationMultipler + lightConsts.dilationOffset,
                 lightConsts.dilationOffset,
             );
-            this.openCoefficient =
+            const openCoefficient =
                 brightness >= lightConsts.maxBrightness
                     ? eyelidPosition.CLOSED
                     : eyelidPosition.OPEN;
+            this.setState({ dilationCoefficient, openCoefficient });
         }
     }
 
     checkSelection() {
-        const isSquinting = this.openCoefficient === eyelidPosition.SQUINT;
-        if (isSquinting && Math.random() < 0.1) {
-            this.openCoefficient = eyelidPosition.OPEN;
+        const isSquint = this.state.openCoefficient === eyelidPosition.SQUINT;
+        if (isSquint && Math.random() < 0.1) {
+            this.setState({ openCoefficient: eyelidPosition.OPEN });
         }
 
         if (this.props.selection) {
@@ -171,16 +172,20 @@ export class MovementHandler extends React.Component<
     setNewTarget() {
         this.wake();
         this.props.environment.clearTimeout(this.sleepTimeout);
-        if (!this.personDetected) {
-            this.personDetected = true;
-            this.dilationCoefficient = pupilSizes.dilated;
+        if (!this.state.personDetected) {
+            this.setState({
+                personDetected: true,
+                dilationCoefficient: pupilSizes.dilated,
+            });
         }
     }
 
     setNoTarget() {
-        if (this.personDetected) {
-            this.personDetected = false;
-            this.openCoefficient = eyelidPosition.SQUINT;
+        if (this.state.personDetected) {
+            this.setState({
+                personDetected: false,
+                openCoefficient: eyelidPosition.SQUINT,
+            });
             this.sleepTimeout = this.props.environment.setTimeout(
                 this.sleep,
                 intervals.sleep,
@@ -234,9 +239,9 @@ export class MovementHandler extends React.Component<
         return (
             <div className="movementHandler">
                 <EyeController
-                    dilation={this.dilationCoefficient}
-                    detected={this.personDetected}
-                    openCoefficient={this.openCoefficient}
+                    dilation={this.state.dilationCoefficient}
+                    detected={this.state.personDetected}
+                    openCoefficient={this.state.openCoefficient}
                     isSleeping={this.state.isSleeping}
                     {...this.props}
                 />
