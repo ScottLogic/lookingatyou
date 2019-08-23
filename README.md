@@ -131,7 +131,7 @@ npm run lint
 
 ## Deployment
 
-Looking At You is automatically deployed to a S3 bucket after each successful merge to the master branch. The project can be accessed [here](https://looking-at-you.s3.amazonaws.com/index.html).
+Looking At You is automatically deployed to a S3 bucket after each successful merge to the master branch. The project can be accessed [here](https://scottlogic.github.io/lookingatyou/).
 
 Any branch prepended with `feature/` will also be automatically deployed after passing the required linting check and tests. Feature branches can be accessed at `https://looking-at-you.s3.amazonaws.com/BRANCH_NAME` where `BRANCH_NAME` is the name of the feature branch you are trying to access. Those branches are automatically deleted either in following scenarios:
 
