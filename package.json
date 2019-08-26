@@ -76,7 +76,7 @@
             "last 1 safari version"
         ]
     },
-    "license": "SEE LICENSE IN LICENSE.md",
+    "license": "MIT",
     "jest": {
         "snapshotSerializers": [
             "enzyme-to-json/serializer"
